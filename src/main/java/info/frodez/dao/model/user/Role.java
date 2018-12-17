@@ -1,0 +1,57 @@
+package info.frodez.dao.model.user;
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import lombok.Data;
+
+/**
+ * @description 用户角色表
+ * @table tb_role
+ * @date 2018-11-14
+ */
+@Data
+@Entity
+@Table(name = "tb_role")
+public class Role implements Serializable {
+    /** 
+     * 主键ID
+     */
+    @Id
+    @NotNull
+    @Column(name = "id")
+    private Long id;
+
+    /** 
+     * 创建时间
+     */
+    @NotNull
+    @Column(name = "create_time")
+    private Date createTime;
+
+    /** 
+     * 角色名称
+     */
+    @NotNull
+    @Column(name = "name", length = 255)
+    private String name;
+
+    /** 
+     * 角色等级  0-9  0最高,9最低
+     */
+    @NotNull
+    @Column(name = "level")
+    private Byte level;
+
+    /** 
+     * 描述
+     */
+    @Column(name = "description", length = 1000)
+    private String description;
+
+    private static final long serialVersionUID = 1L;
+}
