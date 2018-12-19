@@ -17,7 +17,6 @@ import info.frodez.dao.model.user.Permission;
 import info.frodez.dao.model.user.Role;
 import info.frodez.dao.model.user.User;
 import info.frodez.dao.param.user.LoginDTO;
-import info.frodez.dao.result.user.LoginVO;
 import info.frodez.dao.result.user.PermissionInfo;
 import info.frodez.dao.result.user.UserInfo;
 import info.frodez.service.IUserAuthorityService;
@@ -154,11 +153,8 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 			List<String> authorities = permissionMapper
 				.getPermissions(role.getId()).stream()
 				.map(PermissionInfo::getName).collect(Collectors.toList());
-			LoginVO data = new LoginVO();
-			data.setAuthorities(authorities);
 			String token = jwtTokenUtil.generate(param.getUsername(), authorities);
-			data.setToken(token);
-			return new Result(ResultEnum.SUCCESS, data);
+			return new Result(ResultEnum.SUCCESS, token);
 		} catch (Exception e) {
 			log.error("[login]", e);
 			return new Result(ResultEnum.FAIL);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import lombok.Data;
@@ -15,6 +16,7 @@ import lombok.Data;
  */
 @Data
 @Component
+@PropertySource("classpath:security.properties")
 @ConfigurationProperties
 public class SecurityProperties {
 
@@ -36,7 +38,7 @@ public class SecurityProperties {
     @Data
     public static class Jwt {
     	
-        private String header = "frodez";
+        private String header;
 
         private String secret;
 
@@ -44,7 +46,7 @@ public class SecurityProperties {
 
         private String issuer;
 
-        private String authenticationPath = "/login";
+        private String authenticationPath;
 
     }
 	

@@ -9,7 +9,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import info.frodez.util.json.JSONUtil;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 通用返回参数
@@ -17,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2018-11-13
  */
 @Data
-@Slf4j
 public class Result {
 
 	/**
@@ -160,7 +158,6 @@ public class Result {
 		try {
 			return JSONUtil.getInstance().writeValueAsString(this);
 		} catch (JsonProcessingException e) {
-			log.error("[toString]", e);
 			return null;
 		}
 	}

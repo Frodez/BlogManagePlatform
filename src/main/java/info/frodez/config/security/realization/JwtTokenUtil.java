@@ -14,14 +14,12 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import info.frodez.config.security.settings.SecurityProperties;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * jwt工具类
  * @author Frodez
  * @date 2018-11-14
  */
-@Slf4j
 @Component
 public class JwtTokenUtil {
 
@@ -48,7 +46,6 @@ public class JwtTokenUtil {
                     .withArrayClaim(CLAIM_AUTHORITIES, AuthorityUtil.getAuthorities(user))
                     .sign(algorithm);
         } catch (Exception e) {
-        	log.error("[generate]", e);
             return null;
         }
     }
@@ -71,7 +68,6 @@ public class JwtTokenUtil {
                     .withArrayClaim(CLAIM_AUTHORITIES, authorities.stream().toArray(String[]::new))
                     .sign(algorithm);
         } catch (Exception e) {
-        	log.error("[generate]", e);
             return null;
         }
     }
@@ -93,7 +89,6 @@ public class JwtTokenUtil {
             return new User(jwt.getSubject(), "N/A", 
             	AuthorityUtil.createGrantedAuthorities(jwt.getClaim(CLAIM_AUTHORITIES).asArray(String.class)));
         } catch (Exception e) {
-        	log.error("[verify]", e);
             return null;
         }
     }

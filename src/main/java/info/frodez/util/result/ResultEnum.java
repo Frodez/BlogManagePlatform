@@ -28,14 +28,14 @@ public enum ResultEnum {
 	NOT_LOGIN(ResultUtil.NOT_LOGIN_VALUE, "未登录"),
 	
 	/**
-	 * 缺少操作权限
-	 */
-	NO_ACCESS(ResultUtil.NO_ACCESS_VALUE, "无权限"),
-	
-	/**
 	 * 未通过验证
 	 */
-	NO_AUTH(ResultUtil.NO_AUTH_VALUE, "未通过验证");
+	NO_AUTH(ResultUtil.NO_AUTH_VALUE, "未通过验证"),
+	
+	/**
+	 * 缺少操作权限
+	 */
+	NO_ACCESS(ResultUtil.NO_ACCESS_VALUE, "无权限");
 	
 	private int value;
 	

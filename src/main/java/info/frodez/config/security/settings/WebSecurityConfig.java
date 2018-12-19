@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -59,13 +60,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement()
             //不创建session
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            .authorizeRequests()
+            .authorizeRequests()            
             //登录入口不控制
-            .antMatchers(properties.getJwt().getAuthenticationPath())
-            .permitAll()
-            .anyRequest().authenticated().and()
+            .antMatchers(properties.getJwt().getAuthenticationPath()).permitAll()
+            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .anyRequest().authenticated()
+            .and()
             //在密码验证过滤器前执行jwt过滤器
-            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)            
+            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
             .headers().cacheControl(); // disable page caching
     }
     
@@ -74,7 +76,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/static/**");
     }
     
     /**

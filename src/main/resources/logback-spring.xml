@@ -23,7 +23,7 @@
 		class="ch.qos.logback.core.ConsoleAppender">
 		<!-- 日志级别过滤INFO以下 -->
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-			<level>INFO</level>
+			<level>DEBUG</level>
 		</filter>
 		<encoder>
 			<pattern>${LOG_PATTERN}</pattern>

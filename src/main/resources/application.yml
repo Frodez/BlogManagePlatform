@@ -1,0 +1,48 @@
+mapper:
+  identity: MYSQL
+  mappers: info.frodez.config.mybatis.DataMapper
+  
+mybatis:
+  mapper-locations: classpath:info/frodez/data/mapper/*Mapper.xml
+  type-aliases-package: info.frodez.data.model
+  
+pagehelper:
+  helperDialect: mysql
+  params: count=countSql
+  reasonable: true
+  supportMethodsArguments: true
+  
+server:
+  port: 9090
+  servlet:
+    context-path: /api
+    
+spring:
+  aop:
+    auto: true
+    proxy-target-class: true
+  data:
+    redis:
+      repositories:
+        enabled: true
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    password: 123456
+    url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: frodez
+  profiles:
+    active: dev
+  redis:
+    database: 0
+    host: localhost
+    password: ''
+    port: 6379
+  session:
+    store-type: redis
+    
+logging:
+  level:
+    info:
+      frodez:
+        dao:
+          mapper: DEBUG

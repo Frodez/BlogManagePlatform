@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import info.frodez.dao.param.user.LoginDTO;
@@ -31,6 +32,7 @@ public class LoginController {
     @Autowired
     private IUserAuthorityService authorityService;
     
+    @ResponseBody
     @RequestMapping
     public Result login(@RequestBody LoginDTO param) {
     	String msg = ValidationUtil.validate(param);

@@ -20,17 +20,17 @@ public class ResultUtil {
 	/**
 	 * 用户未登录返回值
 	 */
-	public static final int NOT_LOGIN_VALUE = 2001;
-	
-	/**
-	 * 缺少操作权限返回值
-	 */
-	public static final int NO_ACCESS_VALUE = 2002;
+	public static final int NOT_LOGIN_VALUE = 2001;	
 	
 	/**
 	 * 未通过验证返回值
 	 */
-	public static final int NO_AUTH_VALUE = 2003;
+	public static final int NO_AUTH_VALUE = 2002;
+	
+	/**
+	 * 缺少操作权限返回值
+	 */
+	public static final int NO_ACCESS_VALUE = 2003;
 	
 	/**
 	 * 获取失败状态的json字符串
