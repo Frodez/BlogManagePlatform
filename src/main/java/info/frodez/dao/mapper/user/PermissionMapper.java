@@ -18,7 +18,7 @@ import info.frodez.dao.result.user.PermissionInfo;
 @Repository
 @Mapper
 public interface PermissionMapper extends DataMapper<Permission> {
-	
+
 	/**
 	 * 获取权限信息
 	 * @author Frodez
@@ -26,5 +26,5 @@ public interface PermissionMapper extends DataMapper<Permission> {
 	 * @date 2018-11-14
 	 */
 	List<PermissionInfo> getPermissions(@Param("roleId") Long roleId);
-	
+
 }

@@ -14,5 +14,5 @@ import info.frodez.dao.model.user.Role;
 @Repository
 @Mapper
 public interface RoleMapper extends DataMapper<Role> {
-	
+
 }

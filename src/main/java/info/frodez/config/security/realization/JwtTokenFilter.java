@@ -25,35 +25,35 @@ import info.frodez.config.security.settings.SecurityProperties;
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-    
-    @Autowired
-    private SecurityProperties properties;
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request
-    	, HttpServletResponse response, FilterChain chain) 
-    	throws ServletException, IOException {
-    	if(!properties.getJwt().getAuthenticationPath().equals(request.getRequestURI())) {
-    		String authToken = request.getHeader(properties.getJwt().getHeader());
-            if(authToken != null && authToken.startsWith("Frodez:")) {
-            	authToken = authToken.substring(7);
-            	//将携带的token还原成用户信息
-            	UserDetails user = jwtTokenUtil.verify(authToken);
-                if (user != null && SecurityContextHolder
-                	.getContext().getAuthentication() == null) {
-                	UsernamePasswordAuthenticationToken authentication = new 
-                		UsernamePasswordAuthenticationToken(
-                		user, null, user.getAuthorities());
-                    authentication.setDetails(
-                    	new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext()
-                    	.setAuthentication(authentication);
-                }
-            }            
-    	}    	
-        chain.doFilter(request, response);
-    }
-	
+	@Autowired
+	private SecurityProperties properties;
+
+	@Override
+	protected void doFilterInternal(HttpServletRequest request
+			, HttpServletResponse response, FilterChain chain)
+					throws ServletException, IOException {
+		if(!properties.getJwt().getAuthenticationPath().equals(request.getRequestURI())) {
+			String authToken = request.getHeader(properties.getJwt().getHeader());
+			if(authToken != null && authToken.startsWith("Frodez:")) {
+				authToken = authToken.substring(7);
+				//将携带的token还原成用户信息
+				UserDetails user = jwtTokenUtil.verify(authToken);
+				if (user != null && SecurityContextHolder
+						.getContext().getAuthentication() == null) {
+					UsernamePasswordAuthenticationToken authentication = new
+							UsernamePasswordAuthenticationToken(
+									user, null, user.getAuthorities());
+					authentication.setDetails(
+							new WebAuthenticationDetailsSource().buildDetails(request));
+					SecurityContextHolder.getContext()
+					.setAuthentication(authentication);
+				}
+			}
+		}
+		chain.doFilter(request, response);
+	}
+
 }

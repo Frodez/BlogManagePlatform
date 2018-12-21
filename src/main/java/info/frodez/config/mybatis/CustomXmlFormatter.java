@@ -16,70 +16,70 @@ import org.mybatis.generator.config.Context;
 public class CustomXmlFormatter implements XmlFormatter {
 
 	protected Context context;
-	
+
 	@Override
-    public String getFormattedContent(Document document) {
-        return CustomXmlGenerator.generaterContent(document);
-    }
+	public String getFormattedContent(Document document) {
+		return CustomXmlGenerator.generaterContent(document);
+	}
 
-    @Override
-    public void setContext(Context context) {
-        this.context = context;
-    }
-    
-    private static class CustomXmlGenerator {
-    	
-    	/** The Constant lineSeparator. */
-        private static final String lineSeparator;
+	@Override
+	public void setContext(Context context) {
+		this.context = context;
+	}
 
-        static {
-            String ls = System.getProperty("line.separator"); //$NON-NLS-1$
-            if (ls == null) {
-                ls = "\n"; //$NON-NLS-1$
-            }
-            lineSeparator = ls;
-        }
-        
-        private static String generaterContent(Document document) {
-        	 StringBuilder sb = new StringBuilder();
-             sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-             sb.append(lineSeparator);
-             sb.append("<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">");
-             sb.append(lineSeparator);
-             sb.append(getFormattedContent(document.getRootElement(), 0));
-             return sb.toString();
-        }
-        
-        private static String getFormattedContent(XmlElement element, int indentLevel) {
-        	StringBuilder sb = new StringBuilder();
-        	xmlIndent(sb, indentLevel);
-            sb.append('<');
-            sb.append(element.getName());
-            Collections.sort(element.getAttributes());
-            for (Attribute att : element.getAttributes()) {
-                sb.append(' ');
-                sb.append(att.getFormattedContent());
-            }
-            if (element.getElements().size() > 0) {
-                sb.append(">");
-                sb.append(lineSeparator);
-                xmlIndent(sb, indentLevel + 1);
-                sb.append(lineSeparator);
-                sb.append("</");
-                sb.append(element.getName());
-                sb.append('>');
-            } else {
-                sb.append(" />");
-            }
-            return sb.toString();
-        }
-        
-        public static void xmlIndent(StringBuilder sb, int indentLevel) {
-            for (int i = 0; i < indentLevel; i++) {
-                sb.append("    ");
-            }
-        }
+	private static class CustomXmlGenerator {
 
-    }	
-		
+		/** The Constant lineSeparator. */
+		private static final String lineSeparator;
+
+		static {
+			String ls = System.getProperty("line.separator");
+			if (ls == null) {
+				ls = "\n";
+			}
+			lineSeparator = ls;
+		}
+
+		private static String generaterContent(Document document) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+			sb.append(lineSeparator);
+			sb.append("<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">");
+			sb.append(lineSeparator);
+			sb.append(getFormattedContent(document.getRootElement(), 0));
+			return sb.toString();
+		}
+
+		private static String getFormattedContent(XmlElement element, int indentLevel) {
+			StringBuilder sb = new StringBuilder();
+			xmlIndent(sb, indentLevel);
+			sb.append('<');
+			sb.append(element.getName());
+			Collections.sort(element.getAttributes());
+			for (Attribute att : element.getAttributes()) {
+				sb.append(' ');
+				sb.append(att.getFormattedContent());
+			}
+			if (element.getElements().size() > 0) {
+				sb.append(">");
+				sb.append(lineSeparator);
+				xmlIndent(sb, indentLevel + 1);
+				sb.append(lineSeparator);
+				sb.append("</");
+				sb.append(element.getName());
+				sb.append('>');
+			} else {
+				sb.append(" />");
+			}
+			return sb.toString();
+		}
+
+		public static void xmlIndent(StringBuilder sb, int indentLevel) {
+			for (int i = 0; i < indentLevel; i++) {
+				sb.append("    ");
+			}
+		}
+
+	}
+
 }

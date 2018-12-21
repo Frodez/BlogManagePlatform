@@ -9,7 +9,7 @@ import info.frodez.util.result.Result;
  * @date 2018-11-14
  */
 public interface IUserAuthorityService {
-	
+
 	/**
 	 * 获取用户授权信息
 	 * @author Frodez
@@ -17,14 +17,14 @@ public interface IUserAuthorityService {
 	 * @date 2018-11-14
 	 */
 	Result getUserInfoByName(String userName);
-	
+
 	/**
 	 * 获取所有权限信息
 	 * @author Frodez
 	 * @date 2018-12-04
 	 */
 	Result getAllPermissions();
-	
+
 	/**
 	 * 用户登录
 	 * @author Frodez

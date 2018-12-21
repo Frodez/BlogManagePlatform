@@ -15,7 +15,7 @@ import lombok.Data;
 public class LoginDTO implements Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -24,11 +24,11 @@ public class LoginDTO implements Serializable {
 	 */
 	@NotNull(message = "用户名不能为空!")
 	private String username;
-	
+
 	/**
 	 * 密码
 	 */
 	@NotNull(message = "用户名不能为空!")
 	private String password;
-	
+
 }

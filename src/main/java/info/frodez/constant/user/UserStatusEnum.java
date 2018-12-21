@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum UserStatusEnum {
-	
+
 	/**
 	 * 0:禁用
 	 */
@@ -22,9 +22,9 @@ public enum UserStatusEnum {
 	NORMAL((byte) 1, "正常");
 
 	private byte value;
-	
+
 	private String description;
-	
+
 	public UserStatusEnum of(byte value) {
 		for(UserStatusEnum iter : UserStatusEnum.values()) {
 			if(iter.value == value) {
@@ -33,5 +33,5 @@ public enum UserStatusEnum {
 		}
 		return null;
 	}
-	
+
 }

@@ -24,20 +24,20 @@ import lombok.extern.slf4j.Slf4j;
 public class NoAuthEntryPoint implements AuthenticationEntryPoint {
 
 	@Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-		response.setCharacterEncoding("UTF-8");  
-	    response.setContentType("application/json; charset=utf-8"); 
-	    PrintWriter out = null;  
-	    try {
-	        out = response.getWriter();  
-	        out.append(new Result(ResultEnum.NO_AUTH).toString());
-	    } catch (IOException e) {  
-	        log.error("[commence]", e); 
-	    } finally {  
-	        if (out != null) {  
-	            out.close();  
-	        }  
-	    }
-    }
-	
+	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json; charset=utf-8");
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			out.append(new Result(ResultEnum.NO_AUTH).toString());
+		} catch (IOException e) {
+			log.error("[commence]", e);
+		} finally {
+			if (out != null) {
+				out.close();
+			}
+		}
+	}
+
 }

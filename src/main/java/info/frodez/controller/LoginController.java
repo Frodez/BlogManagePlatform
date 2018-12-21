@@ -25,25 +25,25 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController("/login")
 public class LoginController {
-	
+
 	@Autowired
-    private AuthenticationManager authenticationManager;
-    
-    @Autowired
-    private IUserAuthorityService authorityService;
-    
-    @ResponseBody
-    @RequestMapping
-    public Result login(@RequestBody LoginDTO param) {
-    	String msg = ValidationUtil.validate(param);
-    	if(!StringUtils.isBlank(msg)) {
-			log.info("[login]", msg);
+	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private IUserAuthorityService authorityService;
+
+	@ResponseBody
+	@RequestMapping
+	public Result login(@RequestBody LoginDTO param) {
+		String msg = ValidationUtil.validate(param);
+		if(!StringUtils.isBlank(msg)) {
+			log.info("[login]{}", msg);
 			return new Result(ResultEnum.FAIL, msg);
 		}
-        final Authentication authentication = authenticationManager
-        	.authenticate(new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    	return authorityService.login(param);
-    }
-	
+		final Authentication authentication = authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword()));
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		return authorityService.login(param);
+	}
+
 }

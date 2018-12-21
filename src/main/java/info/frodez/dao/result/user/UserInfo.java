@@ -14,65 +14,65 @@ import lombok.Data;
 public class UserInfo implements Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	/** 
-     * 主键ID
-     */
-    private Long id;
 
-    /** 
-     * 用户名
-     */
-    private String name;
+	/**
+	 * 主键ID
+	 */
+	private Long id;
 
-    /** 
-     * 密码
-     */
-    private String password;
+	/**
+	 * 用户名
+	 */
+	private String name;
 
-    /** 
-     * 昵称
-     */
-    private String nickname;
+	/**
+	 * 密码
+	 */
+	private String password;
 
-    /** 
-     * 邮箱地址
-     */
-    private String email;
+	/**
+	 * 昵称
+	 */
+	private String nickname;
 
-    /** 
-     * 电话号码
-     */
-    private String phone;
+	/**
+	 * 邮箱地址
+	 */
+	private String email;
 
-    /** 
-     * 用户状态  0:禁用  1:正常
-     */
-    private Byte status;
+	/**
+	 * 电话号码
+	 */
+	private String phone;
 
-    /** 
-     * 角色ID
-     */
-    private Long roleId;
-    
-    /** 
-     * 角色名称
-     */
-    private String roleName;
+	/**
+	 * 用户状态  0:禁用  1:正常
+	 */
+	private Byte status;
 
-    /** 
-     * 角色等级  0-9  0最高,9最低
-     */
-    private Byte roleLevel;
+	/**
+	 * 角色ID
+	 */
+	private Long roleId;
 
-    /** 
-     * 描述
-     */
-    private String roleDescription;
-    
-    private List<PermissionInfo> permissionList;
+	/**
+	 * 角色名称
+	 */
+	private String roleName;
+
+	/**
+	 * 角色等级  0-9  0最高,9最低
+	 */
+	private Byte roleLevel;
+
+	/**
+	 * 描述
+	 */
+	private String roleDescription;
+
+	private List<PermissionInfo> permissionList;
 
 }

@@ -25,72 +25,72 @@ public class JwtTokenUtil {
 
 	private static final String CLAIM_AUTHORITIES = "authorities";
 
-    @Autowired
-    private SecurityProperties config;
+	@Autowired
+	private SecurityProperties config;
 
-    /**
-     * 生成token
-     * @author Frodez
-     * @param UserDetails 用户信息
-     * @date 2018-11-21
-     */
-    public String generate(UserDetails user) {
-        try {
-            Algorithm algorithm = Algorithm.HMAC256(config.getJwt().getSecret());
-            Long systemTime = System.currentTimeMillis();
-            return JWT.create()
-                    .withIssuer(config.getJwt().getIssuer())
-                    .withIssuedAt(new Date(systemTime))
-                    .withExpiresAt(new Date(systemTime + config.getJwt().getExpiration() * 1000))
-                    .withSubject(user.getUsername())
-                    .withArrayClaim(CLAIM_AUTHORITIES, AuthorityUtil.getAuthorities(user))
-                    .sign(algorithm);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-    
-    /**
-     * 生成token
-     * @author Frodez
-     * @param UserDetails 用户信息
-     * @date 2018-11-21
-     */
-    public String generate(String username, List<String> authorities) {
-        try {
-            Algorithm algorithm = Algorithm.HMAC256(config.getJwt().getSecret());
-            Long systemTime = System.currentTimeMillis();
-            return JWT.create()
-                    .withIssuer(config.getJwt().getIssuer())
-                    .withIssuedAt(new Date(systemTime))
-                    .withExpiresAt(new Date(systemTime + config.getJwt().getExpiration() * 1000))
-                    .withSubject(username)
-                    .withArrayClaim(CLAIM_AUTHORITIES, authorities.stream().toArray(String[]::new))
-                    .sign(algorithm);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+	/**
+	 * 生成token
+	 * @author Frodez
+	 * @param UserDetails 用户信息
+	 * @date 2018-11-21
+	 */
+	public String generate(UserDetails user) {
+		try {
+			Algorithm algorithm = Algorithm.HMAC256(config.getJwt().getSecret());
+			Long systemTime = System.currentTimeMillis();
+			return JWT.create()
+					.withIssuer(config.getJwt().getIssuer())
+					.withIssuedAt(new Date(systemTime))
+					.withExpiresAt(new Date(systemTime + config.getJwt().getExpiration() * 1000))
+					.withSubject(user.getUsername())
+					.withArrayClaim(CLAIM_AUTHORITIES, AuthorityUtil.getAuthorities(user))
+					.sign(algorithm);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
-    /**
-     * 验证token,失败时返回null
-     * @author Frodez
-     * @param token
-     * @date 2018-11-21
-     */
-    public UserDetails verify(String token) {
-        if (token == null) {
-            return null;
-        }
-        try {
-            Algorithm algorithm = Algorithm.HMAC256(config.getJwt().getSecret());
-            JWTVerifier verifier = JWT.require(algorithm).withIssuer(config.getJwt().getIssuer()).build();
-            DecodedJWT jwt = verifier.verify(token);
-            return new User(jwt.getSubject(), "N/A", 
-            	AuthorityUtil.createGrantedAuthorities(jwt.getClaim(CLAIM_AUTHORITIES).asArray(String.class)));
-        } catch (Exception e) {
-            return null;
-        }
-    }
-	
+	/**
+	 * 生成token
+	 * @author Frodez
+	 * @param UserDetails 用户信息
+	 * @date 2018-11-21
+	 */
+	public String generate(String username, List<String> authorities) {
+		try {
+			Algorithm algorithm = Algorithm.HMAC256(config.getJwt().getSecret());
+			Long systemTime = System.currentTimeMillis();
+			return JWT.create()
+					.withIssuer(config.getJwt().getIssuer())
+					.withIssuedAt(new Date(systemTime))
+					.withExpiresAt(new Date(systemTime + config.getJwt().getExpiration() * 1000))
+					.withSubject(username)
+					.withArrayClaim(CLAIM_AUTHORITIES, authorities.stream().toArray(String[]::new))
+					.sign(algorithm);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	/**
+	 * 验证token,失败时返回null
+	 * @author Frodez
+	 * @param token
+	 * @date 2018-11-21
+	 */
+	public UserDetails verify(String token) {
+		if (token == null) {
+			return null;
+		}
+		try {
+			Algorithm algorithm = Algorithm.HMAC256(config.getJwt().getSecret());
+			JWTVerifier verifier = JWT.require(algorithm).withIssuer(config.getJwt().getIssuer()).build();
+			DecodedJWT jwt = verifier.verify(token);
+			return new User(jwt.getSubject(), "N/A",
+					AuthorityUtil.createGrantedAuthorities(jwt.getClaim(CLAIM_AUTHORITIES).asArray(String.class)));
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 }

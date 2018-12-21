@@ -23,18 +23,18 @@ import info.frodez.service.IUserAuthorityService;
  */
 @Component
 public class SecuritySource implements FilterInvocationSecurityMetadataSource {
-	
+
 	private static final String METHOD_GET = "GET";
-	
+
 	private static final String METHOD_POST = "POST";
-	
+
 	private static final String METHOD_DELETE = "DELETE";
-	
+
 	private static final String METHOD_PUT = "PUT";
 
 	@Autowired
 	private IUserAuthorityService userAuthorityService;
-	
+
 	/**
 	 * 根据url和请求方式,获取对应的权限
 	 * @author Frodez
@@ -48,60 +48,60 @@ public class SecuritySource implements FilterInvocationSecurityMetadataSource {
 		String method = invocation.getHttpRequest().getMethod();
 		//根据不同请求方式获取对应权限
 		switch (method) {
-			case METHOD_GET : {
-				Collection<ConfigAttribute> attributes = new ArrayList<>();
-				attributes.addAll(permissions.stream().filter((iter) -> {
-					return iter.getType() == PermissionTypeEnum.ALL.getValue() 
-						|| iter.getType() == PermissionTypeEnum.GET.getValue()
-						|| iter.getUrl().equals(url);
-				}).map((iter) -> {
-					return new SecurityConfig(iter.getName());
-				}).collect(Collectors.toList()));
-				return attributes;
-			}
-			case METHOD_POST : {
-				Collection<ConfigAttribute> attributes = new ArrayList<>();
-				attributes.addAll(permissions.stream().filter((iter) -> {
-					return iter.getType() == PermissionTypeEnum.ALL.getValue() 
-						|| iter.getType() == PermissionTypeEnum.POST.getValue()
-						|| iter.getUrl().equals(url);
-				}).map((iter) -> {
-					return new SecurityConfig(iter.getName());
-				}).collect(Collectors.toList()));
-				return attributes;
-			}
-			case METHOD_DELETE : {
-				Collection<ConfigAttribute> attributes = new ArrayList<>();
-				attributes.addAll(permissions.stream().filter((iter) -> {
-					return iter.getType() == PermissionTypeEnum.ALL.getValue() 
-						|| iter.getType() == PermissionTypeEnum.DELETE.getValue()
-						|| iter.getUrl().equals(url);
-				}).map((iter) -> {
-					return new SecurityConfig(iter.getName());
-				}).collect(Collectors.toList()));
-				return attributes;
-			}
-			case METHOD_PUT : {
-				Collection<ConfigAttribute> attributes = new ArrayList<>();
-				attributes.addAll(permissions.stream().filter((iter) -> {
-					return iter.getType() == PermissionTypeEnum.ALL.getValue() 
-						|| iter.getType() == PermissionTypeEnum.PUT.getValue()
-						|| iter.getUrl().equals(url);
-				}).map((iter) -> {
-					return new SecurityConfig(iter.getName());
-				}).collect(Collectors.toList()));
-				return attributes;
-			}
-			default : {
-				Collection<ConfigAttribute> attributes = new ArrayList<>();
-				attributes.addAll(permissions.stream().filter((iter) -> {
-					return iter.getType() == PermissionTypeEnum.ALL.getValue()
-						|| iter.getUrl().equals(url);
-				}).map((iter) -> {
-					return new SecurityConfig(iter.getName());
-				}).collect(Collectors.toList()));
-				return attributes;
-			}
+		case METHOD_GET : {
+			Collection<ConfigAttribute> attributes = new ArrayList<>();
+			attributes.addAll(permissions.stream().filter((iter) -> {
+				return (iter.getType() == PermissionTypeEnum.ALL.getValue()
+						|| iter.getType() == PermissionTypeEnum.GET.getValue())
+						&& iter.getUrl().equals(url);
+			}).map((iter) -> {
+				return new SecurityConfig(iter.getName());
+			}).collect(Collectors.toList()));
+			return attributes;
+		}
+		case METHOD_POST : {
+			Collection<ConfigAttribute> attributes = new ArrayList<>();
+			attributes.addAll(permissions.stream().filter((iter) -> {
+				return (iter.getType() == PermissionTypeEnum.ALL.getValue()
+						|| iter.getType() == PermissionTypeEnum.POST.getValue())
+						&& iter.getUrl().equals(url);
+			}).map((iter) -> {
+				return new SecurityConfig(iter.getName());
+			}).collect(Collectors.toList()));
+			return attributes;
+		}
+		case METHOD_DELETE : {
+			Collection<ConfigAttribute> attributes = new ArrayList<>();
+			attributes.addAll(permissions.stream().filter((iter) -> {
+				return (iter.getType() == PermissionTypeEnum.ALL.getValue()
+						|| iter.getType() == PermissionTypeEnum.DELETE.getValue())
+						&& iter.getUrl().equals(url);
+			}).map((iter) -> {
+				return new SecurityConfig(iter.getName());
+			}).collect(Collectors.toList()));
+			return attributes;
+		}
+		case METHOD_PUT : {
+			Collection<ConfigAttribute> attributes = new ArrayList<>();
+			attributes.addAll(permissions.stream().filter((iter) -> {
+				return (iter.getType() == PermissionTypeEnum.ALL.getValue()
+						|| iter.getType() == PermissionTypeEnum.PUT.getValue())
+						&& iter.getUrl().equals(url);
+			}).map((iter) -> {
+				return new SecurityConfig(iter.getName());
+			}).collect(Collectors.toList()));
+			return attributes;
+		}
+		default : {
+			Collection<ConfigAttribute> attributes = new ArrayList<>();
+			attributes.addAll(permissions.stream().filter((iter) -> {
+				return iter.getType() == PermissionTypeEnum.ALL.getValue()
+						&& iter.getUrl().equals(url);
+			}).map((iter) -> {
+				return new SecurityConfig(iter.getName());
+			}).collect(Collectors.toList()));
+			return attributes;
+		}
 		}
 	}
 

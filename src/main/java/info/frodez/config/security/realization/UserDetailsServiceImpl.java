@@ -18,7 +18,7 @@ import info.frodez.util.result.Result;
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-	
+
 	@Autowired
 	private IUserAuthorityService userAuthorityService;
 

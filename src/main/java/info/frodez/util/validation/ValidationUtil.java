@@ -11,7 +11,7 @@ import javax.validation.Validator;
 public class ValidationUtil {
 
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-	
+
 	/**
 	 * 对对象进行验证,如果验证通过,返回空字符串
 	 * @author Frodez
@@ -28,5 +28,5 @@ public class ValidationUtil {
 		}
 		return sb.toString();
 	}
-	
+
 }

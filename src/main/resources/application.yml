@@ -34,9 +34,16 @@ spring:
     active: dev
   redis:
     database: 0
-    host: localhost
+    host: 127.0.0.1
     password: ''
     port: 6379
+    timeout: 60000
+    jedis:
+      pool:
+        max-active: -1
+        max-wait: 45000
+        max-idle: -1
+        min-idle: 10
   session:
     store-type: redis
     

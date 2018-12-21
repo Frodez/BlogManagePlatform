@@ -22,32 +22,32 @@ public class SecurityProperties {
 
 	private Cors cors = new Cors();
 
-    private Jwt jwt = new Jwt();
+	private Jwt jwt = new Jwt();
 
-    @Data
-    public static class Cors {
-    	
-        private List<String> allowedOrigins = new ArrayList<>();
+	@Data
+	public static class Cors {
 
-        private List<String> allowedMethods = new ArrayList<>();
+		private List<String> allowedOrigins = new ArrayList<>();
 
-        private List<String> allowedHeaders = new ArrayList<>();
+		private List<String> allowedMethods = new ArrayList<>();
 
-    }
+		private List<String> allowedHeaders = new ArrayList<>();
 
-    @Data
-    public static class Jwt {
-    	
-        private String header;
+	}
 
-        private String secret;
+	@Data
+	public static class Jwt {
 
-        private Long expiration;
+		private String header;
 
-        private String issuer;
+		private String secret;
 
-        private String authenticationPath;
+		private Long expiration;
 
-    }
-	
+		private String issuer;
+
+		private String authenticationPath;
+
+	}
+
 }

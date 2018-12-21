@@ -3,9 +3,14 @@ package info.frodez.util.json;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
+import info.frodez.util.result.Result;
+import info.frodez.util.result.ResultEnum;
 
 /**
  * json工具类
@@ -13,20 +18,20 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * @date 2018-11-27
  */
 public class JSONUtil {
-	
+
 	private static ObjectMapper objectMapper = new ObjectMapper()
-		.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
-		.configure(SerializationFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
-	
+			.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
+			.configure(SerializationFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
+
 	/**
 	 * 获取jackson对象
 	 * @author Frodez
 	 * @date 2018-12-02
 	 */
 	public static ObjectMapper getInstance() {
-        return objectMapper;
-    }
-	
+		return objectMapper;
+	}
+
 	/**
 	 * 将对象转换成json字符串,发生异常返回null
 	 * @author Frodez
@@ -40,7 +45,7 @@ public class JSONUtil {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * 将json字符串转换成对象,发生异常返回null
 	 * @author Frodez
@@ -55,22 +60,41 @@ public class JSONUtil {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * 将json字符串转换成Map,发生异常返回null
 	 * @author Frodez
 	 * @param json json字符串
 	 * @date 2018-12-02
 	 */
-	@SuppressWarnings("unchecked")
-	public static Map<String, Object> toMap(String json) {
+	public static Map<?, ?> toMap(String json) {
 		try {
-			return (Map<String, Object>) getInstance().readValue(json, Map.class);
+			return getInstance().readValue(json, Map.class);
 		} catch (Exception e) {
 			return null;
 		}
 	}
-	
+
+	/**
+	 * 将json字符串转换成Map,为空字符串时返回null
+	 * @author Frodez
+	 * @param json json字符串
+	 * @param kClass 键的类型
+	 * @param vClass 值的类型
+	 * @date 2018-12-02
+	 */
+	@SuppressWarnings("unchecked")
+	public static <K, V> Map<K, V> toMap(String json, Class<K> kClass, Class<V> vClass) {
+		try {
+			if(StringUtils.isAllBlank(json)) {
+				return null;
+			}
+			return getInstance().readValue(json, Map.class);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	/**
 	 * 将json字符串转换成List,发生异常返回null
 	 * @author Frodez
@@ -84,5 +108,28 @@ public class JSONUtil {
 			return null;
 		}
 	}
-	
+
+	/**
+	 * 将json字符串转换成List,为空字符串时返回null
+	 * @author Frodez
+	 * @param json json字符串
+	 * @param 对象类型
+	 * @date 2018-12-02
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> List<T> toList(String json, Class<T> klass) {
+		try {
+			if(StringUtils.isAllBlank(json)) {
+				return null;
+			}
+			return getInstance().readValue(json, List.class);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static void main(String[] args) {
+		System.out.println(JSONUtil.toJSONString(new Result(ResultEnum.SUCCESS, "222")));
+	}
+
 }

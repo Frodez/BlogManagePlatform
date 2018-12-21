@@ -1,4 +1,4 @@
-package info.frodez.config.exception;
+package info.frodez.config.aop.exception;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-	
+
 	@ExceptionHandler(value = Exception.class)
 	@ResponseBody
 	public Result defaultErrorHandler(HttpServletRequest req, Exception e) {

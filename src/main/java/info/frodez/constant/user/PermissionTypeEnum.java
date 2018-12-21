@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum PermissionTypeEnum {
-	
+
 	/**
 	 * 0:所有类型请求
 	 */
@@ -33,9 +33,9 @@ public enum PermissionTypeEnum {
 	PUT((byte) 4, "PUT类型请求");
 
 	private byte value;
-	
+
 	private String description;
-	
+
 	public PermissionTypeEnum of(byte value) {
 		for(PermissionTypeEnum iter : PermissionTypeEnum.values()) {
 			if(iter.value == value) {
@@ -44,5 +44,5 @@ public enum PermissionTypeEnum {
 		}
 		return null;
 	}
-	
+
 }

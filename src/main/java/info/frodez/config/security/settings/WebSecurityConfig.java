@@ -33,93 +33,93 @@ import info.frodez.config.security.settings.SecurityProperties.Cors;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${server.servlet.context-path}/**")
-    private String apiPath;
+	@Value("${server.servlet.context-path}/**")
+	private String apiPath;
 
-    @Autowired
-    private NoAuthEntryPoint noAuthPoint;
+	@Autowired
+	private NoAuthEntryPoint noAuthPoint;
 
-    @Autowired
-    private SecurityProperties properties;
+	@Autowired
+	private SecurityProperties properties;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-    
-    @Autowired
-    private JwtTokenFilter filter;
+	@Autowired
+	private UserDetailsService userDetailsService;
 
-    /**
-     * 主配置
-     */
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
-            .exceptionHandling()
-            //无权限时导向noAuthPoint
-            .authenticationEntryPoint(noAuthPoint).and()
-            .sessionManagement()
-            //不创建session
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            .authorizeRequests()            
-            //登录入口不控制
-            .antMatchers(properties.getJwt().getAuthenticationPath()).permitAll()
-            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .anyRequest().authenticated()
-            .and()
-            //在密码验证过滤器前执行jwt过滤器
-            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
-            .headers().cacheControl(); // disable page caching
-    }
-    
-    /**
-     * 静态资源忽略配置
-     */
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-    }
-    
-    /**
-     * 验证信息获取服务配置
-     */
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
-    }
+	@Autowired
+	private JwtTokenFilter filter;
 
-    /**
-     * 密码加密器
-     * @author Frodez
-     * @date 2018-12-04
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    
-    /**
-     * 验证管理器
-     */
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+	/**
+	 * 主配置
+	 */
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.cors().and().csrf().disable()
+		.exceptionHandling()
+		//无权限时导向noAuthPoint
+		.authenticationEntryPoint(noAuthPoint).and()
+		.sessionManagement()
+		//不创建session
+		.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+		.authorizeRequests()
+		//登录入口不控制
+		.antMatchers(properties.getJwt().getAuthenticationPath()).permitAll()
+		.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+		.anyRequest().authenticated()
+		.and()
+		//在密码验证过滤器前执行jwt过滤器
+		.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
+		.headers().cacheControl(); // disable page caching
+	}
 
-    /**
-     * 跨域资源共享配置
-     * @author Frodez
-     * @date 2018-12-04
-     */
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        Cors cors = properties.getCors();
-        configuration.setAllowedOrigins(cors.getAllowedOrigins());
-        configuration.setAllowedMethods(cors.getAllowedMethods());
-        configuration.setAllowedHeaders(cors.getAllowedHeaders());
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-	
+	/**
+	 * 静态资源忽略配置
+	 */
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+	}
+
+	/**
+	 * 验证信息获取服务配置
+	 */
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+	}
+
+	/**
+	 * 密码加密器
+	 * @author Frodez
+	 * @date 2018-12-04
+	 */
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	/**
+	 * 验证管理器
+	 */
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+
+	/**
+	 * 跨域资源共享配置
+	 * @author Frodez
+	 * @date 2018-12-04
+	 */
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		Cors cors = properties.getCors();
+		configuration.setAllowedOrigins(cors.getAllowedOrigins());
+		configuration.setAllowedMethods(cors.getAllowedMethods());
+		configuration.setAllowedHeaders(cors.getAllowedHeaders());
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+
 }

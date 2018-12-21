@@ -5,10 +5,10 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import info.frodez.config.security.realization.JwtTokenUtil;
+import info.frodez.constant.redis.RedisKey;
 import info.frodez.constant.user.UserStatusEnum;
 import info.frodez.dao.mapper.user.PermissionMapper;
 import info.frodez.dao.mapper.user.RoleMapper;
@@ -20,6 +20,8 @@ import info.frodez.dao.param.user.LoginDTO;
 import info.frodez.dao.result.user.PermissionInfo;
 import info.frodez.dao.result.user.UserInfo;
 import info.frodez.service.IUserAuthorityService;
+import info.frodez.util.json.JSONUtil;
+import info.frodez.util.redis.RedisService;
 import info.frodez.util.result.Result;
 import info.frodez.util.result.ResultEnum;
 import info.frodez.util.validation.ValidationUtil;
@@ -34,50 +36,56 @@ import tk.mybatis.mapper.entity.Example;
 @Slf4j
 @Service
 public class UserAuthorityServiceImpl implements IUserAuthorityService {
-	
+
 	@Autowired
-    private JwtTokenUtil jwtTokenUtil;
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-	
+	private JwtTokenUtil jwtTokenUtil;
+
 	@Autowired
 	private UserMapper userMapper;
-	
+
 	@Autowired
 	private RoleMapper roleMapper;
-	
+
 	@Autowired
 	private PermissionMapper permissionMapper;
-	
-	
-	
+
+	@Autowired
+	private RedisService redisService;
+
 	/**
 	 * 获取用户授权信息
 	 * @author Frodez
 	 * @param userName 用户姓名(唯一)
 	 * @date 2018-11-14
 	 */
+	@Override
 	public Result getUserInfoByName(String userName) {
 		try {
 			if(StringUtils.isBlank(userName)) {
-				log.info("[getUserAuthority]", "用户姓名不能为空!");
+				log.info("[getUserAuthority]{}", "用户姓名不能为空!");
 				return new Result(ResultEnum.FAIL, "用户姓名不能为空!");
+			}
+			String json = redisService.getString(RedisKey.User.BASE_INFO + userName);
+			if(StringUtils.isNotBlank(json)) {
+				UserInfo data = JSONUtil.toObject(json, UserInfo.class);
+				if(data != null) {
+					return new Result(ResultEnum.SUCCESS, data);
+				}
 			}
 			Example example = new Example(User.class);
 			example.createCriteria().andEqualTo("name", userName);
 			User user = userMapper.selectOneByExample(example);
 			if(user == null) {
-				log.info("[getUserAuthority]", "未查询到用户信息!");
+				log.info("[getUserAuthority]{}", "未查询到用户信息!");
 				return new Result(ResultEnum.FAIL, "未查询到用户信息!");
 			}
 			if(user.getStatus().equals(UserStatusEnum.FORBIDDEN.getValue())) {
-				log.info("[getUserAuthority]", "用户已禁用!");
+				log.info("[getUserAuthority]{}", "用户已禁用!");
 				return new Result(ResultEnum.FAIL, "用户已禁用!");
 			}
 			Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
 			if(role == null) {
-				log.info("[getUserAuthority]", "未查询到用户角色信息!");
+				log.info("[getUserAuthority]{}", "未查询到用户角色信息!");
 				return new Result(ResultEnum.FAIL, "未查询到用户角色信息!");
 			}
 			List<PermissionInfo> permissionList = permissionMapper.getPermissions(user.getRoleId());
@@ -93,67 +101,73 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 			data.setRoleLevel(role.getLevel());
 			data.setRoleDescription(role.getDescription());
 			data.setPermissionList(permissionList);
+			redisService.set(RedisKey.User.BASE_INFO + userName, JSONUtil.toJSONString(data));
 			return new Result(ResultEnum.SUCCESS, data);
 		} catch (Exception e) {
 			log.error("[getUserAuthority]", e);
 			return new Result(ResultEnum.FAIL);
 		}
 	}
-	
+
 	/**
 	 * 获取所有权限信息
 	 * @author Frodez
 	 * @date 2018-12-04
 	 */
+	@Override
 	public Result getAllPermissions() {
 		try {
+			String json = redisService.getString(RedisKey.User.PERMISSION_ALL);
+			if(StringUtils.isNotBlank(json)) {
+				List<Permission> permissions = JSONUtil.toList(json, Permission.class);
+				if(permissions != null) {
+					return new Result(ResultEnum.SUCCESS, permissions);
+				}
+			}
 			List<Permission> permissions = permissionMapper.selectAll();
+			redisService.set(RedisKey.User.PERMISSION_ALL, JSONUtil.toJSONString(permissions));
 			return new Result(ResultEnum.SUCCESS, permissions);
 		} catch (Exception e) {
 			log.error("[getAllPermissions]", e);
 			return new Result(ResultEnum.FAIL);
 		}
 	}
-	
+
 	/**
 	 * 用户登录
 	 * @author Frodez
 	 * @param LoginDTO 用户登录请求参数
 	 * @date 2018-12-03
 	 */
+	@Override
 	public Result login(LoginDTO param) {
 		try {
 			String msg = ValidationUtil.validate(param);
-			if(StringUtils.isBlank(msg)) {
-				log.info("[login]", msg);
+			if(StringUtils.isNotBlank(msg)) {
+				log.info("[login]{}", msg);
 				return new Result(ResultEnum.FAIL, msg);
 			}
 			Example example = new Example(User.class);
 			example.createCriteria().andEqualTo("name", param.getUsername());
 			User user = userMapper.selectOneByExample(example);
 			if(user == null) {
-				log.info("[login]", "用户名或密码错误!");
-				return new Result(ResultEnum.FAIL, "用户名或密码错误!");
-			}
-			//登陆时的密码未加密,需要加密再比较
-			if(!passwordEncoder.encode(param.getPassword())
-				.equals(user.getPassword())) {
-				log.info("[login]", "用户名或密码错误!");
+				log.info("[login]{}", "用户名或密码错误!");
 				return new Result(ResultEnum.FAIL, "用户名或密码错误!");
 			}
 			if(user.getStatus().equals(UserStatusEnum.FORBIDDEN.getValue())) {
-				log.info("[login]", "用户已禁用!");
+				log.info("[login]{}", "用户已禁用!");
 				return new Result(ResultEnum.FAIL, "用户已禁用!");
 			}
 			Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
 			if(role == null) {
-				log.info("[login]", "未查询到用户角色信息!");
+				log.info("[login]{}", "未查询到用户角色信息!");
 				return new Result(ResultEnum.FAIL, "未查询到用户角色信息!");
 			}
 			List<String> authorities = permissionMapper
-				.getPermissions(role.getId()).stream()
-				.map(PermissionInfo::getName).collect(Collectors.toList());
+					.getPermissions(role.getId()).stream()
+					.map(PermissionInfo::getName).collect(Collectors.toList());
 			String token = jwtTokenUtil.generate(param.getUsername(), authorities);
+			redisService.set(RedisKey.User.TOKEN, token);
 			return new Result(ResultEnum.SUCCESS, token);
 		} catch (Exception e) {
 			log.error("[login]", e);

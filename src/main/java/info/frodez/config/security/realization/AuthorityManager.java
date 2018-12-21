@@ -32,39 +32,39 @@ public class AuthorityManager implements AccessDecisionManager {
 	 * @date 2018-12-03
 	 */
 	@Override
-    public void decide(Authentication authentication, 
-    	Object object, Collection<ConfigAttribute> attributes) 
-    	throws AccessDeniedException, InsufficientAuthenticationException {
+	public void decide(Authentication authentication,
+			Object object, Collection<ConfigAttribute> attributes)
+					throws AccessDeniedException, InsufficientAuthenticationException {
 		//如果请求的资源没有找到权限则放行，表示该资源为公共资源，都可以访问
-        if(CollectionUtils.isEmpty(attributes)) {
-            return;
-        }
-        if(CollectionUtils.isEmpty(authentication.getAuthorities())) {
-        	throw new AccessDeniedException("无访问权限!");
-        }
-        List<String> attributeList = attributes
-        	.stream().map(ConfigAttribute::getAttribute)
-        	.collect(Collectors.toList());
-        List<String> authorityList = authentication
-        	.getAuthorities().stream()
-        	.map(GrantedAuthority::getAuthority)
-        	.collect(Collectors.toList());
-        for(String attribute : attributeList) {
-        	if(authorityList.contains(attribute)) {
-        		return;
-        	}
-        }
-        throw new AccessDeniedException("无访问权限!");
-    }
+		if(CollectionUtils.isEmpty(attributes)) {
+			return;
+		}
+		if(CollectionUtils.isEmpty(authentication.getAuthorities())) {
+			throw new AccessDeniedException("无访问权限!");
+		}
+		List<String> attributeList = attributes
+				.stream().map(ConfigAttribute::getAttribute)
+				.collect(Collectors.toList());
+		List<String> authorityList = authentication
+				.getAuthorities().stream()
+				.map(GrantedAuthority::getAuthority)
+				.collect(Collectors.toList());
+		for(String attribute : attributeList) {
+			if(authorityList.contains(attribute)) {
+				return;
+			}
+		}
+		throw new AccessDeniedException("无访问权限!");
+	}
 
-    @Override
-    public boolean supports(ConfigAttribute attribute) {
-        return true;
-    }
+	@Override
+	public boolean supports(ConfigAttribute attribute) {
+		return true;
+	}
 
-    @Override
-    public boolean supports(Class<?> clazz) {
-        return true;
-    }
-	
+	@Override
+	public boolean supports(Class<?> clazz) {
+		return true;
+	}
+
 }

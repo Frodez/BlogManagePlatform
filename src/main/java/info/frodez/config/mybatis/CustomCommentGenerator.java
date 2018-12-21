@@ -16,14 +16,14 @@ import org.mybatis.generator.internal.DefaultCommentGenerator;
  * @date 2018-11-13
  */
 public class CustomCommentGenerator extends DefaultCommentGenerator {
-	
+
 	/**
 	 * 配置实体类
 	 * @author Frodez
 	 * @date 2018-12-13
 	 */
 	@Override
-	public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {		
+	public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 		topLevelClass.addImportedType("lombok.Data");
 		topLevelClass.addImportedType("javax.persistence.Id");
 		topLevelClass.addImportedType("javax.persistence.Table");
@@ -38,10 +38,10 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 		topLevelClass.addJavaDocLine(" * @description " + (introspectedTable.getRemarks() == null ? "" : introspectedTable.getRemarks()));
 		topLevelClass.addJavaDocLine(" * @table " + introspectedTable.getFullyQualifiedTable());
 		topLevelClass.addJavaDocLine(" * @date " + LocalDate.now().toString());
-		topLevelClass.addJavaDocLine(" */");		
-		topLevelClass.addAnnotation("@Data");		
+		topLevelClass.addJavaDocLine(" */");
+		topLevelClass.addAnnotation("@Data");
 		topLevelClass.addAnnotation("@Entity");
-		topLevelClass.addAnnotation("@Table(name = \"" + introspectedTable.getFullyQualifiedTable() + "\")");		
+		topLevelClass.addAnnotation("@Table(name = \"" + introspectedTable.getFullyQualifiedTable() + "\")");
 	}
 
 	/**
@@ -59,10 +59,10 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 				field.addAnnotation("@Id");
 				break;
 			}
-		}			
+		}
 		field.addJavaDocLine("/** ");
 		field.addJavaDocLine(" * " + introspectedColumn.getRemarks());
-		String defaultValue = introspectedColumn.getDefaultValue();	
+		String defaultValue = introspectedColumn.getDefaultValue();
 		if (!StringUtils.isEmpty(defaultValue)) {
 			if (field.getType().getShortName().equals("Byte")) {
 				field.setInitializationString(defaultValue);
@@ -78,11 +78,11 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 			}
 			if (field.getType().getShortName().equals("String")) {
 				field.setInitializationString("\"" + defaultValue + "\"");
-			}			
+			}
 			if (field.getType().getShortName().equals("BigDecimal")) {
 				field.setInitializationString("new BigDecimal(" + defaultValue + ")");
 			}
-		}		
+		}
 		field.addJavaDocLine(" */");
 		if(!introspectedColumn.isNullable()) {
 			field.addAnnotation("@NotNull");
@@ -99,5 +99,5 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 		column = column + ")";
 		field.addAnnotation(column);
 	}
-	
+
 }

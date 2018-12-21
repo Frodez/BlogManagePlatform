@@ -14,5 +14,5 @@ import info.frodez.dao.model.user.User;
 @Repository
 @Mapper
 public interface UserMapper extends DataMapper<User> {
-	
+
 }
