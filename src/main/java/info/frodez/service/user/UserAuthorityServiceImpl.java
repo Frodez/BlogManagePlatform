@@ -1,4 +1,4 @@
-package info.frodez.service.impl;
+package info.frodez.service.user;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +19,6 @@ import info.frodez.dao.model.user.User;
 import info.frodez.dao.param.user.LoginDTO;
 import info.frodez.dao.result.user.PermissionInfo;
 import info.frodez.dao.result.user.UserInfo;
-import info.frodez.service.IUserAuthorityService;
 import info.frodez.util.json.JSONUtil;
 import info.frodez.util.redis.RedisService;
 import info.frodez.util.result.Result;

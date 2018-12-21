@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import info.frodez.config.aop.request.NoRepeat;
 import info.frodez.constant.request.NoRepeatKey;
 import info.frodez.dao.param.user.LoginDTO;
-import info.frodez.service.IUserAuthorityService;
+import info.frodez.service.user.IUserAuthorityService;
 import info.frodez.util.result.Result;
 import info.frodez.util.result.ResultEnum;
 import info.frodez.util.validation.ValidationUtil;

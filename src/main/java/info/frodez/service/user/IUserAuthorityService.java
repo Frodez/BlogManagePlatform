@@ -1,4 +1,4 @@
-package info.frodez.service;
+package info.frodez.service.user;
 
 import info.frodez.dao.param.user.LoginDTO;
 import info.frodez.util.result.Result;

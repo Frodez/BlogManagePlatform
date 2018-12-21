@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import info.frodez.dao.result.user.UserInfo;
-import info.frodez.service.IUserAuthorityService;
+import info.frodez.service.user.IUserAuthorityService;
 import info.frodez.util.result.Result;
 
 /**

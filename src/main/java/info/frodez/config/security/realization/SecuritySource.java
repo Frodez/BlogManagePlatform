@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import info.frodez.constant.user.PermissionTypeEnum;
 import info.frodez.dao.model.user.Permission;
-import info.frodez.service.IUserAuthorityService;
+import info.frodez.service.user.IUserAuthorityService;
 
 /**
  * 获取权限资源
