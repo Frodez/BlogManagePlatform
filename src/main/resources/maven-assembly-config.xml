@@ -1,0 +1,56 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/2.0.0"   
+  	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+  	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+  	<!-- 该文件暂时废用 -->
+  	<!-- 如要使用,请在pom.xml的project.build.plugins节点中加入以下内容:
+ 		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-assembly-plugin</artifactId>
+		    <executions>
+		        <execution>
+		            <phase>package</phase>
+		            <goals>
+		                <goal>single</goal>
+		            </goals>
+		        </execution>
+		    </executions>
+		    <configuration>
+		         	<descriptors>
+		         		<descriptor>${project.basedir}/src/main/resources/maven-assembly-config.xml</descriptor>
+		         	</descriptors>
+		       </configuration>			    
+		</plugin>
+	 -->
+	<!-- 文件后缀名 -->
+  	<id>fullresources</id>
+  	<!-- 可用扩展名 -->
+  	<formats>
+	    <format>jar</format>
+	</formats>
+	<!-- 是否建立与id同名的根目录 -->
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<!-- 依赖设置 -->
+	<dependencySets>
+    	<dependencySet>
+    		<!-- 不将依赖解压,而是使用jar包 -->
+    		<unpack>false</unpack>
+    		<!-- 只打包runtime scope的依赖 -->
+    		<scope>runtime</scope>
+    		<!-- 不打包本身代码 -->
+    		<useProjectArtifact>false</useProjectArtifact>
+    		<!-- 输出位置 -->
+      		<outputDirectory>/lib</outputDirectory>
+    	</dependencySet>
+  	</dependencySets>
+  	<!-- 打包文件设置 -->
+	<fileSets>
+        <fileSet>
+            <directory>${project.basedir}\src\main\resources</directory>
+            <outputDirectory>\resources</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}\target\classes\info</directory>
+            <outputDirectory>\classes</outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>  
