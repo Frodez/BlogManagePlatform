@@ -20,10 +20,21 @@ import lombok.Data;
 @ConfigurationProperties
 public class SecurityProperties {
 
+	/**
+	 * 跨域参数
+	 */
 	private Cors cors = new Cors();
 
+	/**
+	 * jwt参数
+	 */
 	private Jwt jwt = new Jwt();
 
+	/**
+	 * 跨域参数配置
+	 * @author Frodez
+	 * @date 2018-12-21
+	 */
 	@Data
 	public static class Cors {
 
@@ -35,6 +46,11 @@ public class SecurityProperties {
 
 	}
 
+	/**
+	 * jwt参数配置
+	 * @author Frodez
+	 * @date 2018-12-21
+	 */
 	@Data
 	public static class Jwt {
 

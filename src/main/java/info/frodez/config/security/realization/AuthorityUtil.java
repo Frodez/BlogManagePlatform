@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import info.frodez.dao.result.user.PermissionInfo;
 
 /**
+ * 权限信息工具类
  * @author Frodez
  * @date 2018-11-14
  */
@@ -43,7 +44,7 @@ public final class AuthorityUtil {
 	 * @date 2018-11-21
 	 */
 	public static String[] getAuthorities(UserDetails user) {
-		return user.getAuthorities().stream().map((iter) -> {return iter.getAuthority();}).toArray(String[]::new);
+		return user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray(String[]::new);
 	}
 
 }

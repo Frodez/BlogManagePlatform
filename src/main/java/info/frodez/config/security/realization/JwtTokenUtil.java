@@ -25,6 +25,9 @@ public class JwtTokenUtil {
 
 	private static final String CLAIM_AUTHORITIES = "authorities";
 
+	/**
+	 * 访问控制参数配置
+	 */
 	@Autowired
 	private SecurityProperties config;
 

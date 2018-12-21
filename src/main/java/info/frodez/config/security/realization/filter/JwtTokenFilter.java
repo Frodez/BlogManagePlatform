@@ -1,4 +1,4 @@
-package info.frodez.config.security.realization;
+package info.frodez.config.security.realization.filter;
 
 import java.io.IOException;
 
@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import info.frodez.config.security.realization.JwtTokenUtil;
 import info.frodez.config.security.settings.SecurityProperties;
 
 /**
@@ -25,9 +26,15 @@ import info.frodez.config.security.settings.SecurityProperties;
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
+	/**
+	 * jwt工具类
+	 */
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
+	/**
+	 * 访问控制参数配置
+	 */
 	@Autowired
 	private SecurityProperties properties;
 

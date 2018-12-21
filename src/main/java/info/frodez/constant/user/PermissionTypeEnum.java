@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
+ * 权限类型枚举
  * @author Frodez
  * @date 2018-12-04
  */

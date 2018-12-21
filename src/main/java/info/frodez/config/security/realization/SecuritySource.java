@@ -24,14 +24,29 @@ import info.frodez.service.IUserAuthorityService;
 @Component
 public class SecuritySource implements FilterInvocationSecurityMetadataSource {
 
+	/**
+	 * GET请求方式
+	 */
 	private static final String METHOD_GET = "GET";
 
+	/**
+	 * POST请求方式
+	 */
 	private static final String METHOD_POST = "POST";
 
+	/**
+	 * DELETE请求方式
+	 */
 	private static final String METHOD_DELETE = "DELETE";
 
+	/**
+	 * PUT请求方式
+	 */
 	private static final String METHOD_PUT = "PUT";
 
+	/**
+	 * 用户授权服务
+	 */
 	@Autowired
 	private IUserAuthorityService userAuthorityService;
 

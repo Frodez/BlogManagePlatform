@@ -20,8 +20,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import info.frodez.config.security.realization.JwtTokenFilter;
 import info.frodez.config.security.realization.NoAuthEntryPoint;
+import info.frodez.config.security.realization.filter.JwtTokenFilter;
 import info.frodez.config.security.settings.SecurityProperties.Cors;
 
 /**
@@ -33,18 +33,33 @@ import info.frodez.config.security.settings.SecurityProperties.Cors;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+	/**
+	 * 基础路径
+	 */
 	@Value("${server.servlet.context-path}/**")
 	private String apiPath;
 
+	/**
+	 * 无验证访问控制
+	 */
 	@Autowired
 	private NoAuthEntryPoint noAuthPoint;
 
+	/**
+	 * 访问控制参数配置
+	 */
 	@Autowired
 	private SecurityProperties properties;
 
+	/**
+	 * 验证信息获取服务
+	 */
 	@Autowired
 	private UserDetailsService userDetailsService;
 
+	/**
+	 * jwt验证过滤器
+	 */
 	@Autowired
 	private JwtTokenFilter filter;
 
@@ -106,7 +121,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	/**
-	 * 跨域资源共享配置
+	 * 跨域资源配置
 	 * @author Frodez
 	 * @date 2018-12-04
 	 */

@@ -19,6 +19,9 @@ import info.frodez.util.result.Result;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+	/**
+	 * 用户授权服务
+	 */
 	@Autowired
 	private IUserAuthorityService userAuthorityService;
 

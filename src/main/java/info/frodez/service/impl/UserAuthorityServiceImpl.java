@@ -37,8 +37,17 @@ import tk.mybatis.mapper.entity.Example;
 @Service
 public class UserAuthorityServiceImpl implements IUserAuthorityService {
 
+	/**
+	 * jwt工具类
+	 */
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
+
+	/**
+	 * redis服务
+	 */
+	@Autowired
+	private RedisService redisService;
 
 	@Autowired
 	private UserMapper userMapper;
@@ -48,9 +57,6 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 
 	@Autowired
 	private PermissionMapper permissionMapper;
-
-	@Autowired
-	private RedisService redisService;
 
 	/**
 	 * 获取用户授权信息
@@ -62,7 +68,6 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 	public Result getUserInfoByName(String userName) {
 		try {
 			if(StringUtils.isBlank(userName)) {
-				log.info("[getUserAuthority]{}", "用户姓名不能为空!");
 				return new Result(ResultEnum.FAIL, "用户姓名不能为空!");
 			}
 			String json = redisService.getString(RedisKey.User.BASE_INFO + userName);
@@ -76,16 +81,13 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 			example.createCriteria().andEqualTo("name", userName);
 			User user = userMapper.selectOneByExample(example);
 			if(user == null) {
-				log.info("[getUserAuthority]{}", "未查询到用户信息!");
 				return new Result(ResultEnum.FAIL, "未查询到用户信息!");
 			}
 			if(user.getStatus().equals(UserStatusEnum.FORBIDDEN.getValue())) {
-				log.info("[getUserAuthority]{}", "用户已禁用!");
 				return new Result(ResultEnum.FAIL, "用户已禁用!");
 			}
 			Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
 			if(role == null) {
-				log.info("[getUserAuthority]{}", "未查询到用户角色信息!");
 				return new Result(ResultEnum.FAIL, "未查询到用户角色信息!");
 			}
 			List<PermissionInfo> permissionList = permissionMapper.getPermissions(user.getRoleId());
@@ -144,30 +146,25 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 		try {
 			String msg = ValidationUtil.validate(param);
 			if(StringUtils.isNotBlank(msg)) {
-				log.info("[login]{}", msg);
 				return new Result(ResultEnum.FAIL, msg);
 			}
 			Example example = new Example(User.class);
 			example.createCriteria().andEqualTo("name", param.getUsername());
 			User user = userMapper.selectOneByExample(example);
 			if(user == null) {
-				log.info("[login]{}", "用户名或密码错误!");
 				return new Result(ResultEnum.FAIL, "用户名或密码错误!");
 			}
 			if(user.getStatus().equals(UserStatusEnum.FORBIDDEN.getValue())) {
-				log.info("[login]{}", "用户已禁用!");
 				return new Result(ResultEnum.FAIL, "用户已禁用!");
 			}
 			Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
 			if(role == null) {
-				log.info("[login]{}", "未查询到用户角色信息!");
 				return new Result(ResultEnum.FAIL, "未查询到用户角色信息!");
 			}
 			List<String> authorities = permissionMapper
 					.getPermissions(role.getId()).stream()
 					.map(PermissionInfo::getName).collect(Collectors.toList());
 			String token = jwtTokenUtil.generate(param.getUsername(), authorities);
-			redisService.set(RedisKey.User.TOKEN, token);
 			return new Result(ResultEnum.SUCCESS, token);
 		} catch (Exception e) {
 			log.error("[login]", e);

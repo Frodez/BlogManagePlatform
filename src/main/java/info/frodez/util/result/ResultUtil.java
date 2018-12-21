@@ -33,9 +33,13 @@ public class ResultUtil {
 	public static final int NO_ACCESS_VALUE = 2003;
 
 	/**
+	 * 重复请求返回值
+	 */
+	public static final int REPEAT_REQUEST_VALUE = 2004;
+
+	/**
 	 * 获取失败状态的json字符串
 	 * @author Frodez
-	 * @param
 	 * @return String
 	 * @date 2018-11-27
 	 */

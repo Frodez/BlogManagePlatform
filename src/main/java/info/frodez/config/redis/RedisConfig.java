@@ -9,9 +9,19 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import info.frodez.util.json.JSONUtil;
 
+/**
+ * redis配置类
+ * @author Frodez
+ * @date 2018-12-21
+ */
 @Configuration
 public class RedisConfig {
 
+	/**
+	 * 获取RedisTemplate实例
+	 * @author Frodez
+	 * @date 2018-12-21
+	 */
 	@Bean
 	public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
 		RedisTemplate<Object, Object> template = new RedisTemplate<>();

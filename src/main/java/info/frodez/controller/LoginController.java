@@ -11,33 +11,45 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import info.frodez.config.aop.request.NoRepeat;
+import info.frodez.constant.request.NoRepeatKey;
 import info.frodez.dao.param.user.LoginDTO;
 import info.frodez.service.IUserAuthorityService;
 import info.frodez.util.result.Result;
 import info.frodez.util.result.ResultEnum;
 import info.frodez.util.validation.ValidationUtil;
-import lombok.extern.slf4j.Slf4j;
 
 /**
+ * 登录控制器
  * @author Frodez
  * @date 2018-12-01
  */
-@Slf4j
 @RestController("/login")
 public class LoginController {
 
+	/**
+	 * spring security验证管理器
+	 */
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
+	/**
+	 * 用户授权服务
+	 */
 	@Autowired
 	private IUserAuthorityService authorityService;
 
+	/**
+	 * 登录接口
+	 * @author Frodez
+	 * @date 2018-12-21
+	 */
+	@NoRepeat(name = NoRepeatKey.Login.AUTH)
 	@ResponseBody
 	@RequestMapping
 	public Result login(@RequestBody LoginDTO param) {
 		String msg = ValidationUtil.validate(param);
 		if(!StringUtils.isBlank(msg)) {
-			log.info("[login]{}", msg);
 			return new Result(ResultEnum.FAIL, msg);
 		}
 		final Authentication authentication = authenticationManager

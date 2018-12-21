@@ -5,6 +5,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 /**
+ * 对象验证工具类
  * @author Frodez
  * @date 2018-12-02
  */

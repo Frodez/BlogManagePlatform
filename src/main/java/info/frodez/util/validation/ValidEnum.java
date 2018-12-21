@@ -56,16 +56,20 @@ import javax.validation.Payload;
 @Constraint(validatedBy = ValidEnum.Validator.class)
 public @interface ValidEnum {
 
+	//错误信息
 	String message() default "参数非法!";
 
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
 
+	//枚举类
 	Class<? extends Enum<?>> type();
 
+	//验证方法
 	String method() default "of";
 
+	//是否可为空
 	boolean nullable() default false;
 
 	/**
