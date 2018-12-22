@@ -17,8 +17,30 @@ public class HttpUtil {
 	 */
 	public static String getRealAddr(HttpServletRequest request) {
 		String address = request.getHeader("x-forwarded-for");
-		if(address == null) {
-			return request.getRemoteAddr();
+		if (address == null || address.length() == 0 || "unknown".equalsIgnoreCase(address)) {
+			address = request.getHeader("Proxy-Client-address");
+		} else {
+			return address;
+		}
+		if (address == null || address.length() == 0 || "unknown".equalsIgnoreCase(address)) {
+			address = request.getHeader("WL-Proxy-Client-address");
+		} else {
+			return address;
+		}
+		if (address == null || address.length() == 0 || "unknown".equalsIgnoreCase(address)) {
+			address = request.getHeader("HTTP_CLIENT_address");
+		} else {
+			return address;
+		}
+		if (address == null || address.length() == 0 || "unknown".equalsIgnoreCase(address)) {
+			address = request.getHeader("HTTP_X_FORWARDED_FOR");
+		} else {
+			return address;
+		}
+		if (address == null || address.length() == 0 || "unknown".equalsIgnoreCase(address)) {
+			address = request.getRemoteAddr();
+		} else {
+			return address;
 		}
 		return address;
 	}

@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import info.frodez.config.aop.request.NoRepeat;
@@ -24,7 +23,8 @@ import info.frodez.util.validation.ValidationUtil;
  * @author Frodez
  * @date 2018-12-01
  */
-@RestController("/login")
+@RestController
+@RequestMapping(value = "/login")
 public class LoginController {
 
 	/**
@@ -45,9 +45,8 @@ public class LoginController {
 	 * @date 2018-12-21
 	 */
 	@NoRepeat(name = NoRepeatKey.Login.AUTH)
-	@ResponseBody
-	@RequestMapping
-	public Result login(@RequestBody LoginDTO param) {
+	@RequestMapping(value = "/auth")
+	public Result auth(@RequestBody LoginDTO param) {
 		String msg = ValidationUtil.validate(param);
 		if(!StringUtils.isBlank(msg)) {
 			return new Result(ResultEnum.FAIL, msg);
@@ -57,5 +56,9 @@ public class LoginController {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		return authorityService.login(param);
 	}
+
+	//	public Result register() {
+	//
+	//	}
 
 }

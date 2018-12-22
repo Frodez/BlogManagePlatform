@@ -2,9 +2,8 @@ package info.frodez.config.aop.exception;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import info.frodez.config.aop.request.NoRepeatException;
 import info.frodez.util.result.Result;
@@ -17,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2018-12-05
  */
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
 	/**
@@ -28,7 +27,6 @@ public class GlobalExceptionHandler {
 	 * @date 2018-12-21
 	 */
 	@ExceptionHandler(value = Exception.class)
-	@ResponseBody
 	public Result defaultErrorHandler(HttpServletRequest request, Exception e) {
 		log.error("[defaultErrorHandler]", e);
 		if(e.getCause() instanceof NoRepeatException) {

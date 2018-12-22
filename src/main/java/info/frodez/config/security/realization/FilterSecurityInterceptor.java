@@ -27,13 +27,13 @@ public class FilterSecurityInterceptor extends AbstractSecurityInterceptor imple
 	 * 权限资源
 	 */
 	@Autowired
-	private SecuritySource securityMetadataSource;
+	private SecuritySource securitySource;
 
 	/**
 	 * 权限匹配管理器
 	 */
 	@Autowired
-	private AuthorityManager accessDecisionManager;
+	private AuthorityManager authorityManager;
 
 	/**
 	 * 设置权限匹配管理器
@@ -42,7 +42,7 @@ public class FilterSecurityInterceptor extends AbstractSecurityInterceptor imple
 	 */
 	@Autowired
 	public void setAccessDecisionManager() {
-		super.setAccessDecisionManager(accessDecisionManager);
+		super.setAccessDecisionManager(authorityManager);
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class FilterSecurityInterceptor extends AbstractSecurityInterceptor imple
 	 */
 	@Override
 	public SecuritySource obtainSecurityMetadataSource() {
-		return this.securityMetadataSource;
+		return securitySource;
 	}
 
 	@Override

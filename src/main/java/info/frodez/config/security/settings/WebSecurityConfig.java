@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,6 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import info.frodez.config.security.realization.AccessDeniedProcessor;
 import info.frodez.config.security.realization.NoAuthEntryPoint;
 import info.frodez.config.security.realization.filter.JwtTokenFilter;
 import info.frodez.config.security.settings.SecurityProperties.Cors;
@@ -44,6 +44,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Autowired
 	private NoAuthEntryPoint noAuthPoint;
+
+	/**
+	 * 无权限访问控制
+	 */
+	@Autowired
+	private AccessDeniedProcessor noAuthProcessor;
 
 	/**
 	 * 访问控制参数配置
@@ -71,14 +77,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.cors().and().csrf().disable()
 		.exceptionHandling()
 		//无权限时导向noAuthPoint
-		.authenticationEntryPoint(noAuthPoint).and()
+		.authenticationEntryPoint(noAuthPoint).and().exceptionHandling()
+		.accessDeniedHandler(noAuthProcessor).and()
 		.sessionManagement()
 		//不创建session
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 		.authorizeRequests()
 		//登录入口不控制
-		.antMatchers(properties.getJwt().getAuthenticationPath()).permitAll()
-		.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+		.antMatchers(properties.getAuth().getPermitAllPath()).permitAll()
+		//.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+		//.antMatchers("/swagger-resources/**").permitAll()
+		//.antMatchers("/swagger-ui.html**").permitAll()
+		//.antMatchers("/webjars/**").permitAll()
 		.anyRequest().authenticated()
 		.and()
 		//在密码验证过滤器前执行jwt过滤器
@@ -91,6 +101,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	public void configure(WebSecurity web) throws Exception {
+		//web.ignoring().antMatchers("/swagger-resources/**", "/swagger-ui.html**", "/webjars/**");
 	}
 
 	/**

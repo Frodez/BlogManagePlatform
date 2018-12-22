@@ -42,10 +42,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request
 			, HttpServletResponse response, FilterChain chain)
 					throws ServletException, IOException {
-		if(!properties.getJwt().getAuthenticationPath().equals(request.getRequestURI())) {
+		if(!(properties.getAuth().getBasePath() + properties.getAuth().getPermitAllPath())
+				.equals(request.getRequestURI())) {
 			String authToken = request.getHeader(properties.getJwt().getHeader());
-			if(authToken != null && authToken.startsWith("Frodez:")) {
-				authToken = authToken.substring(7);
+			if(authToken != null && authToken.startsWith(properties.getJwt().getTokenPrefix())) {
+				authToken = authToken.substring(properties.getJwt().getTokenPrefix().length());
 				//将携带的token还原成用户信息
 				UserDetails user = jwtTokenUtil.verify(authToken);
 				if (user != null && SecurityContextHolder

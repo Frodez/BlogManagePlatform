@@ -31,6 +31,11 @@ public class SecurityProperties {
 	private Jwt jwt = new Jwt();
 
 	/**
+	 * 验证配置
+	 */
+	private Auth auth = new Auth();
+
+	/**
 	 * 跨域参数配置
 	 * @author Frodez
 	 * @date 2018-12-21
@@ -54,15 +59,55 @@ public class SecurityProperties {
 	@Data
 	public static class Jwt {
 
+		/**
+		 * HTTP请求header名称
+		 */
 		private String header;
 
+		/**
+		 * jwt密钥
+		 */
 		private String secret;
 
+		/**
+		 * jwt过期时间
+		 */
 		private Long expiration;
 
+		/**
+		 * jwt签发者
+		 */
 		private String issuer;
 
-		private String authenticationPath;
+		/**
+		 * HTTP请求header前缀
+		 */
+		private String tokenPrefix;
+
+	}
+
+	/**
+	 * 跨域参数配置
+	 * @author Frodez
+	 * @date 2018-12-21
+	 */
+	@Data
+	public static class Auth {
+
+		/**
+		 * 基本路径(与application.yml中server.servlet.context-path相同)
+		 */
+		private String basePath;
+
+		/**
+		 * 免验证路径
+		 */
+		private String permitAllPath;
+
+		/**
+		 * 无权限角色
+		 */
+		private String deniedRole;
 
 	}
 

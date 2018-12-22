@@ -4,14 +4,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.web.FilterInvocation;
 import org.springframework.stereotype.Component;
+
+import info.frodez.config.security.settings.SecurityProperties;
 
 /**
  * 权限匹配管理器
@@ -20,6 +26,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AuthorityManager implements AccessDecisionManager {
+
+	/**
+	 * 访问控制参数配置
+	 */
+	@Autowired
+	private SecurityProperties properties;
 
 	/**
 	 * 判定是否拥有权限<br>
@@ -35,8 +47,10 @@ public class AuthorityManager implements AccessDecisionManager {
 	public void decide(Authentication authentication,
 			Object object, Collection<ConfigAttribute> attributes)
 					throws AccessDeniedException, InsufficientAuthenticationException {
-		//如果请求的资源没有找到权限则放行，表示该资源为公共资源，都可以访问
-		if(CollectionUtils.isEmpty(attributes)) {
+		//如果是免验证路径,则直接放行
+		HttpServletRequest request = ((FilterInvocation) object).getHttpRequest();
+		if((properties.getAuth().getBasePath() + properties.getAuth().getPermitAllPath())
+				.equals(request.getRequestURI())) {
 			return;
 		}
 		if(CollectionUtils.isEmpty(authentication.getAuthorities())) {
@@ -45,6 +59,10 @@ public class AuthorityManager implements AccessDecisionManager {
 		List<String> attributeList = attributes
 				.stream().map(ConfigAttribute::getAttribute)
 				.collect(Collectors.toList());
+		//当包含无访问权限时,直接驳回
+		if(attributeList.contains(properties.getAuth().getDeniedRole())) {
+			throw new AccessDeniedException("无访问权限!");
+		}
 		List<String> authorityList = authentication
 				.getAuthorities().stream()
 				.map(GrantedAuthority::getAuthority)
@@ -54,6 +72,7 @@ public class AuthorityManager implements AccessDecisionManager {
 				return;
 			}
 		}
+		//当token携带权限与资源所需访问权限不符时,驳回
 		throw new AccessDeniedException("无访问权限!");
 	}
 

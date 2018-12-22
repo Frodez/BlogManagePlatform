@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -12,6 +13,7 @@ import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
 
+import info.frodez.config.security.settings.SecurityProperties;
 import info.frodez.constant.user.PermissionTypeEnum;
 import info.frodez.dao.model.user.Permission;
 import info.frodez.service.user.IUserAuthorityService;
@@ -51,6 +53,12 @@ public class SecuritySource implements FilterInvocationSecurityMetadataSource {
 	private IUserAuthorityService userAuthorityService;
 
 	/**
+	 * 访问控制参数配置
+	 */
+	@Autowired
+	private SecurityProperties properties;
+
+	/**
 	 * 根据url和请求方式,获取对应的权限
 	 * @author Frodez
 	 * @date 2018-12-13
@@ -61,10 +69,10 @@ public class SecuritySource implements FilterInvocationSecurityMetadataSource {
 		FilterInvocation invocation = (FilterInvocation) object;
 		String url = invocation.getRequestUrl();
 		String method = invocation.getHttpRequest().getMethod();
+		Collection<ConfigAttribute> attributes = new ArrayList<>();
 		//根据不同请求方式获取对应权限
 		switch (method) {
 		case METHOD_GET : {
-			Collection<ConfigAttribute> attributes = new ArrayList<>();
 			attributes.addAll(permissions.stream().filter((iter) -> {
 				return (iter.getType() == PermissionTypeEnum.ALL.getValue()
 						|| iter.getType() == PermissionTypeEnum.GET.getValue())
@@ -72,10 +80,9 @@ public class SecuritySource implements FilterInvocationSecurityMetadataSource {
 			}).map((iter) -> {
 				return new SecurityConfig(iter.getName());
 			}).collect(Collectors.toList()));
-			return attributes;
+			break;
 		}
 		case METHOD_POST : {
-			Collection<ConfigAttribute> attributes = new ArrayList<>();
 			attributes.addAll(permissions.stream().filter((iter) -> {
 				return (iter.getType() == PermissionTypeEnum.ALL.getValue()
 						|| iter.getType() == PermissionTypeEnum.POST.getValue())
@@ -83,10 +90,9 @@ public class SecuritySource implements FilterInvocationSecurityMetadataSource {
 			}).map((iter) -> {
 				return new SecurityConfig(iter.getName());
 			}).collect(Collectors.toList()));
-			return attributes;
+			break;
 		}
 		case METHOD_DELETE : {
-			Collection<ConfigAttribute> attributes = new ArrayList<>();
 			attributes.addAll(permissions.stream().filter((iter) -> {
 				return (iter.getType() == PermissionTypeEnum.ALL.getValue()
 						|| iter.getType() == PermissionTypeEnum.DELETE.getValue())
@@ -94,10 +100,9 @@ public class SecuritySource implements FilterInvocationSecurityMetadataSource {
 			}).map((iter) -> {
 				return new SecurityConfig(iter.getName());
 			}).collect(Collectors.toList()));
-			return attributes;
+			break;
 		}
 		case METHOD_PUT : {
-			Collection<ConfigAttribute> attributes = new ArrayList<>();
 			attributes.addAll(permissions.stream().filter((iter) -> {
 				return (iter.getType() == PermissionTypeEnum.ALL.getValue()
 						|| iter.getType() == PermissionTypeEnum.PUT.getValue())
@@ -105,19 +110,22 @@ public class SecuritySource implements FilterInvocationSecurityMetadataSource {
 			}).map((iter) -> {
 				return new SecurityConfig(iter.getName());
 			}).collect(Collectors.toList()));
-			return attributes;
+			break;
 		}
 		default : {
-			Collection<ConfigAttribute> attributes = new ArrayList<>();
 			attributes.addAll(permissions.stream().filter((iter) -> {
 				return iter.getType() == PermissionTypeEnum.ALL.getValue()
 						&& iter.getUrl().equals(url);
 			}).map((iter) -> {
 				return new SecurityConfig(iter.getName());
 			}).collect(Collectors.toList()));
-			return attributes;
+			break;
 		}
 		}
+		if(CollectionUtils.isEmpty(attributes)) {
+			attributes.add(new SecurityConfig(properties.getAuth().getDeniedRole()));
+		}
+		return attributes;
 	}
 
 	/**
