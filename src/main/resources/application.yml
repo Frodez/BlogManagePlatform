@@ -18,8 +18,8 @@ server:
     context-path: /api
     
 spring:
-  #resources:
-    #add-mappings: true
+  resources:
+    add-mappings: true
   aop:
     auto: true
     proxy-target-class: true

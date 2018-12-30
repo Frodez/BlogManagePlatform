@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,7 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * 基础路径
 	 */
 	@Value("${server.servlet.context-path}/**")
-	private String apiPath;
+	private String basePath;
 
 	/**
 	 * 无验证访问控制
@@ -85,10 +86,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.authorizeRequests()
 		//登录入口不控制
 		.antMatchers(properties.getAuth().getPermitAllPath()).permitAll()
-		//.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-		//.antMatchers("/swagger-resources/**").permitAll()
-		//.antMatchers("/swagger-ui.html**").permitAll()
-		//.antMatchers("/webjars/**").permitAll()
+		.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+		.antMatchers("/swagger-resources/**").permitAll()
+		.antMatchers("/swagger-ui.html**").permitAll()
+		.antMatchers("/webjars/**").permitAll()
 		.anyRequest().authenticated()
 		.and()
 		//在密码验证过滤器前执行jwt过滤器
@@ -101,7 +102,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		//web.ignoring().antMatchers("/swagger-resources/**", "/swagger-ui.html**", "/webjars/**");
+		web.ignoring().antMatchers("/swagger-resources/**", "/swagger-ui.html**", "/webjars/**");
 	}
 
 	/**

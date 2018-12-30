@@ -3,6 +3,7 @@ package info.frodez.config.security.settings;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -95,8 +96,9 @@ public class SecurityProperties {
 	public static class Auth {
 
 		/**
-		 * 基本路径(与application.yml中server.servlet.context-path相同)
+		 * 基本路径
 		 */
+		@Value("${server.servlet.context-path}/**")
 		private String basePath;
 
 		/**

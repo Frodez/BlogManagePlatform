@@ -120,10 +120,7 @@ public class NoRepeatAop {
 			return key;
 		} else {
 			//登录接口使用IP判断,同一IP不能重复请求
-			String address = request.getHeader("x-forwarded-for");
-			if(address == null) {
-				address = request.getRemoteAddr();
-			}
+			String address = HttpUtil.getRealAddr(request);
 			return RedisKey.Request.NO_REPEAT + address;
 		}
 	}
