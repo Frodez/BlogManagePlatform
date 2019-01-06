@@ -20,9 +20,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import info.frodez.config.security.realization.AccessDeniedProcessor;
-import info.frodez.config.security.realization.NoAuthEntryPoint;
-import info.frodez.config.security.realization.filter.JwtTokenFilter;
+import info.frodez.config.security.impl.error.AccessDeniedProcessor;
+import info.frodez.config.security.impl.error.NoAuthEntryPoint;
+import info.frodez.config.security.impl.filter.JwtTokenFilter;
 import info.frodez.config.security.settings.SecurityProperties.Cors;
 
 /**

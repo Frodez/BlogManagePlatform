@@ -16,8 +16,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import info.frodez.config.security.settings.SecurityProperties;
 import info.frodez.constant.redis.RedisKey;
+import info.frodez.service.redis.RedisService;
 import info.frodez.util.http.HttpUtil;
-import info.frodez.util.redis.RedisService;
 
 /**
  * 控制重复请求AOP切面<br>

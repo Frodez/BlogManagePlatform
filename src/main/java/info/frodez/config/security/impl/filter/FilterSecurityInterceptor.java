@@ -1,4 +1,4 @@
-package info.frodez.config.security.realization;
+package info.frodez.config.security.impl.filter;
 
 import java.io.IOException;
 
@@ -15,6 +15,9 @@ import org.springframework.security.access.intercept.InterceptorStatusToken;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.stereotype.Component;
 
+import info.frodez.config.security.impl.authority.AuthorityManager;
+import info.frodez.config.security.impl.authority.AuthoritySource;
+
 /**
  * 自定义权限拦截器
  * @author Frodez
@@ -27,7 +30,7 @@ public class FilterSecurityInterceptor extends AbstractSecurityInterceptor imple
 	 * 权限资源
 	 */
 	@Autowired
-	private SecuritySource securitySource;
+	private AuthoritySource securitySource;
 
 	/**
 	 * 权限匹配管理器
@@ -51,7 +54,7 @@ public class FilterSecurityInterceptor extends AbstractSecurityInterceptor imple
 	 * @date 2018-12-21
 	 */
 	@Override
-	public SecuritySource obtainSecurityMetadataSource() {
+	public AuthoritySource obtainSecurityMetadataSource() {
 		return securitySource;
 	}
 

@@ -1,4 +1,4 @@
-package info.frodez.config.security.realization;
+package info.frodez.config.security.impl.authority;
 
 import java.util.Collection;
 import java.util.List;

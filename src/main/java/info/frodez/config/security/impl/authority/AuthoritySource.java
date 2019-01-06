@@ -1,4 +1,4 @@
-package info.frodez.config.security.realization;
+package info.frodez.config.security.impl.authority;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +24,7 @@ import info.frodez.service.user.IUserAuthorityService;
  * @date 2018-12-04
  */
 @Component
-public class SecuritySource implements FilterInvocationSecurityMetadataSource {
+public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 
 	/**
 	 * GET请求方式

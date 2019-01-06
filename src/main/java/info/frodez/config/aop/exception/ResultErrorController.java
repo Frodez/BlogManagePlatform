@@ -1,3 +1,4 @@
+package info.frodez.config.aop.exception;
 //package info.frodez.config.aop.request;
 //
 //import org.springframework.beans.factory.annotation.Autowired;

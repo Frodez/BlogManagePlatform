@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import info.frodez.config.security.realization.JwtTokenUtil;
+import info.frodez.config.security.impl.util.JwtTokenUtil;
 import info.frodez.constant.redis.RedisKey;
 import info.frodez.constant.user.UserStatusEnum;
 import info.frodez.dao.mapper.user.PermissionMapper;
@@ -19,8 +19,8 @@ import info.frodez.dao.model.user.User;
 import info.frodez.dao.param.user.LoginDTO;
 import info.frodez.dao.result.user.PermissionInfo;
 import info.frodez.dao.result.user.UserInfo;
+import info.frodez.service.redis.RedisService;
 import info.frodez.util.json.JSONUtil;
-import info.frodez.util.redis.RedisService;
 import info.frodez.util.result.Result;
 import info.frodez.util.result.ResultEnum;
 import info.frodez.util.validation.ValidationUtil;

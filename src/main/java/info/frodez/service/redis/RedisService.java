@@ -1,4 +1,4 @@
-package info.frodez.util.redis;
+package info.frodez.service.redis;
 
 import java.util.Arrays;
 import java.util.List;

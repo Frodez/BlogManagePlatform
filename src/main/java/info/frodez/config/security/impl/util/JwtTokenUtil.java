@@ -1,4 +1,4 @@
-package info.frodez.config.security.realization;
+package info.frodez.config.security.impl.util;
 
 import java.util.Date;
 import java.util.List;
