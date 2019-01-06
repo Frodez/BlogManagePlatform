@@ -8,7 +8,7 @@ package info.frodez.constant.redis;
  * @author Frodez
  * @date 2018-12-21
  */
-public class RedisKey {
+public class Redis {
 
 	public class User {
 
@@ -23,7 +23,5 @@ public class RedisKey {
 		public static final String NO_REPEAT = "REQUEST:NO_REPEAT:";
 
 	}
-
-
 
 }

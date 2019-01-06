@@ -75,26 +75,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.cors().and().csrf().disable()
-		.exceptionHandling()
-		//无权限时导向noAuthPoint
-		.authenticationEntryPoint(noAuthPoint).and().exceptionHandling()
-		.accessDeniedHandler(noAuthProcessor).and()
-		.sessionManagement()
-		//不创建session
-		.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-		.authorizeRequests()
-		//登录入口不控制
-		.antMatchers(properties.getAuth().getPermitAllPath()).permitAll()
-		.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-		.antMatchers("/swagger-resources/**").permitAll()
-		.antMatchers("/swagger-ui.html**").permitAll()
-		.antMatchers("/webjars/**").permitAll()
-		.anyRequest().authenticated()
-		.and()
-		//在密码验证过滤器前执行jwt过滤器
-		.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
-		.headers().cacheControl(); // disable page caching
+		http.cors().and().csrf().disable().exceptionHandling()
+			// 无权限时导向noAuthPoint
+			.authenticationEntryPoint(noAuthPoint).and().exceptionHandling()
+			.accessDeniedHandler(noAuthProcessor).and().sessionManagement()
+			// 不创建session
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
+			// 登录入口不控制
+			.antMatchers(properties.getAuth().getPermitAllPath()).permitAll()
+			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll().antMatchers("/swagger-resources/**")
+			.permitAll().antMatchers("/swagger-ui.html**").permitAll().antMatchers("/webjars/**")
+			.permitAll().anyRequest().authenticated().and()
+			// 在密码验证过滤器前执行jwt过滤器
+			.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).headers()
+			.cacheControl(); // disable page caching
 	}
 
 	/**

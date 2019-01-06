@@ -44,35 +44,32 @@ public class AuthorityManager implements AccessDecisionManager {
 	 * @date 2018-12-03
 	 */
 	@Override
-	public void decide(Authentication authentication,
-			Object object, Collection<ConfigAttribute> attributes)
-					throws AccessDeniedException, InsufficientAuthenticationException {
-		//如果是免验证路径,则直接放行
+	public void decide(Authentication authentication, Object object,
+		Collection<ConfigAttribute> attributes)
+		throws AccessDeniedException, InsufficientAuthenticationException {
+		// 如果是免验证路径,则直接放行
 		HttpServletRequest request = ((FilterInvocation) object).getHttpRequest();
-		if((properties.getAuth().getBasePath() + properties.getAuth().getPermitAllPath())
-				.equals(request.getRequestURI())) {
+		if ((properties.getAuth().getBasePath() + properties.getAuth().getPermitAllPath())
+			.equals(request.getRequestURI())) {
 			return;
 		}
-		if(CollectionUtils.isEmpty(authentication.getAuthorities())) {
+		if (CollectionUtils.isEmpty(authentication.getAuthorities())) {
 			throw new AccessDeniedException("无访问权限!");
 		}
-		List<String> attributeList = attributes
-				.stream().map(ConfigAttribute::getAttribute)
-				.collect(Collectors.toList());
-		//当包含无访问权限时,直接驳回
-		if(attributeList.contains(properties.getAuth().getDeniedRole())) {
+		List<String> attributeList = attributes.stream().map(ConfigAttribute::getAttribute)
+			.collect(Collectors.toList());
+		// 当包含无访问权限时,直接驳回
+		if (attributeList.contains(properties.getAuth().getDeniedRole())) {
 			throw new AccessDeniedException("无访问权限!");
 		}
-		List<String> authorityList = authentication
-				.getAuthorities().stream()
-				.map(GrantedAuthority::getAuthority)
-				.collect(Collectors.toList());
-		for(String attribute : attributeList) {
-			if(authorityList.contains(attribute)) {
+		List<String> authorityList = authentication.getAuthorities().stream()
+			.map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+		for (String attribute : attributeList) {
+			if (authorityList.contains(attribute)) {
 				return;
 			}
 		}
-		//当token携带权限与资源所需访问权限不符时,驳回
+		// 当token携带权限与资源所需访问权限不符时,驳回
 		throw new AccessDeniedException("无访问权限!");
 	}
 

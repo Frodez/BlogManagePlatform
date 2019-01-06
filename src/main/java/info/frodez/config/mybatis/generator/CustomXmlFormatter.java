@@ -1,4 +1,4 @@
-package info.frodez.config.mybatis;
+package info.frodez.config.mybatis.generator;
 
 import java.util.Collections;
 
@@ -44,7 +44,8 @@ public class CustomXmlFormatter implements XmlFormatter {
 			StringBuilder sb = new StringBuilder();
 			sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 			sb.append(lineSeparator);
-			sb.append("<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">");
+			sb.append(
+				"<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">");
 			sb.append(lineSeparator);
 			sb.append(getFormattedContent(document.getRootElement(), 0));
 			return sb.toString();

@@ -20,6 +20,9 @@ import lombok.Data;
 @Entity
 @Table(name = "tb_user")
 public class User implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * 主键ID
 	 */
@@ -68,7 +71,7 @@ public class User implements Serializable {
 	private String phone;
 
 	/**
-	 * 用户状态  0:禁用  1:正常
+	 * 用户状态 0:禁用 1:正常
 	 */
 	@NotNull
 	@Column(name = "status")
@@ -81,5 +84,4 @@ public class User implements Serializable {
 	@Column(name = "role_id")
 	private Long roleId;
 
-	private static final long serialVersionUID = 1L;
 }

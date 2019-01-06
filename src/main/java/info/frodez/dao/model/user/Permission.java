@@ -20,6 +20,9 @@ import lombok.Data;
 @Entity
 @Table(name = "tb_permission")
 public class Permission implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * 主键ID
 	 */
@@ -36,7 +39,7 @@ public class Permission implements Serializable {
 	private Date createTime;
 
 	/**
-	 * 类型  0:ALL  1:GET  2:POST  3:DELETE  4:PUT
+	 * 类型 0:ALL 1:GET 2:POST 3:DELETE 4:PUT
 	 */
 	@NotNull
 	@Column(name = "type")
@@ -62,5 +65,4 @@ public class Permission implements Serializable {
 	@Column(name = "description", length = 1000)
 	private String description;
 
-	private static final long serialVersionUID = 1L;
 }

@@ -46,7 +46,7 @@ public class RedisService {
 	 */
 	public String getString(Object key) {
 		Object value = template.opsForValue().get(key);
-		if(value == null) {
+		if (value == null) {
 			return null;
 		}
 		return JSONUtil.toJSONString(value);
@@ -116,7 +116,7 @@ public class RedisService {
 	 */
 	public long deletePattern(Object pattern) {
 		Set<Object> keys = template.keys(pattern);
-		if(CollectionUtils.isNotEmpty(keys)) {
+		if (CollectionUtils.isNotEmpty(keys)) {
 			return template.delete(keys);
 		}
 		return 0;
@@ -129,7 +129,7 @@ public class RedisService {
 	 * @date 2018-12-21
 	 */
 	public void delete(Object... keys) {
-		if(keys != null && keys.length != 0) {
+		if (keys != null && keys.length != 0) {
 			template.delete(Arrays.asList(keys));
 		}
 	}
@@ -141,7 +141,7 @@ public class RedisService {
 	 * @date 2018-12-21
 	 */
 	public void delete(List<Object> keys) {
-		if(CollectionUtils.isNotEmpty(keys)) {
+		if (CollectionUtils.isNotEmpty(keys)) {
 			template.delete(keys);
 		}
 	}
@@ -187,7 +187,7 @@ public class RedisService {
 	 */
 	public String hmgetString(Object key) {
 		Map<Object, Object> map = template.opsForHash().entries(key);
-		if(MapUtils.isEmpty(map)) {
+		if (MapUtils.isEmpty(map)) {
 			return null;
 		}
 		return JSONUtil.toJSONString(map);
@@ -212,7 +212,7 @@ public class RedisService {
 	 */
 	public String hmgetString(Object key, Object hashKey) {
 		Object value = template.opsForHash().get(key, hashKey);
-		if(value == null) {
+		if (value == null) {
 			return null;
 		}
 		return JSONUtil.toJSONString(value);

@@ -29,8 +29,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = Exception.class)
 	public Result defaultErrorHandler(HttpServletRequest request, Exception e) {
 		log.error("[defaultErrorHandler]", e);
-		if(e.getCause() instanceof NoRepeatException) {
-			//如果是重复请求
+		if (e.getCause() instanceof NoRepeatException) {
+			// 如果是重复请求
 			return new Result(ResultEnum.REPEAT_REQUEST);
 		}
 		return new Result(ResultEnum.FAIL);

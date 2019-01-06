@@ -20,6 +20,9 @@ import lombok.Data;
 @Entity
 @Table(name = "tb_role")
 public class Role implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * 主键ID
 	 */
@@ -43,7 +46,7 @@ public class Role implements Serializable {
 	private String name;
 
 	/**
-	 * 角色等级  0-9  0最高,9最低
+	 * 角色等级 0-9 0最高,9最低
 	 */
 	@NotNull
 	@Column(name = "level")
@@ -55,5 +58,4 @@ public class Role implements Serializable {
 	@Column(name = "description", length = 1000)
 	private String description;
 
-	private static final long serialVersionUID = 1L;
 }

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import info.frodez.config.security.impl.util.JwtTokenUtil;
-import info.frodez.constant.redis.RedisKey;
+import info.frodez.constant.redis.Redis;
 import info.frodez.constant.user.UserStatusEnum;
 import info.frodez.dao.mapper.user.PermissionMapper;
 import info.frodez.dao.mapper.user.RoleMapper;
@@ -66,31 +66,29 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 	@Override
 	public Result getUserInfoByName(String userName) {
 		try {
-			if(StringUtils.isBlank(userName)) {
+			if (StringUtils.isBlank(userName)) {
 				return new Result(ResultEnum.FAIL, "用户姓名不能为空!");
 			}
-			String json = redisService.getString(RedisKey.User.BASE_INFO + userName);
-			if(StringUtils.isNotBlank(json)) {
-				UserInfo data = JSONUtil.toObject(json, UserInfo.class);
-				if(data != null) {
-					return new Result(ResultEnum.SUCCESS, data);
-				}
+			String json = redisService.getString(Redis.User.BASE_INFO + userName);
+			UserInfo data = JSONUtil.toObject(json, UserInfo.class);
+			if (data != null) {
+				return new Result(ResultEnum.SUCCESS, data);
 			}
 			Example example = new Example(User.class);
 			example.createCriteria().andEqualTo("name", userName);
 			User user = userMapper.selectOneByExample(example);
-			if(user == null) {
+			if (user == null) {
 				return new Result(ResultEnum.FAIL, "未查询到用户信息!");
 			}
-			if(user.getStatus().equals(UserStatusEnum.FORBIDDEN.getValue())) {
+			if (user.getStatus().equals(UserStatusEnum.FORBIDDEN.getValue())) {
 				return new Result(ResultEnum.FAIL, "用户已禁用!");
 			}
 			Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
-			if(role == null) {
+			if (role == null) {
 				return new Result(ResultEnum.FAIL, "未查询到用户角色信息!");
 			}
 			List<PermissionInfo> permissionList = permissionMapper.getPermissions(user.getRoleId());
-			UserInfo data = new UserInfo();
+			data = new UserInfo();
 			data.setId(user.getId());
 			data.setPassword(user.getPassword());
 			data.setName(userName);
@@ -102,7 +100,7 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 			data.setRoleLevel(role.getLevel());
 			data.setRoleDescription(role.getDescription());
 			data.setPermissionList(permissionList);
-			redisService.set(RedisKey.User.BASE_INFO + userName, JSONUtil.toJSONString(data));
+			redisService.set(Redis.User.BASE_INFO + userName, JSONUtil.toJSONString(data));
 			return new Result(ResultEnum.SUCCESS, data);
 		} catch (Exception e) {
 			log.error("[getUserAuthority]", e);
@@ -116,17 +114,16 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 	 * @date 2018-12-04
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public Result getAllPermissions() {
 		try {
-			String json = redisService.getString(RedisKey.User.PERMISSION_ALL);
-			if(StringUtils.isNotBlank(json)) {
-				List<Permission> permissions = JSONUtil.toList(json, Permission.class);
-				if(permissions != null) {
-					return new Result(ResultEnum.SUCCESS, permissions);
-				}
+			String json = redisService.getString(Redis.User.PERMISSION_ALL);
+			List<Permission> permissions = JSONUtil.toList(json);
+			if (permissions != null) {
+				return new Result(ResultEnum.SUCCESS, permissions);
 			}
-			List<Permission> permissions = permissionMapper.selectAll();
-			redisService.set(RedisKey.User.PERMISSION_ALL, JSONUtil.toJSONString(permissions));
+			permissions = permissionMapper.selectAll();
+			redisService.set(Redis.User.PERMISSION_ALL, JSONUtil.toJSONString(permissions));
 			return new Result(ResultEnum.SUCCESS, permissions);
 		} catch (Exception e) {
 			log.error("[getAllPermissions]", e);
@@ -144,25 +141,24 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 	public Result login(LoginDTO param) {
 		try {
 			String msg = ValidationUtil.validate(param);
-			if(StringUtils.isNotBlank(msg)) {
+			if (StringUtils.isNotBlank(msg)) {
 				return new Result(ResultEnum.FAIL, msg);
 			}
 			Example example = new Example(User.class);
 			example.createCriteria().andEqualTo("name", param.getUsername());
 			User user = userMapper.selectOneByExample(example);
-			if(user == null) {
+			if (user == null) {
 				return new Result(ResultEnum.FAIL, "用户名或密码错误!");
 			}
-			if(user.getStatus().equals(UserStatusEnum.FORBIDDEN.getValue())) {
+			if (user.getStatus().equals(UserStatusEnum.FORBIDDEN.getValue())) {
 				return new Result(ResultEnum.FAIL, "用户已禁用!");
 			}
 			Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
-			if(role == null) {
+			if (role == null) {
 				return new Result(ResultEnum.FAIL, "未查询到用户角色信息!");
 			}
-			List<String> authorities = permissionMapper
-					.getPermissions(role.getId()).stream()
-					.map(PermissionInfo::getName).collect(Collectors.toList());
+			List<String> authorities = permissionMapper.getPermissions(role.getId()).stream()
+				.map(PermissionInfo::getName).collect(Collectors.toList());
 			String token = jwtTokenUtil.generate(param.getUsername(), authorities);
 			return new Result(ResultEnum.SUCCESS, token);
 		} catch (Exception e) {

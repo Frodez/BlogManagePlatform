@@ -13,9 +13,6 @@ import lombok.Data;
 @Data
 public class UserInfo implements Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -49,7 +46,7 @@ public class UserInfo implements Serializable {
 	private String phone;
 
 	/**
-	 * 用户状态  0:禁用  1:正常
+	 * 用户状态 0:禁用 1:正常
 	 */
 	private Byte status;
 
@@ -64,7 +61,7 @@ public class UserInfo implements Serializable {
 	private String roleName;
 
 	/**
-	 * 角色等级  0-9  0最高,9最低
+	 * 角色等级 0-9 0最高,9最低
 	 */
 	private Byte roleLevel;
 
@@ -73,6 +70,9 @@ public class UserInfo implements Serializable {
 	 */
 	private String roleDescription;
 
+	/**
+	 * 权限列表
+	 */
 	private List<PermissionInfo> permissionList;
 
 }

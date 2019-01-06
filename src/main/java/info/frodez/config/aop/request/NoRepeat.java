@@ -12,14 +12,14 @@ import java.lang.annotation.Target;
  * @date 2018-12-21
  */
 @Documented
-@Target({ElementType.METHOD})
+@Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NoRepeat {
 
-	//别名,详见info.frodez.constant.request.NoRepeatKey
-	String name() default "";
+	// 别名,详见info.frodez.constant.redis.Repeat
+	String value() default "";
 
-	//过期时间,非正数代表不过期,单位毫秒
+	// 过期时间,非正数代表不过期,单位毫秒
 	long timeout() default 0;
 
 }

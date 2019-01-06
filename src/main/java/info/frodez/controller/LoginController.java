@@ -4,14 +4,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import info.frodez.config.aop.request.NoRepeat;
-import info.frodez.constant.request.NoRepeatKey;
+import info.frodez.constant.redis.Repeat;
 import info.frodez.dao.param.user.LoginDTO;
 import info.frodez.service.user.IUserAuthorityService;
 import info.frodez.util.result.Result;
@@ -24,7 +23,7 @@ import info.frodez.util.validation.ValidationUtil;
  * @date 2018-12-01
  */
 @RestController
-@RequestMapping(value = "/login")
+@RequestMapping("/login")
 public class LoginController {
 
 	/**
@@ -44,21 +43,20 @@ public class LoginController {
 	 * @author Frodez
 	 * @date 2018-12-21
 	 */
-	@NoRepeat(name = NoRepeatKey.Login.AUTH)
-	@RequestMapping(value = "/auth")
+	@NoRepeat(Repeat.Login.AUTH)
+	@RequestMapping("/auth")
 	public Result auth(@RequestBody LoginDTO param) {
 		String msg = ValidationUtil.validate(param);
-		if(!StringUtils.isBlank(msg)) {
+		if (!StringUtils.isBlank(msg)) {
 			return new Result(ResultEnum.FAIL, msg);
 		}
-		final Authentication authentication = authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword()));
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+		SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
+			new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword())));
 		return authorityService.login(param);
 	}
 
-	//	public Result register() {
+	// public Result register() {
 	//
-	//	}
+	// }
 
 }

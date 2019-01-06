@@ -26,7 +26,7 @@ public class SpringUtil implements ApplicationContextAware {
 	 * @date 2018-12-21
 	 */
 	public static ApplicationContext getContext() {
-		if(context == null) {
+		if (context == null) {
 			throw new RuntimeException("获取spring上下文环境失败!");
 		}
 		return context;

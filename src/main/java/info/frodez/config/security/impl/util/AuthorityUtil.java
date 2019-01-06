@@ -23,8 +23,11 @@ public final class AuthorityUtil {
 	 * @param authorities 权限信息
 	 * @date 2018-11-21
 	 */
-	public static List<GrantedAuthority> createGrantedAuthorities(List<PermissionInfo> authorities) {
-		return authorities.stream().map(authority -> new SimpleGrantedAuthority(authority.getName())).collect(Collectors.toList());
+	public static List<GrantedAuthority> createGrantedAuthorities(
+		List<PermissionInfo> authorities) {
+		return authorities.stream()
+			.map(authority -> new SimpleGrantedAuthority(authority.getName()))
+			.collect(Collectors.toList());
 	}
 
 	/**
@@ -44,7 +47,8 @@ public final class AuthorityUtil {
 	 * @date 2018-11-21
 	 */
 	public static String[] getAuthorities(UserDetails user) {
-		return user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray(String[]::new);
+		return user.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+			.toArray(String[]::new);
 	}
 
 }

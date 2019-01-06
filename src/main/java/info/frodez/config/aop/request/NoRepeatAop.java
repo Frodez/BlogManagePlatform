@@ -15,7 +15,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import info.frodez.config.security.settings.SecurityProperties;
-import info.frodez.constant.redis.RedisKey;
+import info.frodez.constant.redis.Redis;
 import info.frodez.service.redis.RedisService;
 import info.frodez.util.http.HttpUtil;
 
@@ -54,15 +54,15 @@ public class NoRepeatAop {
 	 */
 	@Before("@annotation(info.frodez.config.aop.request.NoRepeat)")
 	public void before(JoinPoint joinPoint) throws Exception {
-		HttpServletRequest request = ((ServletRequestAttributes)
-				RequestContextHolder.getRequestAttributes()).getRequest();
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+			.getRequestAttributes()).getRequest();
 		NoRepeat noRepeat = getNoRepeatAnnotation(joinPoint);
 		String key = getKey(noRepeat, request);
-		if(redisService.get(key) != null) {
+		if (redisService.exists(key)) {
 			throw new NoRepeatException("重复请求:IP地址" + HttpUtil.getRealAddr(request));
 		}
-		if(noRepeat.timeout() > 0) {
-			//如果设置了超时时间,则在redis中设置超时时间
+		if (noRepeat.timeout() > 0) {
+			// 如果设置了超时时间,则在redis中设置超时时间
 			redisService.set(key, true, noRepeat.timeout());
 		} else {
 			redisService.set(key, true);
@@ -77,11 +77,11 @@ public class NoRepeatAop {
 	 */
 	@After("@annotation(info.frodez.config.aop.request.NoRepeat)")
 	public void after(JoinPoint joinPoint) {
-		HttpServletRequest request = ((ServletRequestAttributes)
-				RequestContextHolder.getRequestAttributes()).getRequest();
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+			.getRequestAttributes()).getRequest();
 		NoRepeat noRepeat = getNoRepeatAnnotation(joinPoint);
-		if(noRepeat.timeout() <= 0) {
-			//如果设置了超时时间,则不手动删除redis中key
+		if (noRepeat.timeout() <= 0) {
+			// 如果设置了超时时间,则不手动删除redis中key
 			redisService.delete(getKey(noRepeat, request));
 		}
 	}
@@ -93,10 +93,10 @@ public class NoRepeatAop {
 	 * @date 2018-12-21
 	 */
 	private NoRepeat getNoRepeatAnnotation(JoinPoint joinPoint) {
-		Annotation[] annotations = ((MethodSignature) joinPoint.getSignature())
-				.getMethod().getDeclaredAnnotations();
-		for(Annotation annotation : annotations) {
-			if(annotation.annotationType() == NoRepeat.class) {
+		Annotation[] annotations = ((MethodSignature) joinPoint.getSignature()).getMethod()
+			.getDeclaredAnnotations();
+		for (Annotation annotation : annotations) {
+			if (annotation.annotationType() == NoRepeat.class) {
 				return (NoRepeat) annotation;
 			}
 		}
@@ -111,17 +111,17 @@ public class NoRepeatAop {
 	 * @date 2018-12-21
 	 */
 	private String getKey(NoRepeat noRepeat, HttpServletRequest request) {
-		if(!(properties.getAuth().getBasePath() + properties.getAuth().getPermitAllPath())
-				.equals(request.getRequestURI())) {
-			//非登录接口使用token判断,同一token不能重复请求
+		if (!(properties.getAuth().getBasePath() + properties.getAuth().getPermitAllPath())
+			.equals(request.getRequestURI())) {
+			// 非登录接口使用token判断,同一token不能重复请求
 			String authToken = request.getHeader(properties.getJwt().getHeader());
 			authToken = authToken == null ? "" : authToken;
-			String key = RedisKey.Request.NO_REPEAT + noRepeat.name() + ":" + authToken;
+			String key = Redis.Request.NO_REPEAT + noRepeat.value() + ":" + authToken;
 			return key;
 		} else {
-			//登录接口使用IP判断,同一IP不能重复请求
+			// 登录接口使用IP判断,同一IP不能重复请求
 			String address = HttpUtil.getRealAddr(request);
-			return RedisKey.Request.NO_REPEAT + address;
+			return Redis.Request.NO_REPEAT + address;
 		}
 	}
 

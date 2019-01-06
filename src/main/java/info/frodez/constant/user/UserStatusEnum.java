@@ -15,19 +15,23 @@ public enum UserStatusEnum {
 	/**
 	 * 0:禁用
 	 */
-	FORBIDDEN((byte) 0, "禁用"),
+	FORBIDDEN(
+		(byte) 0, "禁用"
+	),
 	/**
 	 * 1:正常
 	 */
-	NORMAL((byte) 1, "正常");
+	NORMAL(
+		(byte) 1, "正常"
+	);
 
 	private byte value;
 
 	private String description;
 
 	public UserStatusEnum of(byte value) {
-		for(UserStatusEnum iter : UserStatusEnum.values()) {
-			if(iter.value == value) {
+		for (UserStatusEnum iter : UserStatusEnum.values()) {
+			if (iter.value == value) {
 				return iter;
 			}
 		}

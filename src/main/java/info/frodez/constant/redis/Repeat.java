@@ -1,4 +1,4 @@
-package info.frodez.constant.request;
+package info.frodez.constant.redis;
 
 /**
  * 重复请求控制所用key<br>
@@ -7,7 +7,7 @@ package info.frodez.constant.request;
  * @author Frodez
  * @date 2018-12-21
  */
-public class NoRepeatKey {
+public class Repeat {
 
 	public class Login {
 

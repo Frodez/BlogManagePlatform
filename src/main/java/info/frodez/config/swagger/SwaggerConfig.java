@@ -35,47 +35,40 @@ public class SwaggerConfig {
 
 	@Bean
 	public Docket petApi() {
-		return new Docket(DocumentationType.SWAGGER_2)
-				.select()
-				.apis(RequestHandlerSelectors.basePackage("info.frodez.controller"))
-				.paths(PathSelectors.any())
-				.build()
-				.apiInfo(apiInfo())
-				.pathMapping("/")
-				.directModelSubstitute(LocalDate.class, String.class)
-				.genericModelSubstitutes(ResponseEntity.class)
-				.additionalModels(new TypeResolver().resolve(Result.class))
-				.useDefaultResponseMessages(false)
-				.securitySchemes(Arrays.asList(apiKey()))
-				.securityContexts(Arrays.asList(securityContext()))
-				.enableUrlTemplating(false);
+		return new Docket(DocumentationType.SWAGGER_2).select()
+			.apis(RequestHandlerSelectors.basePackage("info.frodez.controller"))
+			.paths(PathSelectors.any()).build().apiInfo(apiInfo()).pathMapping("/")
+			.directModelSubstitute(LocalDate.class, String.class)
+			.genericModelSubstitutes(ResponseEntity.class)
+			.additionalModels(new TypeResolver().resolve(Result.class))
+			.useDefaultResponseMessages(false).securitySchemes(Arrays.asList(apiKey()))
+			.securityContexts(Arrays.asList(securityContext())).enableUrlTemplating(false);
 	}
 
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder()
-				.title("Api Documentation")
-				.description("Api Documentation")
-				.contact(new Contact("Frodez", "https://github.com/Frodez/BlogManagePlatform", ""))
-				.version("1.0")
-				.build();
+		return new ApiInfoBuilder().title("Api Documentation").description("Api Documentation")
+			.contact(new Contact("Frodez", "https://github.com/Frodez/BlogManagePlatform", ""))
+			.version("1.0").build();
 	}
 
 	private ApiKey apiKey() {
-		return new ApiKey(properties.getJwt().getTokenPrefix(), properties.getJwt().getHeader(), "header");
+		return new ApiKey(properties.getJwt().getTokenPrefix(), properties.getJwt().getHeader(),
+			"header");
 	}
 
 	private SecurityContext securityContext() {
-		return SecurityContext.builder()
-				.securityReferences(defaultAuth())
-				.forPaths(PathSelectors.regex("/api/.*")) // 注意要与Restful API路径一致
-				.build();
+		return SecurityContext.builder().securityReferences(defaultAuth())
+			.forPaths(PathSelectors.regex("/api/.*")) // 注意要与Restful API路径一致
+			.build();
 	}
 
 	private List<SecurityReference> defaultAuth() {
-		AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
+		AuthorizationScope authorizationScope = new AuthorizationScope("global",
+			"accessEverything");
 		AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
 		authorizationScopes[0] = authorizationScope;
-		return Arrays.asList(new SecurityReference(properties.getJwt().getTokenPrefix(), authorizationScopes));
+		return Arrays.asList(
+			new SecurityReference(properties.getJwt().getTokenPrefix(), authorizationScopes));
 	}
 
 }

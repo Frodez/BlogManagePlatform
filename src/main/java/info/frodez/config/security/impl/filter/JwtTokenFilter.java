@@ -39,25 +39,22 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	private SecurityProperties properties;
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request
-			, HttpServletResponse response, FilterChain chain)
-					throws ServletException, IOException {
-		if(!(properties.getAuth().getBasePath() + properties.getAuth().getPermitAllPath())
-				.equals(request.getRequestURI())) {
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+		FilterChain chain) throws ServletException, IOException {
+		if (!(properties.getAuth().getBasePath() + properties.getAuth().getPermitAllPath())
+			.equals(request.getRequestURI())) {
 			String authToken = request.getHeader(properties.getJwt().getHeader());
-			if(authToken != null && authToken.startsWith(properties.getJwt().getTokenPrefix())) {
+			if (authToken != null && authToken.startsWith(properties.getJwt().getTokenPrefix())) {
 				authToken = authToken.substring(properties.getJwt().getTokenPrefix().length());
-				//将携带的token还原成用户信息
+				// 将携带的token还原成用户信息
 				UserDetails user = jwtTokenUtil.verify(authToken);
-				if (user != null && SecurityContextHolder
-						.getContext().getAuthentication() == null) {
-					UsernamePasswordAuthenticationToken authentication = new
-							UsernamePasswordAuthenticationToken(
-									user, null, user.getAuthorities());
-					authentication.setDetails(
-							new WebAuthenticationDetailsSource().buildDetails(request));
-					SecurityContextHolder.getContext()
-					.setAuthentication(authentication);
+				if (user != null
+					&& SecurityContextHolder.getContext().getAuthentication() == null) {
+					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+						user, null, user.getAuthorities());
+					authentication
+						.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+					SecurityContextHolder.getContext().setAuthentication(authentication);
 				}
 			}
 		}

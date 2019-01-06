@@ -26,10 +26,11 @@ public class RedisConfig {
 	public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
 		RedisTemplate<Object, Object> template = new RedisTemplate<>();
 		template.setConnectionFactory(connectionFactory);
-		//使用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值(如不设置,则默认使用JDK的序列化方式)
-		Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+		// 使用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值(如不设置,则默认使用JDK的序列化方式)
+		Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(
+			Object.class);
 		serializer.setObjectMapper(JSONUtil.getInstance());
-		//使用StringRedisSerializer来序列化和反序列化redis的key值
+		// 使用StringRedisSerializer来序列化和反序列化redis的key值
 		StringRedisSerializer stringSerializer = new StringRedisSerializer();
 		template.setKeySerializer(serializer);
 		template.setValueSerializer(serializer);

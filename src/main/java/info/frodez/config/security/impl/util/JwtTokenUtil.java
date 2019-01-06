@@ -23,8 +23,6 @@ import info.frodez.config.security.settings.SecurityProperties;
 @Component
 public class JwtTokenUtil {
 
-	private static final String CLAIM_AUTHORITIES = "authorities";
-
 	/**
 	 * 访问控制参数配置
 	 */
@@ -41,13 +39,12 @@ public class JwtTokenUtil {
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(config.getJwt().getSecret());
 			Long systemTime = System.currentTimeMillis();
-			return JWT.create()
-					.withIssuer(config.getJwt().getIssuer())
-					.withIssuedAt(new Date(systemTime))
-					.withExpiresAt(new Date(systemTime + config.getJwt().getExpiration() * 1000))
-					.withSubject(user.getUsername())
-					.withArrayClaim(CLAIM_AUTHORITIES, AuthorityUtil.getAuthorities(user))
-					.sign(algorithm);
+			return JWT.create().withIssuer(config.getJwt().getIssuer())
+				.withIssuedAt(new Date(systemTime))
+				.withExpiresAt(new Date(systemTime + config.getJwt().getExpiration() * 1000))
+				.withSubject(user.getUsername()).withArrayClaim(config.getJwt().getAuthorityClaim(),
+					AuthorityUtil.getAuthorities(user))
+				.sign(algorithm);
 		} catch (Exception e) {
 			return null;
 		}
@@ -63,13 +60,12 @@ public class JwtTokenUtil {
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(config.getJwt().getSecret());
 			Long systemTime = System.currentTimeMillis();
-			return JWT.create()
-					.withIssuer(config.getJwt().getIssuer())
-					.withIssuedAt(new Date(systemTime))
-					.withExpiresAt(new Date(systemTime + config.getJwt().getExpiration() * 1000))
-					.withSubject(username)
-					.withArrayClaim(CLAIM_AUTHORITIES, authorities.stream().toArray(String[]::new))
-					.sign(algorithm);
+			return JWT.create().withIssuer(config.getJwt().getIssuer())
+				.withIssuedAt(new Date(systemTime))
+				.withExpiresAt(new Date(systemTime + config.getJwt().getExpiration() * 1000))
+				.withSubject(username).withArrayClaim(config.getJwt().getAuthorityClaim(),
+					authorities.stream().toArray(String[]::new))
+				.sign(algorithm);
 		} catch (Exception e) {
 			return null;
 		}
@@ -87,10 +83,11 @@ public class JwtTokenUtil {
 		}
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(config.getJwt().getSecret());
-			JWTVerifier verifier = JWT.require(algorithm).withIssuer(config.getJwt().getIssuer()).build();
+			JWTVerifier verifier = JWT.require(algorithm).withIssuer(config.getJwt().getIssuer())
+				.build();
 			DecodedJWT jwt = verifier.verify(token);
-			return new User(jwt.getSubject(), "N/A",
-					AuthorityUtil.createGrantedAuthorities(jwt.getClaim(CLAIM_AUTHORITIES).asArray(String.class)));
+			return new User(jwt.getSubject(), "N/A", AuthorityUtil.createGrantedAuthorities(
+				jwt.getClaim(config.getJwt().getAuthorityClaim()).asArray(String.class)));
 		} catch (Exception e) {
 			return null;
 		}

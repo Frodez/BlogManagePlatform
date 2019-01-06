@@ -62,7 +62,7 @@ public class Result {
 	 */
 	@JsonIgnore
 	public <T> T getData(Class<T> klass) {
-		if(data == null) {
+		if (data == null) {
 			throw new NullPointerException("数据为空!");
 		}
 		return klass.cast(data);
@@ -77,7 +77,7 @@ public class Result {
 	@SuppressWarnings("unchecked")
 	@JsonIgnore
 	public <T> List<T> getListData(Class<T> klass) {
-		if(data == null) {
+		if (data == null) {
 			throw new NullPointerException("数据为空!");
 		}
 		return (List<T>) data;
@@ -92,7 +92,7 @@ public class Result {
 	@SuppressWarnings("unchecked")
 	@JsonIgnore
 	public <T> Set<T> getSetData(Class<T> klass) {
-		if(data == null) {
+		if (data == null) {
 			throw new NullPointerException("数据为空!");
 		}
 		return (Set<T>) data;
@@ -107,7 +107,7 @@ public class Result {
 	@SuppressWarnings("unchecked")
 	@JsonIgnore
 	public Map<String, Object> getMapData() {
-		if(data == null) {
+		if (data == null) {
 			throw new NullPointerException("数据为空!");
 		}
 		return (Map<String, Object>) data;
@@ -122,7 +122,7 @@ public class Result {
 	@SuppressWarnings("unchecked")
 	@JsonIgnore
 	public <K, V> Map<K, V> getMapData(Class<K> keyClass, Class<V> valueClass) {
-		if(data == null) {
+		if (data == null) {
 			throw new NullPointerException("数据为空!");
 		}
 		return (Map<K, V>) data;

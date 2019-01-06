@@ -20,7 +20,7 @@ public class ValidationUtil {
 	 * @date 2018-12-03
 	 */
 	public static String validate(Object object) {
-		if(object == null) {
+		if (object == null) {
 			return "输入不能为空!";
 		}
 		StringBuilder sb = new StringBuilder();

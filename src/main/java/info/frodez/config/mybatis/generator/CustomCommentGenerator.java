@@ -1,4 +1,4 @@
-package info.frodez.config.mybatis;
+package info.frodez.config.mybatis.generator;
 
 import java.util.List;
 
@@ -23,25 +23,28 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 	 * @date 2018-12-13
 	 */
 	@Override
-	public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+	public void addModelClassComment(TopLevelClass topLevelClass,
+		IntrospectedTable introspectedTable) {
 		topLevelClass.addImportedType("lombok.Data");
 		topLevelClass.addImportedType("javax.persistence.Id");
 		topLevelClass.addImportedType("javax.persistence.Table");
 		topLevelClass.addImportedType("javax.persistence.Column");
 		topLevelClass.addImportedType("javax.persistence.Entity");
-		for(IntrospectedColumn iter : introspectedTable.getAllColumns()) {
-			if(!iter.isNullable()) {
+		for (IntrospectedColumn iter : introspectedTable.getAllColumns()) {
+			if (!iter.isNullable()) {
 				topLevelClass.addImportedType("javax.validation.constraints.NotNull");
 			}
 		}
 		topLevelClass.addJavaDocLine("/**");
-		topLevelClass.addJavaDocLine(" * @description " + (introspectedTable.getRemarks() == null ? "" : introspectedTable.getRemarks()));
+		topLevelClass.addJavaDocLine(" * @description "
+			+ (introspectedTable.getRemarks() == null ? "" : introspectedTable.getRemarks()));
 		topLevelClass.addJavaDocLine(" * @table " + introspectedTable.getFullyQualifiedTable());
 		topLevelClass.addJavaDocLine(" * @date " + LocalDate.now().toString());
 		topLevelClass.addJavaDocLine(" */");
 		topLevelClass.addAnnotation("@Data");
 		topLevelClass.addAnnotation("@Entity");
-		topLevelClass.addAnnotation("@Table(name = \"" + introspectedTable.getFullyQualifiedTable() + "\")");
+		topLevelClass
+			.addAnnotation("@Table(name = \"" + introspectedTable.getFullyQualifiedTable() + "\")");
 	}
 
 	/**
@@ -51,7 +54,7 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 	 */
 	@Override
 	public void addFieldComment(Field field, IntrospectedTable introspectedTable,
-			IntrospectedColumn introspectedColumn) {
+		IntrospectedColumn introspectedColumn) {
 		String columnName = introspectedColumn.getActualColumnName();
 		List<IntrospectedColumn> primaryKey = introspectedTable.getPrimaryKeyColumns();
 		for (IntrospectedColumn pk : primaryKey) {
@@ -84,16 +87,17 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 			}
 		}
 		field.addJavaDocLine(" */");
-		if(!introspectedColumn.isNullable()) {
+		if (!introspectedColumn.isNullable()) {
 			field.addAnnotation("@NotNull");
 		}
 		String column = "@Column(name = \"" + introspectedColumn.getActualColumnName() + "\"";
-		if(field.getType().getShortName().equals("String") || field.getType().getShortName().equals("BigDecimal")) {
-			if(introspectedColumn.getLength() != 0) {
+		if (field.getType().getShortName().equals("String")
+			|| field.getType().getShortName().equals("BigDecimal")) {
+			if (introspectedColumn.getLength() != 0) {
 				column = column + ", length = " + introspectedColumn.getLength();
 			}
 		}
-		if(introspectedColumn.getScale() != 0) {
+		if (introspectedColumn.getScale() != 0) {
 			column = column + ", scale = " + introspectedColumn.getScale();
 		}
 		column = column + ")";

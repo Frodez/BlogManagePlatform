@@ -85,6 +85,11 @@ public class SecurityProperties {
 		 */
 		private String tokenPrefix;
 
+		/**
+		 * jwt权限保留字
+		 */
+		private String authorityClaim;
+
 	}
 
 	/**

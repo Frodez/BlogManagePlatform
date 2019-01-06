@@ -12,9 +12,6 @@ import lombok.Data;
 @Data
 public class PermissionInfo implements Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -23,7 +20,7 @@ public class PermissionInfo implements Serializable {
 	private Long id;
 
 	/**
-	 * 类型  1:GET  2:POST  3:DELETE  4:PUT
+	 * 类型 1:GET 2:POST 3:DELETE 4:PUT
 	 */
 	private Byte type;
 
