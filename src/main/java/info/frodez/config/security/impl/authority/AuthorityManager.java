@@ -49,8 +49,7 @@ public class AuthorityManager implements AccessDecisionManager {
 		throws AccessDeniedException, InsufficientAuthenticationException {
 		// 如果是免验证路径,则直接放行
 		HttpServletRequest request = ((FilterInvocation) object).getHttpRequest();
-		if ((properties.getAuth().getBasePath() + properties.getAuth().getPermitAllPath())
-			.equals(request.getRequestURI())) {
+		if (properties.match(request.getRequestURI())) {
 			return;
 		}
 		if (CollectionUtils.isEmpty(authentication.getAuthorities())) {

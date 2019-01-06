@@ -26,6 +26,7 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 	public void addModelClassComment(TopLevelClass topLevelClass,
 		IntrospectedTable introspectedTable) {
 		topLevelClass.addImportedType("lombok.Data");
+		topLevelClass.addImportedType("lombok.NoArgsConstructor");
 		topLevelClass.addImportedType("javax.persistence.Id");
 		topLevelClass.addImportedType("javax.persistence.Table");
 		topLevelClass.addImportedType("javax.persistence.Column");
@@ -45,6 +46,7 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 		topLevelClass.addAnnotation("@Entity");
 		topLevelClass
 			.addAnnotation("@Table(name = \"" + introspectedTable.getFullyQualifiedTable() + "\")");
+		topLevelClass.addAnnotation("@NoArgsConstructor");
 	}
 
 	/**

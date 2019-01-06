@@ -31,13 +31,17 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
 
 	@Autowired
-	private SecurityProperties properties;
+	private SecurityProperties securityProperties;
+
+	@Autowired
+	private SwaggerProperties swaggerProperties;
 
 	@Bean
 	public Docket petApi() {
 		return new Docket(DocumentationType.SWAGGER_2).select()
-			.apis(RequestHandlerSelectors.basePackage("info.frodez.controller"))
-			.paths(PathSelectors.any()).build().apiInfo(apiInfo()).pathMapping("/")
+			.apis(RequestHandlerSelectors.basePackage(swaggerProperties.getBasePackage()))
+			.paths(PathSelectors.any()).build().apiInfo(apiInfo())
+			.pathMapping(securityProperties.basePath())
 			.directModelSubstitute(LocalDate.class, String.class)
 			.genericModelSubstitutes(ResponseEntity.class)
 			.additionalModels(new TypeResolver().resolve(Result.class))
@@ -46,19 +50,21 @@ public class SwaggerConfig {
 	}
 
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title("Api Documentation").description("Api Documentation")
-			.contact(new Contact("Frodez", "https://github.com/Frodez/BlogManagePlatform", ""))
+		return new ApiInfoBuilder().title(swaggerProperties.getTitle())
+			.description(swaggerProperties.getDescription())
+			.contact(new Contact(swaggerProperties.getAuthor(), swaggerProperties.getDocUrl(),
+				swaggerProperties.getEmail()))
 			.version("1.0").build();
 	}
 
 	private ApiKey apiKey() {
-		return new ApiKey(properties.getJwt().getTokenPrefix(), properties.getJwt().getHeader(),
-			"header");
+		return new ApiKey(securityProperties.getJwt().getTokenPrefix(),
+			securityProperties.getJwt().getHeader(), "header");
 	}
 
 	private SecurityContext securityContext() {
 		return SecurityContext.builder().securityReferences(defaultAuth())
-			.forPaths(PathSelectors.regex("/api/.*")) // 注意要与Restful API路径一致
+			.forPaths(PathSelectors.regex(securityProperties.basePath())) // 注意要与Restful API路径一致
 			.build();
 	}
 
@@ -67,8 +73,8 @@ public class SwaggerConfig {
 			"accessEverything");
 		AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
 		authorizationScopes[0] = authorizationScope;
-		return Arrays.asList(
-			new SecurityReference(properties.getJwt().getTokenPrefix(), authorizationScopes));
+		return Arrays.asList(new SecurityReference(securityProperties.getJwt().getTokenPrefix(),
+			authorizationScopes));
 	}
 
 }

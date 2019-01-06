@@ -3,6 +3,7 @@ package info.frodez.dao.result.user;
 import java.io.Serializable;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 权限信息
@@ -10,6 +11,7 @@ import lombok.Data;
  * @date 2018-11-14
  */
 @Data
+@NoArgsConstructor
 public class PermissionInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;

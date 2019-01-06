@@ -3,10 +3,12 @@ package info.frodez.config.security.settings;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.PathMatcher;
 
 import lombok.Data;
 
@@ -20,6 +22,18 @@ import lombok.Data;
 @PropertySource("classpath:security.properties")
 @ConfigurationProperties
 public class SecurityProperties {
+
+	/**
+	 * spring环境参数配置
+	 */
+	@Autowired
+	private Environment env;
+
+	/**
+	 * spring路径匹配器
+	 */
+	@Autowired
+	private PathMatcher matcher;
 
 	/**
 	 * 跨域参数
@@ -63,32 +77,32 @@ public class SecurityProperties {
 		/**
 		 * HTTP请求header名称
 		 */
-		private String header;
+		private String header = "";
 
 		/**
 		 * jwt密钥
 		 */
-		private String secret;
+		private String secret = "";
 
 		/**
 		 * jwt过期时间
 		 */
-		private Long expiration;
+		private Long expiration = (long) -1;
 
 		/**
 		 * jwt签发者
 		 */
-		private String issuer;
+		private String issuer = "";
 
 		/**
 		 * HTTP请求header前缀
 		 */
-		private String tokenPrefix;
+		private String tokenPrefix = "";
 
 		/**
 		 * jwt权限保留字
 		 */
-		private String authorityClaim;
+		private String authorityClaim = "";
 
 	}
 
@@ -101,21 +115,38 @@ public class SecurityProperties {
 	public static class Auth {
 
 		/**
-		 * 基本路径
+		 * 免验证路径,基于正则表达式匹配
 		 */
-		@Value("${server.servlet.context-path}/**")
-		private String basePath;
-
-		/**
-		 * 免验证路径
-		 */
-		private String permitAllPath;
+		private List<String> permitAllPath = new ArrayList<>();
 
 		/**
 		 * 无权限角色
 		 */
-		private String deniedRole;
+		private String deniedRole = "";
 
+	}
+
+	/**
+	 * 匹配url
+	 * @author Frodez
+	 * @date 2019-01-06
+	 */
+	public boolean match(String url) {
+		for (String path : auth.getPermitAllPath()) {
+			if (matcher.match(basePath() + path, url)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 获取项目根路径
+	 * @author Frodez
+	 * @date 2019-01-06
+	 */
+	public String basePath() {
+		return env.getProperty("server.servlet.context-path");
 	}
 
 }

@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @description 用户表
@@ -19,6 +20,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "tb_user")
+@NoArgsConstructor
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;

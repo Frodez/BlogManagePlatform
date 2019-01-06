@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import info.frodez.util.json.JSONUtil;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 通用返回参数
@@ -16,6 +17,7 @@ import lombok.Data;
  * @date 2018-11-13
  */
 @Data
+@NoArgsConstructor
 public class Result {
 
 	/**

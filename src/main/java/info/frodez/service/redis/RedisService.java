@@ -49,6 +49,9 @@ public class RedisService {
 		if (value == null) {
 			return null;
 		}
+		if (value.getClass() == String.class) {
+			return (String) value;
+		}
 		return JSONUtil.toJSONString(value);
 	}
 
@@ -215,6 +218,9 @@ public class RedisService {
 		if (value == null) {
 			return null;
 		}
+		if (value.getClass() == String.class) {
+			return (String) value;
+		}
 		return JSONUtil.toJSONString(value);
 	}
 
@@ -224,7 +230,7 @@ public class RedisService {
 	 * @date 2018-12-21
 	 */
 	public boolean hmexists(Object key) {
-		return template.opsForHash().values(key).size() != 0;
+		return CollectionUtils.isNotEmpty(template.opsForHash().values(key));
 	}
 
 }

@@ -111,8 +111,7 @@ public class NoRepeatAop {
 	 * @date 2018-12-21
 	 */
 	private String getKey(NoRepeat noRepeat, HttpServletRequest request) {
-		if (!(properties.getAuth().getBasePath() + properties.getAuth().getPermitAllPath())
-			.equals(request.getRequestURI())) {
+		if (!properties.match(request.getRequestURI())) {
 			// 非登录接口使用token判断,同一token不能重复请求
 			String authToken = request.getHeader(properties.getJwt().getHeader());
 			authToken = authToken == null ? "" : authToken;

@@ -41,8 +41,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain chain) throws ServletException, IOException {
-		if (!(properties.getAuth().getBasePath() + properties.getAuth().getPermitAllPath())
-			.equals(request.getRequestURI())) {
+		if (!properties.match(request.getRequestURI())) {
 			String authToken = request.getHeader(properties.getJwt().getHeader());
 			if (authToken != null && authToken.startsWith(properties.getJwt().getTokenPrefix())) {
 				authToken = authToken.substring(properties.getJwt().getTokenPrefix().length());

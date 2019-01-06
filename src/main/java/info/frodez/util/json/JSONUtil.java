@@ -3,12 +3,12 @@ package info.frodez.util.json;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-
-import info.frodez.util.result.Result;
-import info.frodez.util.result.ResultEnum;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 
 /**
  * json工具类
@@ -19,7 +19,10 @@ public class JSONUtil {
 
 	private static ObjectMapper objectMapper = new ObjectMapper()
 		.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
-		.configure(SerializationFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
+		.configure(SerializationFeature.WRITE_BIGDECIMAL_AS_PLAIN, true)
+		.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
+
+	private static TypeFactory typeFactory = objectMapper.getTypeFactory();
 
 	/**
 	 * 获取jackson对象
@@ -38,7 +41,7 @@ public class JSONUtil {
 	 */
 	public static String toJSONString(Object object) {
 		try {
-			return getInstance().writeValueAsString(object);
+			return objectMapper.writeValueAsString(object);
 		} catch (JsonProcessingException e) {
 			return null;
 		}
@@ -53,7 +56,7 @@ public class JSONUtil {
 	 */
 	public static <T> T toObject(String json, Class<T> klass) {
 		try {
-			return getInstance().readValue(json, klass);
+			return objectMapper.readValue(json, klass);
 		} catch (Exception e) {
 			return null;
 		}
@@ -62,13 +65,15 @@ public class JSONUtil {
 	/**
 	 * 将json字符串转换成Map,发生异常返回null
 	 * @author Frodez
+	 * @param <K>
+	 * @param <V>
 	 * @param json json字符串
 	 * @date 2018-12-02
 	 */
-	@SuppressWarnings("rawtypes")
-	public static Map toMap(String json) {
+	public static <K, V> Map<K, V> toMap(String json, Class<K> keyClass, Class<V> valueClass) {
 		try {
-			return getInstance().readValue(json, Map.class);
+			JavaType type = typeFactory.constructParametricType(Map.class, keyClass, valueClass);
+			return objectMapper.readValue(json, type);
 		} catch (Exception e) {
 			return null;
 		}
@@ -77,20 +82,35 @@ public class JSONUtil {
 	/**
 	 * 将json字符串转换成List,发生异常返回null
 	 * @author Frodez
+	 * @param <T>
 	 * @param json json字符串
 	 * @date 2018-12-02
 	 */
-	@SuppressWarnings("rawtypes")
-	public static List toList(String json) {
+	public static <T> List<T> toList(String json, Class<T> klass) {
 		try {
-			return getInstance().readValue(json, List.class);
+			JavaType type = typeFactory.constructParametricType(List.class, klass);
+			return objectMapper.readValue(json, type);
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
 	public static void main(String[] args) {
-		System.out.println(JSONUtil.toJSONString(new Result(ResultEnum.SUCCESS, "222")));
+		// Map<String, Result> map = new HashMap<>();
+		// map.put("111", new Result(ResultEnum.SUCCESS, "111"));
+		// map.put("222", new Result(ResultEnum.SUCCESS, "222"));
+		// map.put("333", new Result(ResultEnum.SUCCESS, "333"));
+		// String json = JSONUtil.toJSONString(map);
+		// Map<String, Result> resultMap = JSONUtil.toMap(json, String.class,
+		// Result.class);
+		// String json = JSONUtil.toJSONString(Arrays.asList(new
+		// Result(ResultEnum.SUCCESS, "222"),
+		// new Result(ResultEnum.SUCCESS, "222"), new Result(ResultEnum.SUCCESS,
+		// "222")));
+		// System.out.println(json);
+		// List<Result> results = JSONUtil.toList(json, Result.class);
+		// Result result = results.get(0);
+		// System.out.println(result.toString());
 	}
 
 }

@@ -1,5 +1,7 @@
 package info.frodez.config.security.settings;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -75,6 +77,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		List<String> permitAllPathList = properties.getAuth().getPermitAllPath();
 		http.cors().and().csrf().disable().exceptionHandling()
 			// 无权限时导向noAuthPoint
 			.authenticationEntryPoint(noAuthPoint).and().exceptionHandling()
@@ -82,10 +85,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			// 不创建session
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 			// 登录入口不控制
-			.antMatchers(properties.getAuth().getPermitAllPath()).permitAll()
-			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll().antMatchers("/swagger-resources/**")
-			.permitAll().antMatchers("/swagger-ui.html**").permitAll().antMatchers("/webjars/**")
-			.permitAll().anyRequest().authenticated().and()
+			.antMatchers(permitAllPathList.toArray(new String[permitAllPathList.size()]))
+			.permitAll().antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest()
+			.authenticated().and()
 			// 在密码验证过滤器前执行jwt过滤器
 			.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).headers()
 			.cacheControl(); // disable page caching
@@ -96,7 +98,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/swagger-resources/**", "/swagger-ui.html**", "/webjars/**");
 	}
 
 	/**

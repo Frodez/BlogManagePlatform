@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 用户登录请求参数
@@ -12,6 +13,7 @@ import lombok.Data;
  * @date 2018-12-02
  */
 @Data
+@NoArgsConstructor
 public class LoginDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;

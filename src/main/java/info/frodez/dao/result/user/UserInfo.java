@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 用户信息
@@ -11,6 +12,7 @@ import lombok.Data;
  * @date 2018-11-14
  */
 @Data
+@NoArgsConstructor
 public class UserInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;

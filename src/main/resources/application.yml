@@ -1,3 +1,10 @@
+logging:
+  level:
+    info:
+      frodez:
+        dao:
+          mapper: DEBUG
+
 mapper:
   identity: MYSQL
   mappers: info.frodez.config.mybatis.DataMapper
@@ -48,10 +55,3 @@ spring:
         min-idle: 10
   session:
     store-type: redis
-    
-logging:
-  level:
-    info:
-      frodez:
-        dao:
-          mapper: DEBUG

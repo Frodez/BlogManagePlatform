@@ -114,11 +114,10 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 	 * @date 2018-12-04
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public Result getAllPermissions() {
 		try {
 			String json = redisService.getString(Redis.User.PERMISSION_ALL);
-			List<Permission> permissions = JSONUtil.toList(json);
+			List<Permission> permissions = JSONUtil.toList(json, Permission.class);
 			if (permissions != null) {
 				return new Result(ResultEnum.SUCCESS, permissions);
 			}
