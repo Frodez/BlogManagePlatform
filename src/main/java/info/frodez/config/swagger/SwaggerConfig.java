@@ -11,10 +11,10 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.classmate.TypeResolver;
 
-import info.frodez.config.properties.PropertyKey;
-import info.frodez.config.properties.SpringProperties;
 import info.frodez.config.security.settings.SecurityProperties;
 import info.frodez.util.result.Result;
+import info.frodez.util.spring.properties.PropertyKey;
+import info.frodez.util.spring.properties.SpringProperties;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;

@@ -1,4 +1,4 @@
-package info.frodez.config.properties;
+package info.frodez.util.spring.properties;
 
 import java.util.Arrays;
 import java.util.List;

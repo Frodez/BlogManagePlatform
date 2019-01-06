@@ -9,8 +9,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PathMatcher;
 
-import info.frodez.config.properties.PropertyKey;
-import info.frodez.config.properties.SpringProperties;
+import info.frodez.util.spring.properties.PropertyKey;
+import info.frodez.util.spring.properties.SpringProperties;
 import lombok.Data;
 
 /**

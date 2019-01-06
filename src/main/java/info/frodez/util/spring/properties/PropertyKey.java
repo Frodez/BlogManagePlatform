@@ -1,4 +1,4 @@
-package info.frodez.config.properties;
+package info.frodez.util.spring.properties;
 
 /**
  * spring配置key常量<br>
