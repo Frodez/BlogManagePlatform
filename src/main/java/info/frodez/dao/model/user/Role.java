@@ -52,7 +52,7 @@ public class Role implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "level")
-	private Byte level;
+	private Byte level = (byte) 0;
 
 	/**
 	 * 描述

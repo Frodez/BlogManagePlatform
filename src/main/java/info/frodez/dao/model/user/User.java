@@ -77,7 +77,7 @@ public class User implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "status")
-	private Byte status;
+	private Byte status = (byte) 1;
 
 	/**
 	 * 角色ID

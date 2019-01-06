@@ -45,7 +45,7 @@ public class Permission implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "type")
-	private Byte type;
+	private Byte type = (byte) 0;
 
 	/**
 	 * 权限名称
