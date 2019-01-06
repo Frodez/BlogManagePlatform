@@ -4,23 +4,18 @@
     "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
-	<classPathEntry
-		location="D:\Code\mysql-connector-java-8.0.13.jar" />
-	<context id="Mysql" targetRuntime="MyBatis3Simple"
-		defaultModelType="flat">
+	<classPathEntry location="D:\Code\mysql-connector-java-8.0.13.jar" />
+	<context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
 		<property name="beginningDelimiter" value="`" />
 		<property name="endingDelimiter" value="`" />
 		<property name="javaFileEncoding" value="utf-8" />
-		<property name="javaFormatter"
-			value="org.mybatis.generator.api.dom.DefaultJavaFormatter" />
-		<property name="xmlFormatter"
-			value="info.frodez.config.mybatis.CustomXmlFormatter" />
+		<property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter" />
+		<property name="xmlFormatter" value="info.frodez.config.mybatis.CustomXmlFormatter" />
 
 		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
 		<plugin type="info.frodez.config.mybatis.CustomSettingsPlugin" />
 
-		<commentGenerator
-			type="info.frodez.config.mybatis.CustomCommentGenerator">
+		<commentGenerator type="info.frodez.config.mybatis.CustomCommentGenerator">
 			<property name="suppressAllComments" value="true" />
 			<property name="suppressDate" value="true" />
 		</commentGenerator>
@@ -31,27 +26,22 @@
 			userId="root" password="123456">
 		</jdbcConnection>
 
-		<javaTypeResolver
-			type="org.mybatis.generator.internal.types.JavaTypeResolverDefaultImpl">
+		<javaTypeResolver type="org.mybatis.generator.internal.types.JavaTypeResolverDefaultImpl">
 			<property name="forceBigDecimals" value="true" />
 		</javaTypeResolver>
 
 		<!-- model包路径 -->
-		<javaModelGenerator
-			targetPackage="info.frodez.dao.model.user"
+		<javaModelGenerator targetPackage="info.frodez.dao.model.user"
 			targetProject="BlogManagePlatform/src/main/java" />
 		<!-- mapper.xml包路径 -->
-		<sqlMapGenerator
-			targetPackage="info.frodez.dao.mapper.user"
+		<sqlMapGenerator targetPackage="info.frodez.dao.mapper.user"
 			targetProject="BlogManagePlatform/src/main/java" />
 		<!-- mapper包路径 -->
-		<javaClientGenerator
-			targetPackage="info.frodez.dao.mapper.user"
+		<javaClientGenerator targetPackage="info.frodez.dao.mapper.user"
 			targetProject="BlogManagePlatform/src/main/java" type="XMLMAPPER" />
 		<!-- 表配置 -->
 		<table tableName="tb_user" domainObjectName="User">
-			<generatedKey column="id" sqlStatement="Mysql"
-				identity="true" />
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
 		</table>
 	</context>
 </generatorConfiguration>

@@ -85,12 +85,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			// 不创建session
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 			// 登录入口不控制
-			.antMatchers(permitAllPathList.toArray(new String[permitAllPathList.size()]))
-			.permitAll().antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest()
-			.authenticated().and()
+			.antMatchers(permitAllPathList.toArray(new String[permitAllPathList.size()])).permitAll()
+			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated().and()
 			// 在密码验证过滤器前执行jwt过滤器
-			.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).headers()
-			.cacheControl(); // disable page caching
+			.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).headers().cacheControl(); // disable
+																											// page
+																											// caching
 	}
 
 	/**

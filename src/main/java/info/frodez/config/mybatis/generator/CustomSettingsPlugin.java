@@ -38,8 +38,8 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass,
 		IntrospectedTable introspectedTable) {
 		// 获取实体类
-		FullyQualifiedJavaType entityType = new FullyQualifiedJavaType(
-			introspectedTable.getBaseRecordType());
+		FullyQualifiedJavaType entityType =
+			new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
 		// import实体类
 		interfaze.addImportedType(entityType);
 		// import接口
@@ -47,10 +47,8 @@ public class CustomSettingsPlugin extends PluginAdapter {
 		interfaze.addSuperInterface(
 			new FullyQualifiedJavaType(MAPPER_NAME + "<" + entityType.getShortName() + ">"));
 		// import Spring Repository注解
-		interfaze.addImportedType(
-			new FullyQualifiedJavaType("org.springframework.stereotype.Repository"));
-		interfaze
-			.addImportedType(new FullyQualifiedJavaType("org.apache.ibatis.annotations.Mapper"));
+		interfaze.addImportedType(new FullyQualifiedJavaType("org.springframework.stereotype.Repository"));
+		interfaze.addImportedType(new FullyQualifiedJavaType("org.apache.ibatis.annotations.Mapper"));
 		interfaze.addAnnotation("@Repository");
 		interfaze.addAnnotation("@Mapper");
 		interfaze.addJavaDocLine("/**");
@@ -93,8 +91,8 @@ public class CustomSettingsPlugin extends PluginAdapter {
 
 	// 下面所有return false的方法都不生成。这些都是基础的CURD方法，使用通用Mapper实现
 	@Override
-	public boolean clientDeleteByPrimaryKeyMethodGenerated(Method method,
-		TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+	public boolean clientDeleteByPrimaryKeyMethodGenerated(Method method, TopLevelClass topLevelClass,
+		IntrospectedTable introspectedTable) {
 		return false;
 	}
 
@@ -111,8 +109,8 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	}
 
 	@Override
-	public boolean clientSelectByPrimaryKeyMethodGenerated(Method method,
-		TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+	public boolean clientSelectByPrimaryKeyMethodGenerated(Method method, TopLevelClass topLevelClass,
+		IntrospectedTable introspectedTable) {
 		return false;
 	}
 
@@ -171,20 +169,20 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	}
 
 	@Override
-	public boolean clientUpdateByPrimaryKeySelectiveMethodGenerated(Method method,
-		Interface interfaze, IntrospectedTable introspectedTable) {
+	public boolean clientUpdateByPrimaryKeySelectiveMethodGenerated(Method method, Interface interfaze,
+		IntrospectedTable introspectedTable) {
 		return false;
 	}
 
 	@Override
-	public boolean clientUpdateByPrimaryKeyWithBLOBsMethodGenerated(Method method,
-		Interface interfaze, IntrospectedTable introspectedTable) {
+	public boolean clientUpdateByPrimaryKeyWithBLOBsMethodGenerated(Method method, Interface interfaze,
+		IntrospectedTable introspectedTable) {
 		return false;
 	}
 
 	@Override
-	public boolean clientUpdateByPrimaryKeyWithoutBLOBsMethodGenerated(Method method,
-		Interface interfaze, IntrospectedTable introspectedTable) {
+	public boolean clientUpdateByPrimaryKeyWithoutBLOBsMethodGenerated(Method method, Interface interfaze,
+		IntrospectedTable introspectedTable) {
 		return false;
 	}
 
@@ -201,8 +199,7 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	}
 
 	@Override
-	public boolean sqlMapInsertElementGenerated(XmlElement element,
-		IntrospectedTable introspectedTable) {
+	public boolean sqlMapInsertElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
 		return false;
 	}
 
@@ -243,8 +240,7 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	}
 
 	@Override
-	public boolean providerGenerated(TopLevelClass topLevelClass,
-		IntrospectedTable introspectedTable) {
+	public boolean providerGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 		return false;
 	}
 
@@ -255,8 +251,8 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	}
 
 	@Override
-	public boolean providerInsertSelectiveMethodGenerated(Method method,
-		TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+	public boolean providerInsertSelectiveMethodGenerated(Method method, TopLevelClass topLevelClass,
+		IntrospectedTable introspectedTable) {
 		return false;
 	}
 

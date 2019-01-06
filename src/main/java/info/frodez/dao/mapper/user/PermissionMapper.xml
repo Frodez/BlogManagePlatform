@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="info.frodez.dao.mapper.user.PermissionMapper">
 
-	<select id="getPermissions"
-		resultType="info.frodez.dao.result.user.PermissionInfo">
+	<select id="getPermissions" resultType="info.frodez.dao.result.user.PermissionInfo">
 		SELECT
 		tb_permission.id AS id,
 		tb_permission.type AS type,
@@ -12,9 +11,10 @@
 		tb_permission.description AS description
 		FROM
 		tb_permission
-		INNER JOIN tb_role_permission ON tb_role_permission.permission_id =
-		tb_permission.id
-		AND tb_role_permission.role_id = #{roleId}
+		INNER JOIN tb_role_permission ON
+		tb_role_permission.permission_id = tb_permission.id
+		AND
+		tb_role_permission.role_id = #{roleId}
 	</select>
 
 </mapper>

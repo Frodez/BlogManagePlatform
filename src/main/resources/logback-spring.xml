@@ -3,24 +3,20 @@
 
 	<contextName>logback</contextName>
 
-	<!-- #%m 输出代码中指定的消息 #%p 输出优先级，即DEBUG，INFO，WARN，ERROR，FATAL #%r 输出自应用启动到输出该log信息耗费的毫秒数 
-		#%c 输出所属的类目，通常就是所在类的全名 #%t 输出产生该日志事件的线程名 #%n 输出一个回车换行符，Windows平台为“\r\n”，Unix平台为“\n” 
-		#%d 输出日志时间点的日期或时间，默认格式为ISO8601，也可以在其后指定格式，比如：%d{yyy MMM dd HH:mm:ss , SSS} 
-		#%l 输出日志事件的发生位置，包括类目名、发生的线程，以及在代码中的行数 -->
+	<!-- #%m 输出代码中指定的消息 #%p 输出优先级，即DEBUG，INFO，WARN，ERROR，FATAL #%r 输出自应用启动到输出该log信息耗费的毫秒数 #%c 输出所属的类目，通常就是所在类的全名 
+		#%t 输出产生该日志事件的线程名 #%n 输出一个回车换行符，Windows平台为“\r\n”，Unix平台为“\n” #%d 输出日志时间点的日期或时间，默认格式为ISO8601，也可以在其后指定格式，比如：%d{yyy 
+		MMM dd HH:mm:ss , SSS} #%l 输出日志事件的发生位置，包括类目名、发生的线程，以及在代码中的行数 -->
 	<!-- 格式化输出：%date表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度 %msg：日志消息，%n是换行符 -->
-	<property name="LOG_PATTERN"
-		value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %c{1}:%L - %m%n" />
+	<property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %c{1}:%L - %m%n" />
 
 	<!-- 定义日志存储的路径，不要配置相对路径 -->
 	<property name="FILE_PATH"
 		value="D:/Code/eclipse/Logs/BlogManagePlatform/blog-%d{yyyy-MM-dd}-%i.log" />
 
-	<!-- #org.apache.log4j.ConsoleAppender（控制台） #org.apache.log4j.FileAppender（文件） 
-		#org.apache.log4j.DailyRollingFileAppender（每天产生一个日志文件） #org.apache.log4j.RollingFileAppender（文件大小到达指定尺寸的时候产生一个新的文件） 
-		#org.apache.log4j.WriterAppender（将日志信息以流格式发送到任意指定的地方） -->
+	<!-- #org.apache.log4j.ConsoleAppender（控制台） #org.apache.log4j.FileAppender（文件） #org.apache.log4j.DailyRollingFileAppender（每天产生一个日志文件） 
+		#org.apache.log4j.RollingFileAppender（文件大小到达指定尺寸的时候产生一个新的文件） #org.apache.log4j.WriterAppender（将日志信息以流格式发送到任意指定的地方） -->
 	<!-- 控制台输出日志 -->
-	<appender name="console"
-		class="ch.qos.logback.core.ConsoleAppender">
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 		<!-- 日志级别过滤INFO以下 -->
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
 			<level>DEBUG</level>
@@ -31,10 +27,8 @@
 	</appender>
 
 	<!--每天生成一个日志文件，保存30天的日志文件。rollingFile用来切分文件的 -->
-	<appender name="rollingFile"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<rollingPolicy
-			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+	<appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>${FILE_PATH}</fileNamePattern>
 			<maxHistory>30</maxHistory>
 			<timeBasedFileNamingAndTriggeringPolicy

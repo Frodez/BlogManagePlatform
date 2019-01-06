@@ -10,8 +10,8 @@ mapper:
   mappers: info.frodez.config.mybatis.DataMapper
   
 mybatis:
-  mapper-locations: classpath:info/frodez/data/mapper/*Mapper.xml
-  type-aliases-package: info.frodez.data.model
+  mapper-locations: classpath:info/frodez/dao/mapper/*Mapper.xml
+  type-aliases-package: info.frodez.dao.model
   
 pagehelper:
   helperDialect: mysql

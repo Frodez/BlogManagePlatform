@@ -15,15 +15,11 @@ public enum UserStatusEnum {
 	/**
 	 * 0:禁用
 	 */
-	FORBIDDEN(
-		(byte) 0, "禁用"
-	),
+	FORBIDDEN((byte) 0, "禁用"),
 	/**
 	 * 1:正常
 	 */
-	NORMAL(
-		(byte) 1, "正常"
-	);
+	NORMAL((byte) 1, "正常");
 
 	private byte value;
 

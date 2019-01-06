@@ -6,10 +6,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PathMatcher;
 
+import info.frodez.config.properties.PropertyKey;
+import info.frodez.config.properties.SpringProperties;
 import lombok.Data;
 
 /**
@@ -27,7 +28,7 @@ public class SecurityProperties {
 	 * spring环境参数配置
 	 */
 	@Autowired
-	private Environment env;
+	private SpringProperties springProperties;
 
 	/**
 	 * spring路径匹配器
@@ -133,20 +134,11 @@ public class SecurityProperties {
 	 */
 	public boolean match(String url) {
 		for (String path : auth.getPermitAllPath()) {
-			if (matcher.match(basePath() + path, url)) {
+			if (matcher.match(springProperties.get(PropertyKey.Web.BASE_PATH) + path, url)) {
 				return true;
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * 获取项目根路径
-	 * @author Frodez
-	 * @date 2019-01-06
-	 */
-	public String basePath() {
-		return env.getProperty("server.servlet.context-path");
 	}
 
 }

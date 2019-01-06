@@ -44,8 +44,7 @@ public class AuthorityManager implements AccessDecisionManager {
 	 * @date 2018-12-03
 	 */
 	@Override
-	public void decide(Authentication authentication, Object object,
-		Collection<ConfigAttribute> attributes)
+	public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> attributes)
 		throws AccessDeniedException, InsufficientAuthenticationException {
 		// 如果是免验证路径,则直接放行
 		HttpServletRequest request = ((FilterInvocation) object).getHttpRequest();
@@ -55,8 +54,8 @@ public class AuthorityManager implements AccessDecisionManager {
 		if (CollectionUtils.isEmpty(authentication.getAuthorities())) {
 			throw new AccessDeniedException("无访问权限!");
 		}
-		List<String> attributeList = attributes.stream().map(ConfigAttribute::getAttribute)
-			.collect(Collectors.toList());
+		List<String> attributeList =
+			attributes.stream().map(ConfigAttribute::getAttribute).collect(Collectors.toList());
 		// 当包含无访问权限时,直接驳回
 		if (attributeList.contains(properties.getAuth().getDeniedRole())) {
 			throw new AccessDeniedException("无访问权限!");

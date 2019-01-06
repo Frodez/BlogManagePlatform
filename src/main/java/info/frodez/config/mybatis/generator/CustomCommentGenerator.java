@@ -23,8 +23,7 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 	 * @date 2018-12-13
 	 */
 	@Override
-	public void addModelClassComment(TopLevelClass topLevelClass,
-		IntrospectedTable introspectedTable) {
+	public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 		topLevelClass.addImportedType("lombok.Data");
 		topLevelClass.addImportedType("lombok.NoArgsConstructor");
 		topLevelClass.addImportedType("javax.persistence.Id");

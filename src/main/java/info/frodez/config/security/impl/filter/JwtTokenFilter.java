@@ -47,12 +47,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 				authToken = authToken.substring(properties.getJwt().getTokenPrefix().length());
 				// 将携带的token还原成用户信息
 				UserDetails user = jwtTokenUtil.verify(authToken);
-				if (user != null
-					&& SecurityContextHolder.getContext().getAuthentication() == null) {
-					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-						user, null, user.getAuthorities());
-					authentication
-						.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+					UsernamePasswordAuthenticationToken authentication =
+						new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+					authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 					SecurityContextHolder.getContext().setAuthentication(authentication);
 				}
 			}

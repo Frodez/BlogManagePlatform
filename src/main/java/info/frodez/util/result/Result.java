@@ -76,8 +76,8 @@ public class Result {
 	 * @param klass 类型
 	 * @date 2018-11-13
 	 */
-	@SuppressWarnings("unchecked")
 	@JsonIgnore
+	@SuppressWarnings("unchecked")
 	public <T> List<T> getListData(Class<T> klass) {
 		if (data == null) {
 			throw new NullPointerException("数据为空!");
@@ -91,8 +91,8 @@ public class Result {
 	 * @param klass 类型
 	 * @date 2018-11-13
 	 */
-	@SuppressWarnings("unchecked")
 	@JsonIgnore
+	@SuppressWarnings("unchecked")
 	public <T> Set<T> getSetData(Class<T> klass) {
 		if (data == null) {
 			throw new NullPointerException("数据为空!");
@@ -106,8 +106,8 @@ public class Result {
 	 * @param klass 类型
 	 * @date 2018-11-13
 	 */
-	@SuppressWarnings("unchecked")
 	@JsonIgnore
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> getMapData() {
 		if (data == null) {
 			throw new NullPointerException("数据为空!");
@@ -121,8 +121,8 @@ public class Result {
 	 * @param klass 类型
 	 * @date 2018-11-13
 	 */
-	@SuppressWarnings("unchecked")
 	@JsonIgnore
+	@SuppressWarnings("unchecked")
 	public <K, V> Map<K, V> getMapData(Class<K> keyClass, Class<V> valueClass) {
 		if (data == null) {
 			throw new NullPointerException("数据为空!");

@@ -54,8 +54,8 @@ public class NoRepeatAop {
 	 */
 	@Before("@annotation(info.frodez.config.aop.request.NoRepeat)")
 	public void before(JoinPoint joinPoint) throws Exception {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-			.getRequestAttributes()).getRequest();
+		HttpServletRequest request =
+			((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		NoRepeat noRepeat = getNoRepeatAnnotation(joinPoint);
 		String key = getKey(noRepeat, request);
 		if (redisService.exists(key)) {
@@ -77,8 +77,8 @@ public class NoRepeatAop {
 	 */
 	@After("@annotation(info.frodez.config.aop.request.NoRepeat)")
 	public void after(JoinPoint joinPoint) {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-			.getRequestAttributes()).getRequest();
+		HttpServletRequest request =
+			((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		NoRepeat noRepeat = getNoRepeatAnnotation(joinPoint);
 		if (noRepeat.timeout() <= 0) {
 			// 如果设置了超时时间,则不手动删除redis中key
@@ -93,8 +93,8 @@ public class NoRepeatAop {
 	 * @date 2018-12-21
 	 */
 	private NoRepeat getNoRepeatAnnotation(JoinPoint joinPoint) {
-		Annotation[] annotations = ((MethodSignature) joinPoint.getSignature()).getMethod()
-			.getDeclaredAnnotations();
+		Annotation[] annotations =
+			((MethodSignature) joinPoint.getSignature()).getMethod().getDeclaredAnnotations();
 		for (Annotation annotation : annotations) {
 			if (annotation.annotationType() == NoRepeat.class) {
 				return (NoRepeat) annotation;

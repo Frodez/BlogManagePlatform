@@ -39,11 +39,10 @@ public class JwtTokenUtil {
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(config.getJwt().getSecret());
 			Long systemTime = System.currentTimeMillis();
-			return JWT.create().withIssuer(config.getJwt().getIssuer())
-				.withIssuedAt(new Date(systemTime))
+			return JWT.create().withIssuer(config.getJwt().getIssuer()).withIssuedAt(new Date(systemTime))
 				.withExpiresAt(new Date(systemTime + config.getJwt().getExpiration() * 1000))
-				.withSubject(user.getUsername()).withArrayClaim(config.getJwt().getAuthorityClaim(),
-					AuthorityUtil.getAuthorities(user))
+				.withSubject(user.getUsername())
+				.withArrayClaim(config.getJwt().getAuthorityClaim(), AuthorityUtil.getAuthorities(user))
 				.sign(algorithm);
 		} catch (Exception e) {
 			return null;
@@ -60,8 +59,7 @@ public class JwtTokenUtil {
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(config.getJwt().getSecret());
 			Long systemTime = System.currentTimeMillis();
-			return JWT.create().withIssuer(config.getJwt().getIssuer())
-				.withIssuedAt(new Date(systemTime))
+			return JWT.create().withIssuer(config.getJwt().getIssuer()).withIssuedAt(new Date(systemTime))
 				.withExpiresAt(new Date(systemTime + config.getJwt().getExpiration() * 1000))
 				.withSubject(username).withArrayClaim(config.getJwt().getAuthorityClaim(),
 					authorities.stream().toArray(String[]::new))
@@ -83,8 +81,7 @@ public class JwtTokenUtil {
 		}
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(config.getJwt().getSecret());
-			JWTVerifier verifier = JWT.require(algorithm).withIssuer(config.getJwt().getIssuer())
-				.build();
+			JWTVerifier verifier = JWT.require(algorithm).withIssuer(config.getJwt().getIssuer()).build();
 			DecodedJWT jwt = verifier.verify(token);
 			return new User(jwt.getSubject(), "N/A", AuthorityUtil.createGrantedAuthorities(
 				jwt.getClaim(config.getJwt().getAuthorityClaim()).asArray(String.class)));
