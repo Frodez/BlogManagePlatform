@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,12 +17,15 @@ import info.frodez.service.user.IUserAuthorityService;
 import info.frodez.util.result.Result;
 import info.frodez.util.result.ResultEnum;
 import info.frodez.util.validation.ValidationUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 登录控制器
  * @author Frodez
  * @date 2018-12-01
  */
+@Api
 @RestController
 @RequestMapping("/login")
 public class LoginController {
@@ -43,8 +47,9 @@ public class LoginController {
 	 * @author Frodez
 	 * @date 2018-12-21
 	 */
+	@ApiOperation(value = "")
 	@NoRepeat(Repeat.Login.AUTH)
-	@RequestMapping("/auth")
+	@PostMapping("/auth")
 	public Result auth(@RequestBody LoginDTO param) {
 		String msg = ValidationUtil.validate(param);
 		if (!StringUtils.isBlank(msg)) {

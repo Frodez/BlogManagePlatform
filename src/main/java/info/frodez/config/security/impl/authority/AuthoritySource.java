@@ -56,7 +56,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 * 访问控制参数配置
 	 */
 	@Autowired
-	private SecurityProperties properties;
+	private SecurityProperties securityProperties;
 
 	/**
 	 * 根据url和请求方式,获取对应的权限
@@ -65,9 +65,9 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 */
 	@Override
 	public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
-		List<Permission> permissions =
-			userAuthorityService.getAllPermissions().parseList(Permission.class);
+		List<Permission> permissions = userAuthorityService.getAllPermissions().parseList(Permission.class);
 		FilterInvocation invocation = (FilterInvocation) object;
+		// 这里的url是截去根路径后的url
 		String url = invocation.getRequestUrl();
 		String method = invocation.getHttpRequest().getMethod();
 		Collection<ConfigAttribute> attributes = new ArrayList<>();
@@ -123,7 +123,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 			}
 		}
 		if (CollectionUtils.isEmpty(attributes)) {
-			attributes.add(new SecurityConfig(properties.getAuth().getDeniedRole()));
+			attributes.add(new SecurityConfig(securityProperties.getAuth().getDeniedRole()));
 		}
 		return attributes;
 	}

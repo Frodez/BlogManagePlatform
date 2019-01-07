@@ -8,6 +8,8 @@ logging:
 mapper:
   identity: MYSQL
   mappers: info.frodez.config.mybatis.DataMapper
+  safeDelete: true
+  safeUpdate: true
   
 mybatis:
   mapper-locations: classpath:info/frodez/dao/mapper/*Mapper.xml
@@ -35,6 +37,7 @@ spring:
       repositories:
         enabled: true
   datasource:
+    type: com.zaxxer.hikari.HikariDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
     password: 123456
     url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
