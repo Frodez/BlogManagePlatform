@@ -66,7 +66,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	@Override
 	public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
 		List<Permission> permissions =
-			userAuthorityService.getAllPermissions().getListData(Permission.class);
+			userAuthorityService.getAllPermissions().parseList(Permission.class);
 		FilterInvocation invocation = (FilterInvocation) object;
 		String url = invocation.getRequestUrl();
 		String method = invocation.getHttpRequest().getMethod();

@@ -6,6 +6,7 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -17,12 +18,17 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
  */
 public class JSONUtil {
 
-	private static final ObjectMapper objectMapper = new ObjectMapper()
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
 		.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
+		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 		.configure(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN, true)
 		.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
 
-	private static final TypeFactory typeFactory = objectMapper.getTypeFactory();
+	private static final TypeFactory TYPE_FACTORY = OBJECT_MAPPER.getTypeFactory();
+
+	private JSONUtil() {
+
+	}
 
 	/**
 	 * 获取jackson对象
@@ -30,7 +36,7 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static ObjectMapper getInstance() {
-		return objectMapper;
+		return OBJECT_MAPPER;
 	}
 
 	/**
@@ -41,7 +47,7 @@ public class JSONUtil {
 	 */
 	public static String toJSONString(Object object) {
 		try {
-			return objectMapper.writeValueAsString(object);
+			return OBJECT_MAPPER.writeValueAsString(object);
 		} catch (JsonProcessingException e) {
 			return null;
 		}
@@ -56,7 +62,7 @@ public class JSONUtil {
 	 */
 	public static <T> T toObject(String json, Class<T> klass) {
 		try {
-			return objectMapper.readValue(json, klass);
+			return OBJECT_MAPPER.readValue(json, klass);
 		} catch (Exception e) {
 			return null;
 		}
@@ -72,7 +78,7 @@ public class JSONUtil {
 	 */
 	public static <K, V> Map<K, V> toMap(String json, Class<K> k, Class<V> v) {
 		try {
-			return objectMapper.readValue(json, typeFactory.constructParametricType(Map.class, k, v));
+			return OBJECT_MAPPER.readValue(json, TYPE_FACTORY.constructParametricType(Map.class, k, v));
 		} catch (Exception e) {
 			return null;
 		}
@@ -87,10 +93,22 @@ public class JSONUtil {
 	 */
 	public static <T> List<T> toList(String json, Class<T> klass) {
 		try {
-			return objectMapper.readValue(json, typeFactory.constructParametricType(List.class, klass));
+			return OBJECT_MAPPER.readValue(json, TYPE_FACTORY.constructParametricType(List.class, klass));
 		} catch (Exception e) {
 			return null;
 		}
 	}
+
+//	public static void main(String[] args) {
+//		List<Result> results = new ArrayList<>();
+//		for(int i = 0; i < 10000000; i++) {
+//			results.add(new Result(ResultEnum.SUCCESS, Math.random()));
+//		}
+//		long start = System.currentTimeMillis();
+//		for(int i = 0; i < 10000000; i++) {
+//			JSONUtil.toJSONString(results.get(i));
+//		}
+//		System.out.println(System.currentTimeMillis() - start);
+//	}
 
 }

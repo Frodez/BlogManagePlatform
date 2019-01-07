@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import info.frodez.util.json.JSONUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -62,8 +59,7 @@ public class Result {
 	 * @param klass 类型
 	 * @date 2018-11-13
 	 */
-	@JsonIgnore
-	public <T> T getData(Class<T> klass) {
+	public <T> T parse(Class<T> klass) {
 		if (data == null) {
 			throw new NullPointerException("数据为空!");
 		}
@@ -76,9 +72,8 @@ public class Result {
 	 * @param klass 类型
 	 * @date 2018-11-13
 	 */
-	@JsonIgnore
 	@SuppressWarnings("unchecked")
-	public <T> List<T> getListData(Class<T> klass) {
+	public <T> List<T> parseList(Class<T> klass) {
 		if (data == null) {
 			throw new NullPointerException("数据为空!");
 		}
@@ -91,9 +86,8 @@ public class Result {
 	 * @param klass 类型
 	 * @date 2018-11-13
 	 */
-	@JsonIgnore
 	@SuppressWarnings("unchecked")
-	public <T> Set<T> getSetData(Class<T> klass) {
+	public <T> Set<T> parseSet(Class<T> klass) {
 		if (data == null) {
 			throw new NullPointerException("数据为空!");
 		}
@@ -106,9 +100,8 @@ public class Result {
 	 * @param klass 类型
 	 * @date 2018-11-13
 	 */
-	@JsonIgnore
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> getMapData() {
+	public Map<String, Object> parseMap() {
 		if (data == null) {
 			throw new NullPointerException("数据为空!");
 		}
@@ -121,9 +114,8 @@ public class Result {
 	 * @param klass 类型
 	 * @date 2018-11-13
 	 */
-	@JsonIgnore
 	@SuppressWarnings("unchecked")
-	public <K, V> Map<K, V> getMapData(Class<K> keyClass, Class<V> valueClass) {
+	public <K, V> Map<K, V> parseMap(Class<K> keyClass, Class<V> valueClass) {
 		if (data == null) {
 			throw new NullPointerException("数据为空!");
 		}
@@ -135,8 +127,7 @@ public class Result {
 	 * @author Frodez
 	 * @date 2018-11-13
 	 */
-	@JsonIgnore
-	public boolean isSuccess() {
+	public boolean success() {
 		return status == ResultUtil.SUCCESS_VALUE;
 	}
 
@@ -145,8 +136,7 @@ public class Result {
 	 * @author Frodez
 	 * @date 2018-11-13
 	 */
-	@JsonIgnore
-	public boolean isNotSuccess() {
+	public boolean notSuccess() {
 		return status != ResultUtil.SUCCESS_VALUE;
 	}
 
@@ -157,11 +147,7 @@ public class Result {
 	 */
 	@Override
 	public String toString() {
-		try {
-			return JSONUtil.getInstance().writeValueAsString(this);
-		} catch (JsonProcessingException e) {
-			return null;
-		}
+		return JSONUtil.toJSONString(this);
 	}
 
 }

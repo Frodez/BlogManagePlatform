@@ -29,10 +29,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Result result = userAuthorityService.getUserInfoByName(username);
-		if (!result.isSuccess()) {
+		if (!result.success()) {
 			throw new UsernameNotFoundException(result.getMessage());
 		}
-		UserInfo userInfo = result.getData(UserInfo.class);
+		UserInfo userInfo = result.parse(UserInfo.class);
 		return new User(userInfo.getName(), userInfo.getPassword(),
 			AuthorityUtil.createGrantedAuthorities(userInfo.getPermissionList()));
 	}
