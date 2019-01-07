@@ -1,5 +1,7 @@
 package info.frodez.util.result;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,38 +12,38 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum ResultEnum {
+public enum ResultEnum implements Serializable {
 
 	/**
 	 * 操作成功,与预期相符
 	 */
-	SUCCESS(ResultUtil.SUCCESS_VALUE, "成功"),
+	SUCCESS(1000, "成功"),
 	/**
 	 * 操作失败,与预期不符
 	 */
-	FAIL(ResultUtil.FAIL_VALUE, "失败"),
+	FAIL(1001, "失败"),
 	/**
 	 * 用户未登录
 	 */
-	NOT_LOGIN(ResultUtil.NOT_LOGIN_VALUE, "未登录"),
+	NOT_LOGIN(2001, "未登录"),
 	/**
 	 * 未通过验证
 	 */
-	NO_AUTH(ResultUtil.NO_AUTH_VALUE, "未通过验证"),
+	NO_AUTH(2002, "未通过验证"),
 	/**
 	 * 缺少操作权限
 	 */
-	NO_ACCESS(ResultUtil.NO_ACCESS_VALUE, "无权限"),
+	NO_ACCESS(2003, "无权限"),
 	/**
 	 * 重复请求
 	 */
-	REPEAT_REQUEST(ResultUtil.REPEAT_REQUEST_VALUE, "重复请求");
+	REPEAT_REQUEST(2004, "重复请求");
 
-	private byte value;
+	private int value;
 
 	private String description;
 
-	public ResultEnum of(byte value) {
+	public ResultEnum of(int value) {
 		for (ResultEnum iter : ResultEnum.values()) {
 			if (iter.value == value) {
 				return iter;

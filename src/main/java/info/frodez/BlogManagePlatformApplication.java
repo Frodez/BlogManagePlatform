@@ -3,7 +3,6 @@ package info.frodez;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
-import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.autoconfigure.batch.BatchAutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.cassandra.CassandraAutoConfiguration;
@@ -94,18 +93,18 @@ import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServlet
  * @author Frodez
  * @date 2019-01-07
  */
-@SpringBootApplication(exclude = { ActiveMQAutoConfiguration.class, AopAutoConfiguration.class,
-	ArtemisAutoConfiguration.class, BatchAutoConfiguration.class, CacheAutoConfiguration.class,
-	CassandraAutoConfiguration.class, CassandraDataAutoConfiguration.class,
-	CassandraReactiveDataAutoConfiguration.class, CassandraReactiveRepositoriesAutoConfiguration.class,
-	CassandraRepositoriesAutoConfiguration.class, ClientHttpConnectorAutoConfiguration.class,
-	CloudServiceConnectorsAutoConfiguration.class, CouchbaseAutoConfiguration.class,
-	CouchbaseDataAutoConfiguration.class, CouchbaseReactiveDataAutoConfiguration.class,
-	CouchbaseReactiveRepositoriesAutoConfiguration.class, CouchbaseRepositoriesAutoConfiguration.class,
-	XADataSourceAutoConfiguration.class, WebSocketServletAutoConfiguration.class,
-	WebSocketMessagingAutoConfiguration.class, WebSocketReactiveAutoConfiguration.class,
-	WebServicesAutoConfiguration.class, WebServiceTemplateAutoConfiguration.class,
-	WebFluxAutoConfiguration.class, WebClientAutoConfiguration.class, ThymeleafAutoConfiguration.class,
+@SpringBootApplication(exclude = { ActiveMQAutoConfiguration.class, ArtemisAutoConfiguration.class,
+	BatchAutoConfiguration.class, CacheAutoConfiguration.class, CassandraAutoConfiguration.class,
+	CassandraDataAutoConfiguration.class, CassandraReactiveDataAutoConfiguration.class,
+	CassandraReactiveRepositoriesAutoConfiguration.class, CassandraRepositoriesAutoConfiguration.class,
+	ClientHttpConnectorAutoConfiguration.class, CloudServiceConnectorsAutoConfiguration.class,
+	CouchbaseAutoConfiguration.class, CouchbaseDataAutoConfiguration.class,
+	CouchbaseReactiveDataAutoConfiguration.class, CouchbaseReactiveRepositoriesAutoConfiguration.class,
+	CouchbaseRepositoriesAutoConfiguration.class, XADataSourceAutoConfiguration.class,
+	WebSocketServletAutoConfiguration.class, WebSocketMessagingAutoConfiguration.class,
+	WebSocketReactiveAutoConfiguration.class, WebServicesAutoConfiguration.class,
+	WebServiceTemplateAutoConfiguration.class, WebFluxAutoConfiguration.class,
+	WebClientAutoConfiguration.class, ThymeleafAutoConfiguration.class,
 	TaskSchedulingAutoConfiguration.class, SessionAutoConfiguration.class, SolrAutoConfiguration.class,
 	SolrRepositoriesAutoConfiguration.class, SendGridAutoConfiguration.class,
 	UserDetailsServiceAutoConfiguration.class, RepositoryRestMvcAutoConfiguration.class,

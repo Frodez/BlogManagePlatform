@@ -20,7 +20,7 @@ public class Result {
 	/**
 	 * 状态
 	 */
-	private Byte status;
+	private Integer status;
 
 	/**
 	 * 消息
@@ -128,7 +128,7 @@ public class Result {
 	 * @date 2018-11-13
 	 */
 	public boolean success() {
-		return status == ResultUtil.SUCCESS_VALUE;
+		return status == ResultEnum.SUCCESS.getValue();
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class Result {
 	 * @date 2018-11-13
 	 */
 	public boolean notSuccess() {
-		return status != ResultUtil.SUCCESS_VALUE;
+		return status != ResultEnum.SUCCESS.getValue();
 	}
 
 	/**
