@@ -3,9 +3,9 @@ package info.frodez.util.json;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -17,12 +17,12 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
  */
 public class JSONUtil {
 
-	private static ObjectMapper objectMapper = new ObjectMapper()
+	private static final ObjectMapper objectMapper = new ObjectMapper()
 		.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
-		.configure(SerializationFeature.WRITE_BIGDECIMAL_AS_PLAIN, true)
+		.configure(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN, true)
 		.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
 
-	private static TypeFactory typeFactory = objectMapper.getTypeFactory();
+	private static final TypeFactory typeFactory = objectMapper.getTypeFactory();
 
 	/**
 	 * 获取jackson对象
@@ -70,10 +70,9 @@ public class JSONUtil {
 	 * @param json json字符串
 	 * @date 2018-12-02
 	 */
-	public static <K, V> Map<K, V> toMap(String json, Class<K> keyClass, Class<V> valueClass) {
+	public static <K, V> Map<K, V> toMap(String json, Class<K> k, Class<V> v) {
 		try {
-			JavaType type = typeFactory.constructParametricType(Map.class, keyClass, valueClass);
-			return objectMapper.readValue(json, type);
+			return objectMapper.readValue(json, typeFactory.constructParametricType(Map.class, k, v));
 		} catch (Exception e) {
 			return null;
 		}
@@ -88,29 +87,10 @@ public class JSONUtil {
 	 */
 	public static <T> List<T> toList(String json, Class<T> klass) {
 		try {
-			JavaType type = typeFactory.constructParametricType(List.class, klass);
-			return objectMapper.readValue(json, type);
+			return objectMapper.readValue(json, typeFactory.constructParametricType(List.class, klass));
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	public static void main(String[] args) {
-		// Map<String, Result> map = new HashMap<>();
-		// map.put("111", new Result(ResultEnum.SUCCESS, "111"));
-		// map.put("222", new Result(ResultEnum.SUCCESS, "222"));
-		// map.put("333", new Result(ResultEnum.SUCCESS, "333"));
-		// String json = JSONUtil.toJSONString(map);
-		// Map<String, Result> resultMap = JSONUtil.toMap(json, String.class,
-		// Result.class);
-		// String json = JSONUtil.toJSONString(Arrays.asList(new
-		// Result(ResultEnum.SUCCESS, "222"),
-		// new Result(ResultEnum.SUCCESS, "222"), new Result(ResultEnum.SUCCESS,
-		// "222")));
-		// System.out.println(json);
-		// List<Result> results = JSONUtil.toList(json, Result.class);
-		// Result result = results.get(0);
-		// System.out.println(result.toString());
 	}
 
 }
