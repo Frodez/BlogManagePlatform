@@ -18,11 +18,14 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
  */
 public class JSONUtil {
 
-	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-		.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
-		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-		.configure(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN, true)
-		.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
+	/**
+	 * 整个系统中所有的objectMapper均由此处提供
+	 */
+	private static final ObjectMapper OBJECT_MAPPER =
+		new ObjectMapper().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
+			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+			.configure(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN, true)
+			.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
 
 	private static final TypeFactory TYPE_FACTORY = OBJECT_MAPPER.getTypeFactory();
 
@@ -98,16 +101,16 @@ public class JSONUtil {
 		}
 	}
 
-//	public static void main(String[] args) {
-//		List<Result> results = new ArrayList<>();
-//		for(int i = 0; i < 10000000; i++) {
-//			results.add(new Result(ResultEnum.SUCCESS, Math.random()));
-//		}
-//		long start = System.currentTimeMillis();
-//		for(int i = 0; i < 10000000; i++) {
-//			JSONUtil.toJSONString(results.get(i));
-//		}
-//		System.out.println(System.currentTimeMillis() - start);
-//	}
+	// public static void main(String[] args) {
+	// List<Result> results = new ArrayList<>();
+	// for(int i = 0; i < 10000000; i++) {
+	// results.add(new Result(ResultEnum.SUCCESS, Math.random()));
+	// }
+	// long start = System.currentTimeMillis();
+	// for(int i = 0; i < 10000000; i++) {
+	// JSONUtil.toJSONString(results.get(i));
+	// }
+	// System.out.println(System.currentTimeMillis() - start);
+	// }
 
 }

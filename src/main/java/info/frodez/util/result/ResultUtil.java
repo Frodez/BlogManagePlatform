@@ -10,8 +10,8 @@ public class ResultUtil {
 	/**
 	 * 失败返回值
 	 */
-	public static final String FAIL_STRING = "{\"status\":" + ResultEnum.SUCCESS.getValue()
-		+ ",\"message\":\"" + ResultEnum.SUCCESS.getDescription() + "\",\"data\":null}";
+	public static final String FAIL_STRING = "{\"status\":" + ResultEnum.FAIL.getValue() + ",\"message\":\""
+		+ ResultEnum.FAIL.getDescription() + "\",\"data\":null}";
 
 	/**
 	 * 用户未登录返回值

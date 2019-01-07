@@ -44,6 +44,7 @@ import org.springframework.boot.autoconfigure.hazelcast.HazelcastJpaDependencyAu
 import org.springframework.boot.autoconfigure.influx.InfluxDbAutoConfiguration;
 import org.springframework.boot.autoconfigure.info.ProjectInfoAutoConfiguration;
 import org.springframework.boot.autoconfigure.integration.IntegrationAutoConfiguration;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.JndiDataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.XADataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jersey.JerseyAutoConfiguration;
@@ -120,7 +121,7 @@ import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServlet
 	MongoAutoConfiguration.class, MessageSourceAutoConfiguration.class, LiquibaseAutoConfiguration.class,
 	LdapRepositoriesAutoConfiguration.class, LdapAutoConfiguration.class, KafkaAutoConfiguration.class,
 	JtaAutoConfiguration.class, JsonbAutoConfiguration.class, JpaRepositoriesAutoConfiguration.class,
-	JooqAutoConfiguration.class, JndiDataSourceAutoConfiguration.class,
+	JacksonAutoConfiguration.class, JooqAutoConfiguration.class, JndiDataSourceAutoConfiguration.class,
 	JndiConnectionFactoryAutoConfiguration.class, JmsAutoConfiguration.class, JestAutoConfiguration.class,
 	JerseyAutoConfiguration.class, JdbcRepositoriesAutoConfiguration.class,
 	IntegrationAutoConfiguration.class, InfluxDbAutoConfiguration.class, HypermediaAutoConfiguration.class,
