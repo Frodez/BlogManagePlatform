@@ -19,7 +19,9 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 public class JSONUtil {
 
 	/**
-	 * 整个系统中所有的objectMapper均由此处提供
+	 * 整个系统中所有的objectMapper均由此处提供,一是减少无用对象,<br>
+	 * 二是保证系统中所有使用objectMapper的方法均保持一致的行为,<br>
+	 * 而不必担心不同处objectMapper配置不一致导致行为不一致.
 	 */
 	private static final ObjectMapper OBJECT_MAPPER =
 		new ObjectMapper().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
