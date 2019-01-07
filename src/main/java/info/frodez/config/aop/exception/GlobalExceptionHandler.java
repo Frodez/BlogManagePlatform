@@ -1,13 +1,16 @@
 package info.frodez.config.aop.exception;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import info.frodez.config.aop.request.NoRepeatException;
-import info.frodez.util.result.Result;
-import info.frodez.util.result.ResultEnum;
+import info.frodez.util.result.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -27,13 +30,25 @@ public class GlobalExceptionHandler {
 	 * @date 2018-12-21
 	 */
 	@ExceptionHandler(value = Exception.class)
-	public Result defaultErrorHandler(HttpServletRequest request, Exception e) {
-		log.error("[defaultErrorHandler]", e);
-		if (e.getCause() instanceof NoRepeatException) {
-			// 如果是重复请求
-			return new Result(ResultEnum.REPEAT_REQUEST);
+	public void defaultErrorHandler(HttpServletRequest request, HttpServletResponse response, Exception e) {
+		PrintWriter out = null;
+		try {
+			log.error("[defaultErrorHandler]", e);
+			out = response.getWriter();
+			if (e.getCause() instanceof NoRepeatException) {
+				// 如果是重复请求
+				out = response.getWriter();
+				out.append(ResultUtil.getRepeatRequestString());
+			} else {
+				out.append(ResultUtil.getFailString());
+			}
+		} catch (IOException ioe) {
+			log.error("[commence]", ioe);
+		} finally {
+			if (out != null) {
+				out.close();
+			}
 		}
-		return new Result(ResultEnum.FAIL);
 	}
 
 }

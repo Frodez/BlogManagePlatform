@@ -27,7 +27,6 @@ public class JSONUtil {
 	private static final TypeFactory TYPE_FACTORY = OBJECT_MAPPER.getTypeFactory();
 
 	private JSONUtil() {
-
 	}
 
 	/**

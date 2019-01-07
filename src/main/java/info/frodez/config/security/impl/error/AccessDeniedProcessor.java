@@ -11,8 +11,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
-import info.frodez.util.result.Result;
-import info.frodez.util.result.ResultEnum;
+import info.frodez.util.result.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -41,7 +40,7 @@ public class AccessDeniedProcessor implements AccessDeniedHandler {
 		PrintWriter out = null;
 		try {
 			out = response.getWriter();
-			out.append(new Result(ResultEnum.NO_ACCESS).toString());
+			out.append(ResultUtil.getNoAccessString());
 		} catch (IOException e) {
 			log.error("[commence]", e);
 		} finally {

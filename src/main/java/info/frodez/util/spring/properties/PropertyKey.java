@@ -16,6 +16,9 @@ public class PropertyKey {
 	 */
 	public class Web {
 
+		/**
+		 * 项目根路径
+		 */
 		public static final String BASE_PATH = "server.servlet.context-path";
 
 	}

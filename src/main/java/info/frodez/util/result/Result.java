@@ -20,7 +20,7 @@ public class Result {
 	/**
 	 * 状态
 	 */
-	private Integer status;
+	private Byte status;
 
 	/**
 	 * 消息

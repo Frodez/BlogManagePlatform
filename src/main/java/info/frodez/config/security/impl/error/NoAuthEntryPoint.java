@@ -10,8 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-import info.frodez.util.result.Result;
-import info.frodez.util.result.ResultEnum;
+import info.frodez.util.result.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -40,7 +39,7 @@ public class NoAuthEntryPoint implements AuthenticationEntryPoint {
 		PrintWriter out = null;
 		try {
 			out = response.getWriter();
-			out.append(new Result(ResultEnum.NO_AUTH).toString());
+			out.append(ResultUtil.getNoAuthString());
 		} catch (IOException e) {
 			log.error("[commence]", e);
 		} finally {

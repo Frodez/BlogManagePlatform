@@ -1,7 +1,5 @@
 package info.frodez.config.aop.request;
 
-import java.lang.annotation.Annotation;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.JoinPoint;
@@ -93,14 +91,7 @@ public class NoRepeatAop {
 	 * @date 2018-12-21
 	 */
 	private NoRepeat getNoRepeatAnnotation(JoinPoint joinPoint) {
-		Annotation[] annotations =
-			((MethodSignature) joinPoint.getSignature()).getMethod().getDeclaredAnnotations();
-		for (Annotation annotation : annotations) {
-			if (annotation.annotationType() == NoRepeat.class) {
-				return (NoRepeat) annotation;
-			}
-		}
-		throw new RuntimeException("获取注解失败!");
+		return ((MethodSignature) joinPoint.getSignature()).getMethod().getAnnotation(NoRepeat.class);
 	}
 
 	/**

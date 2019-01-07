@@ -37,11 +37,11 @@ public enum ResultEnum {
 	 */
 	REPEAT_REQUEST(ResultUtil.REPEAT_REQUEST_VALUE, "重复请求");
 
-	private int value;
+	private byte value;
 
 	private String description;
 
-	public ResultEnum of(int value) {
+	public ResultEnum of(byte value) {
 		for (ResultEnum iter : ResultEnum.values()) {
 			if (iter.value == value) {
 				return iter;
