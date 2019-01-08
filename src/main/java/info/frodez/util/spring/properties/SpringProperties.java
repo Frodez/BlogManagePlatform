@@ -7,14 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * 访问控制参数配置
  * @author Frodez
  * @date 2018-11-14
  */
-@Data
+@Getter
 @Component
 public class SpringProperties {
 

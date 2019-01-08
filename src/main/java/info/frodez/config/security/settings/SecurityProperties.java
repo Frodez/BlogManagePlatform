@@ -12,13 +12,14 @@ import org.springframework.util.PathMatcher;
 import info.frodez.util.spring.properties.PropertyKey;
 import info.frodez.util.spring.properties.SpringProperties;
 import lombok.Data;
+import lombok.Getter;
 
 /**
  * 访问控制参数配置
  * @author Frodez
  * @date 2018-11-14
  */
-@Data
+@Getter
 @Component
 @PropertySource("classpath:security.properties")
 @ConfigurationProperties
