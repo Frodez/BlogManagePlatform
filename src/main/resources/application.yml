@@ -38,10 +38,10 @@ spring:
         enabled: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    driverClassName: com.mysql.cj.jdbc.Driver
-    password: 123456
+    driverClassName: com.mysql.cj.jdbc.Driver    
     url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
     username: frodez
+    password: 123456
   profiles:
     active: dev
   redis:

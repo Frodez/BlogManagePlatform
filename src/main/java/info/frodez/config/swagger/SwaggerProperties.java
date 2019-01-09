@@ -4,14 +4,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-import lombok.Getter;
+import lombok.Data;
 
 /**
  * swagger参数配置
  * @author Frodez
  * @date 2019-01-06
  */
-@Getter
+@Data
 @Component
 @PropertySource("classpath:swagger.properties")
 @ConfigurationProperties
