@@ -32,9 +32,9 @@ public class GlobalExceptionHandler {
 		log.error("[defaultErrorHandler]", e);
 		if (e.getCause() instanceof RepeatException) {
 			// 如果是重复请求
-			HttpUtil.writeJson(response, ResultUtil.getRepeatRequestString());
+			HttpUtil.writeJson(response, ResultUtil.REPEAT_REQUEST_STRING);
 		} else {
-			HttpUtil.writeJson(response, ResultUtil.getFailString());
+			HttpUtil.writeJson(response, ResultUtil.FAIL_STRING);
 		}
 	}
 

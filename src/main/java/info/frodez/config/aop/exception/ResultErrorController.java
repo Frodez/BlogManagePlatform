@@ -32,7 +32,7 @@ public class ResultErrorController extends AbstractErrorController {
 
 	@RequestMapping
 	public void error(HttpServletResponse response) {
-		HttpUtil.writeJson(response, ResultUtil.getFailString());
+		HttpUtil.writeJson(response, ResultUtil.FAIL_STRING);
 	}
 
 }

@@ -33,7 +33,7 @@ public class AccessDeniedProcessor implements AccessDeniedHandler {
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response,
 		AccessDeniedException accessDeniedException) throws IOException, ServletException {
-		HttpUtil.writeJson(response, ResultUtil.getNoAccessString());
+		HttpUtil.writeJson(response, ResultUtil.NO_ACCESS_STRING);
 	}
 
 }

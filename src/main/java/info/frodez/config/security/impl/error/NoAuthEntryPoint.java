@@ -32,7 +32,7 @@ public class NoAuthEntryPoint implements AuthenticationEntryPoint {
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 		AuthenticationException authException) throws IOException {
-		HttpUtil.writeJson(response, ResultUtil.getNoAuthString());
+		HttpUtil.writeJson(response, ResultUtil.NO_AUTH_STRING);
 	}
 
 }
