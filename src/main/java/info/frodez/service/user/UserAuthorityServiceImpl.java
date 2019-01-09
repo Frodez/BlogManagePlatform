@@ -5,6 +5,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import info.frodez.config.security.impl.util.JwtTokenUtil;
@@ -41,6 +44,12 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 	 */
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
+	
+	/**
+	 * spring security验证管理器
+	 */
+	@Autowired
+	private AuthenticationManager authenticationManager;
 
 	/**
 	 * redis服务
@@ -143,6 +152,8 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 			if (StringUtils.isNotBlank(msg)) {
 				return new Result(ResultEnum.FAIL, msg);
 			}
+			SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword())));
 			Example example = new Example(User.class);
 			example.createCriteria().andEqualTo("name", param.getUsername());
 			User user = userMapper.selectOneByExample(example);

@@ -14,12 +14,9 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NoRepeat {
+public @interface ReLock {
 
 	// 别名,详见info.frodez.constant.redis.Repeat
 	String value() default "";
-
-	// 过期时间,非正数代表不过期,单位毫秒
-	long timeout() default 0;
 
 }

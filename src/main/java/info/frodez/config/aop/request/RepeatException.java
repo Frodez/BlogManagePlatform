@@ -5,15 +5,15 @@ package info.frodez.config.aop.request;
  * @author Frodez
  * @date 2018-12-21
  */
-public class NoRepeatException extends Exception {
+public class RepeatException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public NoRepeatException(String message) {
+	public RepeatException(String message) {
 		super(message);
 	}
 
-	public NoRepeatException() {
+	public RepeatException() {
 		super();
 	}
 

@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import info.frodez.config.aop.request.NoRepeatException;
+import info.frodez.config.aop.request.RepeatException;
 import info.frodez.util.http.HttpUtil;
 import info.frodez.util.result.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +29,8 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(value = Exception.class)
 	public void defaultErrorHandler(HttpServletRequest request, HttpServletResponse response, Exception e) {
-		log.error("[defaultErrorHandler]", e.getCause());
-		if (e.getCause() instanceof NoRepeatException) {
+		log.error("[defaultErrorHandler]", e);
+		if (e.getCause() instanceof RepeatException) {
 			// 如果是重复请求
 			HttpUtil.writeJson(response, ResultUtil.getRepeatRequestString());
 		} else {

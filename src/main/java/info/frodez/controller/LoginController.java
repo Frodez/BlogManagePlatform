@@ -2,15 +2,12 @@ package info.frodez.controller;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import info.frodez.config.aop.request.NoRepeat;
+import info.frodez.config.aop.request.ReLock;
 import info.frodez.constant.redis.Repeat;
 import info.frodez.dao.param.user.LoginDTO;
 import info.frodez.service.user.IUserAuthorityService;
@@ -30,11 +27,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/login")
 public class LoginController {
 
-	/**
-	 * spring security验证管理器
-	 */
-	@Autowired
-	private AuthenticationManager authenticationManager;
+	
 
 	/**
 	 * 用户授权服务
@@ -48,15 +41,13 @@ public class LoginController {
 	 * @date 2018-12-21
 	 */
 	@ApiOperation(value = "")
-	@NoRepeat(Repeat.Login.AUTH)
+	@ReLock(Repeat.Login.AUTH)
 	@PostMapping("/auth")
 	public Result auth(@RequestBody LoginDTO param) {
 		String msg = ValidationUtil.validate(param);
 		if (!StringUtils.isBlank(msg)) {
 			return new Result(ResultEnum.FAIL, msg);
-		}
-		SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
-			new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword())));
+		}		
 		return authorityService.login(param);
 	}
 

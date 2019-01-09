@@ -11,7 +11,7 @@ public class Repeat {
 
 	public class Login {
 
-		public static final String AUTH = "LOGIN:AUTH";
+		public static final String AUTH = "LOGIN:AUTH:";
 
 	}
 
