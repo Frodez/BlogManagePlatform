@@ -1,6 +1,5 @@
 package info.frodez.controller;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,8 +11,6 @@ import info.frodez.constant.redis.Repeat;
 import info.frodez.dao.param.user.LoginDTO;
 import info.frodez.service.user.IUserAuthorityService;
 import info.frodez.util.result.Result;
-import info.frodez.util.result.ResultEnum;
-import info.frodez.util.validation.ValidationUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -26,8 +23,6 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/login")
 public class LoginController {
-
-	
 
 	/**
 	 * 用户授权服务
@@ -44,10 +39,6 @@ public class LoginController {
 	@ReLock(Repeat.Login.AUTH)
 	@PostMapping("/auth")
 	public Result auth(@RequestBody LoginDTO param) {
-		String msg = ValidationUtil.validate(param);
-		if (!StringUtils.isBlank(msg)) {
-			return new Result(ResultEnum.FAIL, msg);
-		}		
 		return authorityService.login(param);
 	}
 

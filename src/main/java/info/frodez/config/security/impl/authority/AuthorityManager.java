@@ -46,9 +46,9 @@ public class AuthorityManager implements AccessDecisionManager {
 	@Override
 	public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> attributes)
 		throws AccessDeniedException, InsufficientAuthenticationException {
-		// 如果是免验证路径,则直接放行
 		HttpServletRequest request = ((FilterInvocation) object).getHttpRequest();
-		if (properties.match(request.getRequestURI())) {
+		if (!properties.needVerify(request.getRequestURI())) {
+			// 如果是免验证路径,则直接放行
 			return;
 		}
 		if (CollectionUtils.isEmpty(authentication.getAuthorities())) {

@@ -1,5 +1,6 @@
-package info.frodez.config.aop.exception;
+package info.frodez.config.error;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class ResultErrorController extends AbstractErrorController {
 	}
 
 	@RequestMapping
-	public void error(HttpServletResponse response) {
+	public void error(HttpServletRequest request, HttpServletResponse response) {
 		HttpUtil.writeJson(response, ResultUtil.FAIL_STRING);
 	}
 

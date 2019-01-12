@@ -3,13 +3,16 @@ package info.frodez.service.user;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import info.frodez.config.aop.validation.Check;
 import info.frodez.config.security.impl.util.JwtTokenUtil;
 import info.frodez.constant.redis.Redis;
 import info.frodez.constant.user.UserStatusEnum;
@@ -26,7 +29,6 @@ import info.frodez.service.redis.RedisService;
 import info.frodez.util.json.JSONUtil;
 import info.frodez.util.result.Result;
 import info.frodez.util.result.ResultEnum;
-import info.frodez.util.validation.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 import tk.mybatis.mapper.entity.Example;
 
@@ -44,7 +46,7 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 	 */
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
-	
+
 	/**
 	 * spring security验证管理器
 	 */
@@ -72,12 +74,10 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 	 * @param userName 用户姓名(唯一)
 	 * @date 2018-11-14
 	 */
+	@Check
 	@Override
-	public Result getUserInfoByName(String userName) {
+	public Result getUserInfoByName(@NotBlank(message = "用户名不能为空!") String userName) {
 		try {
-			if (StringUtils.isBlank(userName)) {
-				return new Result(ResultEnum.FAIL, "用户姓名不能为空!");
-			}
 			String json = redisService.getString(Redis.User.BASE_INFO + userName);
 			UserInfo data = JSONUtil.toObject(json, UserInfo.class);
 			if (data != null) {
@@ -145,13 +145,10 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 	 * @param LoginDTO 用户登录请求参数
 	 * @date 2018-12-03
 	 */
+	@Check
 	@Override
-	public Result login(LoginDTO param) {
+	public Result login(@NotNull(message = "请求参数不能为空!") LoginDTO param) {
 		try {
-			String msg = ValidationUtil.validate(param);
-			if (StringUtils.isNotBlank(msg)) {
-				return new Result(ResultEnum.FAIL, msg);
-			}
 			SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword())));
 			Example example = new Example(User.class);

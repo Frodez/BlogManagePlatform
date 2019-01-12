@@ -11,8 +11,8 @@ import info.frodez.dao.model.user.User;
  * @table tb_user
  * @date 2018-11-26
  */
-@Repository
 @Mapper
+@Repository
 public interface UserMapper extends DataMapper<User> {
 
 }

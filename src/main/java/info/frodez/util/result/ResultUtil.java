@@ -10,8 +10,8 @@ public class ResultUtil {
 	/**
 	 * 失败返回值
 	 */
-	public static final String FAIL_STRING = "{\"status\":" + ResultEnum.FAIL.getValue()
-		+ ",\"message\":\"" + ResultEnum.FAIL.getDescription() + "\",\"data\":null}";
+	public static final String FAIL_STRING = "{\"status\":" + ResultEnum.FAIL.getValue() + ",\"message\":\""
+		+ ResultEnum.FAIL.getDescription() + "\",\"data\":null}";
 
 	/**
 	 * 用户未登录返回值
@@ -34,8 +34,7 @@ public class ResultUtil {
 	/**
 	 * 重复请求返回值
 	 */
-	public static final String REPEAT_REQUEST_STRING =
-		"{\"status\":" + ResultEnum.REPEAT_REQUEST.getValue() + ",\"message\":\""
-			+ ResultEnum.REPEAT_REQUEST.getDescription() + "\",\"data\":null}";
+	public static final String REPEAT_REQUEST_STRING = "{\"status\":" + ResultEnum.REPEAT_REQUEST.getValue()
+		+ ",\"message\":\"" + ResultEnum.REPEAT_REQUEST.getDescription() + "\",\"data\":null}";
 
 }

@@ -11,14 +11,12 @@ import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.XmlElement;
-import org.springframework.stereotype.Repository;
 
 /**
  * mybatis-generator参数配置插件
  * @author Frodez
  * @date 2018-11-13
  */
-@Repository
 public class CustomSettingsPlugin extends PluginAdapter {
 
 	/**
@@ -35,28 +33,25 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	 * @date 2018-12-13
 	 */
 	@Override
-	public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass,
-		IntrospectedTable introspectedTable) {
+	public boolean clientGenerated(Interface i, TopLevelClass klass, IntrospectedTable table) {
+		System.out.println(properties.getProperty("baseMapperInterface"));
 		// 获取实体类
-		FullyQualifiedJavaType entityType =
-			new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
+		FullyQualifiedJavaType entity = new FullyQualifiedJavaType(table.getBaseRecordType());
 		// import实体类
-		interfaze.addImportedType(entityType);
+		i.addImportedType(entity);
 		// import接口
-		interfaze.addImportedType(new FullyQualifiedJavaType(MAPPER_NAME));
-		interfaze.addSuperInterface(
-			new FullyQualifiedJavaType(MAPPER_NAME + "<" + entityType.getShortName() + ">"));
+		i.addImportedType(new FullyQualifiedJavaType(MAPPER_NAME));
+		i.addSuperInterface(new FullyQualifiedJavaType(MAPPER_NAME + "<" + entity.getShortName() + ">"));
 		// import Spring Repository注解
-		interfaze.addImportedType(new FullyQualifiedJavaType("org.springframework.stereotype.Repository"));
-		interfaze.addImportedType(new FullyQualifiedJavaType("org.apache.ibatis.annotations.Mapper"));
-		interfaze.addAnnotation("@Repository");
-		interfaze.addAnnotation("@Mapper");
-		interfaze.addJavaDocLine("/**");
-		interfaze.addJavaDocLine(" * @description "
-			+ (introspectedTable.getRemarks() == null ? "" : introspectedTable.getRemarks()));
-		interfaze.addJavaDocLine(" * @table " + introspectedTable.getFullyQualifiedTable());
-		interfaze.addJavaDocLine(" * @date " + LocalDate.now().toString());
-		interfaze.addJavaDocLine(" */");
+		i.addImportedType(new FullyQualifiedJavaType("org.springframework.stereotype.Repository"));
+		i.addImportedType(new FullyQualifiedJavaType("org.apache.ibatis.annotations.Mapper"));
+		i.addAnnotation("@Mapper");
+		i.addAnnotation("@Repository");
+		i.addJavaDocLine("/**");
+		i.addJavaDocLine(" * @description " + (table.getRemarks() == null ? "" : table.getRemarks()));
+		i.addJavaDocLine(" * @table " + table.getFullyQualifiedTable());
+		i.addJavaDocLine(" * @date " + LocalDate.now().toString());
+		i.addJavaDocLine(" */");
 		return true;
 	}
 

@@ -12,6 +12,8 @@ public class Redis {
 
 	public class User {
 
+		public static final String TOKEN = "USER:TOKEN:";
+
 		public static final String BASE_INFO = "USER:BASE_INFO:";
 
 		public static final String PERMISSION_ALL = "USER:PERMISSION:ALL";

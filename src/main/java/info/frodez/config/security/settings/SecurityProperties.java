@@ -128,17 +128,17 @@ public class SecurityProperties {
 	}
 
 	/**
-	 * 匹配url
+	 * 判断url是否需要验证
 	 * @author Frodez
 	 * @date 2019-01-06
 	 */
-	public boolean match(String url) {
+	public boolean needVerify(String url) {
 		for (String path : auth.getPermitAllPath()) {
 			if (matcher.match(springProperties.get(PropertyKey.Web.BASE_PATH) + path, url)) {
-				return true;
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 
 }

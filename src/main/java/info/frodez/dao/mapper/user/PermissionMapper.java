@@ -15,8 +15,8 @@ import info.frodez.dao.result.user.PermissionInfo;
  * @table tb_permission
  * @date 2018-11-14
  */
-@Repository
 @Mapper
+@Repository
 public interface PermissionMapper extends DataMapper<Permission> {
 
 	/**

@@ -30,7 +30,7 @@ import javax.validation.Payload;
  * nullable: boolean类型,代表对空值的处理方式,默认值为false.为true时空值可以通过验证,为false时空值不可以通过验证.<br>
  * </strong>
  * 以下是枚举类代码.<br>
- * 
+ *
  * <pre>
  * 	<span>@Getter</span>
  * 	<span>@AllArgsConstructor</span>
@@ -49,7 +49,7 @@ import javax.validation.Payload;
  * 		}
  * 	}
  * </pre>
- * 
+ *
  * @author Frodez
  * @date 2018-12-03
  */
@@ -74,6 +74,8 @@ public @interface ValidEnum {
 
 	// 是否可为空
 	boolean nullable() default false;
+
+	public static final Class<Validator> by = ValidEnum.Validator.class;
 
 	/**
 	 * 枚举验证器
@@ -115,8 +117,7 @@ public @interface ValidEnum {
 		 * @date 2018-12-17
 		 */
 		@Override
-		public boolean isValid(Object value,
-			ConstraintValidatorContext constraintValidatorContext) {
+		public boolean isValid(Object value, ConstraintValidatorContext constraintValidatorContext) {
 			if (value == null) {
 				return nullable;
 			}
@@ -124,8 +125,7 @@ public @interface ValidEnum {
 			Class<?> parameterClass = m.getParameterTypes()[0];
 			try {
 				return m.invoke(null, castValue(parameterClass, value)) != null;
-			} catch (IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				throw new RuntimeException(e);
 			}
 		}

@@ -11,8 +11,8 @@ import info.frodez.dao.model.user.Role;
  * @table tb_role
  * @date 2018-11-14
  */
-@Repository
 @Mapper
+@Repository
 public interface RoleMapper extends DataMapper<Role> {
 
 }

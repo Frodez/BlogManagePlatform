@@ -6,15 +6,13 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import info.frodez.config.security.settings.SecurityProperties;
 import info.frodez.constant.redis.Redis;
 import info.frodez.service.redis.RedisService;
+import info.frodez.util.aop.AopMethodUtil;
 import info.frodez.util.http.HttpUtil;
 
 /**
@@ -30,7 +28,7 @@ import info.frodez.util.http.HttpUtil;
  */
 @Aspect
 @Component
-public class RepeatAop {
+public class RepeatAOP {
 
 	/**
 	 * redis服务
@@ -51,11 +49,10 @@ public class RepeatAop {
 	 * @date 2018-12-21
 	 */
 	@Before("@annotation(info.frodez.config.aop.request.ReLock)")
-	public void before(JoinPoint joinPoint) throws Exception {
-		HttpServletRequest request =
-			((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-		ReLock reLock = ((MethodSignature) joinPoint.getSignature()).getMethod().getAnnotation(ReLock.class);
-		String key = getKey(reLock.value(), request);
+	public void before(JoinPoint point) throws Exception {
+		HttpServletRequest request = HttpUtil.getContextRequest();
+		ReLock lock = AopMethodUtil.getAnnotation(point, ReLock.class);
+		String key = getKey(lock.value(), request);
 		if (redisService.exists(key)) {
 			throw new RepeatException("重复请求:IP地址" + HttpUtil.getRealAddr(request));
 		}
@@ -69,11 +66,9 @@ public class RepeatAop {
 	 * @date 2018-12-21
 	 */
 	@After("@annotation(info.frodez.config.aop.request.ReLock)")
-	public void after(JoinPoint joinPoint) {
-		HttpServletRequest request =
-			((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-		ReLock reLock = ((MethodSignature) joinPoint.getSignature()).getMethod().getAnnotation(ReLock.class);
-		redisService.delete(getKey(reLock.value(), request));
+	public void after(JoinPoint point) {
+		ReLock lock = AopMethodUtil.getAnnotation(point, ReLock.class);
+		redisService.delete(getKey(lock.value(), HttpUtil.getContextRequest()));
 	}
 
 	/**
@@ -83,16 +78,15 @@ public class RepeatAop {
 	 * @date 2018-12-21
 	 */
 	@Before("@annotation(info.frodez.config.aop.request.TimeoutLock)")
-	public void beforeTimeout(JoinPoint joinPoint) throws Exception {
-		HttpServletRequest request =
-			((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-		TimeoutLock timeoutLock = ((MethodSignature) joinPoint.getSignature()).getMethod().getAnnotation(TimeoutLock.class);
+	public void beforeTimeout(JoinPoint point) throws Exception {
+		HttpServletRequest request = HttpUtil.getContextRequest();
+		TimeoutLock timeoutLock = AopMethodUtil.getAnnotation(point, TimeoutLock.class);
 		String key = getKey(timeoutLock.value(), request);
 		if (redisService.exists(key)) {
 			throw new RepeatException("重复请求:IP地址" + HttpUtil.getRealAddr(request));
 		}
 		if (timeoutLock.timeout() <= 0) {
-			throw new RuntimeException("超时时间必须大于0!");			
+			throw new RuntimeException("超时时间必须大于0!");
 		}
 		redisService.set(key, true, timeoutLock.timeout());
 	}
@@ -105,7 +99,7 @@ public class RepeatAop {
 	 * @date 2018-12-21
 	 */
 	private String getKey(String value, HttpServletRequest request) {
-		if (!properties.match(request.getRequestURI())) {
+		if (properties.needVerify(request.getRequestURI())) {
 			// 非登录接口使用token判断,同一token不能重复请求
 			String authToken = request.getHeader(properties.getJwt().getHeader());
 			authToken = authToken == null ? "" : authToken;

@@ -23,29 +23,27 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 	 * @date 2018-12-13
 	 */
 	@Override
-	public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-		topLevelClass.addImportedType("lombok.Data");
-		topLevelClass.addImportedType("lombok.NoArgsConstructor");
-		topLevelClass.addImportedType("javax.persistence.Id");
-		topLevelClass.addImportedType("javax.persistence.Table");
-		topLevelClass.addImportedType("javax.persistence.Column");
-		topLevelClass.addImportedType("javax.persistence.Entity");
-		for (IntrospectedColumn iter : introspectedTable.getAllColumns()) {
+	public void addModelClassComment(TopLevelClass klass, IntrospectedTable table) {
+		klass.addImportedType("lombok.Data");
+		klass.addImportedType("lombok.NoArgsConstructor");
+		klass.addImportedType("javax.persistence.Id");
+		klass.addImportedType("javax.persistence.Table");
+		klass.addImportedType("javax.persistence.Column");
+		klass.addImportedType("javax.persistence.Entity");
+		for (IntrospectedColumn iter : table.getAllColumns()) {
 			if (!iter.isNullable()) {
-				topLevelClass.addImportedType("javax.validation.constraints.NotNull");
+				klass.addImportedType("javax.validation.constraints.NotNull");
 			}
 		}
-		topLevelClass.addJavaDocLine("/**");
-		topLevelClass.addJavaDocLine(" * @description "
-			+ (introspectedTable.getRemarks() == null ? "" : introspectedTable.getRemarks()));
-		topLevelClass.addJavaDocLine(" * @table " + introspectedTable.getFullyQualifiedTable());
-		topLevelClass.addJavaDocLine(" * @date " + LocalDate.now().toString());
-		topLevelClass.addJavaDocLine(" */");
-		topLevelClass.addAnnotation("@Data");
-		topLevelClass.addAnnotation("@Entity");
-		topLevelClass
-			.addAnnotation("@Table(name = \"" + introspectedTable.getFullyQualifiedTable() + "\")");
-		topLevelClass.addAnnotation("@NoArgsConstructor");
+		klass.addJavaDocLine("/**");
+		klass.addJavaDocLine(" * @description " + (table.getRemarks() == null ? "" : table.getRemarks()));
+		klass.addJavaDocLine(" * @table " + table.getFullyQualifiedTable());
+		klass.addJavaDocLine(" * @date " + LocalDate.now().toString());
+		klass.addJavaDocLine(" */");
+		klass.addAnnotation("@Data");
+		klass.addAnnotation("@Entity");
+		klass.addAnnotation("@Table(name = \"" + table.getFullyQualifiedTable() + "\")");
+		klass.addAnnotation("@NoArgsConstructor");
 	}
 
 	/**
@@ -54,10 +52,10 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 	 * @date 2018-12-13
 	 */
 	@Override
-	public void addFieldComment(Field field, IntrospectedTable introspectedTable,
-		IntrospectedColumn introspectedColumn) {
-		String columnName = introspectedColumn.getActualColumnName();
-		List<IntrospectedColumn> primaryKey = introspectedTable.getPrimaryKeyColumns();
+	public void addFieldComment(Field field, IntrospectedTable table,
+		IntrospectedColumn column) {
+		String columnName = column.getActualColumnName();
+		List<IntrospectedColumn> primaryKey = table.getPrimaryKeyColumns();
 		for (IntrospectedColumn pk : primaryKey) {
 			if (columnName.equals(pk.getActualColumnName())) {
 				field.addAnnotation("@Id");
@@ -65,8 +63,8 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 			}
 		}
 		field.addJavaDocLine("/** ");
-		field.addJavaDocLine(" * " + introspectedColumn.getRemarks());
-		String defaultValue = introspectedColumn.getDefaultValue();
+		field.addJavaDocLine(" * " + column.getRemarks());
+		String defaultValue = column.getDefaultValue();
 		if (!StringUtils.isEmpty(defaultValue)) {
 			if (field.getType().getShortName().equals("Byte")) {
 				field.setInitializationString(defaultValue);
@@ -88,21 +86,21 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 			}
 		}
 		field.addJavaDocLine(" */");
-		if (!introspectedColumn.isNullable()) {
+		if (!column.isNullable()) {
 			field.addAnnotation("@NotNull");
 		}
-		String column = "@Column(name = \"" + introspectedColumn.getActualColumnName() + "\"";
+		String columnAnnotation = "@Column(name = \"" + column.getActualColumnName() + "\"";
 		if (field.getType().getShortName().equals("String")
 			|| field.getType().getShortName().equals("BigDecimal")) {
-			if (introspectedColumn.getLength() != 0) {
-				column = column + ", length = " + introspectedColumn.getLength();
+			if (column.getLength() != 0) {
+				columnAnnotation = columnAnnotation + ", length = " + column.getLength();
 			}
 		}
-		if (introspectedColumn.getScale() != 0) {
-			column = column + ", scale = " + introspectedColumn.getScale();
+		if (column.getScale() != 0) {
+			columnAnnotation = columnAnnotation + ", scale = " + column.getScale();
 		}
-		column = column + ")";
-		field.addAnnotation(column);
+		columnAnnotation = columnAnnotation + ")";
+		field.addAnnotation(columnAnnotation);
 	}
 
 }
