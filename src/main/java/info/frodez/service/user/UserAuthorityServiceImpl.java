@@ -161,7 +161,7 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 			List<String> authorities = permissionMapper.getPermissions(role.getId()).stream()
 				.map(PermissionInfo::getName).collect(Collectors.toList());
 			String token = jwtTokenUtil.generate(param.getUsername(), authorities);
-			return new Result(ResultEnum.SUCCESS, token);
+			return new Result(ResultEnum.SUCCESS, null, token);
 		} catch (Exception e) {
 			log.error("[login]", e);
 			return new Result(ResultEnum.FAIL);
