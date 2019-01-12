@@ -82,14 +82,14 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 			example.createCriteria().andEqualTo("name", userName);
 			User user = userMapper.selectOneByExample(example);
 			if (user == null) {
-				return new Result(ResultEnum.FAIL, "未查询到用户信息!");
+				return new Result("未查询到用户信息!", ResultEnum.FAIL);
 			}
 			if (user.getStatus().equals(UserStatusEnum.FORBIDDEN.getValue())) {
-				return new Result(ResultEnum.FAIL, "用户已禁用!");
+				return new Result("用户已禁用!", ResultEnum.FAIL);
 			}
 			Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
 			if (role == null) {
-				return new Result(ResultEnum.FAIL, "未查询到用户角色信息!");
+				return new Result("未查询到用户角色信息!", ResultEnum.FAIL);
 			}
 			List<PermissionInfo> permissionList = permissionMapper.getPermissions(user.getRoleId());
 			data = new UserInfo();
@@ -149,19 +149,19 @@ public class UserAuthorityServiceImpl implements IUserAuthorityService {
 			example.createCriteria().andEqualTo("name", param.getUsername());
 			User user = userMapper.selectOneByExample(example);
 			if (user == null) {
-				return new Result(ResultEnum.FAIL, "用户名或密码错误!");
+				return new Result("用户名或密码错误!", ResultEnum.FAIL);
 			}
 			if (user.getStatus().equals(UserStatusEnum.FORBIDDEN.getValue())) {
-				return new Result(ResultEnum.FAIL, "用户已禁用!");
+				return new Result("用户已禁用!", ResultEnum.FAIL);
 			}
 			Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
 			if (role == null) {
-				return new Result(ResultEnum.FAIL, "未查询到用户角色信息!");
+				return new Result("未查询到用户角色信息!", ResultEnum.FAIL);
 			}
 			List<String> authorities = permissionMapper.getPermissions(role.getId()).stream()
 				.map(PermissionInfo::getName).collect(Collectors.toList());
 			String token = jwtTokenUtil.generate(param.getUsername(), authorities);
-			return new Result(ResultEnum.SUCCESS, null, token);
+			return new Result(ResultEnum.SUCCESS, token);
 		} catch (Exception e) {
 			log.error("[login]", e);
 			return new Result(ResultEnum.FAIL);

@@ -32,12 +32,12 @@ public class Result {
 	 */
 	private Object data;
 
-	public Result(ResultEnum status, String message) {
+	public Result(String message, ResultEnum status) {
 		this.status = status.getValue();
 		this.message = message;
 	}
 
-	public Result(ResultEnum status, String message, Object data) {
+	public Result(String message, ResultEnum status, Object data) {
 		this.status = status.getValue();
 		this.message = message;
 		this.data = data;

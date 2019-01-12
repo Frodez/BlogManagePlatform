@@ -24,12 +24,12 @@ public class PageResult extends Result {
 	 */
 	private Integer total = 0;
 
-	public PageResult(ResultEnum status, String message) {
-		super(status, message);
+	public PageResult(String message, ResultEnum status) {
+		super(message, status);
 	}
 
-	public PageResult(ResultEnum status, String message, Object data, Integer total) {
-		super(status, message, data);
+	public PageResult(String message, ResultEnum status, Object data, Integer total) {
+		super(message, status, data);
 		this.total = total;
 	}
 

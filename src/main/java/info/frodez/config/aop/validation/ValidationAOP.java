@@ -42,9 +42,9 @@ public class ValidationAOP {
 			return point.proceed();
 		} else {
 			if (method.getReturnType() == Result.class) {
-				return new Result(ResultEnum.FAIL, msg);
+				return new Result(msg, ResultEnum.FAIL);
 			} else {
-				return new PageResult(ResultEnum.FAIL, msg);
+				return new PageResult(msg, ResultEnum.FAIL);
 			}
 		}
 	}
