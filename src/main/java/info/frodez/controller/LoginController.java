@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import info.frodez.config.aop.request.ReLock;
 import info.frodez.constant.redis.Repeat;
 import info.frodez.dao.param.user.LoginDTO;
-import info.frodez.service.user.IUserAuthorityService;
+import info.frodez.service.user.IUserService;
 import info.frodez.util.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,7 +28,7 @@ public class LoginController {
 	 * 用户授权服务
 	 */
 	@Autowired
-	private IUserAuthorityService authorityService;
+	private IUserService authorityService;
 
 	/**
 	 * 登录接口

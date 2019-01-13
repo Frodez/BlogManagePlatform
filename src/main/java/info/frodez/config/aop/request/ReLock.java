@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 控制重复请求注解
+ * 控制重复请求注解,只用于controller中的端点
  * @author Frodez
  * @date 2018-12-21
  */

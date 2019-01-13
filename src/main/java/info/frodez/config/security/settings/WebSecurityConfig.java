@@ -1,7 +1,10 @@
 package info.frodez.config.security.settings;
 
+import info.frodez.config.security.errorhandler.AccessDenied;
+import info.frodez.config.security.errorhandler.Authentication;
+import info.frodez.config.security.filter.JwtTokenFilter;
+import info.frodez.config.security.settings.SecurityProperties.Cors;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,11 +25,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import info.frodez.config.security.impl.error.AccessDeniedProcessor;
-import info.frodez.config.security.impl.error.NoAuthEntryPoint;
-import info.frodez.config.security.impl.filter.JwtTokenFilter;
-import info.frodez.config.security.settings.SecurityProperties.Cors;
-
 /**
  * spring security配置
  * @author Frodez
@@ -46,13 +44,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * 无验证访问控制
 	 */
 	@Autowired
-	private NoAuthEntryPoint noAuthPoint;
+	private Authentication noAuthPoint;
 
 	/**
 	 * 无权限访问控制
 	 */
 	@Autowired
-	private AccessDeniedProcessor noAuthProcessor;
+	private AccessDenied noAuthProcessor;
 
 	/**
 	 * 访问控制参数配置
@@ -80,8 +78,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		List<String> permitAllPathList = properties.getAuth().getPermitAllPath();
 		http.cors().and().csrf().disable().exceptionHandling()
 			// 无权限时导向noAuthPoint
-			.authenticationEntryPoint(noAuthPoint).and().exceptionHandling()
-			.accessDeniedHandler(noAuthProcessor).and().sessionManagement()
+			.authenticationEntryPoint(noAuthPoint).and().exceptionHandling().accessDeniedHandler(noAuthProcessor).and()
+			.sessionManagement()
 			// 不创建session
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 			// 登录入口不控制

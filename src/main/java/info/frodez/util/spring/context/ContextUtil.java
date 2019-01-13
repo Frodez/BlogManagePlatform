@@ -1,9 +1,13 @@
-package info.frodez.util.spring;
+package info.frodez.util.spring.context;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * spring工具类
@@ -11,7 +15,7 @@ import org.springframework.stereotype.Component;
  * @date 2018-12-21
  */
 @Component
-public class SpringUtil implements ApplicationContextAware {
+public class ContextUtil implements ApplicationContextAware {
 
 	private static ApplicationContext context;
 
@@ -21,11 +25,31 @@ public class SpringUtil implements ApplicationContextAware {
 	}
 
 	/**
+	 * 从spring上下文中获取HttpServletResponse
+	 * @author Frodez
+	 * @date 2019-01-09
+	 */
+	public static HttpServletResponse getResponse() {
+		return ServletRequestAttributes.class.cast(RequestContextHolder.getRequestAttributes())
+			.getResponse();
+	}
+
+	/**
+	 * 从spring上下文中获取HttpServletRequest
+	 * @author Frodez
+	 * @date 2019-01-09
+	 */
+	public static HttpServletRequest getRequest() {
+		return ServletRequestAttributes.class.cast(RequestContextHolder.getRequestAttributes())
+			.getRequest();
+	}
+
+	/**
 	 * 获取spring上下文环境
 	 * @author Frodez
 	 * @date 2018-12-21
 	 */
-	public static ApplicationContext getContext() {
+	public static ApplicationContext get() {
 		if (context == null) {
 			throw new RuntimeException("获取spring上下文环境失败!");
 		}
@@ -39,7 +63,7 @@ public class SpringUtil implements ApplicationContextAware {
 	 * @date 2018-12-21
 	 */
 	public static <T> T getBean(Class<T> klass) {
-		return getContext().getBean(klass);
+		return get().getBean(klass);
 	}
 
 	/**
@@ -50,7 +74,7 @@ public class SpringUtil implements ApplicationContextAware {
 	 * @date 2018-12-21
 	 */
 	public static <T> T getBean(String beanName, Class<T> klass) {
-		return klass.cast(getContext().getBean(beanName));
+		return klass.cast(get().getBean(beanName));
 	}
 
 }

@@ -1,17 +1,16 @@
 package info.frodez.config.aop.validation;
 
+import info.frodez.util.aop.MethodUtil;
+import info.frodez.util.reflect.ReflectUtil;
+import info.frodez.util.result.Result;
+import info.frodez.util.result.ResultEnum;
+import info.frodez.util.validation.ValidationUtil;
 import java.lang.reflect.Method;
-
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
-
-import info.frodez.util.aop.AopMethodUtil;
-import info.frodez.util.result.Result;
-import info.frodez.util.result.ResultEnum;
-import info.frodez.util.validation.ValidationUtil;
 
 /**
  * 验证参数AOP<br>
@@ -33,13 +32,11 @@ public class ValidationAOP {
 	 */
 	@Around("@annotation(info.frodez.config.aop.validation.Check)")
 	public Object validate(ProceedingJoinPoint point) throws Throwable {
-		Method method = AopMethodUtil.getMethod(point);
+		Method method = MethodUtil.getMethod(point);
 		if (method.getReturnType() != Result.class) {
-			throw new RuntimeException(method.getDeclaringClass().getName() + "." + method.getName()
-				+ "的返回值必须为" + Result.class.getName() + "类型!");
+			throw new RuntimeException(ReflectUtil.getFullName(method) + "的返回值必须为" + Result.class.getName() + "类型!");
 		}
-		Object[] args = point.getArgs();
-		String msg = ValidationUtil.validateParam(point.getTarget(), method, args, "");
+		String msg = ValidationUtil.validateParam(point.getTarget(), method, point.getArgs(), "");
 		if (StringUtils.isBlank(msg)) {
 			return point.proceed();
 		} else {

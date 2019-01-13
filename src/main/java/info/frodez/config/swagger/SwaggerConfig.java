@@ -14,7 +14,7 @@ import com.fasterxml.classmate.TypeResolver;
 import info.frodez.config.security.settings.SecurityProperties;
 import info.frodez.util.result.Result;
 import info.frodez.util.spring.properties.PropertyKey;
-import info.frodez.util.spring.properties.SpringProperties;
+import info.frodez.util.spring.properties.PropertiesUtil;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -41,7 +41,7 @@ public class SwaggerConfig {
 	 * spring参数配置
 	 */
 	@Autowired
-	private SpringProperties springProperties;
+	private PropertiesUtil springProperties;
 
 	/**
 	 * 访问控制参数配置

@@ -1,4 +1,4 @@
-package info.frodez.config.security.impl.user;
+package info.frodez.config.security.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -6,10 +6,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import info.frodez.config.security.impl.util.AuthorityUtil;
+import info.frodez.config.security.util.AuthorityUtil;
 import info.frodez.dao.result.user.UserInfo;
-import info.frodez.service.user.IUserAuthorityService;
+import info.frodez.service.user.IUserService;
 import info.frodez.util.result.Result;
 
 /**
@@ -24,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	 * 用户授权服务
 	 */
 	@Autowired
-	private IUserAuthorityService userAuthorityService;
+	private IUserService userAuthorityService;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -16,7 +16,7 @@ import lombok.Getter;
  */
 @Getter
 @Component
-public class SpringProperties {
+public class PropertiesUtil {
 
 	/**
 	 * spring环境参数配置

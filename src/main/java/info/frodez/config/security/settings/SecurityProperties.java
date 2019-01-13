@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.PathMatcher;
 
 import info.frodez.util.spring.properties.PropertyKey;
-import info.frodez.util.spring.properties.SpringProperties;
+import info.frodez.util.spring.properties.PropertiesUtil;
 import lombok.Data;
 
 /**
@@ -28,7 +28,7 @@ public class SecurityProperties {
 	 * spring环境参数配置
 	 */
 	@Autowired
-	private SpringProperties springProperties;
+	private PropertiesUtil springProperties;
 
 	/**
 	 * spring路径匹配器

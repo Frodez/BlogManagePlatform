@@ -4,10 +4,6 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -24,7 +20,7 @@ public class HttpUtil {
 	 * @author Frodez
 	 * @date 2018-12-21
 	 */
-	public static String getRealAddr(HttpServletRequest request) {
+	public static String getAddr(HttpServletRequest request) {
 		String address = request.getHeader("x-forwarded-for");
 		if (address == null || address.length() == 0 || "unknown".equalsIgnoreCase(address)) {
 			address = request.getHeader("Proxy-Client-address");
@@ -73,26 +69,6 @@ public class HttpUtil {
 				out.close();
 			}
 		}
-	}
-
-	/**
-	 * 从spring上下文中获取HttpServletRequest
-	 * @author Frodez
-	 * @date 2019-01-09
-	 */
-	public static HttpServletRequest getContextRequest() {
-		return ServletRequestAttributes.class.cast(RequestContextHolder.getRequestAttributes())
-			.getRequest();
-	}
-
-	/**
-	 * 从spring上下文中获取HttpServletResponse
-	 * @author Frodez
-	 * @date 2019-01-09
-	 */
-	public static HttpServletResponse getContextResponse() {
-		return ServletRequestAttributes.class.cast(RequestContextHolder.getRequestAttributes())
-			.getResponse();
 	}
 
 }

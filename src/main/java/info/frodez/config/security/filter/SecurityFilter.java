@@ -1,22 +1,19 @@
-package info.frodez.config.security.impl.filter;
+package info.frodez.config.security.filter;
 
+import info.frodez.config.security.authority.AuthorityManager;
+import info.frodez.config.security.authority.AuthoritySource;
 import java.io.IOException;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
 import org.springframework.security.access.intercept.InterceptorStatusToken;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.stereotype.Component;
-
-import info.frodez.config.security.impl.authority.AuthorityManager;
-import info.frodez.config.security.impl.authority.AuthoritySource;
 
 /**
  * 自定义权限拦截器
@@ -24,7 +21,7 @@ import info.frodez.config.security.impl.authority.AuthoritySource;
  * @date 2018-12-05
  */
 @Component
-public class FilterSecurityInterceptor extends AbstractSecurityInterceptor implements Filter {
+public class SecurityFilter extends AbstractSecurityInterceptor implements Filter {
 
 	/**
 	 * 权限资源

@@ -1,10 +1,13 @@
-package info.frodez.config.security.impl.authority;
+package info.frodez.config.security.authority;
 
+import info.frodez.config.security.settings.SecurityProperties;
+import info.frodez.constant.user.PermissionTypeEnum;
+import info.frodez.dao.model.user.Permission;
+import info.frodez.service.user.IUserService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
@@ -12,11 +15,6 @@ import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
-
-import info.frodez.config.security.settings.SecurityProperties;
-import info.frodez.constant.user.PermissionTypeEnum;
-import info.frodez.dao.model.user.Permission;
-import info.frodez.service.user.IUserAuthorityService;
 
 /**
  * 获取权限资源
@@ -50,7 +48,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 * 用户授权服务
 	 */
 	@Autowired
-	private IUserAuthorityService userAuthorityService;
+	private IUserService userAuthorityService;
 
 	/**
 	 * 访问控制参数配置
@@ -122,6 +120,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 				break;
 			}
 		}
+		//如果未获取权限,则添加无访问权限角色
 		if (CollectionUtils.isEmpty(attributes)) {
 			attributes.add(new SecurityConfig(securityProperties.getAuth().getDeniedRole()));
 		}

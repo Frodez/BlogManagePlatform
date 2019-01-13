@@ -1,11 +1,10 @@
-package info.frodez.config.security.impl.authority;
+package info.frodez.config.security.authority;
 
+import info.frodez.config.security.settings.SecurityProperties;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDecisionManager;
@@ -16,8 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.stereotype.Component;
-
-import info.frodez.config.security.settings.SecurityProperties;
 
 /**
  * 权限匹配管理器
@@ -60,8 +57,8 @@ public class AuthorityManager implements AccessDecisionManager {
 		if (attributeList.contains(properties.getAuth().getDeniedRole())) {
 			throw new AccessDeniedException("无访问权限!");
 		}
-		List<String> authorityList = authentication.getAuthorities().stream()
-			.map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+		List<String> authorityList =
+			authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 		for (String attribute : attributeList) {
 			if (authorityList.contains(attribute)) {
 				return;

@@ -1,18 +1,17 @@
 package info.frodez.service.user;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import info.frodez.config.aop.validation.Check;
 import info.frodez.dao.param.user.LoginDTO;
 import info.frodez.util.result.Result;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
- * 用户授权服务
+ * 用户信息服务
  * @author Frodez
  * @date 2018-11-14
  */
-public interface IUserAuthorityService {
+public interface IUserService {
 
 	/**
 	 * 获取用户授权信息

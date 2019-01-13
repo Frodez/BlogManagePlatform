@@ -1,15 +1,6 @@
 package info.frodez.service.user;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
-import info.frodez.config.security.impl.util.JwtTokenUtil;
+import info.frodez.config.security.util.JwtTokenUtil;
 import info.frodez.constant.redis.Redis;
 import info.frodez.constant.user.UserStatusEnum;
 import info.frodez.dao.mapper.user.PermissionMapper;
@@ -25,17 +16,24 @@ import info.frodez.service.redis.RedisService;
 import info.frodez.util.json.JSONUtil;
 import info.frodez.util.result.Result;
 import info.frodez.util.result.ResultEnum;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 /**
- * 用户授权服务
+ * 用户信息服务
  * @author Frodez
  * @date 2018-11-14
  */
 @Slf4j
 @Service
-public class UserAuthorityServiceImpl implements IUserAuthorityService {
+public class UserServiceImpl implements IUserService {
 
 	/**
 	 * jwt工具类

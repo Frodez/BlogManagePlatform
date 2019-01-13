@@ -1,4 +1,4 @@
-package info.frodez.config.security.impl.filter;
+package info.frodez.config.security.filter;
 
 import java.io.IOException;
 
@@ -14,9 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import info.frodez.config.security.impl.util.JwtTokenUtil;
 import info.frodez.config.security.settings.SecurityProperties;
+import info.frodez.config.security.util.JwtTokenUtil;
 import info.frodez.constant.redis.Redis;
 import info.frodez.service.redis.RedisService;
 

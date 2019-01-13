@@ -1,4 +1,4 @@
-package info.frodez.config.security.impl.error;
+package info.frodez.config.security.errorhandler;
 
 import java.io.IOException;
 
@@ -18,7 +18,7 @@ import info.frodez.util.result.ResultUtil;
  * @date 2018-11-27
  */
 @Component
-public class NoAuthEntryPoint implements AuthenticationEntryPoint {
+public class Authentication implements AuthenticationEntryPoint {
 
 	/**
 	 * 如果捕获到的是 AuthenticationException,那么将会使用其对应的AuthenticationEntryPoint的

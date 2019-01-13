@@ -1,4 +1,4 @@
-package info.frodez.config.security.impl.util;
+package info.frodez.config.security.util;
 
 import java.util.List;
 import java.util.stream.Collectors;

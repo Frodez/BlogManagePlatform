@@ -1,15 +1,13 @@
 package info.frodez.config.error;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import info.frodez.config.aop.request.RepeatException;
 import info.frodez.util.http.HttpUtil;
 import info.frodez.util.result.ResultUtil;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /***
  * 统一异常处理*
@@ -18,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class ErrorHandler {
 
 	/**
 	 * 默认异常处理器

@@ -9,7 +9,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import info.frodez.util.spring.properties.SpringProperties;
+import info.frodez.util.spring.properties.PropertiesUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -19,7 +19,7 @@ public class BlogManagePlatformApplicationTests {
 	private DataSourceTransactionManager manager;
 
 	@Autowired
-	private SpringProperties properties;
+	private PropertiesUtil properties;
 
 	@Test
 	public void contextLoads() {

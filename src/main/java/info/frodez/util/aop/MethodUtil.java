@@ -12,7 +12,7 @@ import org.aspectj.lang.reflect.MethodSignature;
  * @author Frodez
  * @date 2019-01-09
  */
-public class AopMethodUtil {
+public class MethodUtil {
 
 	private static MethodSignature getMethodSignature(JoinPoint point) {
 		return MethodSignature.class.cast(point.getSignature());
@@ -41,7 +41,7 @@ public class AopMethodUtil {
 	 * @author Frodez
 	 * @date 2019-01-12
 	 */
-	public static String getFullyQualifiedName(JoinPoint point) {
+	public static String getFullName(JoinPoint point) {
 		Method method = getMethodSignature(point).getMethod();
 		return method.getDeclaringClass().getName() + "." + method.getName();
 	}
@@ -60,7 +60,7 @@ public class AopMethodUtil {
 	 * @author Frodez
 	 * @date 2019-01-09
 	 */
-	public static Parameter[] getParameters(JoinPoint point) {
+	public static Parameter[] getParams(JoinPoint point) {
 		return getMethodSignature(point).getMethod().getParameters();
 	}
 
