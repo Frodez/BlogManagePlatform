@@ -12,7 +12,6 @@
 		<property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter" />
 		<property name="xmlFormatter" value="info.frodez.config.mybatis.generator.CustomXmlFormatter" />
 
-		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
 		<plugin type="info.frodez.config.mybatis.generator.CustomSettingsPlugin" />
 
 		<commentGenerator type="info.frodez.config.mybatis.generator.CustomCommentGenerator">
@@ -21,7 +20,7 @@
 		</commentGenerator>
 
 		<!-- 数据源配置 -->
-		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+		<jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
 			connectionURL="jdbc:mysql://127.0.0.1:3306/blog?useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;useSSL=false"
 			userId="root" password="123456">
 		</jdbcConnection>

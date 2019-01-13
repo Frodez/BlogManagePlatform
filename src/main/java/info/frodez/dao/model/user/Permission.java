@@ -18,48 +18,48 @@ import lombok.Data;
 @Entity
 @Table(name = "tb_permission")
 public class Permission implements Serializable {
-    
-    /** 
-     * 主键ID
-     */
-    @Id
-    @NotNull
-    @Column(name = "id")
-    private Long id;
 
-    /** 
-     * 创建时间
-     */
-    @NotNull
-    @Column(name = "create_time")
-    private Date createTime;
+	private static final long serialVersionUID = 1L;
 
-    /** 
-     * 类型  0:ALL  1:GET  2:POST  3:DELETE  4:PUT
-     */
-    @NotNull
-    @Column(name = "type")
-    private Byte type = 0;
+	/**
+	 * 主键ID
+	 */
+	@Id
+	@NotNull
+	@Column(name = "id")
+	private Long id;
 
-    /** 
-     * 权限名称
-     */
-    @NotNull
-    @Column(name = "name", length = 100)
-    private String name;
+	/**
+	 * 创建时间
+	 */
+	@NotNull
+	@Column(name = "create_time")
+	private Date createTime;
 
-    /** 
-     * 地址
-     */
-    @NotNull
-    @Column(name = "url", length = 255)
-    private String url;
+	/**
+	 * 类型 0:ALL 1:GET 2:POST 3:DELETE 4:PUT
+	 */
+	@NotNull
+	@Column(name = "type")
+	private Byte type = 0;
 
-    /** 
-     * 描述
-     */
-    @Column(name = "description", length = 1000)
-    private String description;
+	/**
+	 * 权限名称
+	 */
+	@NotNull
+	@Column(name = "name", length = 100)
+	private String name;
 
-    private static final long serialVersionUID = 1L;
+	/**
+	 * 地址
+	 */
+	@NotNull
+	@Column(name = "url", length = 255)
+	private String url;
+
+	/**
+	 * 描述
+	 */
+	@Column(name = "description", length = 1000)
+	private String description;
 }

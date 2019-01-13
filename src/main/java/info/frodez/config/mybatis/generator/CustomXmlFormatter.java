@@ -1,7 +1,6 @@
 package info.frodez.config.mybatis.generator;
 
 import java.util.Collections;
-
 import org.mybatis.generator.api.XmlFormatter;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;

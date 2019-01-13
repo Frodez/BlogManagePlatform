@@ -6,7 +6,6 @@ import org.joda.time.LocalDate;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.Field;
-import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.internal.DefaultCommentGenerator;
 
@@ -29,7 +28,6 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 		klass.addImportedType("javax.persistence.Table");
 		klass.addImportedType("javax.persistence.Column");
 		klass.addImportedType("javax.persistence.Entity");
-		klass.addImportedType(new FullyQualifiedJavaType("java.io.Serializable"));
 		for (IntrospectedColumn iter : table.getAllColumns()) {
 			if (!iter.isNullable()) {
 				klass.addImportedType("javax.validation.constraints.NotNull");
@@ -43,7 +41,6 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 		klass.addAnnotation("@Data");
 		klass.addAnnotation("@Entity");
 		klass.addAnnotation("@Table(name = \"" + table.getFullyQualifiedTable() + "\")");
-		klass.addSuperInterface(new FullyQualifiedJavaType("java.io.Serializable"));
 	}
 
 	/**
@@ -60,11 +57,6 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 				field.addAnnotation("@Id");
 				break;
 			}
-		}
-		if (table.getAllColumns().get(0).equals(column)) {
-			field.addJavaDocLine("");
-			field.addJavaDocLine("private static final long serialVersionUID = 1L;");
-			field.addJavaDocLine("");
 		}
 		field.addJavaDocLine("/** ");
 		field.addJavaDocLine(" * " + column.getRemarks());

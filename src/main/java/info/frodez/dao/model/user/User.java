@@ -18,67 +18,67 @@ import lombok.Data;
 @Entity
 @Table(name = "tb_user")
 public class User implements Serializable {
-    
-    /** 
-     * 主键ID
-     */
-    @Id
-    @NotNull
-    @Column(name = "id")
-    private Long id;
 
-    /** 
-     * 创建时间
-     */
-    @NotNull
-    @Column(name = "create_time")
-    private Date createTime;
+	private static final long serialVersionUID = 1L;
 
-    /** 
-     * 用户名
-     */
-    @NotNull
-    @Column(name = "name", length = 50)
-    private String name;
+	/**
+	 * 主键ID
+	 */
+	@Id
+	@NotNull
+	@Column(name = "id")
+	private Long id;
 
-    /** 
-     * 密码
-     */
-    @NotNull
-    @Column(name = "password", length = 2000)
-    private String password;
+	/**
+	 * 创建时间
+	 */
+	@NotNull
+	@Column(name = "create_time")
+	private Date createTime;
 
-    /** 
-     * 昵称
-     */
-    @Column(name = "nickname", length = 50)
-    private String nickname;
+	/**
+	 * 用户名
+	 */
+	@NotNull
+	@Column(name = "name", length = 50)
+	private String name;
 
-    /** 
-     * 邮箱地址
-     */
-    @Column(name = "email", length = 255)
-    private String email;
+	/**
+	 * 密码
+	 */
+	@NotNull
+	@Column(name = "password", length = 2000)
+	private String password;
 
-    /** 
-     * 电话号码
-     */
-    @Column(name = "phone", length = 255)
-    private String phone;
+	/**
+	 * 昵称
+	 */
+	@Column(name = "nickname", length = 50)
+	private String nickname;
 
-    /** 
-     * 用户状态  0:禁用  1:正常
-     */
-    @NotNull
-    @Column(name = "status")
-    private Byte status = 1;
+	/**
+	 * 邮箱地址
+	 */
+	@Column(name = "email", length = 255)
+	private String email;
 
-    /** 
-     * 角色ID
-     */
-    @NotNull
-    @Column(name = "role_id")
-    private Long roleId;
+	/**
+	 * 电话号码
+	 */
+	@Column(name = "phone", length = 255)
+	private String phone;
 
-    private static final long serialVersionUID = 1L;
+	/**
+	 * 用户状态 0:禁用 1:正常
+	 */
+	@NotNull
+	@Column(name = "status")
+	private Byte status = 1;
+
+	/**
+	 * 角色ID
+	 */
+	@NotNull
+	@Column(name = "role_id")
+	private Long roleId;
 }

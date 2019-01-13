@@ -1,4 +1,3 @@
-
 package info.frodez.dao.mapper.user;
 
 import info.frodez.config.mybatis.DataMapper;
