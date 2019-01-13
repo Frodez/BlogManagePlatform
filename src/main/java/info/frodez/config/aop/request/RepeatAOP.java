@@ -84,10 +84,10 @@ public class RepeatAOP {
 		if (redisService.exists(key)) {
 			throw new RepeatException("重复请求:IP地址" + HttpUtil.getAddr(request));
 		}
-		if (timeoutLock.timeout() <= 0) {
+		if (timeoutLock.time() <= 0) {
 			throw new RuntimeException("超时时间必须大于0!");
 		}
-		redisService.set(key, true, timeoutLock.timeout());
+		redisService.set(key, true, timeoutLock.time());
 	}
 
 	/**
@@ -100,9 +100,9 @@ public class RepeatAOP {
 	private String getKey(String value, HttpServletRequest request) {
 		if (properties.needVerify(request.getRequestURI())) {
 			// 非登录接口使用token判断,同一token不能重复请求
-			String authToken = request.getHeader(properties.getJwt().getHeader());
-			authToken = authToken == null ? "" : authToken;
-			return Redis.Request.NO_REPEAT + value + authToken;
+			String fullToken = request.getHeader(properties.getJwt().getHeader());
+			fullToken = fullToken == null ? "" : fullToken;
+			return Redis.Request.NO_REPEAT + value + fullToken;
 		} else {
 			// 登录接口使用IP判断,同一IP不能重复请求
 			String address = HttpUtil.getAddr(request);

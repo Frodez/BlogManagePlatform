@@ -1,6 +1,6 @@
 package info.frodez.service.user;
 
-import info.frodez.config.security.util.JwtTokenUtil;
+import info.frodez.config.security.util.TokenUtil;
 import info.frodez.constant.redis.Redis;
 import info.frodez.constant.user.UserStatusEnum;
 import info.frodez.dao.mapper.user.PermissionMapper;
@@ -39,7 +39,7 @@ public class UserServiceImpl implements IUserService {
 	 * jwt工具类
 	 */
 	@Autowired
-	private JwtTokenUtil jwtTokenUtil;
+	private TokenUtil jwtTokenUtil;
 
 	/**
 	 * spring security验证管理器

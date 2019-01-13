@@ -37,11 +37,7 @@ public class ValidationAOP {
 			throw new RuntimeException(ReflectUtil.getFullName(method) + "的返回值必须为" + Result.class.getName() + "类型!");
 		}
 		String msg = ValidationUtil.validateParam(point.getTarget(), method, point.getArgs(), "");
-		if (StringUtils.isBlank(msg)) {
-			return point.proceed();
-		} else {
-			return new Result(msg, ResultEnum.FAIL);
-		}
+		return StringUtils.isBlank(msg) ? point.proceed() : new Result(msg, ResultEnum.FAIL);
 	}
 
 }

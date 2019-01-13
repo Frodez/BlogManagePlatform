@@ -20,6 +20,6 @@ public @interface TimeoutLock {
 	String value() default "";
 
 	// 过期时间,大于等于0,单位毫秒,默认值500
-	long timeout() default 500;
+	long time() default 500;
 
 }

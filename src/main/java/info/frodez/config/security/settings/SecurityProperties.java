@@ -1,17 +1,15 @@
 package info.frodez.config.security.settings;
 
+import info.frodez.util.spring.properties.PropertiesUtil;
+import info.frodez.util.spring.properties.PropertyKey;
 import java.util.ArrayList;
 import java.util.List;
-
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PathMatcher;
-
-import info.frodez.util.spring.properties.PropertyKey;
-import info.frodez.util.spring.properties.PropertiesUtil;
-import lombok.Data;
 
 /**
  * 访问控制参数配置

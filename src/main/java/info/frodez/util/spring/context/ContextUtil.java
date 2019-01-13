@@ -6,6 +6,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -25,13 +26,21 @@ public class ContextUtil implements ApplicationContextAware {
 	}
 
 	/**
+	 * 获取项目根路径
+	 * @author Frodez
+	 * @date 2019-01-13
+	 */
+	public static String getRootPath() {
+		return ClassUtils.getDefaultClassLoader().getResource("").getPath();
+	}
+
+	/**
 	 * 从spring上下文中获取HttpServletResponse
 	 * @author Frodez
 	 * @date 2019-01-09
 	 */
 	public static HttpServletResponse getResponse() {
-		return ServletRequestAttributes.class.cast(RequestContextHolder.getRequestAttributes())
-			.getResponse();
+		return ServletRequestAttributes.class.cast(RequestContextHolder.getRequestAttributes()).getResponse();
 	}
 
 	/**
@@ -40,8 +49,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @date 2019-01-09
 	 */
 	public static HttpServletRequest getRequest() {
-		return ServletRequestAttributes.class.cast(RequestContextHolder.getRequestAttributes())
-			.getRequest();
+		return ServletRequestAttributes.class.cast(RequestContextHolder.getRequestAttributes()).getRequest();
 	}
 
 	/**

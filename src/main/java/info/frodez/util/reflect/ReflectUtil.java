@@ -19,18 +19,19 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * 根据方法名获取方法
+	 * 根据方法名获取方法,不支持重载方法<br>
+	 * 重载方法会返回方法列表中的第一个<br>
 	 * @author Frodez
 	 * @date 2018-12-17
 	 */
-	public static Method getMethod(Class<? extends Enum<?>> klass, String method) throws RuntimeException {
+	public static Method getMethod(Class<?> klass, String methodName) throws RuntimeException {
 		Method[] methods = klass.getMethods();
 		for (Method m : methods) {
-			if (m.getName().equals(method)) {
+			if (m.getName().equals(methodName)) {
 				return m;
 			}
 		}
-		throw new RuntimeException("验证方法不存在!");
+		throw new RuntimeException("方法不存在!");
 	}
 
 	/**
@@ -39,7 +40,7 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2018-12-17
 	 */
-	public static Object castValue(Class<?> parameterClass, Object value) {
+	public static Object castValue(Object value, Class<?> parameterClass) {
 		Class<?> valueClass = value.getClass();
 		if (valueClass == byte.class || valueClass == Byte.class) {
 			return castByteValue(parameterClass, (Byte) value);

@@ -1,21 +1,19 @@
 package info.frodez.config.security.util;
 
+import info.frodez.dao.result.user.PermissionInfo;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import info.frodez.dao.result.user.PermissionInfo;
 
 /**
  * 权限信息工具类
  * @author Frodez
  * @date 2018-11-14
  */
-public final class AuthorityUtil {
+public class AuthorityUtil {
 
 	/**
 	 * 生成权限信息

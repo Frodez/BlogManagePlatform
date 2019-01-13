@@ -54,7 +54,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 * 访问控制参数配置
 	 */
 	@Autowired
-	private SecurityProperties securityProperties;
+	private SecurityProperties properties;
 
 	/**
 	 * 根据url和请求方式,获取对应的权限
@@ -74,8 +74,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 			case METHOD_GET : {
 				attributes.addAll(permissions.stream().filter((iter) -> {
 					return (iter.getType() == PermissionTypeEnum.ALL.getValue()
-						|| iter.getType() == PermissionTypeEnum.GET.getValue())
-						&& iter.getUrl().equals(url);
+						|| iter.getType() == PermissionTypeEnum.GET.getValue()) && iter.getUrl().equals(url);
 				}).map((iter) -> {
 					return new SecurityConfig(iter.getName());
 				}).collect(Collectors.toList()));
@@ -84,8 +83,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 			case METHOD_POST : {
 				attributes.addAll(permissions.stream().filter((iter) -> {
 					return (iter.getType() == PermissionTypeEnum.ALL.getValue()
-						|| iter.getType() == PermissionTypeEnum.POST.getValue())
-						&& iter.getUrl().equals(url);
+						|| iter.getType() == PermissionTypeEnum.POST.getValue()) && iter.getUrl().equals(url);
 				}).map((iter) -> {
 					return new SecurityConfig(iter.getName());
 				}).collect(Collectors.toList()));
@@ -94,8 +92,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 			case METHOD_DELETE : {
 				attributes.addAll(permissions.stream().filter((iter) -> {
 					return (iter.getType() == PermissionTypeEnum.ALL.getValue()
-						|| iter.getType() == PermissionTypeEnum.DELETE.getValue())
-						&& iter.getUrl().equals(url);
+						|| iter.getType() == PermissionTypeEnum.DELETE.getValue()) && iter.getUrl().equals(url);
 				}).map((iter) -> {
 					return new SecurityConfig(iter.getName());
 				}).collect(Collectors.toList()));
@@ -104,8 +101,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 			case METHOD_PUT : {
 				attributes.addAll(permissions.stream().filter((iter) -> {
 					return (iter.getType() == PermissionTypeEnum.ALL.getValue()
-						|| iter.getType() == PermissionTypeEnum.PUT.getValue())
-						&& iter.getUrl().equals(url);
+						|| iter.getType() == PermissionTypeEnum.PUT.getValue()) && iter.getUrl().equals(url);
 				}).map((iter) -> {
 					return new SecurityConfig(iter.getName());
 				}).collect(Collectors.toList()));
@@ -122,7 +118,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 		}
 		//如果未获取权限,则添加无访问权限角色
 		if (CollectionUtils.isEmpty(attributes)) {
-			attributes.add(new SecurityConfig(securityProperties.getAuth().getDeniedRole()));
+			attributes.add(new SecurityConfig(properties.getAuth().getDeniedRole()));
 		}
 		return attributes;
 	}
@@ -134,7 +130,12 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 */
 	@Override
 	public Collection<ConfigAttribute> getAllConfigAttributes() {
-		return null;
+		List<Permission> permissions = userAuthorityService.getAllPermissions().parseList(Permission.class);
+		Collection<ConfigAttribute> attributes = new ArrayList<>();
+		attributes.addAll(permissions.stream().map((iter) -> {
+			return new SecurityConfig(iter.getName());
+		}).collect(Collectors.toList()));
+		return attributes;
 	}
 
 	@Override

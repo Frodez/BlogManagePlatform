@@ -116,7 +116,7 @@ public @interface ValidEnum {
 			}
 			Method m = ReflectUtil.getMethod(klass, method);
 			try {
-				return m.invoke(null, ReflectUtil.castValue(m.getParameterTypes()[0], value)) != null;
+				return m.invoke(null, ReflectUtil.castValue(value, m.getParameterTypes()[0])) != null;
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				throw new RuntimeException(e);
 			}

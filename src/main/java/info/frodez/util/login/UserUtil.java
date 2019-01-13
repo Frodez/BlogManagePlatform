@@ -1,4 +1,4 @@
-package info.frodez.config.security.util;
+package info.frodez.util.login;
 
 import info.frodez.config.security.settings.SecurityProperties;
 import info.frodez.constant.redis.Redis;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * @date 2019-01-09
  */
 @Component
-public class LoginUtil {
+public class UserUtil {
 
 	/**
 	 * 访问控制参数配置
@@ -36,22 +36,14 @@ public class LoginUtil {
 	 * @date 2019-01-09
 	 */
 	public UserInfo getInfo() {
-		String userName = redisService.getString(Redis.User.TOKEN + getToken());
-		String json = redisService.getString(Redis.User.BASE_INFO + userName);
-		return JSONUtil.toObject(json, UserInfo.class);
-	}
-
-	/**
-	 * 获取当前用户token,不能用于免验证URI中
-	 * @author Frodez
-	 * @date 2019-01-13
-	 */
-	public String getToken() {
 		HttpServletRequest request = ContextUtil.getRequest();
 		if (!properties.needVerify(request.getRequestURI())) {
 			throw new RuntimeException("不能在免验证URI中获取token信息!");
 		}
-		return request.getHeader(properties.getJwt().getHeader());
+		String fullToken = request.getHeader(properties.getJwt().getHeader());
+		String userName = redisService.getString(Redis.User.TOKEN + fullToken);
+		String json = redisService.getString(Redis.User.BASE_INFO + userName);
+		return JSONUtil.toObject(json, UserInfo.class);
 	}
 
 }

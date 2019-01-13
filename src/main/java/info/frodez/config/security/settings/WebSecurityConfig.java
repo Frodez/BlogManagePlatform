@@ -44,13 +44,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * 无验证访问控制
 	 */
 	@Autowired
-	private Authentication noAuthPoint;
+	private Authentication authentication;
 
 	/**
 	 * 无权限访问控制
 	 */
 	@Autowired
-	private AccessDenied noAuthProcessor;
+	private AccessDenied accessDenied;
 
 	/**
 	 * 访问控制参数配置
@@ -78,7 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		List<String> permitAllPathList = properties.getAuth().getPermitAllPath();
 		http.cors().and().csrf().disable().exceptionHandling()
 			// 无权限时导向noAuthPoint
-			.authenticationEntryPoint(noAuthPoint).and().exceptionHandling().accessDeniedHandler(noAuthProcessor).and()
+			.authenticationEntryPoint(authentication).and().exceptionHandling().accessDeniedHandler(accessDenied).and()
 			.sessionManagement()
 			// 不创建session
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
@@ -86,9 +86,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(permitAllPathList.toArray(new String[permitAllPathList.size()])).permitAll()
 			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated().and()
 			// 在密码验证过滤器前执行jwt过滤器
-			.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).headers().cacheControl(); // disable
-																											// page
-																											// caching
+			.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).headers().cacheControl(); // 禁止缓存
 	}
 
 	/**
