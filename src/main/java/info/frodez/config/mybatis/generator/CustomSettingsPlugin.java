@@ -1,7 +1,7 @@
 package info.frodez.config.mybatis.generator;
 
+import info.frodez.config.mybatis.DataMapper;
 import java.util.List;
-
 import org.joda.time.LocalDate;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -11,8 +11,6 @@ import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.XmlElement;
-
-import info.frodez.config.mybatis.DataMapper;
 
 /**
  * mybatis-generator参数配置插件
@@ -38,14 +36,14 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	public boolean clientGenerated(Interface i, TopLevelClass klass, IntrospectedTable table) {
 		// 获取实体类
 		FullyQualifiedJavaType entity = new FullyQualifiedJavaType(table.getBaseRecordType());
-		// import实体类
-		i.addImportedType(entity);
 		// import接口
 		i.addImportedType(new FullyQualifiedJavaType(MAPPER_NAME));
 		i.addSuperInterface(new FullyQualifiedJavaType(MAPPER_NAME + "<" + entity.getShortName() + ">"));
+		// import实体类
+		i.addImportedType(entity);
 		// import Spring Repository注解
-		i.addImportedType(new FullyQualifiedJavaType("org.springframework.stereotype.Repository"));
 		i.addImportedType(new FullyQualifiedJavaType("org.apache.ibatis.annotations.Mapper"));
+		i.addImportedType(new FullyQualifiedJavaType("org.springframework.stereotype.Repository"));
 		i.addAnnotation("@Mapper");
 		i.addAnnotation("@Repository");
 		i.addJavaDocLine("/**");

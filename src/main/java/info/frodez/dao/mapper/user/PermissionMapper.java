@@ -1,19 +1,18 @@
+
 package info.frodez.dao.mapper.user;
-
-import java.util.List;
-
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
 
 import info.frodez.config.mybatis.DataMapper;
 import info.frodez.dao.model.user.Permission;
 import info.frodez.dao.result.user.PermissionInfo;
+import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 /**
  * @description 用户权限表
  * @table tb_permission
- * @date 2018-11-14
+ * @date 2019-01-13
  */
 @Mapper
 @Repository

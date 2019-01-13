@@ -10,12 +10,12 @@
 		<property name="endingDelimiter" value="`" />
 		<property name="javaFileEncoding" value="utf-8" />
 		<property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter" />
-		<property name="xmlFormatter" value="info.frodez.config.mybatis.CustomXmlFormatter" />
+		<property name="xmlFormatter" value="info.frodez.config.mybatis.generator.CustomXmlFormatter" />
 
 		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
-		<plugin type="info.frodez.config.mybatis.CustomSettingsPlugin" />
+		<plugin type="info.frodez.config.mybatis.generator.CustomSettingsPlugin" />
 
-		<commentGenerator type="info.frodez.config.mybatis.CustomCommentGenerator">
+		<commentGenerator type="info.frodez.config.mybatis.generator.CustomCommentGenerator">
 			<property name="suppressAllComments" value="true" />
 			<property name="suppressDate" value="true" />
 		</commentGenerator>
@@ -40,7 +40,7 @@
 		<javaClientGenerator targetPackage="info.frodez.dao.mapper.user"
 			targetProject="BlogManagePlatform/src/main/java" type="XMLMAPPER" />
 		<!-- 表配置 -->
-		<table tableName="tb_user" domainObjectName="User">
+		<table tableName="tb_permission" domainObjectName="Permission">
 			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
 		</table>
 	</context>
