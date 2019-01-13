@@ -52,8 +52,7 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 	 * @date 2018-12-13
 	 */
 	@Override
-	public void addFieldComment(Field field, IntrospectedTable table,
-		IntrospectedColumn column) {
+	public void addFieldComment(Field field, IntrospectedTable table, IntrospectedColumn column) {
 		String columnName = column.getActualColumnName();
 		List<IntrospectedColumn> primaryKey = table.getPrimaryKeyColumns();
 		for (IntrospectedColumn pk : primaryKey) {
@@ -67,6 +66,9 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 		String defaultValue = column.getDefaultValue();
 		if (!StringUtils.isEmpty(defaultValue)) {
 			if (field.getType().getShortName().equals("Byte")) {
+				field.setInitializationString(defaultValue);
+			}
+			if (field.getType().getShortName().equals("Short")) {
 				field.setInitializationString(defaultValue);
 			}
 			if (field.getType().getShortName().equals("Integer")) {

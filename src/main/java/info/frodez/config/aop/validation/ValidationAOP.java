@@ -9,7 +9,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
 import info.frodez.util.aop.AopMethodUtil;
-import info.frodez.util.result.PageResult;
 import info.frodez.util.result.Result;
 import info.frodez.util.result.ResultEnum;
 import info.frodez.util.validation.ValidationUtil;
@@ -35,24 +34,16 @@ public class ValidationAOP {
 	@Around("@annotation(info.frodez.config.aop.validation.Check)")
 	public Object validate(ProceedingJoinPoint point) throws Throwable {
 		Method method = AopMethodUtil.getMethod(point);
-		checkReturnType(method);
+		if (method.getReturnType() != Result.class) {
+			throw new RuntimeException(method.getDeclaringClass().getName() + "." + method.getName()
+				+ "的返回值必须为" + Result.class.getName() + "类型!");
+		}
 		Object[] args = point.getArgs();
 		String msg = ValidationUtil.validateParam(point.getTarget(), method, args, "");
 		if (StringUtils.isBlank(msg)) {
 			return point.proceed();
 		} else {
-			if (method.getReturnType() == Result.class) {
-				return new Result(msg, ResultEnum.FAIL);
-			} else {
-				return new PageResult(msg, ResultEnum.FAIL);
-			}
-		}
-	}
-
-	private void checkReturnType(Method method) {
-		if (method.getReturnType() != Result.class && method.getReturnType() != PageResult.class) {
-			throw new RuntimeException(method.getDeclaringClass().getName() + "." + method.getName()
-				+ "的返回值必须为Result类型或者PageResult类型!");
+			return new Result(msg, ResultEnum.FAIL);
 		}
 	}
 

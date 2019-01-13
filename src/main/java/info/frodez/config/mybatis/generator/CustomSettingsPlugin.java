@@ -12,6 +12,8 @@ import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
+import info.frodez.config.mybatis.DataMapper;
+
 /**
  * mybatis-generator参数配置插件
  * @author Frodez
@@ -22,7 +24,7 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	/**
 	 * 基础Mapper全限定名,请务必保证正确!
 	 */
-	private static final String MAPPER_NAME = "info.frodez.config.mybatis.DataMapper";
+	private static final String MAPPER_NAME = DataMapper.class.getName();
 
 	/**
 	 * 配置生成的Mapper接口
@@ -34,7 +36,6 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	 */
 	@Override
 	public boolean clientGenerated(Interface i, TopLevelClass klass, IntrospectedTable table) {
-		System.out.println(properties.getProperty("baseMapperInterface"));
 		// 获取实体类
 		FullyQualifiedJavaType entity = new FullyQualifiedJavaType(table.getBaseRecordType());
 		// import实体类
