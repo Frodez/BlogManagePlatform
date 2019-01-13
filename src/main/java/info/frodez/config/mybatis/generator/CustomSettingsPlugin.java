@@ -44,9 +44,7 @@ public class CustomSettingsPlugin extends PluginAdapter {
 		// import实体类
 		i.addImportedType(entity);
 		// import Spring Repository注解
-		i.addImportedType(new FullyQualifiedJavaType("org.apache.ibatis.annotations.Mapper"));
 		i.addImportedType(new FullyQualifiedJavaType("org.springframework.stereotype.Repository"));
-		i.addAnnotation("@Mapper");
 		i.addAnnotation("@Repository");
 		i.addJavaDocLine("/**");
 		i.addJavaDocLine(" * @description " + (table.getRemarks() == null ? "" : table.getRemarks()));
@@ -131,14 +129,12 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	}
 
 	@Override
-	public boolean clientInsertMethodGenerated(Method method, TopLevelClass klass,
-		IntrospectedTable table) {
+	public boolean clientInsertMethodGenerated(Method method, TopLevelClass klass, IntrospectedTable table) {
 		return false;
 	}
 
 	@Override
-	public boolean clientInsertSelectiveMethodGenerated(Method method, TopLevelClass klass,
-		IntrospectedTable table) {
+	public boolean clientInsertSelectiveMethodGenerated(Method method, TopLevelClass klass, IntrospectedTable table) {
 		return false;
 	}
 
@@ -167,8 +163,7 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	}
 
 	@Override
-	public boolean clientDeleteByPrimaryKeyMethodGenerated(Method method, Interface i,
-		IntrospectedTable table) {
+	public boolean clientDeleteByPrimaryKeyMethodGenerated(Method method, Interface i, IntrospectedTable table) {
 		return false;
 	}
 
@@ -178,8 +173,7 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	}
 
 	@Override
-	public boolean clientInsertSelectiveMethodGenerated(Method method, Interface i,
-		IntrospectedTable table) {
+	public boolean clientInsertSelectiveMethodGenerated(Method method, Interface i, IntrospectedTable table) {
 		return false;
 	}
 
@@ -189,14 +183,12 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	}
 
 	@Override
-	public boolean clientSelectAllMethodGenerated(Method method, TopLevelClass klass,
-		IntrospectedTable table) {
+	public boolean clientSelectAllMethodGenerated(Method method, TopLevelClass klass, IntrospectedTable table) {
 		return false;
 	}
 
 	@Override
-	public boolean clientSelectByPrimaryKeyMethodGenerated(Method method, Interface i,
-		IntrospectedTable table) {
+	public boolean clientSelectByPrimaryKeyMethodGenerated(Method method, Interface i, IntrospectedTable table) {
 		return false;
 	}
 
@@ -249,20 +241,17 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	}
 
 	@Override
-	public boolean sqlMapUpdateByPrimaryKeySelectiveElementGenerated(XmlElement element,
-		IntrospectedTable table) {
+	public boolean sqlMapUpdateByPrimaryKeySelectiveElementGenerated(XmlElement element, IntrospectedTable table) {
 		return false;
 	}
 
 	@Override
-	public boolean sqlMapUpdateByPrimaryKeyWithBLOBsElementGenerated(XmlElement element,
-		IntrospectedTable table) {
+	public boolean sqlMapUpdateByPrimaryKeyWithBLOBsElementGenerated(XmlElement element, IntrospectedTable table) {
 		return false;
 	}
 
 	@Override
-	public boolean sqlMapUpdateByPrimaryKeyWithoutBLOBsElementGenerated(XmlElement element,
-		IntrospectedTable table) {
+	public boolean sqlMapUpdateByPrimaryKeyWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable table) {
 		return false;
 	}
 
@@ -272,14 +261,12 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	}
 
 	@Override
-	public boolean providerApplyWhereMethodGenerated(Method method, TopLevelClass klass,
-		IntrospectedTable table) {
+	public boolean providerApplyWhereMethodGenerated(Method method, TopLevelClass klass, IntrospectedTable table) {
 		return false;
 	}
 
 	@Override
-	public boolean providerInsertSelectiveMethodGenerated(Method method, TopLevelClass klass,
-		IntrospectedTable table) {
+	public boolean providerInsertSelectiveMethodGenerated(Method method, TopLevelClass klass, IntrospectedTable table) {
 		return false;
 	}
 

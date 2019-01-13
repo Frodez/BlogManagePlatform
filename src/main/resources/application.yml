@@ -1,9 +1,7 @@
 logging:
   level:
-    info:
-      frodez:
-        dao:
-          mapper: DEBUG
+    info.frodez.dao.mapper: DEBUG
+    org.springframework.boot.autoconfigure: ERROR
 
 mapper:
   identity: MYSQL

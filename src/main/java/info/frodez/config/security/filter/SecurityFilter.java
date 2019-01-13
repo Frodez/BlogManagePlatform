@@ -30,18 +30,12 @@ public class SecurityFilter extends AbstractSecurityInterceptor implements Filte
 	private AuthoritySource securitySource;
 
 	/**
-	 * 权限匹配管理器
-	 */
-	@Autowired
-	private AuthorityManager authorityManager;
-
-	/**
 	 * 设置权限匹配管理器
 	 * @author Frodez
 	 * @date 2018-12-21
 	 */
 	@Autowired
-	public void setAccessDecisionManager() {
+	public void setAccessDecisionManager(AuthorityManager authorityManager) {
 		super.setAccessDecisionManager(authorityManager);
 	}
 

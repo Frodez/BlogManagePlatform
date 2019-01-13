@@ -88,12 +88,14 @@ import org.springframework.boot.autoconfigure.webservices.client.WebServiceTempl
 import org.springframework.boot.autoconfigure.websocket.reactive.WebSocketReactiveAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketMessagingAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServletAutoConfiguration;
+import tk.mybatis.spring.annotation.MapperScan;
 
 /**
  * 启动类(根据情况精简了加载类)
  * @author Frodez
  * @date 2019-01-07
  */
+@MapperScan(basePackages = "info.frodez.dao.mapper")
 @SpringBootApplication(exclude = { ActiveMQAutoConfiguration.class, ArtemisAutoConfiguration.class,
 	BatchAutoConfiguration.class, CacheAutoConfiguration.class, CassandraAutoConfiguration.class,
 	CassandraDataAutoConfiguration.class, CassandraReactiveDataAutoConfiguration.class,
@@ -104,34 +106,30 @@ import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServlet
 	CouchbaseRepositoriesAutoConfiguration.class, XADataSourceAutoConfiguration.class,
 	WebSocketServletAutoConfiguration.class, WebSocketMessagingAutoConfiguration.class,
 	WebSocketReactiveAutoConfiguration.class, WebServicesAutoConfiguration.class,
-	WebServiceTemplateAutoConfiguration.class, WebFluxAutoConfiguration.class,
-	WebClientAutoConfiguration.class, ThymeleafAutoConfiguration.class,
-	TaskSchedulingAutoConfiguration.class, SessionAutoConfiguration.class, SolrAutoConfiguration.class,
-	SolrRepositoriesAutoConfiguration.class, SendGridAutoConfiguration.class,
+	WebServiceTemplateAutoConfiguration.class, WebFluxAutoConfiguration.class, WebClientAutoConfiguration.class,
+	ThymeleafAutoConfiguration.class, TaskSchedulingAutoConfiguration.class, SessionAutoConfiguration.class,
+	SolrAutoConfiguration.class, SolrRepositoriesAutoConfiguration.class, SendGridAutoConfiguration.class,
 	UserDetailsServiceAutoConfiguration.class, RepositoryRestMvcAutoConfiguration.class,
 	RestClientAutoConfiguration.class, ReactiveWebServerFactoryAutoConfiguration.class,
 	ReactiveUserDetailsServiceAutoConfiguration.class, ReactiveOAuth2ClientAutoConfiguration.class,
 	ReactiveOAuth2ResourceServerAutoConfiguration.class, ReactiveSecurityAutoConfiguration.class,
 	RabbitAutoConfiguration.class, QuartzAutoConfiguration.class, ProjectInfoAutoConfiguration.class,
-	OAuth2ClientAutoConfiguration.class, OAuth2ResourceServerAutoConfiguration.class,
-	Neo4jDataAutoConfiguration.class, Neo4jRepositoriesAutoConfiguration.class,
-	MustacheAutoConfiguration.class, MongoRepositoriesAutoConfiguration.class,
+	OAuth2ClientAutoConfiguration.class, OAuth2ResourceServerAutoConfiguration.class, Neo4jDataAutoConfiguration.class,
+	Neo4jRepositoriesAutoConfiguration.class, MustacheAutoConfiguration.class, MongoRepositoriesAutoConfiguration.class,
 	MongoReactiveAutoConfiguration.class, MongoReactiveRepositoriesAutoConfiguration.class,
-	MongoReactiveDataAutoConfiguration.class, MongoDataAutoConfiguration.class,
-	MongoAutoConfiguration.class, MessageSourceAutoConfiguration.class, LiquibaseAutoConfiguration.class,
-	LdapRepositoriesAutoConfiguration.class, LdapAutoConfiguration.class, KafkaAutoConfiguration.class,
-	JtaAutoConfiguration.class, JsonbAutoConfiguration.class, JpaRepositoriesAutoConfiguration.class,
-	JacksonAutoConfiguration.class, JooqAutoConfiguration.class, JndiDataSourceAutoConfiguration.class,
-	JndiConnectionFactoryAutoConfiguration.class, JmsAutoConfiguration.class, JestAutoConfiguration.class,
-	JerseyAutoConfiguration.class, JdbcRepositoriesAutoConfiguration.class,
+	MongoReactiveDataAutoConfiguration.class, MongoDataAutoConfiguration.class, MongoAutoConfiguration.class,
+	MessageSourceAutoConfiguration.class, LiquibaseAutoConfiguration.class, LdapRepositoriesAutoConfiguration.class,
+	LdapAutoConfiguration.class, KafkaAutoConfiguration.class, JtaAutoConfiguration.class, JsonbAutoConfiguration.class,
+	JpaRepositoriesAutoConfiguration.class, JacksonAutoConfiguration.class, JooqAutoConfiguration.class,
+	JndiDataSourceAutoConfiguration.class, JndiConnectionFactoryAutoConfiguration.class, JmsAutoConfiguration.class,
+	JestAutoConfiguration.class, JerseyAutoConfiguration.class, JdbcRepositoriesAutoConfiguration.class,
 	IntegrationAutoConfiguration.class, InfluxDbAutoConfiguration.class, HypermediaAutoConfiguration.class,
 	HttpHandlerAutoConfiguration.class, HibernateJpaAutoConfiguration.class,
-	HazelcastJpaDependencyAutoConfiguration.class, HazelcastAutoConfiguration.class,
-	H2ConsoleAutoConfiguration.class, GsonAutoConfiguration.class, GroovyTemplateAutoConfiguration.class,
-	FreeMarkerAutoConfiguration.class, FlywayAutoConfiguration.class, ErrorWebFluxAutoConfiguration.class,
-	EmbeddedMongoAutoConfiguration.class, EmbeddedLdapAutoConfiguration.class,
-	ElasticsearchRepositoriesAutoConfiguration.class, ElasticsearchDataAutoConfiguration.class,
-	ElasticsearchAutoConfiguration.class })
+	HazelcastJpaDependencyAutoConfiguration.class, HazelcastAutoConfiguration.class, H2ConsoleAutoConfiguration.class,
+	GsonAutoConfiguration.class, GroovyTemplateAutoConfiguration.class, FreeMarkerAutoConfiguration.class,
+	FlywayAutoConfiguration.class, ErrorWebFluxAutoConfiguration.class, EmbeddedMongoAutoConfiguration.class,
+	EmbeddedLdapAutoConfiguration.class, ElasticsearchRepositoriesAutoConfiguration.class,
+	ElasticsearchDataAutoConfiguration.class, ElasticsearchAutoConfiguration.class })
 public class BlogManagePlatformApplication {
 
 	public static void main(String[] args) {

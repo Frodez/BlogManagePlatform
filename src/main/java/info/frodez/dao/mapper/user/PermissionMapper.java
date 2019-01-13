@@ -4,7 +4,6 @@ import info.frodez.config.mybatis.DataMapper;
 import info.frodez.dao.model.user.Permission;
 import info.frodez.dao.result.user.PermissionInfo;
 import java.util.List;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Repository;
  * @table tb_permission
  * @date 2019-01-13
  */
-@Mapper
 @Repository
 public interface PermissionMapper extends DataMapper<Permission> {
 
