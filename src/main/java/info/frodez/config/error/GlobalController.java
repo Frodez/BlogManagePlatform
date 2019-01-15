@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @Slf4j
 @RestControllerAdvice
-public class ErrorHandler {
+public class GlobalController {
 
 	/**
 	 * 默认异常处理器

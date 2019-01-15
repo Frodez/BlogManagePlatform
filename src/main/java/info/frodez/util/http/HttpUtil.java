@@ -1,7 +1,6 @@
 package info.frodez.util.http;
 
 import java.io.PrintWriter;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -64,6 +63,48 @@ public class HttpUtil {
 			out.append(json);
 		} catch (Exception e) {
 			log.error("[writeJson]", e);
+		} finally {
+			if (out != null) {
+				out.close();
+			}
+		}
+	}
+
+	/**
+	 * 向response写入text/plain类型数据
+	 * @author Frodez
+	 * @date 2019-01-15
+	 */
+	public static void writePlainText(HttpServletResponse response, String text) {
+		PrintWriter out = null;
+		try {
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("text/plain; charset=utf-8");
+			out = response.getWriter();
+			out.append(text);
+		} catch (Exception e) {
+			log.error("[writePlainText]", e);
+		} finally {
+			if (out != null) {
+				out.close();
+			}
+		}
+	}
+
+	/**
+	 * 向response写入text/html类型数据
+	 * @author Frodez
+	 * @date 2019-01-15
+	 */
+	public static void writeHtml(HttpServletResponse response, String html) {
+		PrintWriter out = null;
+		try {
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("text/html; charset=utf-8");
+			out = response.getWriter();
+			out.append(html);
+		} catch (Exception e) {
+			log.error("[writeHtml]", e);
 		} finally {
 			if (out != null) {
 				out.close();

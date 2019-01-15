@@ -1,14 +1,12 @@
 package info.frodez;
 
+import info.frodez.util.validation.ValidationUtil;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
-import info.frodez.util.validation.ValidationUtil;
 import lombok.Data;
 
 public class ValidationTest {
@@ -47,6 +45,6 @@ public class ValidationTest {
 		@NotBlank(message = "subTest can't be blank!")
 		private String subTest;
 
-	}		
-	
+	}
+
 }

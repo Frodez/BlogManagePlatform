@@ -1,9 +1,10 @@
 package info.frodez.util.result;
 
 import java.io.Serializable;
-import java.util.List;
-
+import java.util.Collection;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 分页查询数据,所有分页查询接口均需使用此类型作为包装.
@@ -11,7 +12,9 @@ import lombok.Data;
  * @date 2019-01-13
  */
 @Data
-public class PageQueryVO<T> implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PageVO<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -23,6 +26,6 @@ public class PageQueryVO<T> implements Serializable {
 	/**
 	 * 分页数据
 	 */
-	private List<T> list;
+	private Collection<T> page;
 
 }

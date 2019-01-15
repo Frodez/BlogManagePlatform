@@ -15,7 +15,7 @@ import info.frodez.dao.result.user.UserInfo;
 import info.frodez.service.redis.RedisService;
 import info.frodez.util.json.JSONUtil;
 import info.frodez.util.result.Result;
-import info.frodez.util.result.ResultEnum;
+import info.frodez.util.result.ResultUtil;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -74,20 +74,20 @@ public class UserServiceImpl implements IUserService {
 			String json = redisService.getString(Redis.User.BASE_INFO + userName);
 			UserInfo data = JSONUtil.toObject(json, UserInfo.class);
 			if (data != null) {
-				return new Result(ResultEnum.SUCCESS, data);
+				return ResultUtil.success(data);
 			}
 			Example example = new Example(User.class);
 			example.createCriteria().andEqualTo("name", userName);
 			User user = userMapper.selectOneByExample(example);
 			if (user == null) {
-				return new Result("未查询到用户信息!", ResultEnum.FAIL);
+				return ResultUtil.fail("未查询到用户信息!");
 			}
 			if (user.getStatus().equals(UserStatusEnum.FORBIDDEN.getValue())) {
-				return new Result("用户已禁用!", ResultEnum.FAIL);
+				return ResultUtil.fail("用户已禁用!");
 			}
 			Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
 			if (role == null) {
-				return new Result("未查询到用户角色信息!", ResultEnum.FAIL);
+				return ResultUtil.fail("未查询到用户角色信息!");
 			}
 			List<PermissionInfo> permissionList = permissionMapper.getPermissions(user.getRoleId());
 			data = new UserInfo();
@@ -103,10 +103,10 @@ public class UserServiceImpl implements IUserService {
 			data.setRoleDescription(role.getDescription());
 			data.setPermissionList(permissionList);
 			redisService.set(Redis.User.BASE_INFO + userName, JSONUtil.toJSONString(data));
-			return new Result(ResultEnum.SUCCESS, data);
+			return ResultUtil.success(data);
 		} catch (Exception e) {
 			log.error("[getUserAuthority]", e);
-			return new Result(ResultEnum.FAIL);
+			return ResultUtil.fail();
 		}
 	}
 
@@ -121,14 +121,14 @@ public class UserServiceImpl implements IUserService {
 			String json = redisService.getString(Redis.User.PERMISSION_ALL);
 			List<Permission> permissions = JSONUtil.toList(json, Permission.class);
 			if (permissions != null) {
-				return new Result(ResultEnum.SUCCESS, permissions);
+				return ResultUtil.success(permissions);
 			}
 			permissions = permissionMapper.selectAll();
 			redisService.set(Redis.User.PERMISSION_ALL, JSONUtil.toJSONString(permissions));
-			return new Result(ResultEnum.SUCCESS, permissions);
+			return ResultUtil.success(permissions);
 		} catch (Exception e) {
 			log.error("[getAllPermissions]", e);
-			return new Result(ResultEnum.FAIL);
+			return ResultUtil.fail();
 		}
 	}
 
@@ -141,28 +141,28 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public Result login(LoginDTO param) {
 		try {
-			SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword())));
+			SecurityContextHolder.getContext().setAuthentication(authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword())));
 			Example example = new Example(User.class);
 			example.createCriteria().andEqualTo("name", param.getUsername());
 			User user = userMapper.selectOneByExample(example);
 			if (user == null) {
-				return new Result("用户名或密码错误!", ResultEnum.FAIL);
+				return ResultUtil.fail("用户名或密码错误!");
 			}
 			if (user.getStatus().equals(UserStatusEnum.FORBIDDEN.getValue())) {
-				return new Result("用户已禁用!", ResultEnum.FAIL);
+				return ResultUtil.fail("用户已禁用!");
 			}
 			Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
 			if (role == null) {
-				return new Result("未查询到用户角色信息!", ResultEnum.FAIL);
+				return ResultUtil.fail("未查询到用户角色信息!");
 			}
 			List<String> authorities = permissionMapper.getPermissions(role.getId()).stream()
 				.map(PermissionInfo::getName).collect(Collectors.toList());
 			String token = jwtTokenUtil.generate(param.getUsername(), authorities);
-			return new Result(ResultEnum.SUCCESS, token);
+			return ResultUtil.success(token);
 		} catch (Exception e) {
 			log.error("[login]", e);
-			return new Result(ResultEnum.FAIL);
+			return ResultUtil.fail();
 		}
 	}
 

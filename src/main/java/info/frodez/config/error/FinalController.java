@@ -1,7 +1,6 @@
 package info.frodez.config.error;
 
-import info.frodez.util.http.HttpUtil;
-import info.frodez.util.result.ResultUtil;
+import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.error.AbstractErrorController;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("${server.error.path:${error.path:/error}}")
-public class FinalErrorController extends AbstractErrorController {
+public class FinalController extends AbstractErrorController {
 
 	private final ErrorProperties errorProperties;
 
 	@Autowired
-	public FinalErrorController(ErrorAttributes errorAttributes, ServerProperties serverProperties) {
+	public FinalController(ErrorAttributes errorAttributes, ServerProperties serverProperties) {
 		super(errorAttributes);
 		this.errorProperties = serverProperties.getError();
 	}
@@ -36,8 +36,9 @@ public class FinalErrorController extends AbstractErrorController {
 	}
 
 	@RequestMapping
-	public void error(HttpServletRequest request, HttpServletResponse response) {
-		HttpUtil.writeJson(response, ResultUtil.FAIL_STRING);
+	public void error(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+			HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
 	}
 
 }
