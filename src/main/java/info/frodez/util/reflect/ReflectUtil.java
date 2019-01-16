@@ -26,7 +26,9 @@ public class ReflectUtil {
 			ConstructorAccess<T> constructor = constructorCache.get(klass.getName());
 			return constructor.newInstance();
 		} else {
-			constructorCache.put(klass.getName(), ConstructorAccess.get(klass))
+			ConstructorAccess<T> constructor = ConstructorAccess.get(klass);
+			constructorCache.put(klass.getName(), constructor);
+			return constructor.newInstance();
 		}
 	}
 
