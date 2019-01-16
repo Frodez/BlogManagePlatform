@@ -1,9 +1,10 @@
 package info.frodez.util.reflect;
 
-import com.esotericsoftware.reflectasm.ConstructorAccess;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.esotericsoftware.reflectasm.ConstructorAccess;
 
 /**
  * 反射工具类
@@ -11,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2019-01-13
  */
 public class ReflectUtil {
-
+	
 	@SuppressWarnings("rawtypes")
 	private static final Map<String, ConstructorAccess> constructorCache = new ConcurrentHashMap<>();
 
@@ -26,7 +27,9 @@ public class ReflectUtil {
 			ConstructorAccess<T> constructor = constructorCache.get(klass.getName());
 			return constructor.newInstance();
 		} else {
-			constructorCache.put(klass.getName(), ConstructorAccess.get(klass))
+			ConstructorAccess<T> constructor = ConstructorAccess.get(klass);
+			constructorCache.put(klass.getName(), constructor);
+			return constructor.newInstance();
 		}
 	}
 

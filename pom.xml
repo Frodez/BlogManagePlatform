@@ -171,7 +171,7 @@
 		    <groupId>com.esotericsoftware</groupId>
 		    <artifactId>reflectasm</artifactId>
 		    <version>1.11.8</version>
-		</dependency>		
+		</dependency>
 
 	</dependencies>
 

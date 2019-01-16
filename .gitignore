@@ -26,3 +26,5 @@ hs_err_pid*
 /.mvn/
 /target
 /.settings/
+/.factorypath
+/bin/
