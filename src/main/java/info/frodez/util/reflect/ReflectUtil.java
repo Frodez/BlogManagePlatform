@@ -1,9 +1,6 @@
 package info.frodez.util.reflect;
 
-import com.esotericsoftware.reflectasm.ConstructorAccess;
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 反射工具类
@@ -11,26 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2019-01-13
  */
 public class ReflectUtil {
-
-	@SuppressWarnings("rawtypes")
-	private static final Map<String, ConstructorAccess> constructorCache = new ConcurrentHashMap<>();
-
-	/**
-	 * 高效获取某类实例
-	 * @author Frodez
-	 * @date 2019-01-16
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T getInstance(Class<T> klass) {
-		if(constructorCache.containsKey(klass.getName())) {
-			ConstructorAccess<T> constructor = constructorCache.get(klass.getName());
-			return constructor.newInstance();
-		} else {
-			ConstructorAccess<T> constructor = ConstructorAccess.get(klass);
-			constructorCache.put(klass.getName(), constructor);
-			return constructor.newInstance();
-		}
-	}
 
 	/**
 	 * 获取方法全限定名
