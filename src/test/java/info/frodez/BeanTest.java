@@ -20,7 +20,7 @@ public class BeanTest {
 		one.setDate(date);
 		one.setDate(date);
 		long start = System.currentTimeMillis();
-		for(int i = 0; i < 10; i++) {
+		for(int i = 0; i < 100000000; i++) {
 			if((i & 0b11) == 0) {
 				BeanTwo two = new BeanTwo();
 				//BeanUtils.copyProperties(one, two);
@@ -42,6 +42,30 @@ public class BeanTest {
 				BeanUtil.copy(one, five);
 			}
 		}
+		System.out.println(System.currentTimeMillis() - start);
+		start = System.currentTimeMillis();
+//		for(int i = 0; i < 100000000; i++) {
+//			if((i & 0b11) == 0) {
+//				BeanTwo two = new BeanTwo();
+//				BeanUtils.copyProperties(one, two);
+//				//BeanUtil.copy(one, two);
+//			}
+//			if((i & 0b11) == 1) {
+//				BeanThree three = new BeanThree();
+//				BeanUtils.copyProperties(one, three);
+//				//BeanUtil.copy(one, three);
+//			}
+//			if((i & 0b11) == 2) {
+//				BeanFour four = new BeanFour();
+//				BeanUtils.copyProperties(one, four);
+//				//BeanUtil.copy(one, four);
+//			}
+//			if((i & 0b11) == 3) {
+//				BeanFive five = new BeanFive();
+//				BeanUtils.copyProperties(one, five);
+//				//BeanUtil.copy(one, five);
+//			}
+//		}
 		System.out.println(System.currentTimeMillis() - start);
 	}
 	
