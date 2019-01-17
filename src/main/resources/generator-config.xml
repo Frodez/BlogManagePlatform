@@ -39,7 +39,7 @@
 		<javaClientGenerator targetPackage="info.frodez.dao.mapper.user"
 			targetProject="BlogManagePlatform/src/main/java" type="XMLMAPPER" />
 		<!-- 表配置 -->
-		<table tableName="tb_permission" domainObjectName="Permission">
+		<table tableName="tb_user" domainObjectName="User">
 			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
 		</table>
 	</context>
