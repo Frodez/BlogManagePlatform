@@ -1,4 +1,4 @@
-package info.frodez.config.security.errorhandler;
+package info.frodez.config.security.error;
 
 import info.frodez.util.http.HttpUtil;
 import info.frodez.util.result.ResultUtil;

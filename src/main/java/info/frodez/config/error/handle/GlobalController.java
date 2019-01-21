@@ -1,6 +1,6 @@
-package info.frodez.config.error;
+package info.frodez.config.error.handle;
 
-import info.frodez.config.aop.request.RepeatException;
+import info.frodez.config.error.exception.RepeatException;
 import info.frodez.util.http.HttpUtil;
 import info.frodez.util.result.ResultUtil;
 import javax.servlet.http.HttpServletRequest;

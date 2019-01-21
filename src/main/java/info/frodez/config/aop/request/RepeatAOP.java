@@ -5,12 +5,15 @@ import info.frodez.constant.redis.Redis;
 import info.frodez.service.redis.RedisService;
 import info.frodez.util.aop.MethodUtil;
 import info.frodez.util.http.HttpUtil;
+import info.frodez.util.result.Result;
+import info.frodez.util.result.ResultEnum;
+import info.frodez.util.result.ResultUtil;
 import info.frodez.util.spring.context.ContextUtil;
 import javax.servlet.http.HttpServletRequest;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +28,7 @@ import org.springframework.stereotype.Component;
  * @author Frodez
  * @date 2018-12-21
  */
+@Slf4j
 @Aspect
 @Component
 public class RepeatAOP {
@@ -42,52 +46,47 @@ public class RepeatAOP {
 	private SecurityProperties properties;
 
 	/**
-	 * 在请求前判断是否存在正在执行的请求
+	 * 在请求前判断是否存在正在执行的请求,在请求后删除redis中key
 	 * @param JoinPoint AOP切点
 	 * @author Frodez
+	 * @throws Throwable
 	 * @date 2018-12-21
 	 */
-	@Before("@annotation(info.frodez.config.aop.request.ReLock)")
-	public void before(JoinPoint point) throws Exception {
+	@Around("@annotation(info.frodez.config.aop.request.ReLock)")
+	public Object before(ProceedingJoinPoint point) throws Throwable {
 		HttpServletRequest request = ContextUtil.getRequest();
 		ReLock lock = MethodUtil.getAnnotation(point, ReLock.class);
 		String key = getKey(lock.value(), request);
 		if (redisService.exists(key)) {
-			throw new RepeatException("重复请求:IP地址" + HttpUtil.getAddr(request));
+			log.info("重复请求:IP地址" + HttpUtil.getAddr(request));
+			return new Result(ResultUtil.REPEAT_REQUEST_STRING, ResultEnum.REPEAT_REQUEST);
 		}
 		redisService.set(key, true);
-	}
-
-	/**
-	 * 在请求后删除redis中key
-	 * @param JoinPoint AOP切点
-	 * @author Frodez
-	 * @date 2018-12-21
-	 */
-	@After("@annotation(info.frodez.config.aop.request.ReLock)")
-	public void after(JoinPoint point) {
-		ReLock lock = MethodUtil.getAnnotation(point, ReLock.class);
+		Object result = point.proceed();
 		redisService.delete(getKey(lock.value(), ContextUtil.getRequest()));
+		return result;
 	}
 
 	/**
-	 * 在请求前判断是否存在正在执行的请求
+	 * 在一定时间段内拦截重复请求
 	 * @param JoinPoint AOP切点
 	 * @author Frodez
 	 * @date 2018-12-21
 	 */
-	@Before("@annotation(info.frodez.config.aop.request.TimeoutLock)")
-	public void beforeTimeout(JoinPoint point) throws Exception {
+	@Around("@annotation(info.frodez.config.aop.request.TimeoutLock)")
+	public Object beforeTimeout(ProceedingJoinPoint point) throws Throwable {
 		HttpServletRequest request = ContextUtil.getRequest();
 		TimeoutLock timeoutLock = MethodUtil.getAnnotation(point, TimeoutLock.class);
 		String key = getKey(timeoutLock.value(), request);
 		if (redisService.exists(key)) {
-			throw new RepeatException("重复请求:IP地址" + HttpUtil.getAddr(request));
+			log.info("重复请求:IP地址" + HttpUtil.getAddr(request));
+			return new Result(ResultUtil.REPEAT_REQUEST_STRING, ResultEnum.REPEAT_REQUEST);
 		}
 		if (timeoutLock.time() <= 0) {
 			throw new RuntimeException("超时时间必须大于0!");
 		}
 		redisService.set(key, true, timeoutLock.time());
+		return point.proceed();
 	}
 
 	/**

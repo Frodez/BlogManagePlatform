@@ -1,7 +1,7 @@
 package info.frodez.config.security.settings;
 
-import info.frodez.config.security.errorhandler.AccessDenied;
-import info.frodez.config.security.errorhandler.Authentication;
+import info.frodez.config.security.error.AccessDenied;
+import info.frodez.config.security.error.Authentication;
 import info.frodez.config.security.filter.JwtTokenFilter;
 import info.frodez.config.security.settings.SecurityProperties.Cors;
 import java.util.List;

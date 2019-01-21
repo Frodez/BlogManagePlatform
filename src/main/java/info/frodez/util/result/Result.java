@@ -1,10 +1,10 @@
 package info.frodez.util.result;
 
+import info.frodez.config.error.exception.ParseException;
+import info.frodez.util.json.JSONUtil;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import info.frodez.util.json.JSONUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -57,11 +57,15 @@ public class Result {
 	 * 根据类型获取数据,data为空时抛出异常
 	 * @author Frodez
 	 * @param klass 类型
+	 * @throws ParseException
 	 * @date 2018-11-13
 	 */
 	public <T> T parse(Class<T> klass) {
+		if (status != ResultEnum.SUCCESS.getValue()) {
+			throw new ParseException("非成功状态!");
+		}
 		if (data == null) {
-			throw new NullPointerException("数据为空!");
+			throw new ParseException("数据为空!");
 		}
 		return klass.cast(data);
 	}
@@ -70,12 +74,16 @@ public class Result {
 	 * 根据类型获取集合数据,data为空时抛出异常
 	 * @author Frodez
 	 * @param klass 类型
+	 * @throws ParseException
 	 * @date 2018-11-13
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> List<T> parseList(Class<T> klass) {
+		if (status != ResultEnum.SUCCESS.getValue()) {
+			throw new ParseException("非成功状态!");
+		}
 		if (data == null) {
-			throw new NullPointerException("数据为空!");
+			throw new ParseException("数据为空!");
 		}
 		return (List<T>) data;
 	}
@@ -84,12 +92,16 @@ public class Result {
 	 * 根据类型获取集合数据,data为空时抛出异常
 	 * @author Frodez
 	 * @param klass 类型
+	 * @throws ParseException
 	 * @date 2018-11-13
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> Set<T> parseSet(Class<T> klass) {
+		if (status != ResultEnum.SUCCESS.getValue()) {
+			throw new ParseException("非成功状态!");
+		}
 		if (data == null) {
-			throw new NullPointerException("数据为空!");
+			throw new ParseException("数据为空!");
 		}
 		return (Set<T>) data;
 	}
@@ -98,12 +110,16 @@ public class Result {
 	 * 根据类型获取集合数据,data为空时抛出异常
 	 * @author Frodez
 	 * @param klass 类型
+	 * @throws ParseException
 	 * @date 2018-11-13
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> parseMap() {
+		if (status != ResultEnum.SUCCESS.getValue()) {
+			throw new ParseException("非成功状态!");
+		}
 		if (data == null) {
-			throw new NullPointerException("数据为空!");
+			throw new ParseException("数据为空!");
 		}
 		return (Map<String, Object>) data;
 	}
@@ -112,12 +128,16 @@ public class Result {
 	 * 根据类型获取集合数据,data为空时抛出异常
 	 * @author Frodez
 	 * @param klass 类型
+	 * @throws ParseException
 	 * @date 2018-11-13
 	 */
 	@SuppressWarnings("unchecked")
 	public <K, V> Map<K, V> parseMap(Class<K> keyClass, Class<V> valueClass) {
+		if (status != ResultEnum.SUCCESS.getValue()) {
+			throw new ParseException("非成功状态!");
+		}
 		if (data == null) {
-			throw new NullPointerException("数据为空!");
+			throw new ParseException("数据为空!");
 		}
 		return (Map<K, V>) data;
 	}
