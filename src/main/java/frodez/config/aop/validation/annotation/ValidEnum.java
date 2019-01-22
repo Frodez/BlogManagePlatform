@@ -1,4 +1,4 @@
-package frodez.util.validation;
+package frodez.config.aop.validation.annotation;
 
 import frodez.util.reflect.ReflectUtil;
 import java.lang.annotation.Documented;

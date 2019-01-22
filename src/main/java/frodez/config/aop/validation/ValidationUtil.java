@@ -1,4 +1,4 @@
-package frodez.util.validation;
+package frodez.config.aop.validation;
 
 import java.lang.reflect.Method;
 

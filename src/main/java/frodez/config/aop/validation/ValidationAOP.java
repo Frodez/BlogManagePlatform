@@ -4,7 +4,6 @@ import frodez.util.aop.MethodUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.result.Result;
 import frodez.util.result.ResultEnum;
-import frodez.util.validation.ValidationUtil;
 import java.lang.reflect.Method;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -30,7 +29,7 @@ public class ValidationAOP {
 	 * @author Frodez
 	 * @date 2019-01-12
 	 */
-	@Around("@annotation(frodez.config.aop.validation.Check)")
+	@Around("@annotation(frodez.config.aop.validation.annotation.Check)")
 	public Object validate(ProceedingJoinPoint point) throws Throwable {
 		Method method = MethodUtil.getMethod(point);
 		if (method.getReturnType() != Result.class) {

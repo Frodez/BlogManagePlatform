@@ -1,6 +1,6 @@
 package info.frodez;
 
-import frodez.util.validation.ValidationUtil;
+import frodez.config.aop.validation.ValidationUtil;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;

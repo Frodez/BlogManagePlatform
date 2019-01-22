@@ -1,4 +1,4 @@
-package frodez.util.login;
+package frodez.config.security.login;
 
 import frodez.config.security.settings.SecurityProperties;
 import frodez.constant.redis.Redis;

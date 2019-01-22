@@ -1,6 +1,7 @@
 package frodez.controller;
 
 import frodez.config.aop.request.annotation.RepeatLock;
+import frodez.config.security.login.BaseController;
 import frodez.constant.redis.Repeat;
 import frodez.dao.param.user.LoginDTO;
 import frodez.service.user.IUserService;

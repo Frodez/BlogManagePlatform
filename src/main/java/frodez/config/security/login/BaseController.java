@@ -1,7 +1,6 @@
-package frodez.controller;
+package frodez.config.security.login;
 
 import frodez.dao.result.user.UserInfo;
-import frodez.util.login.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
