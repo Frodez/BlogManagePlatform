@@ -1,5 +1,6 @@
 package info.frodez;
 
+import frodez.service.redis.RedisService;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,8 +9,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import info.frodez.service.redis.RedisService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest()

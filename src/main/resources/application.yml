@@ -1,17 +1,17 @@
 logging:
   level:
-    info.frodez.dao.mapper: DEBUG
+    frodez.dao.mapper: DEBUG
     org.springframework.boot.autoconfigure: ERROR
 
 mapper:
   identity: MYSQL
-  mappers: info.frodez.config.mybatis.DataMapper
+  mappers: frodez.config.mybatis.DataMapper
   safeDelete: true
   safeUpdate: true
   
 mybatis:
-  mapper-locations: classpath:info/frodez/dao/mapper/*Mapper.xml
-  type-aliases-package: info.frodez.dao.model
+  mapper-locations: classpath:frodez/dao/mapper/*Mapper.xml
+  type-aliases-package: frodez.dao.model
   
 pagehelper:
   helperDialect: mysql

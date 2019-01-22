@@ -1,5 +1,6 @@
 package info.frodez;
 
+import frodez.util.spring.properties.PropertiesUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,8 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import info.frodez.util.spring.properties.PropertiesUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

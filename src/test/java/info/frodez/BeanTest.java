@@ -1,8 +1,7 @@
 package info.frodez;
 
+import frodez.util.reflect.BeanUtil;
 import java.util.Date;
-
-import info.frodez.util.reflect.BeanUtil;
 import lombok.Data;
 
 public class BeanTest {
