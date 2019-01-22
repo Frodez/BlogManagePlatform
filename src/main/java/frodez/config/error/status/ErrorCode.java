@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
-	USER_ERROR("用户服务失败!");
+	USER_SERVICE_ERROR("用户信息服务失败!");
 
 	private String description;
 

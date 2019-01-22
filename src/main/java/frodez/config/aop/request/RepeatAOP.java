@@ -57,7 +57,6 @@ public class RepeatAOP {
 			}
 			checker.lock(key);
 			Object result = point.proceed();
-			checker.free(key);
 			return result;
 		} finally {
 			checker.free(key);
