@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import info.frodez.config.aop.request.ReLock;
+import info.frodez.config.aop.request.annotation.RepeatLock;
 import info.frodez.constant.redis.Repeat;
 import info.frodez.dao.param.user.LoginDTO;
 import info.frodez.service.user.IUserService;
@@ -36,7 +36,7 @@ public class LoginController {
 	 * @date 2018-12-21
 	 */
 	@ApiOperation(value = "")
-	@ReLock(Repeat.Login.AUTH)
+	@RepeatLock(Repeat.Login.AUTH)
 	@PostMapping("/auth")
 	public Result auth(@RequestBody LoginDTO param) {
 		return authorityService.login(param);

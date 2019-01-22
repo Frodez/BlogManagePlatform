@@ -1,4 +1,4 @@
-package info.frodez.config.aop.request;
+package info.frodez.config.aop.request.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

@@ -8,8 +8,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import info.frodez.config.aop.request.annotation.RepeatLock;
-import info.frodez.config.aop.request.checker.RepeatCheckerImpl;
+import info.frodez.config.aop.request.annotation.TimeoutLock;
+import info.frodez.config.aop.request.checker.TimeoutCheckerImpl;
 import info.frodez.util.aop.MethodUtil;
 import info.frodez.util.http.HttpUtil;
 import info.frodez.util.result.Result;
@@ -32,34 +32,34 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Aspect
 @Component
-public class RepeatAOP {
-
+public class TimeoutAOP {
+	
 	/**
-	 * 阻塞型重复请求检查
+	 * 自动超时型重复请求检查
 	 */
 	@Autowired
-	private RepeatCheckerImpl checker;
-
+	private TimeoutCheckerImpl checker;
+	
 	/**
-	 * 在请求前判断是否存在正在执行的请求,在请求后删除redis中key
+	 * 在一定时间段内拦截重复请求
 	 * @param JoinPoint AOP切点
 	 * @author Frodez
-	 * @throws Throwable
 	 * @date 2018-12-21
 	 */
-	@Around("@annotation(info.frodez.config.aop.request.ReLock)")
+	@Around("@annotation(info.frodez.config.aop.request.TimeoutLock)")
 	public Object process(ProceedingJoinPoint point) throws Throwable {
 		HttpServletRequest request = ContextUtil.getRequest();
-		RepeatLock lock = MethodUtil.getAnnotation(point, RepeatLock.class);
-		String key = checker.getKey(lock.value(), request);
+		TimeoutLock timeoutLock = MethodUtil.getAnnotation(point, TimeoutLock.class);
+		String key = checker.getKey(timeoutLock.value(), request);
 		if (checker.check(key)) {
 			log.info("重复请求:IP地址" + HttpUtil.getAddr(request));
 			return new Result(ResultUtil.REPEAT_REQUEST_STRING, ResultEnum.REPEAT_REQUEST);
 		}
-		checker.lock(key);
-		Object result = point.proceed();
-		checker.free(key);
-		return result;
+		if (timeoutLock.time() <= 0) {
+			throw new RuntimeException("超时时间必须大于0!");
+		}
+		checker.lock(key, timeoutLock.time());
+		return point.proceed();
 	}
 
 }
