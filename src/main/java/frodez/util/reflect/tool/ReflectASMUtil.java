@@ -1,4 +1,4 @@
-package frodez.util.reflect;
+package frodez.util.reflect.tool;
 
 import com.esotericsoftware.reflectasm.ConstructorAccess;
 import com.esotericsoftware.reflectasm.FieldAccess;

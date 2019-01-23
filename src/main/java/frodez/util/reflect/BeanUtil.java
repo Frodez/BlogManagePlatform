@@ -1,6 +1,10 @@
 package frodez.util.reflect;
 
 import com.esotericsoftware.reflectasm.FieldAccess;
+
+import frodez.util.reflect.tool.BeanCopierUtil;
+import frodez.util.reflect.tool.ReflectASMUtil;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;

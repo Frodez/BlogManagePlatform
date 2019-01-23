@@ -1,4 +1,4 @@
-package frodez.util.reflect;
+package frodez.util.reflect.tool;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
