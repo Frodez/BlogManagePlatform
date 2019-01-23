@@ -1,4 +1,4 @@
-package frodez.config.aop.request.checker.inter;
+package frodez.config.aop.request.checker.facade;
 
 /**
  * 自动超时型重复请求检查接口

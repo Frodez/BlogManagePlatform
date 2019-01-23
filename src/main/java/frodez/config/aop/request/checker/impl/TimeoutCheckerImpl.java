@@ -1,7 +1,7 @@
 package frodez.config.aop.request.checker.impl;
 
-import frodez.config.aop.request.checker.inter.ServletKeyGenerator;
-import frodez.config.aop.request.checker.inter.TimeoutChecker;
+import frodez.config.aop.request.checker.facade.ServletKeyGenerator;
+import frodez.config.aop.request.checker.facade.TimeoutChecker;
 import frodez.config.security.settings.SecurityProperties;
 import frodez.constant.redis.Redis;
 import frodez.service.redis.RedisService;
@@ -38,6 +38,9 @@ public class TimeoutCheckerImpl implements TimeoutChecker, ServletKeyGenerator {
 
 	@Override
 	public void lock(String key, long timeout) {
+		if (timeout <= 0) {
+			throw new RuntimeException("超时时间必须大于0!");
+		}
 		redisService.set(key, true, timeout);
 	}
 

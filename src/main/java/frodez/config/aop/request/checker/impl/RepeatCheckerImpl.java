@@ -1,7 +1,7 @@
 package frodez.config.aop.request.checker.impl;
 
-import frodez.config.aop.request.checker.inter.RepeatChecker;
-import frodez.config.aop.request.checker.inter.ServletKeyGenerator;
+import frodez.config.aop.request.checker.facade.RepeatChecker;
+import frodez.config.aop.request.checker.facade.ServletKeyGenerator;
 import frodez.config.security.settings.SecurityProperties;
 import frodez.constant.redis.Redis;
 import frodez.service.redis.RedisService;

@@ -1,4 +1,4 @@
-package frodez.config.aop.request.checker.inter;
+package frodez.config.aop.request.checker.facade;
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -53,9 +53,6 @@ public class TimeoutAOP {
 			log.info("重复请求:IP地址" + HttpUtil.getAddr(request));
 			return new Result(ResultUtil.REPEAT_REQUEST_STRING, ResultEnum.REPEAT_REQUEST);
 		}
-		if (timeoutLock.time() <= 0) {
-			throw new RuntimeException("超时时间必须大于0!");
-		}
 		checker.lock(key, timeoutLock.time());
 		return point.proceed();
 	}
