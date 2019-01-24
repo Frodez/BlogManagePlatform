@@ -1,5 +1,6 @@
 package frodez.service.user;
 
+import frodez.config.aop.log.annotation.MethodLog;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.dao.param.user.LoginDTO;
 import frodez.util.result.Result;
@@ -36,6 +37,7 @@ public interface IUserService {
 	 * @date 2018-12-03
 	 */
 	@Check
+	@MethodLog
 	Result login(@NotNull(message = "请求参数不能为空!") LoginDTO param);
 
 }
