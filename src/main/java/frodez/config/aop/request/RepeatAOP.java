@@ -1,20 +1,23 @@
 package frodez.config.aop.request;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import frodez.config.aop.request.annotation.RepeatLock;
-import frodez.config.aop.request.checker.impl.RepeatCheckerImpl;
+import frodez.config.aop.request.checker.facade.RepeatChecker;
+import frodez.config.aop.request.checker.impl.KeyGenerator;
 import frodez.util.aop.MethodUtil;
 import frodez.util.http.HttpUtil;
 import frodez.util.result.Result;
 import frodez.util.result.ResultEnum;
 import frodez.util.result.ResultUtil;
 import frodez.util.spring.context.ContextUtil;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * 控制重复请求AOP切面<br>
@@ -36,7 +39,13 @@ public class RepeatAOP {
 	 * 阻塞型重复请求检查
 	 */
 	@Autowired
-	private RepeatCheckerImpl checker;
+	private RepeatChecker checker;
+	
+	/**
+	 * 访问控制参数配置
+	 */
+	@Autowired
+	private KeyGenerator generator;
 
 	/**
 	 * 在请求前判断是否存在正在执行的请求,在请求后删除redis中key
@@ -50,7 +59,7 @@ public class RepeatAOP {
 		String key = null;
 		try {
 			HttpServletRequest request = ContextUtil.getRequest();
-			key = checker.getKey(MethodUtil.getAnnotation(point, RepeatLock.class).value(), request);
+			key = generator.servletKey(MethodUtil.getAnnotation(point, RepeatLock.class).value(), request);
 			if (checker.check(key)) {
 				log.info("重复请求:IP地址" + HttpUtil.getAddr(request));
 				return new Result(ResultUtil.REPEAT_REQUEST_STRING, ResultEnum.REPEAT_REQUEST);
