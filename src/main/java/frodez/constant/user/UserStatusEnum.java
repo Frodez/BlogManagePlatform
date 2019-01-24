@@ -1,5 +1,7 @@
 package frodez.constant.user;
 
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -25,13 +27,17 @@ public enum UserStatusEnum {
 
 	private String description;
 
-	public UserStatusEnum of(byte value) {
+	private static final Map<Byte, UserStatusEnum> enumMap;
+
+	static {
+		enumMap = new HashMap<>();
 		for (UserStatusEnum iter : UserStatusEnum.values()) {
-			if (iter.value == value) {
-				return iter;
-			}
+			enumMap.put(iter.value, iter);
 		}
-		return null;
+	}
+
+	public static UserStatusEnum of(byte value) {
+		return enumMap.get(value);
 	}
 
 }
