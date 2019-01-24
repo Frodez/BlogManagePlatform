@@ -16,7 +16,7 @@ public class Redis {
 
 		public static final String BASE_INFO = "USER:BASE_INFO:";
 
-		public static final String PERMISSION_ALL = "USER:PERMISSION:ALL";
+		public static final String PERMISSION_ALL = "USER:PERMISSION_ALL:";
 
 	}
 
