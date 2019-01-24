@@ -1,5 +1,6 @@
 package frodez.service.user;
 
+import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.util.TokenUtil;
 import frodez.constant.redis.Redis;
 import frodez.constant.user.UserStatusEnum;
@@ -68,6 +69,7 @@ public class UserServiceImpl implements IUserService {
 	 * @param userName 用户姓名(唯一)
 	 * @date 2018-11-14
 	 */
+	@Check
 	@Override
 	public Result getUserInfoByName(String userName) {
 		try {
@@ -138,6 +140,7 @@ public class UserServiceImpl implements IUserService {
 	 * @param LoginDTO 用户登录请求参数
 	 * @date 2018-12-03
 	 */
+	@Check
 	@Override
 	public Result login(LoginDTO param) {
 		try {
