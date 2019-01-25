@@ -2,6 +2,8 @@ package frodez.util.result;
 
 import java.util.Collection;
 
+import frodez.util.json.JSONUtil;
+
 /**
  * 返回值工具类
  * @author Frodez
@@ -12,32 +14,27 @@ public class ResultUtil {
 	/**
 	 * 失败返回值
 	 */
-	public static final String FAIL_STRING = "{\"status\":" + ResultEnum.FAIL.getValue() + ",\"message\":\""
-		+ ResultEnum.FAIL.getDescription() + "\",\"data\":null}";
+	public static final String FAIL_STRING = JSONUtil.toJSONString(new Result(ResultEnum.FAIL));
 
 	/**
 	 * 用户未登录返回值
 	 */
-	public static final String NOT_LOGIN_STRING = "{\"status\":" + ResultEnum.NOT_LOGIN.getValue() + ",\"message\":\""
-		+ ResultEnum.NOT_LOGIN.getDescription() + "\",\"data\":null}";
+	public static final String NOT_LOGIN_STRING = JSONUtil.toJSONString(new Result(ResultEnum.NOT_LOGIN));
 
 	/**
 	 * 未通过验证返回值
 	 */
-	public static final String NO_AUTH_STRING = "{\"status\":" + ResultEnum.NO_AUTH.getValue() + ",\"message\":\""
-		+ ResultEnum.NO_AUTH.getDescription() + "\",\"data\":null}";
+	public static final String NO_AUTH_STRING = JSONUtil.toJSONString(new Result(ResultEnum.NO_AUTH));
 
 	/**
 	 * 缺少操作权限返回值
 	 */
-	public static final String NO_ACCESS_STRING = "{\"status\":" + ResultEnum.NO_ACCESS.getValue() + ",\"message\":\""
-		+ ResultEnum.NO_ACCESS.getDescription() + "\",\"data\":null}";
+	public static final String NO_ACCESS_STRING = JSONUtil.toJSONString(new Result(ResultEnum.NO_ACCESS));
 
 	/**
 	 * 重复请求返回值
 	 */
-	public static final String REPEAT_REQUEST_STRING = "{\"status\":" + ResultEnum.REPEAT_REQUEST.getValue()
-		+ ",\"message\":\"" + ResultEnum.REPEAT_REQUEST.getDescription() + "\",\"data\":null}";
+	public static final String REPEAT_REQUEST_STRING = JSONUtil.toJSONString(new Result(ResultEnum.REPEAT_REQUEST));
 
 	/**
 	 * 返回分页查询类型结果(仅在成功时使用)
