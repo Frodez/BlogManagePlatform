@@ -1,7 +1,8 @@
 package frodez.util.result;
 
 import java.io.Serializable;
-
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -43,13 +44,17 @@ public enum ResultEnum implements Serializable {
 
 	private String description;
 
-	public ResultEnum of(int value) {
+	private static final Map<Integer, ResultEnum> enumMap;
+
+	static {
+		enumMap = new HashMap<>();
 		for (ResultEnum iter : ResultEnum.values()) {
-			if (iter.value == value) {
-				return iter;
-			}
+			enumMap.put(iter.value, iter);
 		}
-		return null;
+	}
+
+	public static ResultEnum of(int value) {
+		return enumMap.get(value);
 	}
 
 }
