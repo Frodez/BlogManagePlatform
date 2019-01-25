@@ -34,9 +34,9 @@ public class LogAOP {
 	public void printParam(JoinPoint point) {
 		Parameter[] parameters = MethodUtil.getParams(point);
 		Object[] args = point.getArgs();
-		Map<String, String> paramMap = new HashMap<>();
+		Map<String, Object> paramMap = new HashMap<>();
 		for (int i = 0; i < parameters.length; i++) {
-			paramMap.put(parameters[i].getName(), JSONUtil.toJSONString(args[i]));
+			paramMap.put(parameters[i].getName(), args[i]);
 		}
 		log.info(MethodUtil.getFullName(point) + " 请求参数:" + JSONUtil.toJSONString(paramMap));
 	}
@@ -63,9 +63,9 @@ public class LogAOP {
 	public Object before(ProceedingJoinPoint point) throws Throwable {
 		Parameter[] parameters = MethodUtil.getParams(point);
 		Object[] args = point.getArgs();
-		Map<String, String> paramMap = new HashMap<>();
+		Map<String, Object> paramMap = new HashMap<>();
 		for (int i = 0; i < parameters.length; i++) {
-			paramMap.put(parameters[i].getName(), JSONUtil.toJSONString(args[i]));
+			paramMap.put(parameters[i].getName(), args[i]);
 		}
 		log.info(MethodUtil.getFullName(point) + " 请求参数:" + JSONUtil.toJSONString(paramMap));
 		Object object = point.proceed();
