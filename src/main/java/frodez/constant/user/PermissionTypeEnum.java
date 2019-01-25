@@ -1,5 +1,7 @@
 package frodez.constant.user;
 
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -37,13 +39,17 @@ public enum PermissionTypeEnum {
 
 	private String description;
 
-	public PermissionTypeEnum of(byte value) {
+	private static final Map<Byte, PermissionTypeEnum> enumMap;
+
+	static {
+		enumMap = new HashMap<>();
 		for (PermissionTypeEnum iter : PermissionTypeEnum.values()) {
-			if (iter.value == value) {
-				return iter;
-			}
+			enumMap.put(iter.value, iter);
 		}
-		return null;
+	}
+
+	public static PermissionTypeEnum of(byte value) {
+		return enumMap.get(value);
 	}
 
 }

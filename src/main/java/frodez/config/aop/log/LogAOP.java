@@ -60,16 +60,17 @@ public class LogAOP {
 	 * @date 2018-12-21
 	 */
 	@Around("@annotation(frodez.config.aop.log.annotation.MethodLog)")
-	public Object before(ProceedingJoinPoint point) throws Throwable {
+	public Object process(ProceedingJoinPoint point) throws Throwable {
 		Parameter[] parameters = MethodUtil.getParams(point);
+		String fullName = MethodUtil.getFullName(point);
 		Object[] args = point.getArgs();
 		Map<String, Object> paramMap = new HashMap<>();
 		for (int i = 0; i < parameters.length; i++) {
 			paramMap.put(parameters[i].getName(), args[i]);
 		}
-		log.info(MethodUtil.getFullName(point) + " 请求参数:" + JSONUtil.toJSONString(paramMap));
+		log.info(fullName + " 请求参数:" + JSONUtil.toJSONString(paramMap));
 		Object object = point.proceed();
-		log.info(MethodUtil.getFullName(point) + " 返回值:" + JSONUtil.toJSONString(object));
+		log.info(fullName + " 返回值:" + JSONUtil.toJSONString(object));
 		return object;
 	}
 
