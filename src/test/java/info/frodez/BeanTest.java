@@ -1,8 +1,6 @@
 package info.frodez;
 
-import frodez.util.reflect.BeanUtil;
 import java.util.Date;
-import java.util.Map;
 import lombok.Data;
 
 public class BeanTest {
@@ -19,8 +17,6 @@ public class BeanTest {
 		one.setType((byte) 5);
 		one.setDate(date);
 		one.setDate(date);
-		Map<String, Object> map = BeanUtil.beanToMap(one);
-		System.out.println(map);
 		//		long start = System.currentTimeMillis();
 		//		for(int i = 0; i < 100000000; i++) {
 		//			if((i & 0b11) == 0) {

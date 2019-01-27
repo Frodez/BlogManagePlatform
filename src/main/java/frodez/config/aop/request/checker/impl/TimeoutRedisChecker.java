@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @author Frodez
  * @date 2019-01-21
  */
-@Component
+@Component("timeoutRedisChecker")
 public class TimeoutRedisChecker implements TimeoutChecker {
 
 	/**

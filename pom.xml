@@ -155,6 +155,7 @@
 			<version>3.4.1</version>
 		</dependency>
 
+		<!-- swagger -->
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
@@ -166,11 +167,10 @@
 			<version>2.9.2</version>
 		</dependency>
 		
-		<!-- reflectasm -->
+		<!-- caffeine -->
 		<dependency>
-		    <groupId>com.esotericsoftware</groupId>
-		    <artifactId>reflectasm</artifactId>
-		    <version>1.11.8</version>
+		    <groupId>com.github.ben-manes.caffeine</groupId>
+		    <artifactId>caffeine</artifactId>
 		</dependency>
 
 	</dependencies>
