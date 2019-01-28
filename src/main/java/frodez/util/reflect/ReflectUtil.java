@@ -1,6 +1,10 @@
 package frodez.util.reflect;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import org.springframework.util.Assert;
 
 /**
  * 反射工具类
@@ -27,11 +31,31 @@ public class ReflectUtil {
 	public static Method getMethod(Class<?> klass, String methodName) throws RuntimeException {
 		Method[] methods = klass.getMethods();
 		for (Method m : methods) {
-			if (m.getName().equals(methodName)) {
+			if (methodName.equals(m.getName())) {
 				return m;
 			}
 		}
 		throw new RuntimeException("方法不存在!");
+	}
+
+	/**
+	 * 清空bean的默认值
+	 * @author Frodez
+	 * @date 2019-01-28
+	 */
+	public static Object clearBean(Object bean) {
+		Assert.notNull(bean, "参数不能为空!");
+		try {
+			BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
+			PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
+			for (PropertyDescriptor descriptor : descriptors) {
+				Method setter = descriptor.getWriteMethod();
+				setter.invoke(bean, new Object[] { null });
+			}
+			return bean;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -41,6 +65,10 @@ public class ReflectUtil {
 	 * @date 2018-12-17
 	 */
 	public static Object castValue(Object value, Class<?> parameterClass) {
+		if (value == null) {
+			return null;
+		}
+		Assert.notNull(parameterClass, "目标类型不能为空!");
 		Class<?> valueClass = value.getClass();
 		if (valueClass == byte.class || valueClass == Byte.class) {
 			return castByteValue(parameterClass, (Byte) value);

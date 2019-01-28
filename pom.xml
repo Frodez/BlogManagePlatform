@@ -167,10 +167,10 @@
 			<version>2.9.2</version>
 		</dependency>
 		
-		<!-- caffeine -->
 		<dependency>
-		    <groupId>com.github.ben-manes.caffeine</groupId>
-		    <artifactId>caffeine</artifactId>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>27.0.1-jre</version>
 		</dependency>
 
 	</dependencies>

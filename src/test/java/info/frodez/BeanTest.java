@@ -18,6 +18,15 @@ public class BeanTest {
 		one.setDate(date);
 		one.setDate(date);
 		//		long start = System.currentTimeMillis();
+		//		for (int i = 0; i < 100000000; i++) {
+		//			Map<String, Object> map = BeanUtil.asMap(one);
+		//		}
+		//		System.out.println(System.currentTimeMillis() - start);
+		//		Map<String, Object> map = BeanUtil.asMap(one);
+		//		map.put("name", "Frodez");
+		//		BeanOne one2 = new BeanOne();
+		//		BeanUtil.asBean(map, one2);
+		//		long start = System.currentTimeMillis();
 		//		for(int i = 0; i < 100000000; i++) {
 		//			if((i & 0b11) == 0) {
 		//				BeanTwo two = new BeanTwo();
