@@ -57,29 +57,53 @@ public class DecimalUtil {
 	}
 
 	/**
-	 * 批量相加
+	 * 批量相加并标准化
 	 * @author Frodez
 	 * @date 2019-01-28
 	 */
 	public static BigDecimal add(BigDecimal... args) {
+		return add(true, args);
+	}
+
+	/**
+	 * 批量相加
+	 * @param normalized 是否进行标准化, true为进行标准化,false为不进行标准化
+	 * @author Frodez
+	 * @date 2019-01-28
+	 */
+	public static BigDecimal add(boolean normalized, BigDecimal... args) {
 		Assert.notEmpty(args, "参数不能为空!");
 		BigDecimal result = args[0];
 		for (int i = 1; i < args.length; i++) {
 			result = result.add(args[i]);
 		}
+		if (normalized) {
+			return DecimalUtil.normalize(result);
+		}
 		return result;
 	}
 
 	/**
-	 * 批量相减,第一个数为被减数
+	 * 批量相减并标准化,第一个数为被减数
 	 * @author Frodez
 	 * @date 2019-01-28
 	 */
-	public static BigDecimal subtract(BigDecimal... args) {
-		Assert.notEmpty(args, "参数不能为空!");
-		BigDecimal result = args[0];
-		for (int i = 1; i < args.length; i++) {
+	public static BigDecimal subtract(BigDecimal first, BigDecimal... args) {
+		return subtract(true, first, args);
+	}	
+	/**
+	 * 批量相减,第一个数为被减数
+	 * @param normalized 是否进行标准化, true为进行标准化,false为不进行标准化
+	 * @author Frodez
+	 * @date 2019-01-28
+	 */
+	public static BigDecimal subtract(boolean normalized, BigDecimal first, BigDecimal... args) {
+		BigDecimal result = first;
+		for (int i = 0; i < args.length; i++) {
 			result = result.subtract(args[i]);
+		}
+		if (normalized) {
+			return DecimalUtil.normalize(result);
 		}
 		return result;
 	}
@@ -116,8 +140,8 @@ public class DecimalUtil {
 	 * @author Frodez
 	 * @date 2019-01-28
 	 */
-	public static BigDecimal divide(BigDecimal... args) {
-		return divide(true, args);
+	public static BigDecimal divide(BigDecimal first, BigDecimal... args) {
+		return divide(true, first, args);
 	}
 
 	/**
@@ -126,11 +150,10 @@ public class DecimalUtil {
 	 * @author Frodez
 	 * @date 2019-01-28
 	 */
-	public static BigDecimal divide(boolean normalized, BigDecimal... args) {
-		Assert.notEmpty(args, "参数不能为空!");
-		BigDecimal result = args[0];
-		int precision = args.length + DefaultDecimal.PRECISION - 1;
-		for (int i = 1; i < args.length; i++) {
+	public static BigDecimal divide(boolean normalized, BigDecimal first, BigDecimal... args) {
+		BigDecimal result = first;
+		int precision = args.length + DefaultDecimal.PRECISION;
+		for (int i = 0; i < args.length; i++) {
 			result = result.divide(args[i], precision, DefaultDecimal.ROUND_MODE);
 		}
 		if (normalized) {
