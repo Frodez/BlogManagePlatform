@@ -57,24 +57,23 @@ public class DecimalUtil {
 	}
 
 	/**
-	 * 批量相加并标准化
+	 * 批量相加并标准化,第一个数为被加数
 	 * @author Frodez
 	 * @date 2019-01-28
 	 */
-	public static BigDecimal add(BigDecimal... args) {
-		return add(true, args);
+	public static BigDecimal add(BigDecimal first, BigDecimal... args) {
+		return add(true, first, args);
 	}
 
 	/**
-	 * 批量相加
+	 * 批量相加,第一个数为被加数
 	 * @param normalized 是否进行标准化, true为进行标准化,false为不进行标准化
 	 * @author Frodez
 	 * @date 2019-01-28
 	 */
-	public static BigDecimal add(boolean normalized, BigDecimal... args) {
-		Assert.notEmpty(args, "参数不能为空!");
-		BigDecimal result = args[0];
-		for (int i = 1; i < args.length; i++) {
+	public static BigDecimal add(boolean normalized, BigDecimal first, BigDecimal... args) {
+		BigDecimal result = first;
+		for (int i = 0; i < args.length; i++) {
 			result = result.add(args[i]);
 		}
 		if (normalized) {
@@ -109,24 +108,23 @@ public class DecimalUtil {
 	}
 
 	/**
-	 * 批量相乘并标准化
+	 * 批量相乘并标准化,第一个数为被乘数
 	 * @author Frodez
 	 * @date 2019-01-28
 	 */
-	public static BigDecimal multiply(BigDecimal... args) {
-		return multiply(true, args);
+	public static BigDecimal multiply(BigDecimal first, BigDecimal... args) {
+		return multiply(true, first, args);
 	}
 
 	/**
-	 * 批量相乘
+	 * 批量相乘,第一个数为被乘数
 	 * @param normalized 是否进行标准化, true为进行标准化,false为不进行标准化
 	 * @author Frodez
 	 * @date 2019-01-28
 	 */
-	public static BigDecimal multiply(boolean normalized, BigDecimal... args) {
-		Assert.notEmpty(args, "参数不能为空!");
-		BigDecimal result = args[0];
-		for (int i = 1; i < args.length; i++) {
+	public static BigDecimal multiply(boolean normalized, BigDecimal first, BigDecimal... args) {
+		BigDecimal result = first;
+		for (int i = 0; i < args.length; i++) {
 			result = result.multiply(args[i]);
 		}
 		if (normalized) {
