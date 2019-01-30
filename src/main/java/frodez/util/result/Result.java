@@ -2,6 +2,8 @@ package frodez.util.result;
 
 import frodez.config.error.exception.ParseException;
 import frodez.util.json.JSONUtil;
+
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +17,12 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class Result {
+public class Result implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 状态
