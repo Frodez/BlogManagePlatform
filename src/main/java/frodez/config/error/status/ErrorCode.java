@@ -1,5 +1,8 @@
 package frodez.config.error.status;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,13 +14,17 @@ public enum ErrorCode {
 
 	private String description;
 
-	public ErrorCode of(String description) {
+	private static final Map<String, ErrorCode> enumMap;
+
+	static {
+		enumMap = new HashMap<>();
 		for (ErrorCode iter : ErrorCode.values()) {
-			if (iter.description.equals(description)) {
-				return iter;
-			}
+			enumMap.put(iter.description, iter);
 		}
-		return null;
+	}
+
+	public static ErrorCode of(String description) {
+		return enumMap.get(description);
 	}
 
 }

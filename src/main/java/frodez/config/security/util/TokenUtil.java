@@ -41,7 +41,7 @@ public class TokenUtil {
 				.withArrayClaim(properties.getJwt().getAuthorityClaim(), AuthorityUtil.getAuthorities(user))
 				.sign(Algorithm.HMAC256(properties.getJwt().getSecret()));
 		} catch (Exception e) {
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -59,7 +59,7 @@ public class TokenUtil {
 				.withArrayClaim(properties.getJwt().getAuthorityClaim(), authorities.stream().toArray(String[]::new))
 				.sign(Algorithm.HMAC256(properties.getJwt().getSecret()));
 		} catch (Exception e) {
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class TokenUtil {
 			return new User(jwt.getSubject(), "N/A", AuthorityUtil
 				.createGrantedAuthorities(jwt.getClaim(properties.getJwt().getAuthorityClaim()).asArray(String.class)));
 		} catch (Exception e) {
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 

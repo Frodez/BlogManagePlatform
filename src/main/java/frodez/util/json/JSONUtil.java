@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -52,8 +51,8 @@ public class JSONUtil {
 	public static String toJSONString(Object object) {
 		try {
 			return OBJECT_MAPPER.writeValueAsString(object);
-		} catch (JsonProcessingException e) {
-			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -68,7 +67,7 @@ public class JSONUtil {
 		try {
 			return OBJECT_MAPPER.readValue(json, klass);
 		} catch (Exception e) {
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -84,7 +83,7 @@ public class JSONUtil {
 		try {
 			return OBJECT_MAPPER.readValue(json, TYPE_FACTORY.constructParametricType(Map.class, k, v));
 		} catch (Exception e) {
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -99,7 +98,7 @@ public class JSONUtil {
 		try {
 			return OBJECT_MAPPER.readValue(json, TYPE_FACTORY.constructParametricType(List.class, klass));
 		} catch (Exception e) {
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 

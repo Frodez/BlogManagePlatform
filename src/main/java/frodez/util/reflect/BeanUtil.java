@@ -39,9 +39,14 @@ public class BeanUtil {
 		return BeanMap.create(bean);
 	}
 
-	public static <T> T asBean(Map<String, Object> map, T bean) {
-		BeanMap.create(bean).putAll(map);
-		return bean;
+	public static <T> T asBean(Map<String, Object> map, Class<T> klass) {
+		try {
+			T bean = klass.newInstance();
+			BeanMap.create(bean).putAll(map);
+			return bean;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

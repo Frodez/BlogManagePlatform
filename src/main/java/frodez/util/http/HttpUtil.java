@@ -1,16 +1,15 @@
 package frodez.util.http;
 
 import java.io.PrintWriter;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * HTTP工具类
  * @author Frodez
  * @date 2018-12-21
  */
-@Slf4j
 public class HttpUtil {
 
 	/**
@@ -62,7 +61,7 @@ public class HttpUtil {
 			out = response.getWriter();
 			out.append(json);
 		} catch (Exception e) {
-			log.error("[writeJson]", e);
+			throw new RuntimeException(e);
 		} finally {
 			if (out != null) {
 				out.close();
@@ -83,7 +82,7 @@ public class HttpUtil {
 			out = response.getWriter();
 			out.append(text);
 		} catch (Exception e) {
-			log.error("[writePlainText]", e);
+			throw new RuntimeException(e);
 		} finally {
 			if (out != null) {
 				out.close();
@@ -104,7 +103,7 @@ public class HttpUtil {
 			out = response.getWriter();
 			out.append(html);
 		} catch (Exception e) {
-			log.error("[writeHtml]", e);
+			throw new RuntimeException(e);
 		} finally {
 			if (out != null) {
 				out.close();
