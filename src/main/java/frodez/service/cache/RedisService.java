@@ -1,4 +1,4 @@
-package frodez.service.redis;
+package frodez.service.cache;
 
 import frodez.util.json.JSONUtil;
 import java.util.Arrays;

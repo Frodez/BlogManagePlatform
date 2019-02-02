@@ -1,7 +1,8 @@
 package frodez.config.aop.request.checker.impl;
 
 import frodez.config.aop.request.checker.facade.RepeatChecker;
-import frodez.service.redis.RedisService;
+import frodez.service.cache.RedisService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

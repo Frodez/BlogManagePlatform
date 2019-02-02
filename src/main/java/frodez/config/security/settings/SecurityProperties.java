@@ -144,7 +144,7 @@ public class SecurityProperties {
 	/**
 	 * url匹配缓存
 	 */
-	Cache<String, Boolean> urlCache = CacheBuilder.newBuilder().maximumSize(CACHE_SIZE)
+	private static final Cache<String, Boolean> URL_CACHE = CacheBuilder.newBuilder().maximumSize(CACHE_SIZE)
 		.expireAfterAccess(GC_INTERVAL, TimeUnit.SECONDS).build();
 
 	/**
@@ -154,17 +154,17 @@ public class SecurityProperties {
 	 * @date 2019-01-06
 	 */
 	public boolean needVerify(String url) {
-		Boolean result = urlCache.getIfPresent(url);
+		Boolean result = URL_CACHE.getIfPresent(url);
 		if(result != null) {
 			return result;
 		}
 		for (String path : auth.getPermitAllPath()) {
 			if (matcher.match(springProperties.get(PropertyKey.Web.BASE_PATH) + path, url)) {
-				urlCache.put(url, false);
+				URL_CACHE.put(url, false);
 				return false;
 			}
 		}
-		urlCache.put(url, true);
+		URL_CACHE.put(url, true);
 		return true;
 	}
 

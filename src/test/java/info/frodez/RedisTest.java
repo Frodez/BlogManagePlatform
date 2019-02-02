@@ -1,15 +1,15 @@
 package info.frodez;
 
-import frodez.BlogManagePlatformApplication;
-import frodez.config.aop.request.checker.facade.RepeatChecker;
-import frodez.config.aop.request.checker.impl.RepeatRedisChecker;
-import frodez.constant.redis.Repeat;
-import frodez.util.spring.context.ContextUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import frodez.BlogManagePlatformApplication;
+import frodez.config.aop.request.checker.facade.RepeatChecker;
+import frodez.config.aop.request.checker.impl.RepeatRedisChecker;
+import frodez.util.spring.context.ContextUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -34,7 +34,7 @@ public class RedisTest {
 		//RepeatChecker checker = ContextUtil.getBean(RepeatGuavaChecker.class);
 		Long start = System.currentTimeMillis();
 		for (int i = 0; i < 100000; i++) {
-			String key = Repeat.Login.AUTH + i;
+			String key = i + "";
 			checker.check(key);
 			checker.lock(key);
 			checker.free(key);

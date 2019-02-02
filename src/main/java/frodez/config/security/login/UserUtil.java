@@ -1,14 +1,16 @@
 package frodez.config.security.login;
 
-import frodez.config.security.settings.SecurityProperties;
-import frodez.constant.redis.Redis;
-import frodez.dao.result.user.UserInfo;
-import frodez.service.redis.RedisService;
-import frodez.util.json.JSONUtil;
-import frodez.util.spring.context.ContextUtil;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import frodez.config.security.settings.SecurityProperties;
+import frodez.constant.cache.UserKey;
+import frodez.dao.result.user.UserInfo;
+import frodez.service.cache.RedisService;
+import frodez.util.json.JSONUtil;
+import frodez.util.spring.context.ContextUtil;
 
 /**
  * 登录用户信息获取工具类
@@ -41,8 +43,8 @@ public class UserUtil {
 			throw new RuntimeException("不能在免验证URI中获取token信息!");
 		}
 		String fullToken = request.getHeader(properties.getJwt().getHeader());
-		String userName = redisService.getString(Redis.User.TOKEN + fullToken);
-		String json = redisService.getString(Redis.User.BASE_INFO + userName);
+		String userName = redisService.getString(UserKey.TOKEN + fullToken);
+		String json = redisService.getString(UserKey.BASE_INFO + userName);
 		return JSONUtil.toObject(json, UserInfo.class);
 	}
 

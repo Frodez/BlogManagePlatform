@@ -41,7 +41,7 @@ public class TimeoutAOP {
 	private TimeoutChecker checker;
 
 	/**
-	 * 访问控制参数配置
+	 * 缓存key生成器
 	 */
 	@Autowired
 	private KeyGenerator generator;
@@ -56,12 +56,12 @@ public class TimeoutAOP {
 	public Object process(ProceedingJoinPoint point) throws Throwable {
 		HttpServletRequest request = ContextUtil.getRequest();
 		TimeoutLock timeoutLock = MethodUtil.getAnnotation(point, TimeoutLock.class);
-		String key = generator.servletKey(timeoutLock.value(), request);
+		String key = generator.servletKey(MethodUtil.getFullName(point), request);
 		if (checker.check(key)) {
 			log.info("重复请求:IP地址" + HttpUtil.getAddr(request));
 			return new Result(ResultEnum.REPEAT_REQUEST);
 		}
-		checker.lock(key, timeoutLock.time());
+		checker.lock(key, timeoutLock.value());
 		return point.proceed();
 	}
 

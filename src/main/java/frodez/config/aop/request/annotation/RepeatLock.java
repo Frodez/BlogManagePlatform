@@ -16,7 +16,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RepeatLock {
 
-	// 别名,详见info.frodez.constant.redis.Repeat
-	String value() default "";
-
 }

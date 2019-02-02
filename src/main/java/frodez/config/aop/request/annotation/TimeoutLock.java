@@ -16,10 +16,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TimeoutLock {
 
-	// 别名,详见info.frodez.constant.redis.Repeat
-	String value() default "";
-
 	// 过期时间,大于等于0,单位毫秒,默认值500
-	long time() default 500;
+	long value() default 500;
 
 }

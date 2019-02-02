@@ -19,22 +19,22 @@ public class RepeatGuavaChecker implements RepeatChecker {
 	 */
 	private static final int GC_INTERVAL = 60;
 
-	Cache<String, Boolean> cache =
+	private static final Cache<String, Boolean> CACHE =
 		CacheBuilder.newBuilder().expireAfterAccess(GC_INTERVAL, TimeUnit.SECONDS).build();
 
 	@Override
 	public boolean check(String key) {
-		return cache.getIfPresent(key) != null;
+		return CACHE.getIfPresent(key) != null;
 	}
 
 	@Override
 	public void lock(String key) {
-		cache.put(key, true);
+		CACHE.put(key, true);
 	}
 
 	@Override
 	public void free(String key) {
-		cache.invalidate(key);
+		CACHE.invalidate(key);
 	}
 
 }

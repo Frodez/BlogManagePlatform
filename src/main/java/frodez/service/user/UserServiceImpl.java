@@ -1,30 +1,31 @@
 package frodez.service.user;
 
-import frodez.config.aop.validation.annotation.Check;
-import frodez.config.security.util.TokenUtil;
-import frodez.constant.redis.Redis;
-import frodez.constant.user.UserStatusEnum;
-import frodez.dao.mapper.user.PermissionMapper;
-import frodez.dao.mapper.user.RoleMapper;
-import frodez.dao.mapper.user.UserMapper;
-import frodez.dao.model.user.Permission;
-import frodez.dao.model.user.Role;
-import frodez.dao.model.user.User;
-import frodez.dao.param.user.LoginDTO;
-import frodez.dao.result.user.PermissionInfo;
-import frodez.dao.result.user.UserInfo;
-import frodez.service.redis.RedisService;
-import frodez.util.json.JSONUtil;
-import frodez.util.result.Result;
-import frodez.util.result.ResultUtil;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import frodez.config.aop.validation.annotation.Check;
+import frodez.config.security.util.TokenUtil;
+import frodez.constant.cache.UserKey;
+import frodez.constant.user.UserStatusEnum;
+import frodez.dao.mapper.user.PermissionMapper;
+import frodez.dao.mapper.user.RoleMapper;
+import frodez.dao.mapper.user.UserMapper;
+import frodez.dao.model.user.Role;
+import frodez.dao.model.user.User;
+import frodez.dao.param.user.LoginDTO;
+import frodez.dao.result.user.PermissionInfo;
+import frodez.dao.result.user.UserInfo;
+import frodez.service.cache.RedisService;
+import frodez.util.json.JSONUtil;
+import frodez.util.result.Result;
+import frodez.util.result.ResultUtil;
+import lombok.extern.slf4j.Slf4j;
 import tk.mybatis.mapper.entity.Example;
 
 /**
@@ -73,7 +74,7 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public Result getUserInfoByName(String userName) {
 		try {
-			String json = redisService.getString(Redis.User.BASE_INFO + userName);
+			String json = redisService.getString(UserKey.BASE_INFO + userName);
 			UserInfo data = JSONUtil.toObject(json, UserInfo.class);
 			if (data != null) {
 				return ResultUtil.success(data);
@@ -104,7 +105,7 @@ public class UserServiceImpl implements IUserService {
 			data.setRoleLevel(role.getLevel());
 			data.setRoleDescription(role.getDescription());
 			data.setPermissionList(permissionList);
-			redisService.set(Redis.User.BASE_INFO + userName, JSONUtil.toJSONString(data));
+			redisService.set(UserKey.BASE_INFO + userName, JSONUtil.toJSONString(data));
 			return ResultUtil.success(data);
 		} catch (Exception e) {
 			log.error("[getUserAuthority]", e);
@@ -120,14 +121,7 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public Result getAllPermissions() {
 		try {
-			String json = redisService.getString(Redis.User.PERMISSION_ALL);
-			List<Permission> permissions = JSONUtil.toList(json, Permission.class);
-			if (permissions != null) {
-				return ResultUtil.success(permissions);
-			}
-			permissions = permissionMapper.selectAll();
-			redisService.set(Redis.User.PERMISSION_ALL, JSONUtil.toJSONString(permissions));
-			return ResultUtil.success(permissions);
+			return ResultUtil.success(permissionMapper.selectAll());
 		} catch (Exception e) {
 			log.error("[getAllPermissions]", e);
 			return ResultUtil.fail();
@@ -163,7 +157,7 @@ public class UserServiceImpl implements IUserService {
 				.map(PermissionInfo::getName).collect(Collectors.toList());
 			String token = tokenUtil.generate(param.getUsername(), authorities);
 			// 这里将token作为key,userName作为value存入redis,方便之后通过token获取用户信息
-			redisService.set(Redis.User.TOKEN + token, user.getName());
+			redisService.set(UserKey.TOKEN + token, user.getName());
 			return ResultUtil.success(token);
 		} catch (Exception e) {
 			log.error("[login]", e);

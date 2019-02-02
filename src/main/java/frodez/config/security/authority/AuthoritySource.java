@@ -1,13 +1,10 @@
 package frodez.config.security.authority;
 
-import frodez.config.security.settings.SecurityProperties;
-import frodez.constant.user.PermissionTypeEnum;
-import frodez.dao.model.user.Permission;
-import frodez.service.user.IUserService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -16,6 +13,11 @@ import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
+
+import frodez.config.security.settings.SecurityProperties;
+import frodez.constant.user.PermissionTypeEnum;
+import frodez.dao.model.user.Permission;
+import frodez.service.user.IUserService;
 
 /**
  * 获取权限资源
@@ -36,6 +38,18 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 */
 	@Autowired
 	private SecurityProperties properties;
+	
+	/**
+	 * url匹配缓存
+	 */
+	private List<Permission> permissionCache = null;
+	
+	private synchronized List<Permission> getPermissions() {
+		if(permissionCache == null) {
+			permissionCache = userAuthorityService.getAllPermissions().parseList(Permission.class);
+		}
+		return permissionCache;
+	}
 
 	/**
 	 * 根据url和请求方式,获取对应的权限
@@ -44,7 +58,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 */
 	@Override
 	public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
-		List<Permission> permissions = userAuthorityService.getAllPermissions().parseList(Permission.class);
+		List<Permission> permissions = getPermissions();
 		FilterInvocation invocation = (FilterInvocation) object;
 		// 这里的url是截去根路径后的url
 		String url = invocation.getRequestUrl();
@@ -110,7 +124,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 */
 	@Override
 	public Collection<ConfigAttribute> getAllConfigAttributes() {
-		List<Permission> permissions = userAuthorityService.getAllPermissions().parseList(Permission.class);
+		List<Permission> permissions = getPermissions();
 		Collection<ConfigAttribute> attributes = new ArrayList<>();
 		attributes.addAll(permissions.stream().map((iter) -> {
 			return new SecurityConfig(iter.getName());

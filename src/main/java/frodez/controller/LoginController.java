@@ -1,18 +1,18 @@
 package frodez.controller;
 
-import frodez.config.aop.request.annotation.RepeatLock;
-import frodez.config.security.login.BaseController;
-import frodez.constant.redis.Repeat;
-import frodez.dao.param.user.LoginDTO;
-import frodez.service.user.IUserService;
-import frodez.util.result.Result;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import frodez.config.aop.request.annotation.RepeatLock;
+import frodez.config.security.login.BaseController;
+import frodez.dao.param.user.LoginDTO;
+import frodez.service.user.IUserService;
+import frodez.util.result.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 登录控制器
@@ -36,7 +36,7 @@ public class LoginController extends BaseController {
 	 * @date 2018-12-21
 	 */
 	@ApiOperation(value = "")
-	@RepeatLock(Repeat.Login.AUTH)
+	@RepeatLock
 	@PostMapping("/auth")
 	public Result auth(@RequestBody LoginDTO param) {
 		return authorityService.login(param);
