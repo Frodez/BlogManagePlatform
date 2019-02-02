@@ -21,12 +21,12 @@ public class KeyGenerator {
 		if (properties.needVerify(request.getRequestURI())) {
 			// 非登录接口使用token判断,同一token不能重复请求
 			String fullToken = properties.getFullToken(request);
-			fullToken = fullToken == null ? "" : fullToken;
+			fullToken = fullToken == null ? "" : ":" + fullToken;
 			return sault + fullToken;
 		} else {
 			// 登录接口使用IP判断,同一IP不能重复请求
 			String address = HttpUtil.getAddr(request);
-			return sault + address;
+			return sault + ":" + address;
 		}
 	}
 	

@@ -17,6 +17,14 @@ import lombok.Getter;
 @Getter
 @Component
 public class PropertiesUtil {
+	
+	private static final String DEV = "dev";
+	
+	private static final String TEST = "test";
+	
+	private static final String RELEASE = "release";
+	
+	private static final String PROD = "prod";
 
 	/**
 	 * spring环境参数配置
@@ -49,6 +57,22 @@ public class PropertiesUtil {
 	 */
 	public List<String> getActiveProfiles() {
 		return Arrays.asList(env.getActiveProfiles());
+	}
+	
+	public boolean isDev() {
+		return env.getActiveProfiles()[0].equals(DEV);
+	}
+	
+	public boolean isTest() {
+		return env.getActiveProfiles()[0].equals(TEST);
+	}
+	
+	public boolean isRelease() {
+		return env.getActiveProfiles()[0].equals(RELEASE);
+	}
+	
+	public boolean isProd() {
+		return env.getActiveProfiles()[0].equals(PROD);
 	}
 
 }
