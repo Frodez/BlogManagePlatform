@@ -56,10 +56,9 @@ public class RepeatAOP {
 	 */
 	@Around("@annotation(frodez.config.aop.request.annotation.RepeatLock)")
 	public Object process(ProceedingJoinPoint point) throws Throwable {
-		String key = null;
+		HttpServletRequest request = ContextUtil.getRequest();
+		String key = generator.servletKey(MethodUtil.getFullName(point), request);
 		try {
-			HttpServletRequest request = ContextUtil.getRequest();
-			key = generator.servletKey(MethodUtil.getFullName(point), request);
 			if (checker.check(key)) {
 				log.info("重复请求:IP地址" + HttpUtil.getAddr(request));
 				return new Result(ResultEnum.REPEAT_REQUEST);
