@@ -20,7 +20,7 @@ public class KeyGenerator {
 	public String servletKey(String sault, HttpServletRequest request) {
 		if (properties.needVerify(request.getRequestURI())) {
 			// 非登录接口使用token判断,同一token不能重复请求
-			String fullToken = request.getHeader(properties.getJwt().getHeader());
+			String fullToken = properties.getFullToken(request);
 			fullToken = fullToken == null ? "" : fullToken;
 			return sault + fullToken;
 		} else {

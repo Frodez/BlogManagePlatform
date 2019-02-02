@@ -42,10 +42,14 @@ public class UserUtil {
 		if (!properties.needVerify(request.getRequestURI())) {
 			throw new RuntimeException("不能在免验证URI中获取token信息!");
 		}
-		String fullToken = request.getHeader(properties.getJwt().getHeader());
+		String fullToken = properties.getFullToken(request);
 		String userName = redisService.getString(UserKey.TOKEN + fullToken);
 		String json = redisService.getString(UserKey.BASE_INFO + userName);
-		return JSONUtil.toObject(json, UserInfo.class);
+		UserInfo userInfo = JSONUtil.toObject(json, UserInfo.class);
+		if(userInfo == null) {
+			throw new RuntimeException("获取当前用户信息失败!");
+		}
+		return userInfo;
 	}
 
 }

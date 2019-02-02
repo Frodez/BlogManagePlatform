@@ -79,6 +79,22 @@ public class JSONUtil {
 	 * @param json json字符串
 	 * @date 2018-12-02
 	 */
+	public static Map<String, Object> toMap(String json) {
+		try {
+			return OBJECT_MAPPER.readValue(json, TYPE_FACTORY.constructParametricType(Map.class, String.class, Object.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * 将json字符串转换成Map,发生异常返回null
+	 * @author Frodez
+	 * @param <K>
+	 * @param <V>
+	 * @param json json字符串
+	 * @date 2018-12-02
+	 */
 	public static <K, V> Map<K, V> toMap(String json, Class<K> k, Class<V> v) {
 		try {
 			return OBJECT_MAPPER.readValue(json, TYPE_FACTORY.constructParametricType(Map.class, k, v));

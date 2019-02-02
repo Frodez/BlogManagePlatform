@@ -1,16 +1,18 @@
 package frodez.config.security.util;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import frodez.config.security.settings.SecurityProperties;
 import java.util.Date;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+
+import frodez.config.security.settings.SecurityProperties;
 
 /**
  * token工具类
@@ -81,19 +83,6 @@ public class TokenUtil {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	/**
-	 * 获取request中的token,如果为空或者前缀不符合设置,均返回空.
-	 * @author Frodez
-	 * @date 2019-01-13
-	 */
-	public String getRealToken(HttpServletRequest request) {
-		String token = request.getHeader(properties.getJwt().getHeader());
-		if (token == null || !token.startsWith(properties.getJwt().getTokenPrefix())) {
-			return null;
-		}
-		return token.substring(properties.getJwt().getTokenPrefix().length());
 	}
 
 }

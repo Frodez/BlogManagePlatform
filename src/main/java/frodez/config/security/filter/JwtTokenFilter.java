@@ -43,7 +43,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 		throws ServletException, IOException {
 		//建议url不要带入任何path类型参数,以提高性能!
 		if (properties.needVerify(request.getRequestURI())) {
-			String authToken = tokenUtil.getRealToken(request);
+			String authToken = properties.getRealToken(request);
 			if (authToken != null) {
 				// 将携带的token还原成用户信息
 				UserDetails user = tokenUtil.verify(authToken);

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
@@ -166,6 +168,28 @@ public class SecurityProperties {
 		}
 		URL_CACHE.put(url, true);
 		return true;
+	}
+	
+	/**
+	 * 获取request中的token,如果为空或者前缀不符合设置,均返回空.
+	 * @author Frodez
+	 * @date 2019-01-13
+	 */
+	public String getRealToken(HttpServletRequest request) {
+		String token = request.getHeader(jwt.header);
+		if (token == null || !token.startsWith(jwt.tokenPrefix)) {
+			return null;
+		}
+		return token.substring(jwt.tokenPrefix.length());
+	}
+
+	/**
+	 * 获取request中的token.
+	 * @author Frodez
+	 * @date 2019-01-13
+	 */
+	public String getFullToken(HttpServletRequest request) {
+		return request.getHeader(jwt.header);
 	}
 
 }
