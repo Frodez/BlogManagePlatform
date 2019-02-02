@@ -40,7 +40,7 @@ public class UserServiceImpl implements IUserService {
 	 * jwt工具类
 	 */
 	@Autowired
-	private TokenUtil jwtTokenUtil;
+	private TokenUtil tokenUtil;
 
 	/**
 	 * spring security验证管理器
@@ -161,7 +161,9 @@ public class UserServiceImpl implements IUserService {
 			}
 			List<String> authorities = permissionMapper.getPermissions(role.getId()).stream()
 				.map(PermissionInfo::getName).collect(Collectors.toList());
-			String token = jwtTokenUtil.generate(param.getUsername(), authorities);
+			String token = tokenUtil.generate(param.getUsername(), authorities);
+			// 这里将token作为key,userName作为value存入redis,方便之后通过token获取用户信息
+			redisService.set(Redis.User.TOKEN + token, user.getName());
 			return ResultUtil.success(token);
 		} catch (Exception e) {
 			log.error("[login]", e);
