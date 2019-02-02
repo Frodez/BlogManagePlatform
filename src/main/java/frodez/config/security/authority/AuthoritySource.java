@@ -40,13 +40,16 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	private SecurityProperties properties;
 	
 	/**
-	 * url匹配缓存
+	 * 权限缓存
 	 */
 	private List<Permission> permissionCache = null;
 	
 	private synchronized List<Permission> getPermissions() {
 		if(permissionCache == null) {
 			permissionCache = userAuthorityService.getAllPermissions().parseList(Permission.class);
+			if(permissionCache == null) {
+				throw new RuntimeException("获取所有权限失败!");
+			}
 		}
 		return permissionCache;
 	}
