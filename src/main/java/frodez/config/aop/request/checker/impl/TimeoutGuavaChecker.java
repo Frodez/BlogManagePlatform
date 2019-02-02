@@ -14,9 +14,12 @@ import org.springframework.stereotype.Component;
 @Component("timeoutGuavaChecker")
 public class TimeoutGuavaChecker implements TimeoutChecker {
 
-	private static final int GC_INTERVAL = 60000;
+	/**
+	 * 垃圾收集间隔(秒)
+	 */
+	private static final int GC_INTERVAL = 60;
 
-	Cache<String, Long> cache = CacheBuilder.newBuilder().expireAfterAccess(GC_INTERVAL, TimeUnit.MILLISECONDS).build();
+	Cache<String, Long> cache = CacheBuilder.newBuilder().expireAfterAccess(GC_INTERVAL, TimeUnit.SECONDS).build();
 
 	@Override
 	public boolean check(String key) {

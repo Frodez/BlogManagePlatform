@@ -1,15 +1,21 @@
 package frodez.config.security.settings;
 
-import frodez.util.spring.properties.PropertiesUtil;
-import frodez.util.spring.properties.PropertyKey;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Data;
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PathMatcher;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
+import frodez.util.spring.properties.PropertiesUtil;
+import frodez.util.spring.properties.PropertyKey;
+import lombok.Data;
 
 /**
  * 访问控制参数配置
@@ -126,16 +132,39 @@ public class SecurityProperties {
 	}
 
 	/**
-	 * 判断url是否需要验证
+	 * 垃圾收集间隔(秒)
+	 */
+	private static final int GC_INTERVAL = 3600;
+
+	/**
+	 * 最大缓存个数
+	 */
+	private static final int CACHE_SIZE = 65536;
+
+	/**
+	 * url匹配缓存
+	 */
+	Cache<String, Boolean> urlCache = CacheBuilder.newBuilder().maximumSize(CACHE_SIZE)
+		.expireAfterAccess(GC_INTERVAL, TimeUnit.SECONDS).build();
+
+	/**
+	 * 判断url是否需要验证<br>
+	 * <strong>建议url不要带入任何path类型参数,以提高性能!</strong>
 	 * @author Frodez
 	 * @date 2019-01-06
 	 */
 	public boolean needVerify(String url) {
+		Boolean result = urlCache.getIfPresent(url);
+		if(result != null) {
+			return result;
+		}
 		for (String path : auth.getPermitAllPath()) {
 			if (matcher.match(springProperties.get(PropertyKey.Web.BASE_PATH) + path, url)) {
+				urlCache.put(url, false);
 				return false;
 			}
 		}
+		urlCache.put(url, true);
 		return true;
 	}
 

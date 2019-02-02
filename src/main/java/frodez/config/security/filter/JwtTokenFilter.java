@@ -46,6 +46,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 		throws ServletException, IOException {
+		//建议url不要带入任何path类型参数,以提高性能!
 		if (properties.needVerify(request.getRequestURI())) {
 			String authToken = tokenUtil.getRealToken(request);
 			if (authToken != null) {

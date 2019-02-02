@@ -14,10 +14,13 @@ import org.springframework.stereotype.Component;
 @Component("repeatGuavaChecker")
 public class RepeatGuavaChecker implements RepeatChecker {
 
-	private static final int GC_INTERVAL = 60000;
+	/**
+	 * 垃圾收集间隔(秒)
+	 */
+	private static final int GC_INTERVAL = 60;
 
 	Cache<String, Boolean> cache =
-		CacheBuilder.newBuilder().expireAfterAccess(GC_INTERVAL, TimeUnit.MILLISECONDS).build();
+		CacheBuilder.newBuilder().expireAfterAccess(GC_INTERVAL, TimeUnit.SECONDS).build();
 
 	@Override
 	public boolean check(String key) {
