@@ -1,15 +1,17 @@
 package frodez.config.aop.validation;
 
-import frodez.util.aop.MethodUtil;
-import frodez.util.reflect.ReflectUtil;
-import frodez.util.result.Result;
-import frodez.util.result.ResultEnum;
 import java.lang.reflect.Method;
+
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
+
+import frodez.util.aop.MethodUtil;
+import frodez.util.reflect.ReflectUtil;
+import frodez.util.result.Result;
+import frodez.util.result.ResultUtil;
 
 /**
  * 验证参数AOP<br>
@@ -36,7 +38,7 @@ public class ValidationAOP {
 			throw new RuntimeException(ReflectUtil.getFullName(method) + "的返回值必须为" + Result.class.getName() + "类型!");
 		}
 		String msg = ValidationUtil.validateParam(point.getTarget(), method, point.getArgs(), "");
-		return StringUtils.isBlank(msg) ? point.proceed() : new Result(msg, ResultEnum.FAIL);
+		return StringUtils.isBlank(msg) ? point.proceed() : ResultUtil.fail(msg);
 	}
 
 }
