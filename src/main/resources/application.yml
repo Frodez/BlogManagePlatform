@@ -1,0 +1,54 @@
+logging:
+  config: classpath:settings/log.xml
+
+mapper:
+  identity: MYSQL
+  mappers: frodez.config.mybatis.DataMapper
+  
+mybatis:
+  mapper-locations: classpath:frodez/dao/mapper/*Mapper.xml
+  type-aliases-package: frodez.dao.model
+  
+pagehelper:
+  helperDialect: mysql
+  params: count=countSql
+  reasonable: true
+  supportMethodsArguments: true
+  
+server:
+  port: 9090
+  servlet:
+    context-path: /api
+    
+spring:
+  resources:
+    add-mappings: true
+  aop:
+    auto: true
+    proxy-target-class: true
+  data:
+    redis:
+      repositories:
+        enabled: true
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: frodez
+    password: 123456
+  profiles:
+    active: dev
+  redis:
+    database: 0
+    host: 127.0.0.1
+    password: ''
+    port: 6379
+    timeout: 60000
+    lettuce:
+      pool:
+        max-active: -1
+        max-wait: 45000
+        max-idle: -1
+        min-idle: 10
+  session:
+    store-type: redis
