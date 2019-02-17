@@ -41,24 +41,24 @@ public class Result implements Serializable {
 
 	public Result(String message, ResultEnum status) {
 		this.message = message;
-		this.code = status.getValue();
+		this.code = status.getVal();
 	}
 
 	public Result(String message, ResultEnum status, Object data) {
 		this.message = message;
-		this.code = status.getValue();
+		this.code = status.getVal();
 		this.data = data;
 	}
 
 	public Result(ResultEnum status, Object data) {
-		this.message = status.getDescription();
-		this.code = status.getValue();
+		this.message = status.getDesc();
+		this.code = status.getVal();
 		this.data = data;
 	}
 
 	public Result(ResultEnum status) {
-		this.message = status.getDescription();
-		this.code = status.getValue();
+		this.message = status.getDesc();
+		this.code = status.getVal();
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class Result implements Serializable {
 	 */
 	public <T> T as(Class<T> klass) throws ClassCastException {
 		Assert.notNull(klass, "类型不能为空!");
-		if (code != ResultEnum.SUCCESS.getValue()) {
+		if (code != ResultEnum.SUCCESS.getVal()) {
 			throw new RuntimeException(message);
 		}
 		if (data == null) {
@@ -89,7 +89,7 @@ public class Result implements Serializable {
 	@SuppressWarnings("unchecked")
 	public <T> PageVO<T> asPage(Class<T> klass) throws ClassCastException {
 		Assert.notNull(klass, "类型不能为空!");
-		if (code != ResultEnum.SUCCESS.getValue()) {
+		if (code != ResultEnum.SUCCESS.getVal()) {
 			throw new RuntimeException(message);
 		}
 		if (data == null) {
@@ -108,7 +108,7 @@ public class Result implements Serializable {
 	@SuppressWarnings("unchecked")
 	public <T> List<T> asList(Class<T> klass) throws ClassCastException {
 		Assert.notNull(klass, "类型不能为空!");
-		if (code != ResultEnum.SUCCESS.getValue()) {
+		if (code != ResultEnum.SUCCESS.getVal()) {
 			throw new RuntimeException(message);
 		}
 		if (data == null) {
@@ -127,7 +127,7 @@ public class Result implements Serializable {
 	@SuppressWarnings("unchecked")
 	public <T> Set<T> asSet(Class<T> klass) throws ClassCastException {
 		Assert.notNull(klass, "类型不能为空!");
-		if (code != ResultEnum.SUCCESS.getValue()) {
+		if (code != ResultEnum.SUCCESS.getVal()) {
 			throw new RuntimeException(message);
 		}
 		if (data == null) {
@@ -145,7 +145,7 @@ public class Result implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> asMap() throws ClassCastException {
-		if (code != ResultEnum.SUCCESS.getValue()) {
+		if (code != ResultEnum.SUCCESS.getVal()) {
 			throw new RuntimeException(message);
 		}
 		if (data == null) {
@@ -165,7 +165,7 @@ public class Result implements Serializable {
 	public <K, V> Map<K, V> asMap(Class<K> keyClass, Class<V> valueClass) throws ClassCastException {
 		Assert.notNull(keyClass, "键类型不能为空!");
 		Assert.notNull(valueClass, "值类型不能为空!");
-		if (code != ResultEnum.SUCCESS.getValue()) {
+		if (code != ResultEnum.SUCCESS.getVal()) {
 			throw new RuntimeException(message);
 		}
 		if (data == null) {
@@ -180,7 +180,7 @@ public class Result implements Serializable {
 	 * @date 2019-02-13
 	 */
 	public void check() {
-		if (code != ResultEnum.SUCCESS.getValue()) {
+		if (code != ResultEnum.SUCCESS.getVal()) {
 			throw new RuntimeException(message);
 		}
 	}
@@ -191,7 +191,7 @@ public class Result implements Serializable {
 	 * @date 2018-11-13
 	 */
 	public boolean success() {
-		return code == ResultEnum.SUCCESS.getValue();
+		return code == ResultEnum.SUCCESS.getVal();
 	}
 
 	/**
@@ -200,7 +200,7 @@ public class Result implements Serializable {
 	 * @date 2018-11-13
 	 */
 	public boolean notSuccess() {
-		return code != ResultEnum.SUCCESS.getValue();
+		return code != ResultEnum.SUCCESS.getVal();
 	}
 
 	/**

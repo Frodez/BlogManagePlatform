@@ -102,6 +102,8 @@
         </logger>
         <logger name="frodez.dao.mapper" level="DEBUG">
         </logger>
+        <logger name="frodez.config.security" level="WARN">
+        </logger>
         <root level="all">
             <appender-ref ref="Console"/>
             <appender-ref ref="RollingFileInfo"/>

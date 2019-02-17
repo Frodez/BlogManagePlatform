@@ -52,7 +52,7 @@ public enum ResultEnum implements Serializable {
 	/**
 	 * 自定义状态码
 	 */
-	private int value;
+	private int val;
 
 	/**
 	 * http状态码
@@ -62,14 +62,14 @@ public enum ResultEnum implements Serializable {
 	/**
 	 * 描述
 	 */
-	private String description;
+	private String desc;
 
 	private static final Map<Integer, ResultEnum> enumMap;
 
 	static {
 		enumMap = new HashMap<>();
 		for (ResultEnum iter : ResultEnum.values()) {
-			enumMap.put(iter.value, iter);
+			enumMap.put(iter.val, iter);
 		}
 	}
 

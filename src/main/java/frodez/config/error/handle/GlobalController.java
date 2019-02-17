@@ -56,7 +56,7 @@ public class GlobalController {
 	@ExceptionHandler(value = HttpMessageNotReadableException.class)
 	public void defaultErrorHandler(HttpServletResponse response, HttpMessageNotReadableException e) {
 		log.error("[defaultErrorHandler]{}", e.getMessage());
-		ServletUtil.writeJson(response, ResultEnum.ERROR_SERVICE.getStatus(), DefaultResult.ERROR_REQUEST_STRING);
+		ServletUtil.writeJson(response, ResultEnum.ERROR_REQUEST.getStatus(), DefaultResult.ERROR_REQUEST_STRING);
 	}
 
 }

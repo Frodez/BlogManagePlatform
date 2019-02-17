@@ -120,17 +120,4 @@ public class JSONUtil {
 		}
 	}
 
-	//	public static void main(String[] args) {
-	//		 List<Result> results = new ArrayList<>();
-	//		 for(int i = 0; i < 10000000; i++) {
-	//		 results.add(new Result(ResultEnum.SUCCESS, Math.random()));
-	//		 }
-	//		 long start = System.currentTimeMillis();
-	//		 for(int i = 0; i < 10000000; i++) {
-	//		 JSONUtil.toJSONString(results.get(i));
-	//		 }
-	//		 System.out.println(System.currentTimeMillis() - start);
-	//		System.out.println(JSONUtil.toJSONString(null).equals("null"));
-	//	}
-
 }

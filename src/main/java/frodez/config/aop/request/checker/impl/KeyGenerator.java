@@ -1,12 +1,10 @@
 package frodez.config.aop.request.checker.impl;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import frodez.config.security.settings.SecurityProperties;
 import frodez.util.http.ServletUtil;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class KeyGenerator {
