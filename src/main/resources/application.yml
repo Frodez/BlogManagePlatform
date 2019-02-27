@@ -6,7 +6,7 @@ mapper:
   mappers: frodez.config.mybatis.DataMapper
   
 mybatis:
-  mapper-locations: classpath:frodez/dao/mapper/*Mapper.xml
+  mapper-locations: classpath:frodez/service/*Mapper.xml
   type-aliases-package: frodez.dao.model
   
 pagehelper:

@@ -1,4 +1,4 @@
-package frodez.dao.model.user;
+package frodez.service.user.model;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -2,12 +2,12 @@ package frodez.service.user.impl;
 
 import frodez.config.security.login.cache.facade.NameCache;
 import frodez.constant.user.UserStatusEnum;
-import frodez.dao.mapper.user.PermissionMapper;
-import frodez.dao.mapper.user.RoleMapper;
-import frodez.dao.mapper.user.UserMapper;
-import frodez.dao.model.user.Role;
-import frodez.dao.model.user.User;
 import frodez.service.user.facade.IAuthorityService;
+import frodez.service.user.mapper.PermissionMapper;
+import frodez.service.user.mapper.RoleMapper;
+import frodez.service.user.mapper.UserMapper;
+import frodez.service.user.model.Role;
+import frodez.service.user.model.User;
 import frodez.service.user.result.PermissionInfo;
 import frodez.service.user.result.UserInfo;
 import frodez.util.result.Result;
