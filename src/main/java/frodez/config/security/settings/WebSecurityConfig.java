@@ -21,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -82,11 +83,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.sessionManagement()
 			// 不创建session
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-			// 登录入口不控制
+			// 不控制的地址
 			.antMatchers(permitAllPathList.toArray(new String[permitAllPathList.size()])).permitAll().antMatchers(
-				HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated().and()
+				HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated()
 			// 在密码验证过滤器前执行jwt过滤器
-			.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).headers().cacheControl(); // 禁止缓存
+			.and().addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).headers().cacheControl(); // 禁止缓存
 	}
 
 	/**
@@ -138,6 +139,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
+	}
+
+	@Bean
+	public SecurityContextLogoutHandler securityContextLogoutHandler() {
+		return new SecurityContextLogoutHandler();
 	}
 
 }

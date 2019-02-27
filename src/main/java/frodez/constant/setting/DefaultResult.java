@@ -21,9 +21,14 @@ public class DefaultResult {
 	public static final String ERROR_SERVICE_STRING = new Result(ResultEnum.ERROR_SERVICE).toString();
 
 	/**
-	 * 用户未登录返回值
+	 * 未登录返回值
 	 */
 	public static final String NOT_LOGIN_STRING = new Result(ResultEnum.NOT_LOGIN).toString();
+
+	/**
+	 * 已过期返回值
+	 */
+	public static final String EXPIRED_STRING = new Result(ResultEnum.EXPIRED).toString();
 
 	/**
 	 * 未通过验证返回值

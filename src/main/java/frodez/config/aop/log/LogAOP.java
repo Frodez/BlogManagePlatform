@@ -1,6 +1,6 @@
 package frodez.config.aop.log;
 
-import frodez.util.aop.MethodUtil;
+import frodez.util.aop.AspectUtil;
 import frodez.util.json.JSONUtil;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
@@ -32,13 +32,13 @@ public class LogAOP {
 	 */
 	@Before("@annotation(frodez.config.aop.log.annotation.ParamLog)")
 	public void printParam(JoinPoint point) {
-		Parameter[] parameters = MethodUtil.getParams(point);
+		Parameter[] parameters = AspectUtil.getParams(point);
 		Object[] args = point.getArgs();
 		Map<String, Object> paramMap = new HashMap<>();
 		for (int i = 0; i < parameters.length; i++) {
 			paramMap.put(parameters[i].getName(), args[i]);
 		}
-		log.info("{} 请求参数:{}", MethodUtil.getFullName(point), JSONUtil.toJSONString(paramMap));
+		log.info("{} 请求参数:{}", AspectUtil.getFullName(point), JSONUtil.toJSONString(paramMap));
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class LogAOP {
 	 */
 	@AfterReturning(value = "@annotation(frodez.config.aop.log.annotation.ResultLog)", returning = "result")
 	public void printResult(JoinPoint point, Object result) {
-		log.info("{} 返回值:{}", MethodUtil.getFullName(point), JSONUtil.toJSONString(result));
+		log.info("{} 返回值:{}", AspectUtil.getFullName(point), JSONUtil.toJSONString(result));
 	}
 
 	/**
@@ -61,8 +61,8 @@ public class LogAOP {
 	 */
 	@Around("@annotation(frodez.config.aop.log.annotation.MethodLog)")
 	public Object process(ProceedingJoinPoint point) throws Throwable {
-		Parameter[] parameters = MethodUtil.getParams(point);
-		String fullName = MethodUtil.getFullName(point);
+		Parameter[] parameters = AspectUtil.getParams(point);
+		String fullName = AspectUtil.getFullName(point);
 		Object[] args = point.getArgs();
 		Map<String, Object> paramMap = new HashMap<>();
 		for (int i = 0; i < parameters.length; i++) {

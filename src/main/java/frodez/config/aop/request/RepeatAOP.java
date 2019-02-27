@@ -2,7 +2,7 @@ package frodez.config.aop.request;
 
 import frodez.config.aop.request.checker.facade.ManualChecker;
 import frodez.config.aop.request.checker.impl.KeyGenerator;
-import frodez.util.aop.MethodUtil;
+import frodez.util.aop.AspectUtil;
 import frodez.util.http.ServletUtil;
 import frodez.util.result.Result;
 import frodez.util.result.ResultEnum;
@@ -55,7 +55,7 @@ public class RepeatAOP {
 	@Around("@annotation(frodez.config.aop.request.annotation.RepeatLock)")
 	public Object process(ProceedingJoinPoint point) throws Throwable {
 		HttpServletRequest request = ContextUtil.getRequest();
-		String key = generator.servletKey(MethodUtil.getFullName(point), request);
+		String key = generator.servletKey(AspectUtil.getFullName(point), request);
 		try {
 			if (checker.check(key)) {
 				log.info("重复请求:IP地址{}", ServletUtil.getAddr(request));

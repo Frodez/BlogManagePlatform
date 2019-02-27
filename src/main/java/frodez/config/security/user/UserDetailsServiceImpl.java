@@ -1,8 +1,8 @@
 package frodez.config.security.user;
 
 import frodez.config.security.util.AuthorityUtil;
-import frodez.dao.result.user.UserInfo;
 import frodez.service.user.facade.IAuthorityService;
+import frodez.service.user.result.UserInfo;
 import frodez.util.result.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -32,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			throw new UsernameNotFoundException(result.getMessage());
 		}
 		UserInfo userInfo = result.as(UserInfo.class);
-		return new User(userInfo.getName(), userInfo.getPassword(), AuthorityUtil.createGrantedAuthorities(userInfo
+		return new User(userInfo.getName(), userInfo.getPassword(), AuthorityUtil.get(userInfo
 			.getPermissionList()));
 	}
 

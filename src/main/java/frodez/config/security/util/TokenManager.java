@@ -1,18 +1,16 @@
 package frodez.config.security.util;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import frodez.config.security.settings.SecurityProperties;
 import java.util.Date;
 import java.util.List;
-
+import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-
-import frodez.config.security.settings.SecurityProperties;
 
 /**
  * token工具类
@@ -29,6 +27,34 @@ public class TokenManager {
 	private SecurityProperties properties;
 
 	/**
+	 * 算法
+	 */
+	private Algorithm algorithm;
+
+	/**
+	 * 签发者
+	 */
+	private String issuer;
+
+	/**
+	 * 过期时长(毫秒)
+	 */
+	private Long expiration;
+
+	/**
+	 * 声明
+	 */
+	private String claim;
+
+	@PostConstruct
+	private void init() {
+		algorithm = Algorithm.HMAC256(properties.getJwt().getSecret());
+		issuer = properties.getJwt().getIssuer();
+		expiration = properties.getJwt().getExpiration() * 1000;
+		claim = properties.getJwt().getAuthorityClaim();
+	}
+
+	/**
 	 * 生成token
 	 * @author Frodez
 	 * @param UserDetails 用户信息
@@ -36,11 +62,9 @@ public class TokenManager {
 	 */
 	public String generate(UserDetails user) {
 		try {
-			Long systemTime = System.currentTimeMillis();
-			return JWT.create().withIssuer(properties.getJwt().getIssuer()).withIssuedAt(new Date(systemTime))
-				.withExpiresAt(new Date(systemTime + properties.getJwt().getExpiration() * 1000)).withSubject(user
-					.getUsername()).withArrayClaim(properties.getJwt().getAuthorityClaim(), AuthorityUtil
-						.getAuthorities(user)).sign(Algorithm.HMAC256(properties.getJwt().getSecret()));
+			Long now = System.currentTimeMillis();
+			return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withExpiresAt(new Date(now + expiration))
+				.withSubject(user.getUsername()).withArrayClaim(claim, AuthorityUtil.get(user)).sign(algorithm);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -54,34 +78,30 @@ public class TokenManager {
 	 */
 	public String generate(String username, List<String> authorities) {
 		try {
-			Long systemTime = System.currentTimeMillis();
-			return JWT.create().withIssuer(properties.getJwt().getIssuer()).withIssuedAt(new Date(systemTime))
-				.withExpiresAt(new Date(systemTime + properties.getJwt().getExpiration() * 1000)).withSubject(username)
-				.withArrayClaim(properties.getJwt().getAuthorityClaim(), authorities.stream().toArray(String[]::new))
-				.sign(Algorithm.HMAC256(properties.getJwt().getSecret()));
+			Long now = System.currentTimeMillis();
+			return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withExpiresAt(new Date(now + expiration))
+				.withSubject(username).withArrayClaim(claim, authorities.toArray(String[]::new)).sign(algorithm);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	/**
-	 * 验证token,失败时返回null
+	 * 验证token
 	 * @author Frodez
 	 * @param token
+	 * @param expired是否验证超时
 	 * @date 2018-11-21
 	 */
-	public UserDetails verify(String token) {
-		try {
-			if (token == null) {
-				return null;
-			}
-			DecodedJWT jwt = JWT.require(Algorithm.HMAC256(properties.getJwt().getSecret())).withIssuer(properties
-				.getJwt().getIssuer()).build().verify(token);
-			return new User(jwt.getSubject(), "N/A", AuthorityUtil.createGrantedAuthorities(jwt.getClaim(properties
-				.getJwt().getAuthorityClaim()).asArray(String.class)));
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+	public UserDetails verify(String token, boolean expired) {
+		DecodedJWT jwt = null;
+		if (expired) {
+			//前面已经将exp置为合适的过期时间了,这里只需要判断其是否超过当前时间即可.
+			jwt = JWT.require(algorithm).acceptExpiresAt(0).withIssuer(issuer).build().verify(token);
+		} else {
+			jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
 		}
+		return new User(jwt.getSubject(), "N/A", AuthorityUtil.get(jwt.getClaim(claim).asArray(String.class)));
 	}
 
 }

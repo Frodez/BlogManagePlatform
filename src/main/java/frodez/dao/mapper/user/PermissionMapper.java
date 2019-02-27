@@ -2,7 +2,7 @@ package frodez.dao.mapper.user;
 
 import frodez.config.mybatis.DataMapper;
 import frodez.dao.model.user.Permission;
-import frodez.dao.result.user.PermissionInfo;
+import frodez.service.user.result.PermissionInfo;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

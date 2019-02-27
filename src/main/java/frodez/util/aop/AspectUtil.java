@@ -12,7 +12,7 @@ import org.aspectj.lang.reflect.MethodSignature;
  * @author Frodez
  * @date 2019-01-09
  */
-public class MethodUtil {
+public class AspectUtil {
 
 	private static MethodSignature getMethodSignature(JoinPoint point) {
 		return MethodSignature.class.cast(point.getSignature());

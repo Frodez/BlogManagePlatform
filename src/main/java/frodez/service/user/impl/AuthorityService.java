@@ -1,17 +1,15 @@
 package frodez.service.user.impl;
 
-import frodez.constant.cache.UserKey;
+import frodez.config.security.login.cache.facade.NameCache;
 import frodez.constant.user.UserStatusEnum;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.mapper.user.RoleMapper;
 import frodez.dao.mapper.user.UserMapper;
 import frodez.dao.model.user.Role;
 import frodez.dao.model.user.User;
-import frodez.dao.result.user.PermissionInfo;
-import frodez.dao.result.user.UserInfo;
-import frodez.service.cache.RedisService;
 import frodez.service.user.facade.IAuthorityService;
-import frodez.util.json.JSONUtil;
+import frodez.service.user.result.PermissionInfo;
+import frodez.service.user.result.UserInfo;
 import frodez.util.result.Result;
 import frodez.util.result.ResultUtil;
 import java.util.List;
@@ -29,11 +27,8 @@ import tk.mybatis.mapper.entity.Example;
 @Service
 public class AuthorityService implements IAuthorityService {
 
-	/**
-	 * redis服务
-	 */
 	@Autowired
-	private RedisService redisService;
+	private NameCache nameCache;
 
 	@Autowired
 	private PermissionMapper permissionMapper;
@@ -52,8 +47,7 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result getUserInfo(String userName) {
 		try {
-			String json = redisService.getString(UserKey.BASE_INFO + userName);
-			UserInfo data = JSONUtil.toObject(json, UserInfo.class);
+			UserInfo data = nameCache.get(userName);
 			if (data != null) {
 				return ResultUtil.success(data);
 			}
@@ -83,7 +77,7 @@ public class AuthorityService implements IAuthorityService {
 			data.setRoleLevel(role.getLevel());
 			data.setRoleDescription(role.getDescription());
 			data.setPermissionList(permissionList);
-			redisService.set(UserKey.BASE_INFO + userName, JSONUtil.toJSONString(data));
+			nameCache.save(userName, data);
 			return ResultUtil.success(data);
 		} catch (Exception e) {
 			log.error("[getUserAuthority]", e);

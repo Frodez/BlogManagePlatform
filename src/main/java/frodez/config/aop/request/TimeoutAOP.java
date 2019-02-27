@@ -3,7 +3,7 @@ package frodez.config.aop.request;
 import frodez.config.aop.request.annotation.TimeoutLock;
 import frodez.config.aop.request.checker.facade.AutoChecker;
 import frodez.config.aop.request.checker.impl.KeyGenerator;
-import frodez.util.aop.MethodUtil;
+import frodez.util.aop.AspectUtil;
 import frodez.util.http.ServletUtil;
 import frodez.util.result.Result;
 import frodez.util.result.ResultEnum;
@@ -55,8 +55,8 @@ public class TimeoutAOP {
 	@Around("@annotation(frodez.config.aop.request.annotation.TimeoutLock)")
 	public Object process(ProceedingJoinPoint point) throws Throwable {
 		HttpServletRequest request = ContextUtil.getRequest();
-		TimeoutLock timeoutLock = MethodUtil.getAnnotation(point, TimeoutLock.class);
-		String key = generator.servletKey(MethodUtil.getFullName(point), request);
+		TimeoutLock timeoutLock = AspectUtil.getAnnotation(point, TimeoutLock.class);
+		String key = generator.servletKey(AspectUtil.getFullName(point), request);
 		if (checker.check(key)) {
 			log.info("重复请求:IP地址{}", ServletUtil.getAddr(request));
 			return new Result(ResultEnum.REPEAT_REQUEST);

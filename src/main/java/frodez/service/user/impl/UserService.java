@@ -2,33 +2,36 @@ package frodez.service.user.impl;
 
 import frodez.config.error.exception.ServiceException;
 import frodez.config.error.status.ErrorCode;
+import frodez.config.security.login.cache.facade.TokenCache;
+import frodez.config.security.settings.SecurityProperties;
 import frodez.config.security.util.TokenManager;
-import frodez.constant.cache.UserKey;
 import frodez.constant.user.UserStatusEnum;
-import frodez.dao.mapper.user.PermissionMapper;
-import frodez.dao.mapper.user.RoleMapper;
 import frodez.dao.mapper.user.UserMapper;
-import frodez.dao.model.user.Role;
 import frodez.dao.model.user.User;
-import frodez.dao.param.user.LoginDTO;
-import frodez.dao.param.user.RegisterDTO;
-import frodez.dao.result.user.PermissionInfo;
-import frodez.service.cache.RedisService;
+import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.IUserService;
+import frodez.service.user.param.LoginDTO;
+import frodez.service.user.param.ReLoginDTO;
+import frodez.service.user.param.RegisterDTO;
+import frodez.service.user.result.PermissionInfo;
+import frodez.service.user.result.UserInfo;
 import frodez.util.result.Result;
 import frodez.util.result.ResultUtil;
+import frodez.util.spring.context.ContextUtil;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Example;
 
 /**
  * 用户信息服务
@@ -43,7 +46,10 @@ public class UserService implements IUserService {
 	 * jwt工具类
 	 */
 	@Autowired
-	private TokenManager tokenUtil;
+	private TokenManager tokenManager;
+
+	@Autowired
+	private SecurityProperties properties;
 
 	/**
 	 * spring security验证管理器
@@ -52,44 +58,39 @@ public class UserService implements IUserService {
 	private AuthenticationManager authenticationManager;
 
 	@Autowired
+	private SecurityContextLogoutHandler logoutHandler;
+
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	/**
-	 * redis服务
-	 */
 	@Autowired
-	private RedisService redisService;
+	private TokenCache tokenCache;
+
+	@Autowired
+	private IAuthorityService authorityService;
 
 	@Autowired
 	private UserMapper userMapper;
 
-	@Autowired
-	private RoleMapper roleMapper;
-
-	@Autowired
-	private PermissionMapper permissionMapper;
-
 	@Override
 	public Result login(LoginDTO param) {
 		try {
-			Example example = new Example(User.class);
-			example.createCriteria().andEqualTo("name", param.getUsername());
-			User user = userMapper.selectOneByExample(example);
-			if (user == null) {
+			Result result = authorityService.getUserInfo(param.getUsername());
+			if (result.notSuccess()) {
+				return result;
+			}
+			UserInfo userInfo = result.as(UserInfo.class);
+			if (!passwordEncoder.matches(param.getPassword(), userInfo.getPassword())) {
 				return ResultUtil.fail("用户名或密码错误!");
 			}
-			if (user.getStatus().equals(UserStatusEnum.FORBIDDEN.getVal())) {
-				return ResultUtil.fail("用户已禁用!");
+			if (tokenCache.exist(userInfo)) {
+				return ResultUtil.fail("用户已登录!");
 			}
-			Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
-			if (role == null) {
-				return ResultUtil.fail("未查询到用户角色信息!");
-			}
-			List<String> authorities = permissionMapper.getPermissions(role.getId()).stream().map(
-				PermissionInfo::getName).collect(Collectors.toList());
-			String token = tokenUtil.generate(param.getUsername(), authorities);
-			// 这里将token作为key,userName作为value存入redis,方便之后通过token获取用户信息
-			redisService.set(UserKey.TOKEN + token, user.getName());
+			List<String> authorities = userInfo.getPermissionList().stream().map(PermissionInfo::getName).collect(
+				Collectors.toList());
+			//realToken
+			String token = tokenManager.generate(param.getUsername(), authorities);
+			tokenCache.save(token, userInfo);
 			SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword())));
 			return ResultUtil.success(token);
@@ -100,19 +101,66 @@ public class UserService implements IUserService {
 	}
 
 	@Override
+	public Result reLogin(ReLoginDTO param) {
+		try {
+			Result result = authorityService.getUserInfo(param.getUsername());
+			if (result.notSuccess()) {
+				return result;
+			}
+			UserInfo userInfo = result.as(UserInfo.class);
+			UserDetails userDetails = tokenManager.verify(param.getOldToken(), false);
+			//这里的userDetails.password已经加密了
+			if (!userDetails.getPassword().equals(userInfo.getPassword())) {
+				return ResultUtil.fail("用户名或密码错误!");
+			}
+			List<String> authorities = userInfo.getPermissionList().stream().map(PermissionInfo::getName).collect(
+				Collectors.toList());
+			//realToken
+			String token = tokenManager.generate(param.getUsername(), authorities);
+			tokenCache.remove(param.getOldToken());
+			tokenCache.save(token, userInfo);
+			logoutHandler.logout(ContextUtil.getRequest(), ContextUtil.getResponse(), SecurityContextHolder.getContext()
+				.getAuthentication());
+			SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(param.getUsername(), userInfo.getPassword())));
+			return ResultUtil.success(token);
+		} catch (Exception e) {
+			log.error("[reLogin]", e);
+			return ResultUtil.errorService();
+		}
+	}
+
+	@Override
+	public Result logout() {
+		try {
+			HttpServletRequest request = ContextUtil.getRequest();
+			String token = properties.getRealToken(request);
+			if (!tokenCache.exist(token)) {
+				return ResultUtil.fail("用户已下线!");
+			}
+			tokenCache.remove(token);
+			logoutHandler.logout(request, ContextUtil.getResponse(), SecurityContextHolder.getContext()
+				.getAuthentication());
+			return ResultUtil.success();
+		} catch (Exception e) {
+			log.error("[logout]", e);
+			return ResultUtil.errorService();
+		}
+	}
+
+	@Override
 	@Transactional
 	public Result register(RegisterDTO param) {
 		try {
 			User user = new User();
-			Date date = new Date();
-			user.setCreateTime(date);
+			user.setCreateTime(new Date());
 			user.setName(param.getName());
-			String password = passwordEncoder.encode(param.getPassword());
-			user.setPassword(password);
+			user.setPassword(passwordEncoder.encode(param.getPassword()));
 			user.setNickname(param.getNickname());
 			user.setEmail(param.getEmail());
 			user.setPhone(param.getPhone());
 			user.setStatus(UserStatusEnum.NORMAL.getVal());
+			//暂时写死
 			user.setRoleId(1L);
 			userMapper.insert(user);
 			return ResultUtil.success();

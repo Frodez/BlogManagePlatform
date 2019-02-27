@@ -1,6 +1,6 @@
 package frodez.config.security.util;
 
-import frodez.dao.result.user.PermissionInfo;
+import frodez.service.user.result.PermissionInfo;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,7 +21,7 @@ public class AuthorityUtil {
 	 * @param authorities 权限信息
 	 * @date 2018-11-21
 	 */
-	public static List<GrantedAuthority> createGrantedAuthorities(List<PermissionInfo> authorities) {
+	public static List<GrantedAuthority> get(List<PermissionInfo> authorities) {
 		return authorities.stream().map(authority -> new SimpleGrantedAuthority(authority.getName())).collect(Collectors
 			.toList());
 	}
@@ -32,7 +32,7 @@ public class AuthorityUtil {
 	 * @param authorities 权限信息
 	 * @date 2018-11-21
 	 */
-	public static List<GrantedAuthority> createGrantedAuthorities(String... authorities) {
+	public static List<GrantedAuthority> get(String... authorities) {
 		return Stream.of(authorities).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 	}
 
@@ -42,7 +42,7 @@ public class AuthorityUtil {
 	 * @param UserDetails 用户信息
 	 * @date 2018-11-21
 	 */
-	public static String[] getAuthorities(UserDetails user) {
+	public static String[] get(UserDetails user) {
 		return user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray(String[]::new);
 	}
 

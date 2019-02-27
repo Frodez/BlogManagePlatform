@@ -1,8 +1,7 @@
-package frodez.dao.result.user;
+package frodez.service.user.result;
 
 import java.io.Serializable;
 import java.util.List;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

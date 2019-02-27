@@ -1,4 +1,4 @@
-package frodez.dao.result.user;
+package frodez.service.user.result;
 
 import java.io.Serializable;
 

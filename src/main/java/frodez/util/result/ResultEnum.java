@@ -33,21 +33,26 @@ public enum ResultEnum implements Serializable {
 	 */
 	ERROR_SERVICE(1003, HttpStatus.INTERNAL_SERVER_ERROR, "服务器错误"),
 	/**
-	 * 用户未登录
+	 * 未登录
 	 */
 	NOT_LOGIN(2001, HttpStatus.UNAUTHORIZED, "未登录"),
 	/**
+	 * 已过期
+	 */
+	EXPIRED(2002, HttpStatus.UNAUTHORIZED, "已过期"),
+	/**
 	 * 未通过验证
 	 */
-	NO_AUTH(2002, HttpStatus.NETWORK_AUTHENTICATION_REQUIRED, "未通过验证"),
+	NO_AUTH(2003, HttpStatus.NETWORK_AUTHENTICATION_REQUIRED, "未通过验证"),
+
 	/**
 	 * 缺少操作权限
 	 */
-	NO_ACCESS(2003, HttpStatus.FORBIDDEN, "无权限"),
+	NO_ACCESS(2004, HttpStatus.FORBIDDEN, "无权限"),
 	/**
 	 * 重复请求
 	 */
-	REPEAT_REQUEST(2004, HttpStatus.LOCKED, "重复请求");
+	REPEAT_REQUEST(2005, HttpStatus.LOCKED, "重复请求");
 
 	/**
 	 * 自定义状态码
