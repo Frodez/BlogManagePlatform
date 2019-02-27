@@ -2,7 +2,7 @@ package frodez.constant.setting;
 
 import java.util.concurrent.TimeUnit;
 
-public class DefaultTime {
+public class DefTime {
 
 	/**
 	 * 默认时间单位(毫秒)

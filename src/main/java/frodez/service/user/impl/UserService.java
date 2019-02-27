@@ -101,7 +101,7 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public Result reLogin(ReLoginDTO param) {
+	public Result refresh(ReLoginDTO param) {
 		try {
 			Result result = authorityService.getUserInfo(param.getUsername());
 			if (result.notSuccess()) {

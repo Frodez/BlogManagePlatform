@@ -1,6 +1,6 @@
 package frodez.util.common;
 
-import frodez.constant.setting.DefaultDecimal;
+import frodez.constant.setting.DefDecimal;
 import java.math.BigDecimal;
 import org.springframework.util.Assert;
 
@@ -13,7 +13,7 @@ public class DecimalUtil {
 	 */
 	public static BigDecimal normalize(BigDecimal decimal) {
 		Assert.notNull(decimal, "参数不能为空!");
-		return decimal.setScale(DefaultDecimal.PRECISION, DefaultDecimal.ROUND_MODE);
+		return decimal.setScale(DefDecimal.PRECISION, DefDecimal.ROUND_MODE);
 	}
 
 	/**
@@ -23,7 +23,7 @@ public class DecimalUtil {
 	 */
 	public static BigDecimal normalize(Integer value) {
 		Assert.notNull(value, "参数不能为空!");
-		return new BigDecimal(value).setScale(DefaultDecimal.PRECISION, DefaultDecimal.ROUND_MODE);
+		return new BigDecimal(value).setScale(DefDecimal.PRECISION, DefDecimal.ROUND_MODE);
 	}
 
 	/**
@@ -33,7 +33,7 @@ public class DecimalUtil {
 	 */
 	public static BigDecimal normalize(Double value) {
 		Assert.notNull(value, "参数不能为空!");
-		return new BigDecimal(value).setScale(DefaultDecimal.PRECISION, DefaultDecimal.ROUND_MODE);
+		return new BigDecimal(value).setScale(DefDecimal.PRECISION, DefDecimal.ROUND_MODE);
 	}
 
 	/**
@@ -43,7 +43,7 @@ public class DecimalUtil {
 	 */
 	public static BigDecimal normalize(Long value) {
 		Assert.notNull(value, "参数不能为空!");
-		return new BigDecimal(value).setScale(DefaultDecimal.PRECISION, DefaultDecimal.ROUND_MODE);
+		return new BigDecimal(value).setScale(DefDecimal.PRECISION, DefDecimal.ROUND_MODE);
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class DecimalUtil {
 	 */
 	public static BigDecimal normalize(String value) {
 		Assert.notNull(value, "参数不能为空!");
-		return new BigDecimal(value).setScale(DefaultDecimal.PRECISION, DefaultDecimal.ROUND_MODE);
+		return new BigDecimal(value).setScale(DefDecimal.PRECISION, DefDecimal.ROUND_MODE);
 	}
 
 	/**
@@ -151,9 +151,9 @@ public class DecimalUtil {
 	 */
 	public static BigDecimal divide(boolean normalized, BigDecimal first, BigDecimal... args) {
 		BigDecimal result = first;
-		int precision = args.length + DefaultDecimal.PRECISION;
+		int precision = args.length + DefDecimal.PRECISION;
 		for (int i = 0; i < args.length; i++) {
-			result = result.divide(args[i], precision, DefaultDecimal.ROUND_MODE);
+			result = result.divide(args[i], precision, DefDecimal.ROUND_MODE);
 		}
 		if (normalized) {
 			return DecimalUtil.normalize(result);

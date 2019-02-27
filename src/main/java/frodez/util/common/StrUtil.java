@@ -1,6 +1,6 @@
 package frodez.util.common;
 
-import frodez.constant.setting.DefaultDecimal;
+import frodez.constant.setting.DefDecimal;
 import java.math.BigDecimal;
 
 public class StrUtil {
@@ -14,8 +14,7 @@ public class StrUtil {
 			return defaultStr;
 		}
 		if (object.getClass() == BigDecimal.class) {
-			return BigDecimal.class.cast(object).setScale(DefaultDecimal.PRECISION, DefaultDecimal.ROUND_MODE)
-				.toString();
+			return BigDecimal.class.cast(object).setScale(DefDecimal.PRECISION, DefDecimal.ROUND_MODE).toString();
 		}
 		return object.toString();
 	}

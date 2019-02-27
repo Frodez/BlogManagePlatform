@@ -2,7 +2,7 @@ package frodez.constant.setting;
 
 import java.math.RoundingMode;
 
-public class DefaultDecimal {
+public class DefDecimal {
 
 	public static final int PRECISION = 2;
 

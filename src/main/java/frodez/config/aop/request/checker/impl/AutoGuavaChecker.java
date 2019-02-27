@@ -3,7 +3,7 @@ package frodez.config.aop.request.checker.impl;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import frodez.config.aop.request.checker.facade.AutoChecker;
-import frodez.constant.setting.DefaultTime;
+import frodez.constant.setting.DefTime;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,7 +19,7 @@ public class AutoGuavaChecker implements AutoChecker {
 	 */
 	private static final int GC_INTERVAL = 60000;
 
-	Cache<String, Long> cache = CacheBuilder.newBuilder().expireAfterAccess(GC_INTERVAL, DefaultTime.UNIT).build();
+	Cache<String, Long> cache = CacheBuilder.newBuilder().expireAfterAccess(GC_INTERVAL, DefTime.UNIT).build();
 
 	@Override
 	public boolean check(String key) {

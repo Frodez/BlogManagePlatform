@@ -1,7 +1,7 @@
 package frodez.config.error.handle;
 
 import frodez.config.error.exception.ServiceException;
-import frodez.constant.setting.DefaultResult;
+import frodez.constant.setting.DefResult;
 import frodez.util.http.ServletUtil;
 import frodez.util.result.ResultEnum;
 import frodez.util.result.ResultUtil;
@@ -43,7 +43,7 @@ public class GlobalController {
 	@ExceptionHandler(value = Exception.class)
 	public void defaultErrorHandler(HttpServletResponse response, Exception e) {
 		log.error("[defaultErrorHandler]", e);
-		ServletUtil.writeJson(response, ResultEnum.ERROR_SERVICE.getStatus(), DefaultResult.ERROR_SERVICE_STRING);
+		ServletUtil.writeJson(response, ResultEnum.ERROR_SERVICE.getStatus(), DefResult.ERROR_SERVICE_STRING);
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class GlobalController {
 	@ExceptionHandler(value = HttpMessageNotReadableException.class)
 	public void defaultErrorHandler(HttpServletResponse response, HttpMessageNotReadableException e) {
 		log.error("[defaultErrorHandler]{}", e.getMessage());
-		ServletUtil.writeJson(response, ResultEnum.ERROR_REQUEST.getStatus(), DefaultResult.ERROR_REQUEST_STRING);
+		ServletUtil.writeJson(response, ResultEnum.ERROR_REQUEST.getStatus(), DefResult.ERROR_REQUEST_STRING);
 	}
 
 }

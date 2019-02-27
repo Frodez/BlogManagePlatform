@@ -4,21 +4,34 @@ import com.fasterxml.classmate.TypeResolver;
 import frodez.config.security.settings.SecurityProperties;
 import frodez.constant.setting.PropertyKey;
 import frodez.util.result.Result;
+import frodez.util.result.ResultEnum;
 import frodez.util.spring.properties.PropertyUtil;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.builders.ResponseMessageBuilder;
+import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.Parameter;
+import springfox.documentation.service.ResponseMessage;
 import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
@@ -53,12 +66,46 @@ public class SwaggerConfig {
 	 */
 	@Bean
 	public Docket petApi() {
+		List<ResponseMessage> responseMessageList = getGlobalResponseMessage();
 		return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage(
 			swaggerProperties.getBasePackage())).paths(PathSelectors.any()).build().apiInfo(apiInfo()).pathMapping(
 				PropertyUtil.get(PropertyKey.Web.BASE_PATH)).directModelSubstitute(LocalDate.class, String.class)
 			.genericModelSubstitutes(ResponseEntity.class).additionalModels(new TypeResolver().resolve(Result.class))
 			.useDefaultResponseMessages(false).securitySchemes(Arrays.asList(apiKey())).securityContexts(Arrays.asList(
-				securityContext())).enableUrlTemplating(false);
+				securityContext())).enableUrlTemplating(false).globalResponseMessage(RequestMethod.GET,
+					responseMessageList).globalResponseMessage(RequestMethod.POST, responseMessageList)
+			.globalResponseMessage(RequestMethod.PUT, responseMessageList).globalResponseMessage(RequestMethod.DELETE,
+				responseMessageList).globalOperationParameters(getGlobalOperationParameters());
+	}
+
+	private List<ResponseMessage> getGlobalResponseMessage() {
+		List<ResponseMessage> list = new ArrayList<>();
+		Map<HttpStatus, List<ResultEnum>> map = new HashMap<>();
+		for (ResultEnum item : ResultEnum.values()) {
+			if (map.containsKey(item.getStatus())) {
+				map.get(item.getStatus()).add(item);
+			} else {
+				List<ResultEnum> enumList = new ArrayList<>();
+				enumList.add(item);
+				map.put(item.getStatus(), enumList);
+			}
+		}
+		for (Entry<HttpStatus, List<ResultEnum>> entry : map.entrySet()) {
+			String message = String.join(" | ", entry.getValue().stream().map((iter) -> {
+				return iter.getDesc() + ",自定义状态码:" + iter.getVal();
+			}).collect(Collectors.toList()));
+			ResponseMessage responseMessage = new ResponseMessageBuilder().code(entry.getKey().value()).message(message)
+				.responseModel(new ModelRef("Result")).build();
+			list.add(responseMessage);
+		}
+		return list;
+	}
+
+	private List<Parameter> getGlobalOperationParameters() {
+		List<Parameter> list = new ArrayList<>();
+		list.add(new ParameterBuilder().name(securityProperties.getJwt().getAuthorityClaim()).description(
+			"token,除免验证url外均必填").required(false).parameterType("header").modelRef(new ModelRef("string")).build());
+		return list;
 	}
 
 	/**

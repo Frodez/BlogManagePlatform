@@ -29,7 +29,7 @@ public interface IUserService {
 	 * @date 2019-02-27
 	 */
 	@Check
-	Result reLogin(@Valid @NotNull(message = "请求参数不能为空!") ReLoginDTO param);
+	Result refresh(@Valid @NotNull(message = "请求参数不能为空!") ReLoginDTO param);
 
 	/**
 	 * 用户登出

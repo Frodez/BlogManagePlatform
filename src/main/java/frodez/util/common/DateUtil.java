@@ -1,6 +1,6 @@
 package frodez.util.common;
 
-import frodez.constant.setting.DefaultTime;
+import frodez.constant.setting.DefTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -74,7 +74,7 @@ public class DateUtil {
 	 * @date 2019-02-17
 	 */
 	public static Date date(String date) {
-		return parse(DefaultTime.DATE_PATTERN, date);
+		return parse(DefTime.DATE_PATTERN, date);
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class DateUtil {
 	 * @date 2019-02-17
 	 */
 	public static Date time(String date) {
-		return parse(DefaultTime.TIME_PATTERN, date);
+		return parse(DefTime.TIME_PATTERN, date);
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class DateUtil {
 	 * @date 2019-02-17
 	 */
 	public static Date dateTime(String date) {
-		return parse(DefaultTime.DATE_TIME_PATTERN, date);
+		return parse(DefTime.DATE_TIME_PATTERN, date);
 	}
 
 }

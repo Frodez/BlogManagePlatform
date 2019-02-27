@@ -46,7 +46,7 @@ public class RepeatAOP {
 	private KeyGenerator generator;
 
 	/**
-	 * 在请求前判断是否存在正在执行的请求,在请求后删除redis中key
+	 * 在请求前判断是否存在正在执行的请求
 	 * @param JoinPoint AOP切点
 	 * @author Frodez
 	 * @throws Throwable

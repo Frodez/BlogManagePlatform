@@ -2,7 +2,7 @@ package frodez.config.security.settings;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import frodez.constant.setting.DefaultTime;
+import frodez.constant.setting.DefTime;
 import frodez.constant.setting.PropertyKey;
 import frodez.util.spring.properties.PropertyUtil;
 import java.util.ArrayList;
@@ -137,7 +137,7 @@ public class SecurityProperties {
 	 * url匹配缓存
 	 */
 	private static final Cache<String, Boolean> URL_CACHE = CacheBuilder.newBuilder().maximumSize(CACHE_SIZE)
-		.expireAfterAccess(GC_INTERVAL, DefaultTime.UNIT).build();
+		.expireAfterAccess(GC_INTERVAL, DefTime.UNIT).build();
 
 	/**
 	 * 判断url是否需要验证<br>

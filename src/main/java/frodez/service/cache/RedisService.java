@@ -1,6 +1,6 @@
 package frodez.service.cache;
 
-import frodez.constant.setting.DefaultTime;
+import frodez.constant.setting.DefTime;
 import frodez.util.common.EmptyUtil;
 import frodez.util.json.JSONUtil;
 import java.util.Arrays;
@@ -83,7 +83,7 @@ public class RedisService {
 	 * @date 2018-12-21
 	 */
 	public void set(Object key, Object value, long timeout) {
-		template.opsForValue().set(key, value, timeout, DefaultTime.UNIT);
+		template.opsForValue().set(key, value, timeout, DefTime.UNIT);
 	}
 
 	/**

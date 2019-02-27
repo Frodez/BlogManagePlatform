@@ -3,7 +3,7 @@ package frodez.constant.setting;
 import frodez.util.result.Result;
 import frodez.util.result.ResultEnum;
 
-public class DefaultResult {
+public class DefResult {
 
 	/**
 	 * 失败返回值
