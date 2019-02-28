@@ -7,7 +7,6 @@ import lombok.Data;
 public class BeanTest {
 
 	public static void main(String[] args) {
-
 		Date date = new Date();
 		BeanOne one = new BeanOne();
 		one.setDate(date);

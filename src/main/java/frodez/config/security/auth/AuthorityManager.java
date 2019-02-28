@@ -2,6 +2,7 @@ package frodez.config.security.auth;
 
 import frodez.config.security.settings.SecurityProperties;
 import frodez.util.common.EmptyUtil;
+import frodez.util.http.URLMatcher;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +43,7 @@ public class AuthorityManager implements AccessDecisionManager {
 	@Override
 	public void decide(Authentication auth, Object object, Collection<ConfigAttribute> permissions)
 		throws AccessDeniedException, InsufficientAuthenticationException {
-		if (!properties.needVerify(((FilterInvocation) object).getHttpRequest().getRequestURI())) {
+		if (!URLMatcher.needVerify(((FilterInvocation) object).getHttpRequest().getRequestURI())) {
 			// 如果是免验证路径,则直接放行
 			return;
 		}

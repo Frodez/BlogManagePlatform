@@ -1,11 +1,11 @@
 package frodez;
 
-import frodez.config.security.settings.SecurityProperties;
 import frodez.constant.setting.PropertyKey;
 import frodez.constant.user.PermissionTypeEnum;
 import frodez.service.user.mapper.PermissionMapper;
 import frodez.service.user.model.Permission;
 import frodez.util.common.EmptyUtil;
+import frodez.util.http.URLMatcher;
 import frodez.util.json.JSONUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.context.ContextUtil;
@@ -31,7 +31,6 @@ public class InitPermissionService {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BlogManagePlatformApplication.class, args);
-		SecurityProperties properties = ContextUtil.getBean(SecurityProperties.class);
 		PermissionMapper permissionMapper = ContextUtil.getBean(PermissionMapper.class);
 		String errorPath = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + "/error";
 		List<Permission> permissionList = new ArrayList<>();
@@ -44,7 +43,7 @@ public class InitPermissionService {
 			}).flatMap(Collection::stream).forEach((entry) -> {
 				String requestUrl = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + entry.getKey().getPatternsCondition()
 					.getPatterns().stream().findFirst().get();
-				if (!properties.needVerify(requestUrl) || requestUrl.equals(errorPath)) {
+				if (!URLMatcher.needVerify(requestUrl) || requestUrl.equals(errorPath)) {
 					return;
 				}
 				requestUrl = requestUrl.substring(PropertyUtil.get(PropertyKey.Web.BASE_PATH).length());

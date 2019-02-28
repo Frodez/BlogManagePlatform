@@ -16,7 +16,7 @@ pagehelper:
   supportMethodsArguments: true
   
 server:
-  port: 8080
+  port: 9090
   #不在此处理https
   #ssl:
     #在jdk目录下使用keytool.命令如下:

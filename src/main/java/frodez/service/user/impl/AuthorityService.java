@@ -1,6 +1,6 @@
 package frodez.service.user.impl;
 
-import frodez.config.security.login.cache.facade.NameCache;
+import frodez.cache.vm.facade.NameCache;
 import frodez.constant.user.UserStatusEnum;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.mapper.PermissionMapper;

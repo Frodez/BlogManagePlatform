@@ -3,7 +3,11 @@ package frodez.config.aop.request.checker.impl;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import frodez.config.aop.request.checker.facade.AutoChecker;
+import frodez.config.cache.CacheProperties;
 import frodez.constant.setting.DefTime;
+import frodez.util.spring.context.ContextUtil;
+import javax.annotation.PostConstruct;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,14 +16,16 @@ import org.springframework.stereotype.Component;
  * @date 2019-01-21
  */
 @Component("timeoutGuavaChecker")
+@DependsOn("contextUtil")
 public class AutoGuavaChecker implements AutoChecker {
 
-	/**
-	 * 垃圾收集间隔(毫秒)
-	 */
-	private static final int GC_INTERVAL = 60000;
+	private Cache<String, Long> cache;
 
-	Cache<String, Long> cache = CacheBuilder.newBuilder().expireAfterAccess(GC_INTERVAL, DefTime.UNIT).build();
+	@PostConstruct
+	private void init() {
+		cache = CacheBuilder.newBuilder().expireAfterAccess(ContextUtil.getBean(CacheProperties.class)
+			.getAutoGuavaChecker().getTimeout(), DefTime.UNIT).build();
+	}
 
 	@Override
 	public boolean check(String key) {

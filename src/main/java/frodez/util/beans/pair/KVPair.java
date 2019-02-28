@@ -1,10 +1,10 @@
-package frodez.util.beans;
+package frodez.util.beans.pair;
 
 import java.io.Serializable;
 import lombok.Data;
 
 @Data
-public class StrKV implements Serializable {
+public class KVPair<K, V> implements Serializable {
 
 	/**
 	 *
@@ -14,11 +14,11 @@ public class StrKV implements Serializable {
 	/**
 	 * 键
 	 */
-	private String key;
+	private K key;
 
 	/**
 	 * 值
 	 */
-	private String value;
+	private V value;
 
 }

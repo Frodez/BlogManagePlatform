@@ -1,9 +1,8 @@
 package frodez.service.user.impl;
 
+import frodez.cache.vm.facade.TokenCache;
 import frodez.config.error.exception.ServiceException;
 import frodez.config.error.status.ErrorCode;
-import frodez.config.security.login.cache.facade.TokenCache;
-import frodez.config.security.settings.SecurityProperties;
 import frodez.config.security.util.TokenManager;
 import frodez.constant.user.UserStatusEnum;
 import frodez.service.user.facade.IAuthorityService;
@@ -43,15 +42,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService implements IUserService {
 
 	/**
-	 * jwt工具类
-	 */
-	@Autowired
-	private TokenManager tokenManager;
-
-	@Autowired
-	private SecurityProperties properties;
-
-	/**
 	 * spring security验证管理器
 	 */
 	@Autowired
@@ -83,13 +73,13 @@ public class UserService implements IUserService {
 			if (!passwordEncoder.matches(param.getPassword(), userInfo.getPassword())) {
 				return ResultUtil.fail("用户名或密码错误!");
 			}
-			if (tokenCache.exist(userInfo)) {
+			if (tokenCache.existValue(userInfo)) {
 				return ResultUtil.fail("用户已登录!");
 			}
 			List<String> authorities = userInfo.getPermissionList().stream().map(PermissionInfo::getName).collect(
 				Collectors.toList());
 			//realToken
-			String token = tokenManager.generate(param.getUsername(), authorities);
+			String token = TokenManager.generate(param.getUsername(), authorities);
 			tokenCache.save(token, userInfo);
 			SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword())));
@@ -108,7 +98,7 @@ public class UserService implements IUserService {
 				return result;
 			}
 			UserInfo userInfo = result.as(UserInfo.class);
-			UserDetails userDetails = tokenManager.verify(param.getOldToken(), false);
+			UserDetails userDetails = TokenManager.verify(param.getOldToken(), false);
 			//这里的userDetails.password已经加密了
 			if (!userDetails.getPassword().equals(userInfo.getPassword())) {
 				return ResultUtil.fail("用户名或密码错误!");
@@ -116,7 +106,7 @@ public class UserService implements IUserService {
 			List<String> authorities = userInfo.getPermissionList().stream().map(PermissionInfo::getName).collect(
 				Collectors.toList());
 			//realToken
-			String token = tokenManager.generate(param.getUsername(), authorities);
+			String token = TokenManager.generate(param.getUsername(), authorities);
 			tokenCache.remove(param.getOldToken());
 			tokenCache.save(token, userInfo);
 			logoutHandler.logout(ContextUtil.getRequest(), ContextUtil.getResponse(), SecurityContextHolder.getContext()
@@ -134,8 +124,8 @@ public class UserService implements IUserService {
 	public Result logout() {
 		try {
 			HttpServletRequest request = ContextUtil.getRequest();
-			String token = properties.getRealToken(request);
-			if (!tokenCache.exist(token)) {
+			String token = TokenManager.getRealToken(request);
+			if (!tokenCache.existKey(token)) {
 				return ResultUtil.fail("用户已下线!");
 			}
 			tokenCache.remove(token);

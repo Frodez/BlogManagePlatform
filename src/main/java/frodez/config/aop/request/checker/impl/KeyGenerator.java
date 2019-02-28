@@ -1,26 +1,20 @@
 package frodez.config.aop.request.checker.impl;
 
-import frodez.config.security.settings.SecurityProperties;
+import frodez.config.security.util.TokenManager;
 import frodez.constant.setting.DefStr;
 import frodez.util.http.ServletUtil;
+import frodez.util.http.URLMatcher;
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class KeyGenerator {
 
-	/**
-	 * 访问控制参数配置
-	 */
-	@Autowired
-	private SecurityProperties properties;
-
 	public String servletKey(String sault, HttpServletRequest request) {
 		StringBuilder builder = new StringBuilder(sault).append(DefStr.SEPERATOR).append(request.getRequestURI());
-		if (properties.needVerify(request.getRequestURI())) {
+		if (URLMatcher.needVerify(request.getRequestURI())) {
 			// 非登录接口使用token判断,同一token不能重复请求
-			String fullToken = properties.getFullToken(request);
+			String fullToken = TokenManager.getFullToken(request);
 			if (fullToken == null) {
 				return builder.toString();
 			} else {

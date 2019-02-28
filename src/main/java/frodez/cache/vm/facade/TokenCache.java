@@ -1,28 +1,31 @@
-package frodez.config.security.login.cache.facade;
+package frodez.cache.vm.facade;
 
 import frodez.service.user.result.UserInfo;
 
-public interface TokenCache {
+public interface TokenCache extends ICacheService<String, UserInfo> {
 
 	/**
 	 * 判断token是否存在于缓存
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	boolean exist(String token);
+	@Override
+	boolean existKey(String token);
 
 	/**
 	 * 判断userInfo是否存在于缓存
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	boolean exist(UserInfo userInfo);
+	@Override
+	boolean existValue(UserInfo userInfo);
 
 	/**
 	 * 存储token和userInfo于缓存
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
+	@Override
 	void save(String token, UserInfo userInfo);
 
 	/**
@@ -30,6 +33,7 @@ public interface TokenCache {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
+	@Override
 	UserInfo get(String token);
 
 	/**
@@ -37,6 +41,7 @@ public interface TokenCache {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
+	@Override
 	void remove(String token);
 
 }

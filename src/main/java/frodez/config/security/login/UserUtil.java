@@ -1,12 +1,13 @@
 package frodez.config.security.login;
 
-import frodez.config.security.login.cache.facade.TokenCache;
-import frodez.config.security.settings.SecurityProperties;
+import frodez.cache.vm.facade.TokenCache;
+import frodez.config.security.util.TokenManager;
 import frodez.service.user.result.UserInfo;
+import frodez.util.http.URLMatcher;
 import frodez.util.spring.context.ContextUtil;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,30 +16,14 @@ import org.springframework.stereotype.Component;
  * @date 2019-01-09
  */
 @Component
+@DependsOn("contextUtil")
 public class UserUtil {
 
-	/**
-	 * 访问控制参数配置
-	 */
-	@Autowired
-	private SecurityProperties properties;
-
-	@Autowired
-	private TokenCache tokenCache;
-
-	private static UserUtil userManager;
+	private static TokenCache tokenCache;
 
 	@PostConstruct
 	private void init() {
-		userManager = this;
-	}
-
-	private UserInfo getUserInfo() {
-		HttpServletRequest request = ContextUtil.getRequest();
-		if (!properties.needVerify(request.getRequestURI())) {
-			throw new RuntimeException("不能在免验证URI中获取token信息!");
-		}
-		return tokenCache.get(properties.getRealToken(request));
+		tokenCache = ContextUtil.getBean(TokenCache.class);
 	}
 
 	/**
@@ -47,7 +32,11 @@ public class UserUtil {
 	 * @date 2019-01-09
 	 */
 	public static UserInfo get() {
-		return userManager.getUserInfo();
+		HttpServletRequest request = ContextUtil.getRequest();
+		if (!URLMatcher.needVerify(request.getRequestURI())) {
+			throw new RuntimeException("不能在免验证URI中获取token信息!");
+		}
+		return tokenCache.get(TokenManager.getRealToken(request));
 	}
 
 }

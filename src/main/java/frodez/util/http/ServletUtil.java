@@ -55,20 +55,23 @@ public class ServletUtil {
 	 * @date 2019-01-07
 	 */
 	public static void writeJson(HttpServletResponse response, @Nullable HttpStatus status, String json) {
-		if (status != null) {
-			response.setStatus(status.value());
-		}
-		PrintWriter out = null;
-		try {
-			response.setCharacterEncoding("UTF-8");
-			response.setContentType("application/json; charset=utf-8");
-			out = response.getWriter();
-			out.append(json);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (out != null) {
-				out.close();
+		synchronized (response) {
+			PrintWriter out = null;
+			try {
+				response.reset();
+				if (status != null) {
+					response.setStatus(status.value());
+				}
+				response.setCharacterEncoding("UTF-8");
+				response.setContentType("application/json; charset=utf-8");
+				out = response.getWriter();
+				out.append(json);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			} finally {
+				if (out != null) {
+					out.close();
+				}
 			}
 		}
 	}
@@ -79,20 +82,23 @@ public class ServletUtil {
 	 * @date 2019-01-15
 	 */
 	public static void writePlainText(HttpServletResponse response, @Nullable HttpStatus status, String text) {
-		if (status != null) {
-			response.setStatus(status.value());
-		}
-		PrintWriter out = null;
-		try {
-			response.setCharacterEncoding("UTF-8");
-			response.setContentType("text/plain; charset=utf-8");
-			out = response.getWriter();
-			out.append(text);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (out != null) {
-				out.close();
+		synchronized (response) {
+			PrintWriter out = null;
+			try {
+				response.reset();
+				if (status != null) {
+					response.setStatus(status.value());
+				}
+				response.setCharacterEncoding("UTF-8");
+				response.setContentType("text/plain; charset=utf-8");
+				out = response.getWriter();
+				out.append(text);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			} finally {
+				if (out != null) {
+					out.close();
+				}
 			}
 		}
 	}
@@ -103,20 +109,23 @@ public class ServletUtil {
 	 * @date 2019-01-15
 	 */
 	public static void writeHtml(HttpServletResponse response, @Nullable HttpStatus status, String html) {
-		if (status != null) {
-			response.setStatus(status.value());
-		}
-		PrintWriter out = null;
-		try {
-			response.setCharacterEncoding("UTF-8");
-			response.setContentType("text/html; charset=utf-8");
-			out = response.getWriter();
-			out.append(html);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (out != null) {
-				out.close();
+		synchronized (response) {
+			PrintWriter out = null;
+			try {
+				response.reset();
+				if (status != null) {
+					response.setStatus(status.value());
+				}
+				response.setCharacterEncoding("UTF-8");
+				response.setContentType("text/html; charset=utf-8");
+				out = response.getWriter();
+				out.append(html);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			} finally {
+				if (out != null) {
+					out.close();
+				}
 			}
 		}
 	}

@@ -1,6 +1,6 @@
-package frodez.config.security.login.cache.impl;
+package frodez.cache.vm.impl;
 
-import frodez.config.security.login.cache.facade.NameCache;
+import frodez.cache.vm.facade.NameCache;
 import frodez.service.user.result.UserInfo;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,31 +12,31 @@ public class NameMapCache implements NameCache {
 	/**
 	 * 缓存 key:name, value:UserInfo
 	 */
-	private static final Map<String, UserInfo> CACHE = new ConcurrentHashMap<>();
+	private Map<String, UserInfo> cache = new ConcurrentHashMap<>();
 
 	@Override
-	public boolean exist(String name) {
-		return CACHE.containsKey(name);
+	public boolean existKey(String name) {
+		return cache.containsKey(name);
 	}
 
 	@Override
-	public boolean exist(UserInfo userInfo) {
-		return CACHE.containsValue(userInfo);
+	public boolean existValue(UserInfo userInfo) {
+		return cache.containsValue(userInfo);
 	}
 
 	@Override
 	public void save(String name, UserInfo userInfo) {
-		CACHE.put(name, userInfo);
+		cache.put(name, userInfo);
 	}
 
 	@Override
 	public UserInfo get(String name) {
-		return CACHE.get(name);
+		return cache.get(name);
 	}
 
 	@Override
 	public void remove(String name) {
-		CACHE.remove(name);
+		cache.remove(name);
 	}
 
 }

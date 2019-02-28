@@ -1,11 +1,11 @@
 package frodez.util.spring.properties;
 
 import frodez.constant.setting.PropertyKey;
+import frodez.util.spring.context.ContextUtil;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -14,21 +14,18 @@ import org.springframework.stereotype.Component;
  * @author Frodez
  * @date 2018-11-14
  */
-@Getter
 @Component
+@DependsOn("contextUtil")
 public class PropertyUtil {
 
 	/**
 	 * spring环境参数配置
 	 */
-	@Autowired
-	private Environment env;
-
-	private static PropertyUtil propertyUtil;
+	private static Environment env;
 
 	@PostConstruct
 	private void init() {
-		propertyUtil = this;
+		env = ContextUtil.getBean(Environment.class);
 	}
 
 	/**
@@ -37,7 +34,7 @@ public class PropertyUtil {
 	 * @date 2019-01-06
 	 */
 	public static String get(String key) {
-		return propertyUtil.env.getProperty(key);
+		return env.getProperty(key);
 	}
 
 	/**
@@ -46,7 +43,7 @@ public class PropertyUtil {
 	 * @date 2019-01-06
 	 */
 	public static String get(String key, String defaultValue) {
-		return propertyUtil.env.getProperty(key, defaultValue);
+		return env.getProperty(key, defaultValue);
 	}
 
 	/**
@@ -55,23 +52,23 @@ public class PropertyUtil {
 	 * @date 2019-01-06
 	 */
 	public static List<String> getActiveProfiles() {
-		return Arrays.asList(propertyUtil.env.getActiveProfiles());
+		return Arrays.asList(env.getActiveProfiles());
 	}
 
 	public static boolean isDev() {
-		return propertyUtil.env.getActiveProfiles()[0].equals(PropertyKey.Enviroment.DEV);
+		return env.getActiveProfiles()[0].equals(PropertyKey.Enviroment.DEV);
 	}
 
 	public static boolean isTest() {
-		return propertyUtil.env.getActiveProfiles()[0].equals(PropertyKey.Enviroment.TEST);
+		return env.getActiveProfiles()[0].equals(PropertyKey.Enviroment.TEST);
 	}
 
 	public static boolean isRelease() {
-		return propertyUtil.env.getActiveProfiles()[0].equals(PropertyKey.Enviroment.RELEASE);
+		return env.getActiveProfiles()[0].equals(PropertyKey.Enviroment.RELEASE);
 	}
 
 	public static boolean isProd() {
-		return propertyUtil.env.getActiveProfiles()[0].equals(PropertyKey.Enviroment.PROD);
+		return env.getActiveProfiles()[0].equals(PropertyKey.Enviroment.PROD);
 	}
 
 }

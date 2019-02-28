@@ -1,28 +1,31 @@
-package frodez.config.security.login.cache.facade;
+package frodez.cache.vm.facade;
 
 import frodez.service.user.result.UserInfo;
 
-public interface NameCache {
+public interface NameCache extends ICacheService<String, UserInfo> {
 
 	/**
 	 * 判断name是否存在于缓存
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	boolean exist(String name);
+	@Override
+	boolean existKey(String name);
 
 	/**
 	 * 判断userInfo是否存在于缓存
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	boolean exist(UserInfo userInfo);
+	@Override
+	boolean existValue(UserInfo userInfo);
 
 	/**
 	 * 存储name和userInfo于缓存
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
+	@Override
 	void save(String name, UserInfo userInfo);
 
 	/**
@@ -30,6 +33,7 @@ public interface NameCache {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
+	@Override
 	UserInfo get(String name);
 
 	/**
@@ -37,6 +41,7 @@ public interface NameCache {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
+	@Override
 	void remove(String name);
 
 }
