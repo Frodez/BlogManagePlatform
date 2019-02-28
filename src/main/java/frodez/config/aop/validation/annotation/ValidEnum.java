@@ -6,7 +6,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.Method;
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -20,8 +19,9 @@ import javax.validation.Payload;
  * private Byte status;<br>
  * 以下为注解参数说明:<br>
  * <strong> message: String类型,代表验证失败时的返回信息,默认值为"参数非法!"<br>
- * type: Class类型,代表对应的枚举类,<br>
- * method: String类型,代表验证用的方法,默认值为of,<br>
+ * type: Class类型,代表对应的枚举类.<br>
+ * method: String类型,代表验证用的方法,默认值为of.<br>
+ * paramType: Class类型,代表验证用方法的参数类型,默认值为byte.class<br>
  * nullable: boolean类型,代表对空值的处理方式,默认值为false.为true时空值可以通过验证,为false时空值不可以通过验证.<br>
  * </strong> 以下是枚举类代码.<br>
  *
@@ -63,8 +63,11 @@ public @interface ValidEnum {
 	// 枚举类
 	Class<? extends Enum<?>> type();
 
-	// 验证方法
+	// 验证方法名
 	String method() default "of";
+
+	// 验证方法参数类型
+	Class<?> paramType() default byte.class;
 
 	// 是否可为空
 	boolean nullable() default false;
@@ -87,6 +90,11 @@ public @interface ValidEnum {
 		private String method;
 
 		/**
+		 * 验证方法参数类型,默认值为byte.class
+		 */
+		private Class<?> paramType;
+
+		/**
 		 * 接受空值,默认值为false true:当为空时,直接通过验证 false:当为空时,拒绝通过验证
 		 */
 		private boolean nullable;
@@ -101,6 +109,7 @@ public @interface ValidEnum {
 			method = enumValue.method();
 			klass = enumValue.type();
 			nullable = enumValue.nullable();
+			paramType = enumValue.paramType();
 		}
 
 		/**
@@ -113,9 +122,9 @@ public @interface ValidEnum {
 			if (value == null) {
 				return nullable;
 			}
-			Method m = ReflectUtil.getMethod(klass, method);
 			try {
-				return m.invoke(null, ReflectUtil.castValue(value, m.getParameterTypes()[0])) != null;
+				return ReflectUtil.getFastMethod(klass, method, paramType).invoke(null, new Object[] { ReflectUtil
+					.castValue(value, paramType) }) != null;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}

@@ -1,8 +1,13 @@
 package frodez.util.reflect;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.cglib.reflect.FastClass;
+import org.springframework.cglib.reflect.FastMethod;
 import org.springframework.util.Assert;
 
 /**
@@ -12,33 +17,42 @@ import org.springframework.util.Assert;
  */
 public class ReflectUtil {
 
-	/**
-	 * 方法缓存
-	 */
-	private static final Map<String, Method> METHOD_CACHE = new ConcurrentHashMap<>();
+	private static final Map<String, FastClass> CGLIB_CLASS_CACHE = new ConcurrentHashMap<>();
 
-	/**
-	 * 根据方法名获取方法,不支持重载方法<br>
-	 * 重载方法会返回方法列表中的第一个<br>
-	 * @author Frodez
-	 * @date 2018-12-17
-	 */
-	public static Method getMethod(Class<?> klass, String methodName) throws RuntimeException {
-		Assert.notNull(klass, "类型不能为空!");
-		Assert.notNull(methodName, "方法名不能为空!");
-		String fullName = klass.getName() + "." + methodName;
-		Method method = METHOD_CACHE.get(fullName);
-		if (method != null) {
-			return method;
-		}
-		Method[] methods = klass.getMethods();
-		for (Method m : methods) {
-			if (methodName.equals(m.getName())) {
-				METHOD_CACHE.put(fullName, m);
-				return m;
+	private static final Map<String, List<FastMethod>> CGLIB_METHOD_CACHE = new ConcurrentHashMap<>();
+
+	public static FastMethod getFastMethod(Class<?> klass, String method, Class<?>... params) {
+		String className = klass.getName();
+		FastClass fastClass = CGLIB_CLASS_CACHE.get(className);
+		if (fastClass != null) {
+			int index = fastClass.getIndex(method, params);
+			if (index < 0) {
+				throw new NoSuchElementException();
 			}
+			FastMethod fastMethod = CGLIB_METHOD_CACHE.get(className).get(index);
+			if (fastMethod != null) {
+				return fastMethod;
+			}
+			fastMethod = fastClass.getMethod(method, params);
+			CGLIB_METHOD_CACHE.get(className).set(index, fastMethod);
+			return fastMethod;
 		}
-		throw new RuntimeException("方法不存在!");
+		fastClass = FastClass.create(klass);
+		int index = fastClass.getIndex(method, params);
+		if (index < 0) {
+			throw new NoSuchElementException();
+		}
+		synchronized (CGLIB_CLASS_CACHE) {
+			FastMethod fastMethod = fastClass.getMethod(method, params);
+			CGLIB_CLASS_CACHE.put(className, fastClass);
+			if (CGLIB_METHOD_CACHE.containsKey(className)) {
+				CGLIB_METHOD_CACHE.get(className).set(index, fastMethod);
+			}
+			List<FastMethod> methods = new ArrayList<>(fastClass.getMaxIndex());
+			methods.set(index, fastMethod);
+			CGLIB_METHOD_CACHE.put(className, methods);
+			return fastMethod;
+		}
 	}
 
 	/**
