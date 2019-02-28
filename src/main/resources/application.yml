@@ -16,9 +16,21 @@ pagehelper:
   supportMethodsArguments: true
   
 server:
-  port: 9090
+  port: 8080
+  #不在此处理https
+  #ssl:
+    #在jdk目录下使用keytool.命令如下:
+    #.\keytool.exe -genkey -alias Frodez -keyalg RSA -keysize 2048 -keypass 
+    #Frodez -keystore https.keystore -storepass 123456 -validity 3650 
+    #-dname "cn=Frodez,ou=Frodez,o=beijing,l=beijing,st=beijing,c=cn"
+    #enabled: true
+    #key-store: classpath:settings/https.jks
+    #key-store-password: 123456
+    #key-password: 123456
   servlet:
     context-path: /api
+  http2:
+    enabled: true
     
 spring:
   resources:

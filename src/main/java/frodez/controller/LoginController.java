@@ -1,6 +1,7 @@
 package frodez.controller;
 
 import frodez.config.aop.request.annotation.RepeatLock;
+import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.IUserService;
 import frodez.service.user.param.LoginDTO;
 import frodez.service.user.param.ReLoginDTO;
@@ -10,9 +11,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -30,6 +33,9 @@ public class LoginController {
 	 */
 	@Autowired
 	private IUserService userService;
+
+	@Autowired
+	private IAuthorityService authorityService;
 
 	/**
 	 * 登录接口
@@ -77,6 +83,16 @@ public class LoginController {
 	@ApiOperation(value = "注册接口")
 	public Result register(@RequestBody @ApiParam(value = "用户注册请求参数", required = true) RegisterDTO param) {
 		return userService.register(param);
+	}
+
+	/**
+	 * 测试用接口
+	 * @author Frodez
+	 * @date 2019-02-27
+	 */
+	@GetMapping("/userInfo")
+	public Result getUserInfo(@RequestParam("userName") String userName) {
+		return authorityService.getUserInfo(userName);
 	}
 
 }

@@ -30,13 +30,13 @@
 		</javaTypeResolver>
 
 		<!-- model包路径 -->
-		<javaModelGenerator targetPackage="frodez.dao.model.user"
+		<javaModelGenerator targetPackage="frodez.service.user.model"
 			targetProject="BlogManagePlatform/src/main/java" />
 		<!-- mapper.xml包路径 -->
-		<sqlMapGenerator targetPackage="frodez.dao.mapper.user"
+		<sqlMapGenerator targetPackage="frodez.service.user.mapper"
 			targetProject="BlogManagePlatform/src/main/java" />
 		<!-- mapper包路径 -->
-		<javaClientGenerator targetPackage="frodez.dao.mapper.user"
+		<javaClientGenerator targetPackage="frodez.service.user.mapper"
 			targetProject="BlogManagePlatform/src/main/java" type="XMLMAPPER" />
 		<!-- 表配置 -->
 		<table tableName="tb_user" domainObjectName="User">
