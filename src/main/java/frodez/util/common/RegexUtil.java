@@ -14,13 +14,15 @@ public class RegexUtil {
 
 	private static final Map<String, KVPair<Pattern, Cache<String, Boolean>>> PATTERN_CACHE = new ConcurrentHashMap<>();
 
-	private static void initPattern(String regex) {
-		Pattern pattern = Pattern.compile(regex);
-		Cache<String, Boolean> cache = CacheBuilder.newBuilder().maximumSize(MAX_SIZE).build();
-		KVPair<Pattern, Cache<String, Boolean>> pair = new KVPair<>();
-		pair.setKey(pattern);
-		pair.setValue(cache);
-		PATTERN_CACHE.put(regex, pair);
+	private static KVPair<Pattern, Cache<String, Boolean>> prepare(String regex) {
+		KVPair<Pattern, Cache<String, Boolean>> pair = PATTERN_CACHE.get(regex);
+		if (pair == null) {
+			pair = new KVPair<>();
+			pair.setKey(Pattern.compile(regex));
+			pair.setValue(CacheBuilder.newBuilder().maximumSize(MAX_SIZE).build());
+			PATTERN_CACHE.put(regex, pair);
+		}
+		return pair;
 	}
 
 	/**
@@ -30,10 +32,7 @@ public class RegexUtil {
 	 */
 	public static boolean match(String regex, String target) {
 		Assert.notNull(target, "目标字符串不能为空!");
-		KVPair<Pattern, Cache<String, Boolean>> pair = PATTERN_CACHE.get(regex);
-		if (pair == null) {
-			initPattern(regex);
-		}
+		KVPair<Pattern, Cache<String, Boolean>> pair = prepare(regex);
 		Boolean result = pair.getValue().getIfPresent(target);
 		if (result == null) {
 			result = pair.getKey().matcher(target).matches();
