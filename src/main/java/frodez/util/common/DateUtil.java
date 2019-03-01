@@ -69,12 +69,45 @@ public class DateUtil {
 	}
 
 	/**
+	 * 是正确的格式与符合格式的日期
+	 * @author Frodez
+	 * @date 2019-03-01
+	 */
+	public static boolean isDate(String pattern, String date) {
+		Assert.notNull(pattern, "格式不能为空!");
+		Assert.notNull(date, "日期不能为空!");
+		try {
+			LocalDateTime.parse(date, getFormatter(pattern));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
 	 * 格式化日期(yyyy-MM-dd格式)
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */
 	public static Date date(String date) {
-		return parse(DefTime.DATE_PATTERN, date);
+		Assert.notNull(date, "日期不能为空!");
+		return Date.from(LocalDateTime.parse(date, getFormatter(DefTime.DATE_PATTERN)).atZone(ZoneId.systemDefault())
+			.toInstant());
+	}
+
+	/**
+	 * 是正确的yyyy-MM-dd格式日期
+	 * @author Frodez
+	 * @date 2019-03-01
+	 */
+	public static boolean isDate(String date) {
+		Assert.notNull(date, "日期不能为空!");
+		try {
+			LocalDateTime.parse(date, getFormatter(DefTime.DATE_PATTERN));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	/**
@@ -83,7 +116,24 @@ public class DateUtil {
 	 * @date 2019-02-17
 	 */
 	public static Date time(String date) {
-		return parse(DefTime.TIME_PATTERN, date);
+		Assert.notNull(date, "日期不能为空!");
+		return Date.from(LocalDateTime.parse(date, getFormatter(DefTime.TIME_PATTERN)).atZone(ZoneId.systemDefault())
+			.toInstant());
+	}
+
+	/**
+	 * 是正确的HH:mm:ss格式日期
+	 * @author Frodez
+	 * @date 2019-03-01
+	 */
+	public static boolean isTime(String date) {
+		Assert.notNull(date, "日期不能为空!");
+		try {
+			LocalDateTime.parse(date, getFormatter(DefTime.TIME_PATTERN));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	/**
@@ -92,7 +142,24 @@ public class DateUtil {
 	 * @date 2019-02-17
 	 */
 	public static Date dateTime(String date) {
-		return parse(DefTime.DATE_TIME_PATTERN, date);
+		Assert.notNull(date, "日期不能为空!");
+		return Date.from(LocalDateTime.parse(date, getFormatter(DefTime.DATE_TIME_PATTERN)).atZone(ZoneId
+			.systemDefault()).toInstant());
+	}
+
+	/**
+	 * 是正确的yyyy-MM-dd HH:mm:ss格式日期
+	 * @author Frodez
+	 * @date 2019-03-01
+	 */
+	public static boolean isDateTime(String date) {
+		Assert.notNull(date, "日期不能为空!");
+		try {
+			LocalDateTime.parse(date, getFormatter(DefTime.DATE_TIME_PATTERN));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 }

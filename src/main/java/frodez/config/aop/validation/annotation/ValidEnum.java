@@ -56,10 +56,6 @@ public @interface ValidEnum {
 	// 错误信息
 	String message() default "参数非法!";
 
-	Class<?>[] groups() default {};
-
-	Class<? extends Payload>[] payload() default {};
-
 	// 枚举类
 	Class<? extends Enum<?>> type();
 
@@ -71,6 +67,10 @@ public @interface ValidEnum {
 
 	// 是否可为空
 	boolean nullable() default false;
+
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
 
 	/**
 	 * 枚举验证器
