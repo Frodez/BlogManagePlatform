@@ -1,4 +1,4 @@
-package frodez.service.user.param;
+package frodez.dao.param.user;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,18 +9,15 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 /**
- * 用户重新登录请求参数
+ * 用户登录请求参数
  * @author Frodez
- * @date 2019-02-27
+ * @date 2018-12-02
  */
 @Data
 @NoArgsConstructor
-@ApiModel(value = "用户重新登录请求参数", description = "用户重新登录请求参数")
-public class ReLoginDTO implements Serializable {
+@ApiModel(value = "用户登录请求参数", description = "用户登录请求参数")
+public class LoginDTO implements Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -32,10 +29,11 @@ public class ReLoginDTO implements Serializable {
 	private String username;
 
 	/**
-	 * 原token
+	 * 密码
 	 */
-	@NotNull(message = "原token不能为空!")
-	@ApiModelProperty(value = "原token", required = true)
-	private String oldToken;
+	@NotNull(message = "密码不能为空!")
+	@Length(message = "密码长度不能小于8位且不能大于30位!", min = 8, max = 30)
+	@ApiModelProperty(value = "密码", required = true)
+	private String password;
 
 }

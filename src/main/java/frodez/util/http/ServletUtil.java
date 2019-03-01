@@ -1,5 +1,6 @@
 package frodez.util.http;
 
+import frodez.util.common.EmptyUtil;
 import java.io.PrintWriter;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
@@ -21,27 +22,27 @@ public class ServletUtil {
 	 */
 	public static String getAddr(HttpServletRequest request) {
 		String address = request.getHeader("x-forwarded-for");
-		if (address == null || address.length() == 0 || "unknown".equalsIgnoreCase(address)) {
+		if (EmptyUtil.yes(address) || "unknown".equalsIgnoreCase(address)) {
 			address = request.getHeader("Proxy-Client-address");
 		} else {
 			return address;
 		}
-		if (address == null || address.length() == 0 || "unknown".equalsIgnoreCase(address)) {
+		if (EmptyUtil.yes(address) || "unknown".equalsIgnoreCase(address)) {
 			address = request.getHeader("WL-Proxy-Client-address");
 		} else {
 			return address;
 		}
-		if (address == null || address.length() == 0 || "unknown".equalsIgnoreCase(address)) {
+		if (EmptyUtil.yes(address) || "unknown".equalsIgnoreCase(address)) {
 			address = request.getHeader("HTTP_CLIENT_address");
 		} else {
 			return address;
 		}
-		if (address == null || address.length() == 0 || "unknown".equalsIgnoreCase(address)) {
+		if (EmptyUtil.yes(address) || "unknown".equalsIgnoreCase(address)) {
 			address = request.getHeader("HTTP_X_FORWARDED_FOR");
 		} else {
 			return address;
 		}
-		if (address == null || address.length() == 0 || "unknown".equalsIgnoreCase(address)) {
+		if (EmptyUtil.yes(address) || "unknown".equalsIgnoreCase(address)) {
 			address = request.getRemoteAddr();
 		} else {
 			return address;
@@ -55,23 +56,24 @@ public class ServletUtil {
 	 * @date 2019-01-07
 	 */
 	public static void writeJson(HttpServletResponse response, @Nullable HttpStatus status, String json) {
-		synchronized (response) {
-			PrintWriter out = null;
-			try {
-				response.reset();
-				if (status != null) {
-					response.setStatus(status.value());
-				}
-				response.setCharacterEncoding("UTF-8");
-				response.setContentType("application/json; charset=utf-8");
-				out = response.getWriter();
-				out.append(json);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			} finally {
-				if (out != null) {
-					out.close();
-				}
+		if (response.isCommitted()) {
+			return;
+		}
+		if (status != null) {
+			response.setStatus(status.value());
+		}
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json; charset=utf-8");
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			out.append(json);
+			out.flush();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (out != null) {
+				out.close();
 			}
 		}
 	}
@@ -82,23 +84,24 @@ public class ServletUtil {
 	 * @date 2019-01-15
 	 */
 	public static void writePlainText(HttpServletResponse response, @Nullable HttpStatus status, String text) {
-		synchronized (response) {
-			PrintWriter out = null;
-			try {
-				response.reset();
-				if (status != null) {
-					response.setStatus(status.value());
-				}
-				response.setCharacterEncoding("UTF-8");
-				response.setContentType("text/plain; charset=utf-8");
-				out = response.getWriter();
-				out.append(text);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			} finally {
-				if (out != null) {
-					out.close();
-				}
+		if (response.isCommitted()) {
+			return;
+		}
+		if (status != null) {
+			response.setStatus(status.value());
+		}
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/plain; charset=utf-8");
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			out.append(text);
+			out.flush();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (out != null) {
+				out.close();
 			}
 		}
 	}
@@ -109,23 +112,24 @@ public class ServletUtil {
 	 * @date 2019-01-15
 	 */
 	public static void writeHtml(HttpServletResponse response, @Nullable HttpStatus status, String html) {
-		synchronized (response) {
-			PrintWriter out = null;
-			try {
-				response.reset();
-				if (status != null) {
-					response.setStatus(status.value());
-				}
-				response.setCharacterEncoding("UTF-8");
-				response.setContentType("text/html; charset=utf-8");
-				out = response.getWriter();
-				out.append(html);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			} finally {
-				if (out != null) {
-					out.close();
-				}
+		if (response.isCommitted()) {
+			return;
+		}
+		if (status != null) {
+			response.setStatus(status.value());
+		}
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			out.append(html);
+			out.flush();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (out != null) {
+				out.close();
 			}
 		}
 	}

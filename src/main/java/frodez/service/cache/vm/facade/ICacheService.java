@@ -1,4 +1,4 @@
-package frodez.cache.vm.facade;
+package frodez.service.cache.vm.facade;
 
 public interface ICacheService<K, V> {
 

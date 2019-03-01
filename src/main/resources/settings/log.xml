@@ -104,11 +104,11 @@
         </logger>
         <logger name="frodez.config.security" level="WARN">
         </logger>
-        <root level="all">
+        <asyncRoot level="all" includeLocation="true">
             <appender-ref ref="Console"/>
             <appender-ref ref="RollingFileInfo"/>
             <appender-ref ref="RollingFileWarn"/>
             <appender-ref ref="RollingFileError"/>
-        </root>
+        </asyncRoot>
     </loggers>
 </configuration>

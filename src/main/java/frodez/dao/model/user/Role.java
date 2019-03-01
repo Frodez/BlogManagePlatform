@@ -1,4 +1,4 @@
-package frodez.service.user.model;
+package frodez.dao.model.user;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -10,14 +10,14 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
- * @description 用户权限表
- * @table tb_permission
+ * @description 用户角色表
+ * @table tb_role
  * @date 2019-01-13
  */
 @Data
 @Entity
-@Table(name = "tb_permission")
-public class Permission implements Serializable {
+@Table(name = "tb_role")
+public class Role implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -37,25 +37,18 @@ public class Permission implements Serializable {
 	private Date createTime;
 
 	/**
-	 * 类型 0:ALL 1:GET 2:POST 3:DELETE 4:PUT
+	 * 角色名称
 	 */
 	@NotNull
-	@Column(name = "type")
-	private Byte type = 0;
-
-	/**
-	 * 权限名称
-	 */
-	@NotNull
-	@Column(name = "name", length = 100)
+	@Column(name = "name", length = 255)
 	private String name;
 
 	/**
-	 * 地址
+	 * 角色等级 0-9 0最高,9最低
 	 */
 	@NotNull
-	@Column(name = "url", length = 255)
-	private String url;
+	@Column(name = "level")
+	private Byte level = 0;
 
 	/**
 	 * 描述

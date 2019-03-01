@@ -95,7 +95,7 @@ import tk.mybatis.spring.annotation.MapperScan;
  * @author Frodez
  * @date 2019-01-07
  */
-@MapperScan(basePackages = "frodez.service")
+@MapperScan(basePackages = "frodez.dao.mapper")
 @SpringBootApplication(exclude = { ActiveMQAutoConfiguration.class, ArtemisAutoConfiguration.class,
 	BatchAutoConfiguration.class, CacheAutoConfiguration.class, CassandraAutoConfiguration.class,
 	CassandraDataAutoConfiguration.class, CassandraReactiveDataAutoConfiguration.class,

@@ -1,8 +1,8 @@
 package frodez.config.security.login;
 
-import frodez.cache.vm.facade.TokenCache;
 import frodez.config.security.util.TokenManager;
-import frodez.service.user.result.UserInfo;
+import frodez.dao.result.user.UserInfo;
+import frodez.service.cache.vm.facade.TokenCache;
 import frodez.util.http.URLMatcher;
 import frodez.util.spring.context.ContextUtil;
 import javax.annotation.PostConstruct;

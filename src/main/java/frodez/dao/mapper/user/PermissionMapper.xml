@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="frodez.service.user.mapper.PermissionMapper">
+<mapper namespace="frodez.dao.mapper.user.PermissionMapper">
 
-	<select id="getPermissions" resultType="frodez.service.user.result.PermissionInfo">
+	<select id="getPermissions" resultType="frodez.dao.result.user.PermissionInfo">
 		SELECT tb_permission.id AS id, tb_permission.type AS type,
 		tb_permission.`name` AS `name`, tb_permission.url AS url,
 		tb_permission.description AS description

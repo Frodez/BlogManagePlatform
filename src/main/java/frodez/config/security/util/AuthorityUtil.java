@@ -1,6 +1,6 @@
 package frodez.config.security.util;
 
-import frodez.service.user.result.PermissionInfo;
+import frodez.dao.result.user.PermissionInfo;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

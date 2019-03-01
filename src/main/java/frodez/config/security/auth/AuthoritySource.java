@@ -2,8 +2,8 @@ package frodez.config.security.auth;
 
 import frodez.config.security.settings.SecurityProperties;
 import frodez.constant.user.PermissionTypeEnum;
+import frodez.dao.model.user.Permission;
 import frodez.service.user.facade.IAuthorityService;
-import frodez.service.user.model.Permission;
 import frodez.util.common.EmptyUtil;
 import java.util.ArrayList;
 import java.util.Collection;

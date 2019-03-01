@@ -1,7 +1,7 @@
-package frodez.service.user.mapper;
+package frodez.dao.mapper.user;
 
 import frodez.config.mybatis.DataMapper;
-import frodez.service.user.model.Role;
+import frodez.dao.model.user.Role;
 import org.springframework.stereotype.Repository;
 
 /**

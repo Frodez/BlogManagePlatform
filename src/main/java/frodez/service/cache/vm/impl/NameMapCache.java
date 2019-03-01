@@ -1,7 +1,7 @@
-package frodez.cache.vm.impl;
+package frodez.service.cache.vm.impl;
 
-import frodez.cache.vm.facade.NameCache;
-import frodez.service.user.result.UserInfo;
+import frodez.dao.result.user.UserInfo;
+import frodez.service.cache.vm.facade.NameCache;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Component;

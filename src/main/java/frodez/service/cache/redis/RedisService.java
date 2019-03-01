@@ -1,4 +1,4 @@
-package frodez.cache.redis;
+package frodez.service.cache.redis;
 
 import frodez.constant.setting.DefTime;
 import frodez.util.common.EmptyUtil;

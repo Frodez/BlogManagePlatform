@@ -27,8 +27,8 @@ public class GlobalController {
 	 * @date 2018-12-21
 	 */
 	@ExceptionHandler(value = ServiceException.class)
-	public void defaultErrorHandler(HttpServletResponse response, ServiceException e) {
-		log.error("[defaultErrorHandler]{}", e.getMessage());
+	public void serviceExceptionHandler(HttpServletResponse response, ServiceException e) {
+		log.error("[serviceExceptionHandler]{}", e.getMessage());
 		ServletUtil.writeJson(response, ResultEnum.ERROR_SERVICE.getStatus(), ResultUtil.errorService(e.getMessage())
 			.toString());
 	}
@@ -41,8 +41,8 @@ public class GlobalController {
 	 * @date 2018-12-21
 	 */
 	@ExceptionHandler(value = Exception.class)
-	public void defaultErrorHandler(HttpServletResponse response, Exception e) {
-		log.error("[defaultErrorHandler]", e);
+	public void exceptionHandler(HttpServletResponse response, Exception e) {
+		log.error("[exceptionHandler]", e);
 		ServletUtil.writeJson(response, ResultEnum.ERROR_SERVICE.getStatus(), DefResult.ERROR_SERVICE_STRING);
 	}
 
@@ -54,8 +54,9 @@ public class GlobalController {
 	 * @date 2018-12-21
 	 */
 	@ExceptionHandler(value = HttpMessageNotReadableException.class)
-	public void defaultErrorHandler(HttpServletResponse response, HttpMessageNotReadableException e) {
-		log.error("[defaultErrorHandler]{}", e.getMessage());
+	public void httpMessageNotReadableExceptionHandler(HttpServletResponse response,
+		HttpMessageNotReadableException e) {
+		log.error("[httpMessageNotReadableExceptionHandler]{}", e.getMessage());
 		ServletUtil.writeJson(response, ResultEnum.ERROR_REQUEST.getStatus(), DefResult.ERROR_REQUEST_STRING);
 	}
 

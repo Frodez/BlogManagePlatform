@@ -1,4 +1,4 @@
-package frodez.service.user.param;
+package frodez.dao.param.user;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

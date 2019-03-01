@@ -1,11 +1,11 @@
 package frodez.controller;
 
 import frodez.config.aop.request.annotation.RepeatLock;
+import frodez.dao.param.user.LoginDTO;
+import frodez.dao.param.user.ReLoginDTO;
+import frodez.dao.param.user.RegisterDTO;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.IUserService;
-import frodez.service.user.param.LoginDTO;
-import frodez.service.user.param.ReLoginDTO;
-import frodez.service.user.param.RegisterDTO;
 import frodez.util.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

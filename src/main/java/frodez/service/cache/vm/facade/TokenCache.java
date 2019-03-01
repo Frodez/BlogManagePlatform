@@ -1,6 +1,6 @@
-package frodez.cache.vm.facade;
+package frodez.service.cache.vm.facade;
 
-import frodez.service.user.result.UserInfo;
+import frodez.dao.result.user.UserInfo;
 
 public interface TokenCache extends ICacheService<String, UserInfo> {
 

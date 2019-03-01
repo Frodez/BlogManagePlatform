@@ -1,9 +1,9 @@
 package frodez.service.user.facade;
 
 import frodez.config.aop.validation.annotation.Check;
-import frodez.service.user.param.LoginDTO;
-import frodez.service.user.param.ReLoginDTO;
-import frodez.service.user.param.RegisterDTO;
+import frodez.dao.param.user.LoginDTO;
+import frodez.dao.param.user.ReLoginDTO;
+import frodez.dao.param.user.RegisterDTO;
 import frodez.util.result.Result;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
