@@ -1,6 +1,6 @@
-package frodez.service.cache.vm.facade;
+package frodez.service.cache.base;
 
-public interface ICacheService<K, V> {
+public interface ICache<K, V> {
 
 	/**
 	 * 判断key是否存在于缓存

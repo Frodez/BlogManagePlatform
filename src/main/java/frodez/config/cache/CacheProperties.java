@@ -16,28 +16,28 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties
 public class CacheProperties {
 
-	private AutoGuavaChecker autoGuavaChecker = new AutoGuavaChecker();
+	private AutoGuavaCheckerProperties autoGuavaChecker = new AutoGuavaCheckerProperties();
 
-	private ManualGuavaChecker manualGuavaChecker = new ManualGuavaChecker();
+	private ManualGuavaCheckerProperties manualGuavaChecker = new ManualGuavaCheckerProperties();
 
-	private URLMatcher urlMatcher = new URLMatcher();
+	private URLMatcherProperties urlMatcher = new URLMatcherProperties();
 
 	@Data
-	public static class AutoGuavaChecker {
+	public static class AutoGuavaCheckerProperties {
 
 		private Integer timeout = 60000;
 
 	}
 
 	@Data
-	public static class ManualGuavaChecker {
+	public static class ManualGuavaCheckerProperties {
 
 		private Integer timeout = 60000;
 
 	}
 
 	@Data
-	public static class URLMatcher {
+	public static class URLMatcherProperties {
 
 		private Integer timeout = 3600000;
 

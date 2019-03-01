@@ -1,4 +1,4 @@
-package frodez.service.cache.redis;
+package frodez.service.cache.base;
 
 import frodez.constant.setting.DefTime;
 import frodez.util.common.EmptyUtil;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
  * @date 2018-12-21
  */
 @Component
-public class RedisService {
+public class BaseRedisCache {
 
 	/**
 	 * RedisTemplate

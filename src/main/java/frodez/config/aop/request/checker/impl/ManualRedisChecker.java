@@ -1,7 +1,7 @@
 package frodez.config.aop.request.checker.impl;
 
 import frodez.config.aop.request.checker.facade.ManualChecker;
-import frodez.service.cache.redis.RedisService;
+import frodez.service.cache.base.BaseRedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ public class ManualRedisChecker implements ManualChecker {
 	 * redis服务
 	 */
 	@Autowired
-	private RedisService redisService;
+	private BaseRedisCache redisService;
 
 	@Override
 	public boolean check(String key) {

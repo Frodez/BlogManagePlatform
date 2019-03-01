@@ -1,8 +1,9 @@
 package frodez.service.cache.vm.facade;
 
 import frodez.dao.result.user.UserInfo;
+import frodez.service.cache.base.ICache;
 
-public interface TokenCache extends ICacheService<String, UserInfo> {
+public interface TokenCache extends ICache<String, UserInfo> {
 
 	/**
 	 * 判断token是否存在于缓存

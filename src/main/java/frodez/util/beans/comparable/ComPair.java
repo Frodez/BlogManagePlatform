@@ -4,7 +4,7 @@ import java.io.Serializable;
 import lombok.Data;
 
 @Data
-public class ComparePair<K extends Comparable<K>, V> implements Serializable, Comparable<ComparePair<K, V>> {
+public class ComPair<K extends Comparable<K>, V> implements Serializable, Comparable<ComPair<K, V>> {
 
 	/**
 	 *
@@ -16,7 +16,7 @@ public class ComparePair<K extends Comparable<K>, V> implements Serializable, Co
 	private V value;
 
 	@Override
-	public int compareTo(ComparePair<K, V> object) {
+	public int compareTo(ComPair<K, V> object) {
 		return this.key.compareTo(object.key);
 	}
 

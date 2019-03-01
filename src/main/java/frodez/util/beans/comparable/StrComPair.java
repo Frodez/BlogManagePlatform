@@ -3,7 +3,7 @@ package frodez.util.beans.comparable;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
-public class StrComPair extends ComparePair<String, String> {
+public class StrComPair extends ComPair<String, String> {
 
 	/**
 	 *

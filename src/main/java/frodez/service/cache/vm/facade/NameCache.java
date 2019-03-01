@@ -1,8 +1,9 @@
 package frodez.service.cache.vm.facade;
 
 import frodez.dao.result.user.UserInfo;
+import frodez.service.cache.base.ICache;
 
-public interface NameCache extends ICacheService<String, UserInfo> {
+public interface NameCache extends ICache<String, UserInfo> {
 
 	/**
 	 * 判断name是否存在于缓存
