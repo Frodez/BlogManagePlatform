@@ -20,6 +20,8 @@ public class CacheProperties {
 
 	private ManualGuavaCheckerProperties manualGuavaChecker = new ManualGuavaCheckerProperties();
 
+	private LimitUserGuavaCheckerProperties limitUserGuavaChecker = new LimitUserGuavaCheckerProperties();
+
 	private URLMatcherProperties urlMatcher = new URLMatcherProperties();
 
 	@Data
@@ -31,6 +33,13 @@ public class CacheProperties {
 
 	@Data
 	public static class ManualGuavaCheckerProperties {
+
+		private Integer timeout = 60000;
+
+	}
+
+	@Data
+	public static class LimitUserGuavaCheckerProperties {
 
 		private Integer timeout = 60000;
 

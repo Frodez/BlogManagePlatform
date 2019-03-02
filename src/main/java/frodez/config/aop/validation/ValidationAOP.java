@@ -2,7 +2,7 @@ package frodez.config.aop.validation;
 
 import frodez.util.aop.AspectUtil;
 import frodez.util.common.EmptyUtil;
-import frodez.util.result.ResultUtil;
+import frodez.util.result.Result;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -29,7 +29,7 @@ public class ValidationAOP {
 	@Around("@annotation(frodez.config.aop.validation.annotation.Check)")
 	public Object validate(ProceedingJoinPoint p) throws Throwable {
 		String msg = ValidationUtil.validateParam(p.getTarget(), AspectUtil.getMethod(p), p.getArgs(), null);
-		return EmptyUtil.yes(msg) ? p.proceed() : ResultUtil.errorRequest(msg);
+		return EmptyUtil.yes(msg) ? p.proceed() : Result.errorRequest(msg);
 	}
 
 }

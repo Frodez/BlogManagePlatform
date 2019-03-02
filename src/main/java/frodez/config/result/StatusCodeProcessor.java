@@ -1,7 +1,6 @@
 package frodez.config.result;
 
 import frodez.util.result.Result;
-import frodez.util.result.ResultEnum;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -37,7 +36,7 @@ public class StatusCodeProcessor implements ResponseBodyAdvice<Result> {
 	public Result beforeBodyWrite(Result body, MethodParameter returnType, MediaType selectedContentType, Class<
 		? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request,
 		ServerHttpResponse response) {
-		response.setStatusCode(ResultEnum.of(body.getCode()).getStatus());
+		response.setStatusCode(body.httpStatus());
 		return body;
 	}
 

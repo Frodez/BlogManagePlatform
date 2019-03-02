@@ -6,7 +6,6 @@ import frodez.config.aop.request.checker.impl.KeyGenerator;
 import frodez.util.aop.AspectUtil;
 import frodez.util.http.ServletUtil;
 import frodez.util.result.Result;
-import frodez.util.result.ResultEnum;
 import frodez.util.spring.context.ContextUtil;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -41,12 +40,6 @@ public class TimeoutAOP {
 	private AutoChecker checker;
 
 	/**
-	 * 缓存key生成器
-	 */
-	@Autowired
-	private KeyGenerator generator;
-
-	/**
 	 * 在一定时间段内拦截重复请求
 	 * @param JoinPoint AOP切点
 	 * @author Frodez
@@ -56,10 +49,10 @@ public class TimeoutAOP {
 	public Object process(ProceedingJoinPoint point) throws Throwable {
 		HttpServletRequest request = ContextUtil.getRequest();
 		TimeoutLock timeoutLock = AspectUtil.getAnnotation(point, TimeoutLock.class);
-		String key = generator.servletKey(AspectUtil.getFullName(point), request);
+		String key = KeyGenerator.servletKey(AspectUtil.getFullName(point), request);
 		if (checker.check(key)) {
 			log.info("重复请求:IP地址{}", ServletUtil.getAddr(request));
-			return new Result(ResultEnum.REPEAT_REQUEST);
+			return Result.errorRequest();
 		}
 		checker.lock(key, timeoutLock.value());
 		return point.proceed();

@@ -11,7 +11,6 @@ import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.vm.facade.NameCache;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.result.Result;
-import frodez.util.result.ResultUtil;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Override
 	public Result addRole() {
-		return ResultUtil.errorService();
+		return Result.errorService();
 	}
 
 	@Override
@@ -49,20 +48,20 @@ public class AuthorityService implements IAuthorityService {
 		try {
 			UserInfo data = nameCache.get(userName);
 			if (data != null) {
-				return ResultUtil.success(data);
+				return Result.success(data);
 			}
 			Example example = new Example(User.class);
 			example.createCriteria().andEqualTo("name", userName);
 			User user = userMapper.selectOneByExample(example);
 			if (user == null) {
-				return ResultUtil.fail("未查询到用户信息!");
+				return Result.fail("未查询到用户信息!");
 			}
 			if (user.getStatus().equals(UserStatusEnum.FORBIDDEN.getVal())) {
-				return ResultUtil.fail("用户已禁用!");
+				return Result.fail("用户已禁用!");
 			}
 			Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
 			if (role == null) {
-				return ResultUtil.fail("未查询到用户角色信息!");
+				return Result.fail("未查询到用户角色信息!");
 			}
 			List<PermissionInfo> permissionList = permissionMapper.getPermissions(user.getRoleId());
 			data = new UserInfo();
@@ -78,20 +77,20 @@ public class AuthorityService implements IAuthorityService {
 			data.setRoleDescription(role.getDescription());
 			data.setPermissionList(permissionList);
 			nameCache.save(userName, data);
-			return ResultUtil.success(data);
+			return Result.success(data);
 		} catch (Exception e) {
 			log.error("[getUserAuthority]", e);
-			return ResultUtil.errorService();
+			return Result.errorService();
 		}
 	}
 
 	@Override
 	public Result getAllPermissions() {
 		try {
-			return ResultUtil.success(permissionMapper.selectAll());
+			return Result.success(permissionMapper.selectAll());
 		} catch (Exception e) {
 			log.error("[getAllPermissions]", e);
-			return ResultUtil.errorService();
+			return Result.errorService();
 		}
 	}
 

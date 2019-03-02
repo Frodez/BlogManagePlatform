@@ -1,8 +1,7 @@
 package frodez.config.security.error;
 
-import frodez.constant.setting.DefResult;
 import frodez.util.http.ServletUtil;
-import frodez.util.result.ResultEnum;
+import frodez.util.result.Result;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +29,7 @@ public class AccessDenied implements AccessDeniedHandler {
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response,
 		AccessDeniedException accessDeniedException) throws IOException, ServletException {
-		ServletUtil.writeJson(response, ResultEnum.NO_ACCESS.getStatus(), DefResult.NO_ACCESS_STRING);
+		ServletUtil.writeJson(response, Result.noAccess());
 	}
 
 }

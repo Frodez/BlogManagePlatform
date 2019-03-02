@@ -1,10 +1,8 @@
 package frodez.config.error.handle;
 
 import frodez.config.error.exception.ServiceException;
-import frodez.constant.setting.DefResult;
 import frodez.util.http.ServletUtil;
-import frodez.util.result.ResultEnum;
-import frodez.util.result.ResultUtil;
+import frodez.util.result.Result;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -29,8 +27,7 @@ public class GlobalController {
 	@ExceptionHandler(value = ServiceException.class)
 	public void serviceExceptionHandler(HttpServletResponse response, ServiceException e) {
 		log.error("[serviceExceptionHandler]{}", e.getMessage());
-		ServletUtil.writeJson(response, ResultEnum.ERROR_SERVICE.getStatus(), ResultUtil.errorService(e.getMessage())
-			.toString());
+		ServletUtil.writeJson(response, Result.errorService(e.getMessage()));
 	}
 
 	/**
@@ -43,7 +40,7 @@ public class GlobalController {
 	@ExceptionHandler(value = Exception.class)
 	public void exceptionHandler(HttpServletResponse response, Exception e) {
 		log.error("[exceptionHandler]", e);
-		ServletUtil.writeJson(response, ResultEnum.ERROR_SERVICE.getStatus(), DefResult.ERROR_SERVICE_STRING);
+		ServletUtil.writeJson(response, Result.errorService(e.getMessage()));
 	}
 
 	/**
@@ -57,7 +54,7 @@ public class GlobalController {
 	public void httpMessageNotReadableExceptionHandler(HttpServletResponse response,
 		HttpMessageNotReadableException e) {
 		log.error("[httpMessageNotReadableExceptionHandler]{}", e.getMessage());
-		ServletUtil.writeJson(response, ResultEnum.ERROR_REQUEST.getStatus(), DefResult.ERROR_REQUEST_STRING);
+		ServletUtil.writeJson(response, Result.errorRequest());
 	}
 
 }

@@ -29,8 +29,8 @@ public class AutoGuavaChecker implements AutoChecker {
 
 	@Override
 	public boolean check(String key) {
-		long now = System.currentTimeMillis();
 		Long timestamp = cache.getIfPresent(key);
+		long now = System.currentTimeMillis();
 		if (timestamp == null) {
 			return false;
 		} else if (timestamp < now) {

@@ -62,7 +62,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 */
 	private void init() {
 		if (allCache == null) {
-			allCache = authorityService.getAllPermissions().asList(Permission.class);
+			allCache = authorityService.getAllPermissions().list(Permission.class);
 			if (allCache == null) {
 				throw new RuntimeException("获取所有权限失败!");
 			}

@@ -1,11 +1,13 @@
 package frodez.util.http;
 
 import frodez.util.common.EmptyUtil;
+import frodez.util.result.Result;
 import java.io.PrintWriter;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.Assert;
 
 /**
  * HTTP工具类
@@ -48,6 +50,33 @@ public class ServletUtil {
 			return address;
 		}
 		return address;
+	}
+
+	/**
+	 * 向response直接写入json
+	 * @author Frodez
+	 * @date 2019-01-07
+	 */
+	public static void writeJson(HttpServletResponse response, Result result) {
+		Assert.notNull(result, "result不能为空!");
+		if (response.isCommitted()) {
+			return;
+		}
+		response.setStatus(result.httpStatus().value());
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json; charset=utf-8");
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			out.append(result.toString());
+			out.flush();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (out != null) {
+				out.close();
+			}
+		}
 	}
 
 	/**

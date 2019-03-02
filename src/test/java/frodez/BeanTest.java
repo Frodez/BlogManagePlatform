@@ -1,6 +1,6 @@
 package frodez;
 
-import frodez.util.reflect.BeanUtil;
+import frodez.util.result.Result;
 import java.util.Date;
 import lombok.Data;
 
@@ -10,9 +10,13 @@ public class BeanTest {
 		Date date = new Date();
 		BeanOne one = new BeanOne();
 		one.setDate(date);
+		Result result = Result.success(one);
+		System.out.println(result);
+		one.setId(666L);
+		System.out.println(result);
 		long start = System.currentTimeMillis();
-		for (int i = 0; i < 10000000; i++) {
-			BeanUtil.clear(one);
+		for (int i = 0; i < 100000000; i++) {
+			Result.success().toString();
 		}
 		System.out.println(System.currentTimeMillis() - start);
 		//		long start = System.currentTimeMillis();

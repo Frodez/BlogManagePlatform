@@ -15,7 +15,6 @@ import frodez.service.cache.vm.facade.TokenCache;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.IUserService;
 import frodez.util.result.Result;
-import frodez.util.result.ResultUtil;
 import frodez.util.spring.context.ContextUtil;
 import java.util.Date;
 import java.util.List;
@@ -66,15 +65,15 @@ public class UserService implements IUserService {
 	public Result login(LoginDTO param) {
 		try {
 			Result result = authorityService.getUserInfo(param.getUsername());
-			if (result.notSuccess()) {
+			if (result.unable()) {
 				return result;
 			}
 			UserInfo userInfo = result.as(UserInfo.class);
 			if (!passwordEncoder.matches(param.getPassword(), userInfo.getPassword())) {
-				return ResultUtil.fail("用户名或密码错误!");
+				return Result.fail("用户名或密码错误!");
 			}
 			if (tokenCache.existValue(userInfo)) {
-				return ResultUtil.fail("用户已登录!");
+				return Result.fail("用户已登录!");
 			}
 			List<String> authorities = userInfo.getPermissionList().stream().map(PermissionInfo::getName).collect(
 				Collectors.toList());
@@ -83,10 +82,10 @@ public class UserService implements IUserService {
 			tokenCache.save(token, userInfo);
 			SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword())));
-			return ResultUtil.success(token);
+			return Result.success(token);
 		} catch (Exception e) {
 			log.error("[login]", e);
-			return ResultUtil.errorService();
+			return Result.errorService();
 		}
 	}
 
@@ -94,14 +93,14 @@ public class UserService implements IUserService {
 	public Result refresh(ReLoginDTO param) {
 		try {
 			Result result = authorityService.getUserInfo(param.getUsername());
-			if (result.notSuccess()) {
+			if (result.unable()) {
 				return result;
 			}
 			UserInfo userInfo = result.as(UserInfo.class);
 			UserDetails userDetails = TokenManager.verify(param.getOldToken(), false);
 			//这里的userDetails.password已经加密了
 			if (!userDetails.getPassword().equals(userInfo.getPassword())) {
-				return ResultUtil.fail("用户名或密码错误!");
+				return Result.fail("用户名或密码错误!");
 			}
 			List<String> authorities = userInfo.getPermissionList().stream().map(PermissionInfo::getName).collect(
 				Collectors.toList());
@@ -113,10 +112,10 @@ public class UserService implements IUserService {
 				.getAuthentication());
 			SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(param.getUsername(), userInfo.getPassword())));
-			return ResultUtil.success(token);
+			return Result.success(token);
 		} catch (Exception e) {
 			log.error("[reLogin]", e);
-			return ResultUtil.errorService();
+			return Result.errorService();
 		}
 	}
 
@@ -126,15 +125,15 @@ public class UserService implements IUserService {
 			HttpServletRequest request = ContextUtil.getRequest();
 			String token = TokenManager.getRealToken(request);
 			if (!tokenCache.existKey(token)) {
-				return ResultUtil.fail("用户已下线!");
+				return Result.fail("用户已下线!");
 			}
 			tokenCache.remove(token);
 			logoutHandler.logout(request, ContextUtil.getResponse(), SecurityContextHolder.getContext()
 				.getAuthentication());
-			return ResultUtil.success();
+			return Result.success();
 		} catch (Exception e) {
 			log.error("[logout]", e);
-			return ResultUtil.errorService();
+			return Result.errorService();
 		}
 	}
 
@@ -153,7 +152,7 @@ public class UserService implements IUserService {
 			//暂时写死
 			user.setRoleId(1L);
 			userMapper.insert(user);
-			return ResultUtil.success();
+			return Result.success();
 		} catch (Exception e) {
 			log.error("[register]", e);
 			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);

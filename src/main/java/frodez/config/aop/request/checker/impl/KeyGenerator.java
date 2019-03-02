@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class KeyGenerator {
 
-	public String servletKey(String sault, HttpServletRequest request) {
+	public static String servletKey(String sault, HttpServletRequest request) {
 		StringBuilder builder = new StringBuilder(sault).append(DefStr.SEPERATOR).append(request.getRequestURI());
 		if (URLMatcher.needVerify(request.getRequestURI())) {
 			// 非登录接口使用token判断,同一token不能重复请求

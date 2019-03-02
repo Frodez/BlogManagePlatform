@@ -1,8 +1,7 @@
 package frodez.config.security.error;
 
-import frodez.constant.setting.DefResult;
 import frodez.util.http.ServletUtil;
-import frodez.util.result.ResultEnum;
+import frodez.util.result.Result;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +28,7 @@ public class Authentication implements AuthenticationEntryPoint {
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 		AuthenticationException authException) throws IOException {
-		ServletUtil.writeJson(response, ResultEnum.NO_AUTH.getStatus(), DefResult.NO_AUTH_STRING);
+		ServletUtil.writeJson(response, Result.noAuth());
 	}
 
 }

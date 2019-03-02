@@ -4,7 +4,6 @@ import com.fasterxml.classmate.TypeResolver;
 import frodez.config.security.settings.SecurityProperties;
 import frodez.constant.setting.PropertyKey;
 import frodez.util.result.Result;
-import frodez.util.result.ResultEnum;
 import frodez.util.spring.properties.PropertyUtil;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -80,17 +79,17 @@ public class SwaggerConfig {
 
 	private List<ResponseMessage> getGlobalResponseMessage() {
 		List<ResponseMessage> list = new ArrayList<>();
-		Map<HttpStatus, List<ResultEnum>> map = new HashMap<>();
-		for (ResultEnum item : ResultEnum.values()) {
+		Map<HttpStatus, List<Result.ResultEnum>> map = new HashMap<>();
+		for (Result.ResultEnum item : Result.ResultEnum.values()) {
 			if (map.containsKey(item.getStatus())) {
 				map.get(item.getStatus()).add(item);
 			} else {
-				List<ResultEnum> enumList = new ArrayList<>();
+				List<Result.ResultEnum> enumList = new ArrayList<>();
 				enumList.add(item);
 				map.put(item.getStatus(), enumList);
 			}
 		}
-		for (Entry<HttpStatus, List<ResultEnum>> entry : map.entrySet()) {
+		for (Entry<HttpStatus, List<Result.ResultEnum>> entry : map.entrySet()) {
 			String message = String.join(" | ", entry.getValue().stream().map((iter) -> {
 				return iter.getDesc() + ",自定义状态码:" + iter.getVal();
 			}).collect(Collectors.toList()));
