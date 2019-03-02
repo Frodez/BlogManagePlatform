@@ -30,7 +30,7 @@ public class Result implements Serializable {
 	/**
 	 * 是否为默认类型实例
 	 */
-	private transient boolean isDefault = true;
+	private transient boolean isDefault = false;
 
 	/**
 	 * 默认类型实例字符串缓存
@@ -212,19 +212,18 @@ public class Result implements Serializable {
 	private Result(String message, ResultEnum status) {
 		this.message = message;
 		this.code = status.getVal();
-		this.isDefault = false;
 	}
 
 	private Result(ResultEnum status, Object data) {
 		this.message = status.getDesc();
 		this.code = status.getVal();
 		this.data = data;
-		this.isDefault = false;
 	}
 
 	private Result(ResultEnum status) {
 		this.message = status.getDesc();
 		this.code = status.getVal();
+		this.isDefault = true;
 	}
 
 	/**

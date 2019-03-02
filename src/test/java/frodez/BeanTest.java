@@ -1,5 +1,6 @@
 package frodez;
 
+import frodez.util.json.JSONUtil;
 import frodez.util.result.Result;
 import java.util.Date;
 import lombok.Data;
@@ -14,6 +15,10 @@ public class BeanTest {
 		System.out.println(result);
 		one.setId(666L);
 		System.out.println(result);
+		Result result2 = JSONUtil.toObject(
+			"{\"message\":\"成功\",\"code\":1000,\"data\":{\"id\":667,\"number\":null,\"name\":null,\"message\":null,\"isOk\":null,\"type\":null,\"date\":1551535504226}}",
+			Result.class);
+		System.out.println(result2);
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < 100000000; i++) {
 			Result.success().toString();
