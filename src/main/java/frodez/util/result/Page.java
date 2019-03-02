@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
@@ -13,21 +14,23 @@ import lombok.NoArgsConstructor;
  * @author Frodez
  * @date 2019-01-13
  */
-@Data
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class PageVO<T> implements Serializable {
+public class Page<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 查询总数
 	 */
+	@Getter
 	private int total;
 
 	/**
 	 * 分页数据
 	 */
+	@Getter
 	private Collection<T> page;
 
 	/**
