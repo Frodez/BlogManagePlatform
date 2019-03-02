@@ -30,7 +30,7 @@ public class Result implements Serializable {
 	/**
 	 * 是否为默认类型实例
 	 */
-	private transient boolean isDefault = false;
+	private boolean isDefault = false;
 
 	/**
 	 * 默认类型实例字符串缓存
