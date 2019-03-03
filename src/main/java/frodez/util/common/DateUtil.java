@@ -19,10 +19,20 @@ public class DateUtil {
 
 	private static final Map<String, DateTimeFormatter> FORMATTER_CACHE = new ConcurrentHashMap<>();
 
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DefTime.DATE_PATTERN);
+
+	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(DefTime.TIME_PATTERN);
+
+	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DefTime.DATE_TIME_PATTERN);
+
 	private static DateTimeFormatter getFormatter(String pattern) {
 		DateTimeFormatter formatter = FORMATTER_CACHE.get(pattern);
 		if (formatter != null) {
 			return formatter;
+		}
+		if (pattern.equals(DefTime.DATE_PATTERN) || pattern.equals(DefTime.TIME_PATTERN) || pattern.equals(
+			DefTime.DATE_TIME_PATTERN)) {
+			throw new RuntimeException("本格式有专用方法,建议不要使用本方法!");
 		}
 		formatter = DateTimeFormatter.ofPattern(pattern);
 		FORMATTER_CACHE.put(pattern, formatter);
@@ -91,8 +101,7 @@ public class DateUtil {
 	 */
 	public static Date date(String date) {
 		Assert.notNull(date, "日期不能为空!");
-		return Date.from(LocalDateTime.parse(date, getFormatter(DefTime.DATE_PATTERN)).atZone(ZoneId.systemDefault())
-			.toInstant());
+		return Date.from(LocalDateTime.parse(date, DATE_FORMATTER).atZone(ZoneId.systemDefault()).toInstant());
 	}
 
 	/**
@@ -103,7 +112,7 @@ public class DateUtil {
 	public static boolean isDate(String date) {
 		Assert.notNull(date, "日期不能为空!");
 		try {
-			LocalDateTime.parse(date, getFormatter(DefTime.DATE_PATTERN));
+			LocalDateTime.parse(date, DATE_FORMATTER);
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -117,8 +126,7 @@ public class DateUtil {
 	 */
 	public static Date time(String date) {
 		Assert.notNull(date, "日期不能为空!");
-		return Date.from(LocalDateTime.parse(date, getFormatter(DefTime.TIME_PATTERN)).atZone(ZoneId.systemDefault())
-			.toInstant());
+		return Date.from(LocalDateTime.parse(date, TIME_FORMATTER).atZone(ZoneId.systemDefault()).toInstant());
 	}
 
 	/**
@@ -129,7 +137,7 @@ public class DateUtil {
 	public static boolean isTime(String date) {
 		Assert.notNull(date, "日期不能为空!");
 		try {
-			LocalDateTime.parse(date, getFormatter(DefTime.TIME_PATTERN));
+			LocalDateTime.parse(date, TIME_FORMATTER);
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -143,8 +151,7 @@ public class DateUtil {
 	 */
 	public static Date dateTime(String date) {
 		Assert.notNull(date, "日期不能为空!");
-		return Date.from(LocalDateTime.parse(date, getFormatter(DefTime.DATE_TIME_PATTERN)).atZone(ZoneId
-			.systemDefault()).toInstant());
+		return Date.from(LocalDateTime.parse(date, DATE_TIME_FORMATTER).atZone(ZoneId.systemDefault()).toInstant());
 	}
 
 	/**
@@ -155,7 +162,7 @@ public class DateUtil {
 	public static boolean isDateTime(String date) {
 		Assert.notNull(date, "日期不能为空!");
 		try {
-			LocalDateTime.parse(date, getFormatter(DefTime.DATE_TIME_PATTERN));
+			LocalDateTime.parse(date, DATE_TIME_FORMATTER);
 			return true;
 		} catch (Exception e) {
 			return false;

@@ -1,8 +1,11 @@
 package frodez;
 
+import frodez.constant.setting.DefRegex;
 import frodez.util.beans.result.Result;
 import frodez.util.json.JSONUtil;
 import java.util.Date;
+import java.util.Random;
+import java.util.regex.Pattern;
 import lombok.Data;
 
 public class BeanTest {
@@ -22,6 +25,22 @@ public class BeanTest {
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < 100000000; i++) {
 			Result.success().toString();
+		}
+		System.out.println(System.currentTimeMillis() - start);
+		Random random = new Random();
+		int times = 10000 * 10000;
+		byte[] bytes = new byte[times];
+		random.nextBytes(bytes);
+		String[] array = new String[times];
+		for (int i = 0; i < times; i++) {
+			array[i] = Long.toString(13500000000L + bytes[i] * 65536 + i);
+		}
+		System.out.println(array[0]);
+		System.out.println(array[times - 1]);
+		start = System.currentTimeMillis();
+		Pattern pattern = Pattern.compile(DefRegex.MOBILE);
+		for (int i = 0; i < times; i++) {
+			pattern.matcher(array[i]).matches();
 		}
 		System.out.println(System.currentTimeMillis() - start);
 		//		long start = System.currentTimeMillis();

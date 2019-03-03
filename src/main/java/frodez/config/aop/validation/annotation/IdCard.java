@@ -1,55 +1,44 @@
 package frodez.config.aop.validation.annotation;
 
-import frodez.util.common.RegexUtil;
+import frodez.constant.setting.DefRegex;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.regex.Pattern;
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import javax.validation.Payload;
 
 /**
- * 正则表达式验证注解 以下为注解参数说明:<br>
- * <strong>message: String类型,代表验证失败时的返回信息,默认值为"参数非法!"<br>
- * regex: String类型,验证用的正则表达式(不能为空!)<br>
- * nullable: boolean类型,代表对空值的处理方式,默认值为false.为true时空值可以通过验证,为false时空值不可以通过验证.<br>
- * </strong>
+ * 身份证号验证注解
  * @author Frodez
- * @date 2019-03-01
+ * @date 2019-03-03
  */
 @Documented
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = Match.Validator.class)
-public @interface Match {
+@Constraint(validatedBy = IdCard.Validator.class)
+public @interface IdCard {
 
 	// 错误信息
-	String message() default "参数非法!";
-
-	// 正则表达式
-	String regex();
+	String message() default "身份证号格式错误!";
 
 	// 是否可为空
 	boolean nullable() default false;
 
-	Class<?>[] groups() default {};
-
-	Class<? extends Payload>[] payload() default {};
-
 	/**
-	 * 正则表达式验证器
+	 * 格式验证器
 	 * @author Frodez
 	 * @date 2018-12-17
 	 */
-	class Validator implements ConstraintValidator<Match, String> {
+	class Validator implements ConstraintValidator<IdCard, String> {
 
 		/**
-		 * 正则表达式
+		 * 验证用的格式
 		 */
-		private String regex;
+		private static Pattern pattern = Pattern.compile(DefRegex.IDCARD);
 
 		/**
 		 * 接受空值,默认值为false true:当为空时,直接通过验证 false:当为空时,拒绝通过验证
@@ -62,8 +51,7 @@ public @interface Match {
 		 * @date 2018-12-17
 		 */
 		@Override
-		public void initialize(Match enumValue) {
-			regex = enumValue.regex();
+		public void initialize(IdCard enumValue) {
 			nullable = enumValue.nullable();
 		}
 
@@ -77,7 +65,7 @@ public @interface Match {
 			if (value == null) {
 				return nullable;
 			}
-			return RegexUtil.match(regex, value);
+			return pattern.matcher(value).matches();
 		}
 
 	}
