@@ -1,6 +1,6 @@
 package frodez.config.result;
 
-import frodez.util.result.Result;
+import frodez.util.beans.result.Result;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;

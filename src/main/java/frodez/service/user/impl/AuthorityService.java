@@ -10,7 +10,7 @@ import frodez.dao.result.user.PermissionInfo;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.vm.facade.NameCache;
 import frodez.service.user.facade.IAuthorityService;
-import frodez.util.result.Result;
+import frodez.util.beans.result.Result;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

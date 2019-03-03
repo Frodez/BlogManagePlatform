@@ -1,7 +1,7 @@
 package frodez;
 
+import frodez.util.beans.result.Result;
 import frodez.util.json.JSONUtil;
-import frodez.util.result.Result;
 import java.util.Date;
 import lombok.Data;
 

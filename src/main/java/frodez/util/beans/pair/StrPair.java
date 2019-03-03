@@ -3,7 +3,7 @@ package frodez.util.beans.pair;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
-public class StrPair extends KVPair<String, String> {
+public class StrPair extends Pair<String, String> {
 
 	/**
 	 *

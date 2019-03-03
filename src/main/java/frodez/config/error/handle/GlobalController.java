@@ -1,8 +1,8 @@
 package frodez.config.error.handle;
 
 import frodez.config.error.exception.ServiceException;
+import frodez.util.beans.result.Result;
 import frodez.util.http.ServletUtil;
-import frodez.util.result.Result;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;

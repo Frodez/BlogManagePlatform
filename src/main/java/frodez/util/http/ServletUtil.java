@@ -1,7 +1,7 @@
 package frodez.util.http;
 
+import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
-import frodez.util.result.Result;
 import java.io.PrintWriter;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;

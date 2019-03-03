@@ -1,7 +1,7 @@
 package frodez.service.user.facade;
 
 import frodez.config.aop.validation.annotation.Check;
-import frodez.util.result.Result;
+import frodez.util.beans.result.Result;
 import javax.validation.constraints.NotBlank;
 
 /**

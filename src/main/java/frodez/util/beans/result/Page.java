@@ -1,4 +1,4 @@
-package frodez.util.result;
+package frodez.util.beans.result;
 
 import java.io.Serializable;
 import java.util.Collection;

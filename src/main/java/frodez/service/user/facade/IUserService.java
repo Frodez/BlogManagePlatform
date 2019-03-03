@@ -4,7 +4,7 @@ import frodez.config.aop.validation.annotation.Check;
 import frodez.dao.param.user.LoginDTO;
 import frodez.dao.param.user.ReLoginDTO;
 import frodez.dao.param.user.RegisterDTO;
-import frodez.util.result.Result;
+import frodez.util.beans.result.Result;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 

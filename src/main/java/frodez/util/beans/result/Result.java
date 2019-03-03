@@ -1,4 +1,4 @@
-package frodez.util.result;
+package frodez.util.beans.result;
 
 import frodez.config.error.exception.ParseException;
 import frodez.util.json.JSONUtil;
@@ -44,16 +44,16 @@ public class Result implements Serializable {
 	}
 
 	/**
-	 * 消息
-	 */
-	@Getter
-	private String message;
-
-	/**
 	 * 状态
 	 */
 	@Getter
 	private int code;
+
+	/**
+	 * 消息
+	 */
+	@Getter
+	private String message;
 
 	/**
 	 * 数据
@@ -234,7 +234,7 @@ public class Result implements Serializable {
 	 */
 	public <T> T as(Class<T> klass) throws ClassCastException, ParseException {
 		Assert.notNull(klass, "类型不能为空!");
-		assertAble();
+		check();
 		if (data == null) {
 			throw new ParseException("数据为空!");
 		}
@@ -250,7 +250,7 @@ public class Result implements Serializable {
 	@SuppressWarnings("unchecked")
 	public <T> Page<T> page(Class<T> klass) throws ClassCastException, ParseException {
 		Assert.notNull(klass, "类型不能为空!");
-		assertAble();
+		check();
 		if (data == null) {
 			throw new ParseException("数据为空!");
 		}
@@ -266,7 +266,7 @@ public class Result implements Serializable {
 	@SuppressWarnings("unchecked")
 	public <T> List<T> list(Class<T> klass) throws ClassCastException, ParseException {
 		Assert.notNull(klass, "类型不能为空!");
-		assertAble();
+		check();
 		if (data == null) {
 			throw new ParseException("数据为空!");
 		}
@@ -282,7 +282,7 @@ public class Result implements Serializable {
 	@SuppressWarnings("unchecked")
 	public <T> Set<T> set(Class<T> klass) throws ClassCastException, ParseException {
 		Assert.notNull(klass, "类型不能为空!");
-		assertAble();
+		check();
 		if (data == null) {
 			throw new ParseException("数据为空!");
 		}
@@ -297,7 +297,7 @@ public class Result implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> map() throws ClassCastException, ParseException {
-		assertAble();
+		check();
 		if (data == null) {
 			throw new ParseException("数据为空!");
 		}
@@ -314,7 +314,7 @@ public class Result implements Serializable {
 	public <K, V> Map<K, V> map(Class<K> keyClass, Class<V> valueClass) throws ClassCastException, ParseException {
 		Assert.notNull(keyClass, "键类型不能为空!");
 		Assert.notNull(valueClass, "值类型不能为空!");
-		assertAble();
+		check();
 		if (data == null) {
 			throw new ParseException("数据为空!");
 		}
@@ -326,7 +326,7 @@ public class Result implements Serializable {
 	 * @author Frodez
 	 * @date 2019-02-13
 	 */
-	public void assertAble() throws ParseException {
+	public void check() throws ParseException {
 		if (code != ResultEnum.SUCCESS.getVal()) {
 			throw new ParseException(message);
 		}

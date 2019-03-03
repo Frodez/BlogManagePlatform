@@ -4,7 +4,7 @@ import java.io.Serializable;
 import lombok.Data;
 
 @Data
-public class KVPair<K, V> implements Serializable {
+public class Pair<K, V> implements Serializable {
 
 	/**
 	 *

@@ -3,7 +3,7 @@ package frodez.config.swagger;
 import com.fasterxml.classmate.TypeResolver;
 import frodez.config.security.settings.SecurityProperties;
 import frodez.constant.setting.PropertyKey;
-import frodez.util.result.Result;
+import frodez.util.beans.result.Result;
 import frodez.util.spring.properties.PropertyUtil;
 import java.time.LocalDate;
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package frodez.config.security.error;
 
+import frodez.util.beans.result.Result;
 import frodez.util.http.ServletUtil;
-import frodez.util.result.Result;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

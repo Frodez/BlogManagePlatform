@@ -1,4 +1,4 @@
-package frodez.util.beans.comparable;
+package frodez.util.beans.pair;
 
 import lombok.EqualsAndHashCode;
 

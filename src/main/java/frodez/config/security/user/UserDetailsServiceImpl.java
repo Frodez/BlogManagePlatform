@@ -3,7 +3,7 @@ package frodez.config.security.user;
 import frodez.config.security.util.AuthorityUtil;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.user.facade.IAuthorityService;
-import frodez.util.result.Result;
+import frodez.util.beans.result.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
