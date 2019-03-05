@@ -27,7 +27,7 @@ public class ValidationAOP {
 	 * @author Frodez
 	 * @date 2019-01-12
 	 */
-	@Around("@annotation(frodez.config.aop.validation.annotation.Check)")
+	@Around("@annotation(frodez.config.aop.validation.annotation.common.Check)")
 	public Object validate(ProceedingJoinPoint p) throws Throwable {
 		String msg = ValidationUtil.validateParam(p.getTarget(), AspectUtil.getMethod(p), p.getArgs(), null);
 		return EmptyUtil.yes(msg) ? p.proceed() : Result.errorRequest(msg);
