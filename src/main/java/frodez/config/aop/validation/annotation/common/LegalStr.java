@@ -60,7 +60,7 @@ public @interface LegalStr {
 		@Override
 		public void initialize(LegalStr enumValue) {
 			regex = enumValue.regex();
-			flag = RegexUtil.reverse(enumValue.flags());
+			flag = RegexUtil.transfer(enumValue.flags());
 			nullable = enumValue.nullable();
 		}
 

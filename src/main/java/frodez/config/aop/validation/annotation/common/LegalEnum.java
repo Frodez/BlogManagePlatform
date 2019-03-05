@@ -124,7 +124,7 @@ public @interface LegalEnum {
 			}
 			try {
 				return ReflectUtil.getFastMethod(klass, method, paramType).invoke(null, new Object[] { ReflectUtil
-					.castValue(value, paramType) }) != null;
+					.baseRevert(value, paramType) }) != null;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}

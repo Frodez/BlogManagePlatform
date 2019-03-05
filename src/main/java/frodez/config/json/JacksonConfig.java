@@ -22,7 +22,7 @@ public class JacksonConfig {
 	@Primary
 	@ConditionalOnMissingBean(ObjectMapper.class)
 	public ObjectMapper objectMapper() {
-		return JSONUtil.getInstance();
+		return JSONUtil.mapper();
 	}
 
 }

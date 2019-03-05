@@ -36,7 +36,7 @@ public class JSONUtil {
 	 * @author Frodez
 	 * @date 2018-12-02
 	 */
-	public static ObjectMapper getInstance() {
+	public static ObjectMapper mapper() {
 		return OBJECT_MAPPER;
 	}
 
@@ -46,7 +46,7 @@ public class JSONUtil {
 	 * @param object 对象
 	 * @date 2018-12-02
 	 */
-	public static String toJSONString(Object object) {
+	public static String string(Object object) {
 		try {
 			return OBJECT_MAPPER.writeValueAsString(object);
 		} catch (Exception e) {
@@ -61,7 +61,7 @@ public class JSONUtil {
 	 * @param klass 对象类型
 	 * @date 2018-12-02
 	 */
-	public static <T> T toObject(String json, Class<T> klass) {
+	public static <T> T as(String json, Class<T> klass) {
 		try {
 			return OBJECT_MAPPER.readValue(json, klass);
 		} catch (Exception e) {
@@ -77,7 +77,7 @@ public class JSONUtil {
 	 * @param json json字符串
 	 * @date 2018-12-02
 	 */
-	public static Map<String, Object> toMap(String json) {
+	public static Map<String, Object> map(String json) {
 		try {
 			return OBJECT_MAPPER.readValue(json, TYPE_FACTORY.constructParametricType(HashMap.class, String.class,
 				Object.class));
@@ -94,7 +94,7 @@ public class JSONUtil {
 	 * @param json json字符串
 	 * @date 2018-12-02
 	 */
-	public static <K, V> Map<K, V> toMap(String json, Class<K> k, Class<V> v) {
+	public static <K, V> Map<K, V> map(String json, Class<K> k, Class<V> v) {
 		try {
 			return OBJECT_MAPPER.readValue(json, TYPE_FACTORY.constructParametricType(HashMap.class, k, v));
 		} catch (Exception e) {
@@ -109,7 +109,7 @@ public class JSONUtil {
 	 * @param json json字符串
 	 * @date 2018-12-02
 	 */
-	public static <T> List<T> toList(String json, Class<T> klass) {
+	public static <T> List<T> list(String json, Class<T> klass) {
 		try {
 			return OBJECT_MAPPER.readValue(json, TYPE_FACTORY.constructParametricType(ArrayList.class, klass));
 		} catch (Exception e) {

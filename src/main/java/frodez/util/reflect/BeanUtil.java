@@ -43,7 +43,7 @@ public class BeanUtil {
 	 * @date 2019-02-08
 	 */
 	@SuppressWarnings("unchecked")
-	public static Map<String, Object> asMap(Object bean) {
+	public static Map<String, Object> map(Object bean) {
 		Map<String, Object> map = new HashMap<>();
 		map.putAll(BeanMap.create(bean));
 		return map;
@@ -54,7 +54,7 @@ public class BeanUtil {
 	 * @author Frodez
 	 * @date 2019-02-08
 	 */
-	public static <T> T parse(Map<String, Object> map, Class<T> klass) {
+	public static <T> T as(Map<String, Object> map, Class<T> klass) {
 		try {
 			T bean = klass.getDeclaredConstructor().newInstance();
 			BeanMap.create(bean).putAll(map);

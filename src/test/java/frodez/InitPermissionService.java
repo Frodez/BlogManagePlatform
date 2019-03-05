@@ -31,11 +31,11 @@ public class InitPermissionService {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BlogManagePlatformApplication.class, args);
-		PermissionMapper permissionMapper = ContextUtil.getBean(PermissionMapper.class);
+		PermissionMapper permissionMapper = ContextUtil.get(PermissionMapper.class);
 		String errorPath = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + "/error";
 		List<Permission> permissionList = new ArrayList<>();
 		Date date = new Date();
-		BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.get(), HandlerMapping.class, true, false).values()
+		BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false).values()
 			.stream().filter((iter) -> {
 				return iter instanceof RequestMappingHandlerMapping;
 			}).map((iter) -> {
@@ -80,13 +80,13 @@ public class InitPermissionService {
 				permissionList.add(permission);
 			});
 		System.out.println("权限条目数量:" + permissionList.size());
-		System.out.println("权限详细信息:" + JSONUtil.toJSONString(permissionList));
+		System.out.println("权限详细信息:" + JSONUtil.string(permissionList));
 		Example example = new Example(Permission.class);
 		permissionMapper.deleteByExample(example);
 		if (EmptyUtil.no(permissionList)) {
 			permissionMapper.insertList(permissionList);
 		}
-		SpringApplication.exit(ContextUtil.get(), () -> 1);
+		SpringApplication.exit(ContextUtil.context(), () -> 1);
 	}
 
 }

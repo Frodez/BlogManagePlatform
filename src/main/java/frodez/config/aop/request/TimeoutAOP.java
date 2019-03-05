@@ -47,9 +47,9 @@ public class TimeoutAOP {
 	 */
 	@Around("@annotation(frodez.config.aop.request.annotation.TimeoutLock)")
 	public Object process(ProceedingJoinPoint point) throws Throwable {
-		HttpServletRequest request = ContextUtil.getRequest();
-		TimeoutLock timeoutLock = AspectUtil.getAnnotation(point, TimeoutLock.class);
-		String key = KeyGenerator.servletKey(AspectUtil.getFullName(point), request);
+		HttpServletRequest request = ContextUtil.request();
+		TimeoutLock timeoutLock = AspectUtil.annotation(point, TimeoutLock.class);
+		String key = KeyGenerator.servletKey(AspectUtil.fullMethodName(point), request);
 		if (checker.check(key)) {
 			log.info("重复请求:IP地址{}", ServletUtil.getAddr(request));
 			return Result.errorRequest();

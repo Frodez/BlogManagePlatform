@@ -23,7 +23,7 @@ public class UserUtil {
 
 	@PostConstruct
 	private void init() {
-		tokenCache = ContextUtil.getBean(TokenCache.class);
+		tokenCache = ContextUtil.get(TokenCache.class);
 	}
 
 	/**
@@ -32,7 +32,7 @@ public class UserUtil {
 	 * @date 2019-01-09
 	 */
 	public static UserInfo get() {
-		HttpServletRequest request = ContextUtil.getRequest();
+		HttpServletRequest request = ContextUtil.request();
 		if (!URLMatcher.needVerify(request.getRequestURI())) {
 			throw new RuntimeException("不能在免验证URI中获取token信息!");
 		}

@@ -14,7 +14,7 @@ import org.aspectj.lang.reflect.MethodSignature;
  */
 public class AspectUtil {
 
-	private static MethodSignature getMethodSignature(JoinPoint point) {
+	private static MethodSignature methodSignature(JoinPoint point) {
 		return MethodSignature.class.cast(point.getSignature());
 	}
 
@@ -23,8 +23,8 @@ public class AspectUtil {
 	 * @author Frodez
 	 * @date 2019-01-12
 	 */
-	public static Method getMethod(JoinPoint point) {
-		return getMethodSignature(point).getMethod();
+	public static Method method(JoinPoint point) {
+		return methodSignature(point).getMethod();
 	}
 
 	/**
@@ -32,8 +32,8 @@ public class AspectUtil {
 	 * @author Frodez
 	 * @date 2019-01-12
 	 */
-	public static String getName(JoinPoint point) {
-		return getMethodSignature(point).getMethod().getName();
+	public static String methodName(JoinPoint point) {
+		return methodSignature(point).getMethod().getName();
 	}
 
 	/**
@@ -41,8 +41,8 @@ public class AspectUtil {
 	 * @author Frodez
 	 * @date 2019-01-12
 	 */
-	public static String getFullName(JoinPoint point) {
-		Method method = getMethodSignature(point).getMethod();
+	public static String fullMethodName(JoinPoint point) {
+		Method method = methodSignature(point).getMethod();
 		return method.getDeclaringClass().getName() + "." + method.getName();
 	}
 
@@ -51,8 +51,8 @@ public class AspectUtil {
 	 * @author Frodez
 	 * @date 2019-01-09
 	 */
-	public static <T extends Annotation> T getAnnotation(JoinPoint point, Class<T> klass) {
-		return getMethodSignature(point).getMethod().getAnnotation(klass);
+	public static <T extends Annotation> T annotation(JoinPoint point, Class<T> klass) {
+		return methodSignature(point).getMethod().getAnnotation(klass);
 	}
 
 	/**
@@ -60,8 +60,8 @@ public class AspectUtil {
 	 * @author Frodez
 	 * @date 2019-01-09
 	 */
-	public static Parameter[] getParams(JoinPoint point) {
-		return getMethodSignature(point).getMethod().getParameters();
+	public static Parameter[] params(JoinPoint point) {
+		return methodSignature(point).getMethod().getParameters();
 	}
 
 }

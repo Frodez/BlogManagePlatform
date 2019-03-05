@@ -50,7 +50,7 @@ public class BaseRedisCache {
 		if (value.getClass() == String.class) {
 			return (String) value;
 		}
-		return JSONUtil.toJSONString(value);
+		return JSONUtil.string(value);
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class BaseRedisCache {
 		if (EmptyUtil.no(map)) {
 			return null;
 		}
-		return JSONUtil.toJSONString(map);
+		return JSONUtil.string(map);
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class BaseRedisCache {
 		if (value.getClass() == String.class) {
 			return (String) value;
 		}
-		return JSONUtil.toJSONString(value);
+		return JSONUtil.string(value);
 	}
 
 	/**

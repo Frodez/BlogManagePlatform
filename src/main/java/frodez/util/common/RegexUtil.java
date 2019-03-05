@@ -58,7 +58,7 @@ public class RegexUtil {
 	 * @date 2019-03-05
 	 */
 	public static boolean match(String regex, String input, Flag... flags) {
-		return match(regex, input, reverse(flags));
+		return match(regex, input, transfer(flags));
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class RegexUtil {
 	 * @author Frodez
 	 * @date 2019-03-05
 	 */
-	public static int reverse(Flag... flags) {
+	public static int transfer(Flag... flags) {
 		int flag = 0;
 		for (Flag item : flags) {
 			flag = flag | item.getValue();

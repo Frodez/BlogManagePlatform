@@ -8,6 +8,7 @@ import frodez.constant.setting.DefTime;
 import frodez.constant.setting.PropertyKey;
 import frodez.util.spring.context.ContextUtil;
 import frodez.util.spring.properties.PropertyUtil;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.DependsOn;
@@ -25,8 +26,6 @@ public class URLMatcher {
 
 	private static List<String> permitPaths;
 
-	private static String basePath;
-
 	/**
 	 * url匹配缓存
 	 */
@@ -34,17 +33,20 @@ public class URLMatcher {
 
 	@PostConstruct
 	private void init() {
-		SecurityProperties securityProperties = ContextUtil.getBean(SecurityProperties.class);
-		CacheProperties cacheProperties = ContextUtil.getBean(CacheProperties.class);
-		matcher = ContextUtil.getBean(PathMatcher.class);
-		permitPaths = securityProperties.getAuth().getPermitAllPath();
-		basePath = PropertyUtil.get(PropertyKey.Web.BASE_PATH);
+		SecurityProperties securityProperties = ContextUtil.get(SecurityProperties.class);
+		CacheProperties cacheProperties = ContextUtil.get(CacheProperties.class);
+		matcher = ContextUtil.get(PathMatcher.class);
+		permitPaths = new ArrayList<>();
+		for (String path : securityProperties.getAuth().getPermitAllPath()) {
+			permitPaths.add(PropertyUtil.get(PropertyKey.Web.BASE_PATH) + path);
+		}
 		URL_CACHE = CacheBuilder.newBuilder().maximumSize(cacheProperties.getUrlMatcher().getMaxSize())
 			.expireAfterAccess(cacheProperties.getUrlMatcher().getTimeout(), DefTime.UNIT).build();
 	}
 
 	/**
-	 * 判断url是否需要验证<br>
+	 * 判断url是否需要验证,url为带有根路径的url<br>
+	 * <strong>true为需要验证,false为不需要验证</strong><br>
 	 * <strong>建议url不要带入任何path类型参数,以提高性能!</strong>
 	 * @author Frodez
 	 * @date 2019-01-06
@@ -55,7 +57,7 @@ public class URLMatcher {
 			return result;
 		}
 		for (String path : permitPaths) {
-			if (matcher.match(basePath + path, url)) {
+			if (matcher.match(path, url)) {
 				URL_CACHE.put(url, false);
 				return false;
 			}

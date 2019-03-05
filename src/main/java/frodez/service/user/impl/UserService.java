@@ -108,7 +108,7 @@ public class UserService implements IUserService {
 			String token = TokenManager.generate(param.getUsername(), authorities);
 			tokenCache.remove(param.getOldToken());
 			tokenCache.save(token, userInfo);
-			logoutHandler.logout(ContextUtil.getRequest(), ContextUtil.getResponse(), SecurityContextHolder.getContext()
+			logoutHandler.logout(ContextUtil.request(), ContextUtil.response(), SecurityContextHolder.getContext()
 				.getAuthentication());
 			SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(param.getUsername(), userInfo.getPassword())));
@@ -122,13 +122,13 @@ public class UserService implements IUserService {
 	@Override
 	public Result logout() {
 		try {
-			HttpServletRequest request = ContextUtil.getRequest();
+			HttpServletRequest request = ContextUtil.request();
 			String token = TokenManager.getRealToken(request);
 			if (!tokenCache.existKey(token)) {
 				return Result.fail("用户已下线!");
 			}
 			tokenCache.remove(token);
-			logoutHandler.logout(request, ContextUtil.getResponse(), SecurityContextHolder.getContext()
+			logoutHandler.logout(request, ContextUtil.response(), SecurityContextHolder.getContext()
 				.getAuthentication());
 			return Result.success();
 		} catch (Exception e) {

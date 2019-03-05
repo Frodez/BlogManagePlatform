@@ -29,7 +29,7 @@ public class ValidationAOP {
 	 */
 	@Around("@annotation(frodez.config.aop.validation.annotation.common.Check)")
 	public Object validate(ProceedingJoinPoint p) throws Throwable {
-		String msg = ValidationUtil.validateParam(p.getTarget(), AspectUtil.getMethod(p), p.getArgs(), null);
+		String msg = ValidationUtil.validateParam(p.getTarget(), AspectUtil.method(p), p.getArgs(), null);
 		return EmptyUtil.yes(msg) ? p.proceed() : Result.errorRequest(msg);
 	}
 

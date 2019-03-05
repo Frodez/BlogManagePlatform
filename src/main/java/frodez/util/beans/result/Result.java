@@ -39,7 +39,7 @@ public class Result implements Serializable {
 
 	static {
 		for (ResultEnum item : ResultEnum.values()) {
-			DEFAULT_STRING_CACHE.put(item.val, JSONUtil.toJSONString(new Result(item)));
+			DEFAULT_STRING_CACHE.put(item.val, JSONUtil.string(new Result(item)));
 		}
 	}
 
@@ -71,7 +71,7 @@ public class Result implements Serializable {
 		if (isDefault) {
 			return DEFAULT_STRING_CACHE.get(code);
 		}
-		return JSONUtil.toJSONString(this);
+		return JSONUtil.string(this);
 	}
 
 	/**

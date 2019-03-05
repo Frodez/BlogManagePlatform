@@ -81,7 +81,7 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2018-12-17
 	 */
-	public static Object castValue(Object value, Class<?> parameterClass) {
+	public static Object baseRevert(Object value, Class<?> parameterClass) {
 		if (value == null) {
 			return null;
 		}

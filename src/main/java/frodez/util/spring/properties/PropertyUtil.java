@@ -25,7 +25,7 @@ public class PropertyUtil {
 
 	@PostConstruct
 	private void init() {
-		env = ContextUtil.getBean(Environment.class);
+		env = ContextUtil.get(Environment.class);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class PropertyUtil {
 	 * @author Frodez
 	 * @date 2019-01-06
 	 */
-	public static List<String> getActiveProfiles() {
+	public static List<String> activeProfiles() {
 		return Arrays.asList(env.getActiveProfiles());
 	}
 

@@ -27,7 +27,7 @@ public class RedisConfig {
 		template.setConnectionFactory(connectionFactory);
 		// 使用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值(如不设置,则默认使用JDK的序列化方式)
 		Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
-		serializer.setObjectMapper(JSONUtil.getInstance());
+		serializer.setObjectMapper(JSONUtil.mapper());
 		template.setKeySerializer(serializer);
 		template.setValueSerializer(serializer);
 		template.setHashKeySerializer(serializer);

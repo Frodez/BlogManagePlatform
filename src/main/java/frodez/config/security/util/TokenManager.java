@@ -51,7 +51,7 @@ public class TokenManager {
 
 	@PostConstruct
 	private void init() {
-		SecurityProperties properties = ContextUtil.getBean(SecurityProperties.class);
+		SecurityProperties properties = ContextUtil.get(SecurityProperties.class);
 		algorithm = Algorithm.HMAC256(properties.getJwt().getSecret());
 		issuer = properties.getJwt().getIssuer();
 		expiration = properties.getJwt().getExpiration() * 1000;
@@ -112,7 +112,7 @@ public class TokenManager {
 	}
 
 	/**
-	 * 获取request中的token,如果为空或者前缀不符合设置,均返回空.
+	 * 获取request中的token,如果为空或者前缀不符合设置,均返回null.
 	 * @author Frodez
 	 * @date 2019-01-13
 	 */

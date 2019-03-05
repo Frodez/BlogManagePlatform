@@ -23,7 +23,7 @@ public class AutoGuavaChecker implements AutoChecker {
 
 	@PostConstruct
 	private void init() {
-		cache = CacheBuilder.newBuilder().expireAfterAccess(ContextUtil.getBean(CacheProperties.class)
+		cache = CacheBuilder.newBuilder().expireAfterAccess(ContextUtil.get(CacheProperties.class)
 			.getAutoGuavaChecker().getTimeout(), DefTime.UNIT).build();
 	}
 

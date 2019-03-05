@@ -30,7 +30,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @author Frodez
 	 * @date 2019-01-13
 	 */
-	public static String getRootPath() {
+	public static String rootPath() {
 		return ClassUtils.getDefaultClassLoader().getResource("").getPath();
 	}
 
@@ -39,7 +39,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @author Frodez
 	 * @date 2019-01-09
 	 */
-	public static HttpServletResponse getResponse() {
+	public static HttpServletResponse response() {
 		return ServletRequestAttributes.class.cast(RequestContextHolder.getRequestAttributes()).getResponse();
 	}
 
@@ -48,7 +48,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @author Frodez
 	 * @date 2019-01-09
 	 */
-	public static HttpServletRequest getRequest() {
+	public static HttpServletRequest request() {
 		return ServletRequestAttributes.class.cast(RequestContextHolder.getRequestAttributes()).getRequest();
 	}
 
@@ -57,7 +57,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @author Frodez
 	 * @date 2018-12-21
 	 */
-	public static ApplicationContext get() {
+	public static ApplicationContext context() {
 		if (context == null) {
 			throw new RuntimeException("获取spring上下文环境失败!");
 		}
@@ -70,8 +70,8 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @author Frodez
 	 * @date 2018-12-21
 	 */
-	public static <T> T getBean(Class<T> klass) {
-		return get().getBean(klass);
+	public static <T> T get(Class<T> klass) {
+		return context().getBean(klass);
 	}
 
 	/**
@@ -81,8 +81,8 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @author Frodez
 	 * @date 2018-12-21
 	 */
-	public static <T> T getBean(String beanName, Class<T> klass) {
-		return klass.cast(get().getBean(beanName));
+	public static <T> T get(String beanName, Class<T> klass) {
+		return klass.cast(context().getBean(beanName));
 	}
 
 }

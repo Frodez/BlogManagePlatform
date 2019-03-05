@@ -23,7 +23,7 @@ public class ManualGuavaChecker implements ManualChecker {
 
 	@PostConstruct
 	private void init() {
-		cache = CacheBuilder.newBuilder().expireAfterAccess(ContextUtil.getBean(CacheProperties.class)
+		cache = CacheBuilder.newBuilder().expireAfterAccess(ContextUtil.get(CacheProperties.class)
 			.getManualGuavaChecker().getTimeout(), DefTime.UNIT).build();
 	}
 
