@@ -1,4 +1,4 @@
-package frodez.config.aop.validation;
+package frodez.util.common;
 
 import java.lang.reflect.Method;
 import java.util.Iterator;

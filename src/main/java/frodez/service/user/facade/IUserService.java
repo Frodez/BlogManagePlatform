@@ -1,6 +1,6 @@
 package frodez.service.user.facade;
 
-import frodez.config.aop.validation.annotation.Check;
+import frodez.config.aop.validation.annotation.common.Check;
 import frodez.dao.param.user.LoginDTO;
 import frodez.dao.param.user.ReLoginDTO;
 import frodez.dao.param.user.RegisterDTO;

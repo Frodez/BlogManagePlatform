@@ -30,10 +30,6 @@ public class DateUtil {
 		if (formatter != null) {
 			return formatter;
 		}
-		if (pattern.equals(DefTime.DATE_PATTERN) || pattern.equals(DefTime.TIME_PATTERN) || pattern.equals(
-			DefTime.DATE_TIME_PATTERN)) {
-			throw new RuntimeException("本格式有专用方法,建议不要使用本方法!");
-		}
 		formatter = DateTimeFormatter.ofPattern(pattern);
 		FORMATTER_CACHE.put(pattern, formatter);
 		return formatter;
@@ -68,7 +64,8 @@ public class DateUtil {
 	}
 
 	/**
-	 * 格式化日期
+	 * 格式化日期<br>
+	 * <strong>对于yyyy-MM-dd格式,HH:mm:ss格式和yyyy-MM-dd HH:mm:ss格式,请使用下面的专用方法!!!</strong>
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */

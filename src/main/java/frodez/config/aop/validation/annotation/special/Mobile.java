@@ -1,4 +1,4 @@
-package frodez.config.aop.validation.annotation;
+package frodez.config.aop.validation.annotation.special;
 
 import frodez.constant.setting.DefRegex;
 import java.lang.annotation.Documented;

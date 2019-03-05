@@ -1,4 +1,4 @@
-package frodez.config.aop.validation.annotation;
+package frodez.config.aop.validation.annotation.common;
 
 import frodez.util.common.DateUtil;
 import java.lang.annotation.Documented;
@@ -26,8 +26,8 @@ import javax.validation.Payload;
 @Documented
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ValidDate.Validator.class)
-public @interface ValidDate {
+@Constraint(validatedBy = LegalDate.Validator.class)
+public @interface LegalDate {
 
 	// 错误信息
 	String message() default "参数非法!";
@@ -47,7 +47,7 @@ public @interface ValidDate {
 	 * @author Frodez
 	 * @date 2018-12-17
 	 */
-	class Validator implements ConstraintValidator<ValidDate, String> {
+	class Validator implements ConstraintValidator<LegalDate, String> {
 
 		/**
 		 * 验证用的日期格式
@@ -65,7 +65,7 @@ public @interface ValidDate {
 		 * @date 2018-12-17
 		 */
 		@Override
-		public void initialize(ValidDate enumValue) {
+		public void initialize(LegalDate enumValue) {
 			regex = enumValue.regex();
 			nullable = enumValue.nullable();
 		}

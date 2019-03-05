@@ -1,4 +1,4 @@
-package frodez.config.aop.validation.annotation;
+package frodez.config.aop.validation.annotation.common;
 
 import frodez.util.reflect.ReflectUtil;
 import java.lang.annotation.Documented;
@@ -50,8 +50,8 @@ import javax.validation.Payload;
 @Documented
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ValidEnum.Validator.class)
-public @interface ValidEnum {
+@Constraint(validatedBy = LegalEnum.Validator.class)
+public @interface LegalEnum {
 
 	// 错误信息
 	String message() default "参数非法!";
@@ -77,7 +77,7 @@ public @interface ValidEnum {
 	 * @author Frodez
 	 * @date 2018-12-17
 	 */
-	class Validator implements ConstraintValidator<ValidEnum, Object> {
+	class Validator implements ConstraintValidator<LegalEnum, Object> {
 
 		/**
 		 * 枚举类
@@ -105,7 +105,7 @@ public @interface ValidEnum {
 		 * @date 2018-12-17
 		 */
 		@Override
-		public void initialize(ValidEnum enumValue) {
+		public void initialize(LegalEnum enumValue) {
 			method = enumValue.method();
 			klass = enumValue.type();
 			nullable = enumValue.nullable();
