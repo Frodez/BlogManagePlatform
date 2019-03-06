@@ -1,6 +1,6 @@
 package frodez.dao.param.user;
 
-import frodez.util.beans.param.PageDTO;
+import frodez.util.beans.param.PageQuery;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import javax.validation.Valid;
@@ -13,7 +13,7 @@ import lombok.Data;
  * @date 2019-03-06
  */
 @Data
-public class RolePermissionDTO implements Serializable {
+public class RolePermissionQuery implements Serializable {
 
 	/**
 	 *
@@ -31,7 +31,7 @@ public class RolePermissionDTO implements Serializable {
 	 * 分页查询参数
 	 */
 	@Valid
-	@ApiModelProperty(value = PageDTO.DEFAULT_DESC)
-	private PageDTO page;
+	@ApiModelProperty(value = PageQuery.DEFAULT_DESC)
+	private PageQuery page;
 
 }

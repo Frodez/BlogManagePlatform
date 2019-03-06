@@ -1,8 +1,8 @@
 package frodez.controller.user;
 
-import frodez.dao.param.user.RolePermissionDTO;
+import frodez.dao.param.user.RolePermissionQuery;
 import frodez.service.user.facade.IUserService;
-import frodez.util.beans.param.PageDTO;
+import frodez.util.beans.param.PageQuery;
 import frodez.util.beans.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +33,7 @@ public class PermissionController {
 	 */
 	@GetMapping
 	@ApiOperation(value = "分页查询权限信息接口")
-	public Result getPermissions(@RequestBody @ApiParam(value = PageDTO.DEFAULT_DESC, required = true) PageDTO param) {
+	public Result getPermissions(@RequestBody @ApiParam(value = PageQuery.DEFAULT_DESC, required = true) PageQuery param) {
 		return userService.getPermissions(param);
 	}
 
@@ -45,7 +45,7 @@ public class PermissionController {
 	@GetMapping("/byRoleId")
 	@ApiOperation(value = "根据角色ID获取权限信息接口")
 	public Result getRolePermissions(@RequestBody @ApiParam(value = "权限信息获取请求参数",
-		required = true) RolePermissionDTO param) {
+		required = true) RolePermissionQuery param) {
 		return userService.getRolePermissions(param);
 	}
 

@@ -1,7 +1,7 @@
 package frodez.controller.user;
 
 import frodez.service.user.facade.IUserService;
-import frodez.util.beans.param.PageDTO;
+import frodez.util.beans.param.PageQuery;
 import frodez.util.beans.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,7 +32,7 @@ public class RoleController {
 	 */
 	@GetMapping
 	@ApiOperation(value = "分页查询角色信息接口")
-	public Result getRoles(@RequestBody @ApiParam(value = PageDTO.DEFAULT_DESC, required = true) PageDTO param) {
+	public Result getRoles(@RequestBody @ApiParam(value = PageQuery.DEFAULT_DESC, required = true) PageQuery param) {
 		return userService.getRoles(param);
 	}
 

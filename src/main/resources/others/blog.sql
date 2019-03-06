@@ -73,4 +73,22 @@ CREATE TABLE `tb_user`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for tb_article
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_article`;
+CREATE TABLE `tb_article` (
+  `id` bigint(20) NOT NULL COMMENT '主键ID',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '修改时间',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `permit_level` tinyint(4) NOT NULL COMMENT '可见角色最低等级',
+  `is_delete` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否被删除  1:未删除  2:已删除',
+  `title` varchar(127) NOT NULL COMMENT '标题',
+  `description` tinytext COMMENT '简介',
+  `tag` varchar(255) DEFAULT NULL COMMENT '标签',
+  `content` text NOT NULL COMMENT '内容',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章表';
+
 SET FOREIGN_KEY_CHECKS = 1;

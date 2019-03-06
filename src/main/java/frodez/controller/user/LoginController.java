@@ -1,9 +1,9 @@
-package frodez.controller;
+package frodez.controller.user;
 
 import frodez.config.aop.request.annotation.RepeatLock;
-import frodez.dao.param.user.LoginDTO;
-import frodez.dao.param.user.RefreshDTO;
-import frodez.dao.param.user.RegisterDTO;
+import frodez.dao.param.user.LoginParam;
+import frodez.dao.param.user.RefreshParam;
+import frodez.dao.param.user.RegisterParam;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.ILoginService;
 import frodez.util.beans.result.Result;
@@ -42,7 +42,7 @@ public class LoginController {
 	@RepeatLock
 	@PostMapping("/auth")
 	@ApiOperation(value = "登录接口")
-	public Result auth(@RequestBody @ApiParam(value = "用户登录请求参数", required = true) LoginDTO param) {
+	public Result auth(@RequestBody @ApiParam(value = "用户登录请求参数", required = true) LoginParam param) {
 		return loginService.login(param);
 	}
 
@@ -54,7 +54,7 @@ public class LoginController {
 	@RepeatLock
 	@PostMapping("/refresh")
 	@ApiOperation(value = "重新登录接口")
-	public Result refresh(@RequestBody @ApiParam(value = "用户重新登录请求参数", required = true) RefreshDTO param) {
+	public Result refresh(@RequestBody @ApiParam(value = "用户重新登录请求参数", required = true) RefreshParam param) {
 		return loginService.refresh(param);
 	}
 
@@ -78,7 +78,7 @@ public class LoginController {
 	@RepeatLock
 	@PostMapping("/register")
 	@ApiOperation(value = "注册接口")
-	public Result register(@RequestBody @ApiParam(value = "用户注册请求参数", required = true) RegisterDTO param) {
+	public Result register(@RequestBody @ApiParam(value = "用户注册请求参数", required = true) RegisterParam param) {
 		return loginService.register(param);
 	}
 

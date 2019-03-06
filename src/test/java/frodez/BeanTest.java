@@ -1,6 +1,6 @@
 package frodez;
 
-import frodez.util.beans.param.PageDTO;
+import frodez.util.beans.param.PageQuery;
 import frodez.util.json.JSONUtil;
 import java.util.Date;
 import lombok.Data;
@@ -8,10 +8,10 @@ import lombok.Data;
 public class BeanTest {
 
 	public static void main(String[] args) {
-		PageDTO page = new PageDTO(1, 2);
+		PageQuery page = new PageQuery(1, 2);
 		String json = JSONUtil.string(page);
 		System.out.println(json);
-		page = JSONUtil.as(json, PageDTO.class);
+		page = JSONUtil.as(json, PageQuery.class);
 		json = JSONUtil.string(page);
 		System.out.println(json);
 		//		Date date = new Date();

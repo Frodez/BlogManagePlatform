@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class PageDTO implements Serializable {
+public class PageQuery implements Serializable {
 
 	/**
 	 *
@@ -33,9 +33,9 @@ public class PageDTO implements Serializable {
 	 * @author Frodez
 	 * @date 2019-03-06
 	 */
-	public static PageDTO resonable(PageDTO page) {
+	public static PageQuery resonable(PageQuery page) {
 		if (page == null) {
-			return new PageDTO(DefPage.PAGE_NUM, DefPage.PAGE_SIZE);
+			return new PageQuery(DefPage.PAGE_NUM, DefPage.PAGE_SIZE);
 		}
 		return page;
 	}

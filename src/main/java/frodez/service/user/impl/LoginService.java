@@ -7,9 +7,9 @@ import frodez.config.security.util.TokenManager;
 import frodez.constant.user.UserStatusEnum;
 import frodez.dao.mapper.user.UserMapper;
 import frodez.dao.model.user.User;
-import frodez.dao.param.user.LoginDTO;
-import frodez.dao.param.user.RefreshDTO;
-import frodez.dao.param.user.RegisterDTO;
+import frodez.dao.param.user.LoginParam;
+import frodez.dao.param.user.RefreshParam;
+import frodez.dao.param.user.RegisterParam;
 import frodez.dao.result.user.PermissionInfo;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.vm.facade.TokenCache;
@@ -64,7 +64,7 @@ public class LoginService implements ILoginService {
 
 	@Check
 	@Override
-	public Result login(LoginDTO param) {
+	public Result login(LoginParam param) {
 		try {
 			Result result = authorityService.getUserInfo(param.getUsername());
 			if (result.isUnable()) {
@@ -93,7 +93,7 @@ public class LoginService implements ILoginService {
 
 	@Check
 	@Override
-	public Result refresh(RefreshDTO param) {
+	public Result refresh(RefreshParam param) {
 		try {
 			Result result = authorityService.getUserInfo(param.getUsername());
 			if (result.isUnable()) {
@@ -143,7 +143,7 @@ public class LoginService implements ILoginService {
 	@Check
 	@Transactional
 	@Override
-	public Result register(RegisterDTO param) {
+	public Result register(RegisterParam param) {
 		try {
 			User user = new User();
 			user.setCreateTime(new Date());
