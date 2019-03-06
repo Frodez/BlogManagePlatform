@@ -1,7 +1,7 @@
 package frodez.service.user.facade;
 
 import frodez.dao.param.user.LoginDTO;
-import frodez.dao.param.user.ReLoginDTO;
+import frodez.dao.param.user.RefreshDTO;
 import frodez.dao.param.user.RegisterDTO;
 import frodez.util.beans.result.Result;
 import javax.validation.Valid;
@@ -26,7 +26,7 @@ public interface IUserService {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	Result refresh(@Valid @NotNull(message = "请求参数不能为空!") ReLoginDTO param);
+	Result refresh(@Valid @NotNull(message = "请求参数不能为空!") RefreshDTO param);
 
 	/**
 	 * 用户登出

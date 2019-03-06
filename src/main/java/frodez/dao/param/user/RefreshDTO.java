@@ -16,7 +16,7 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @NoArgsConstructor
 @ApiModel(value = "用户重新登录请求参数", description = "用户重新登录请求参数")
-public class ReLoginDTO implements Serializable {
+public class RefreshDTO implements Serializable {
 
 	/**
 	 *

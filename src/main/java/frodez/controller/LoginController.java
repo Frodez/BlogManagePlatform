@@ -2,7 +2,7 @@ package frodez.controller;
 
 import frodez.config.aop.request.annotation.RepeatLock;
 import frodez.dao.param.user.LoginDTO;
-import frodez.dao.param.user.ReLoginDTO;
+import frodez.dao.param.user.RefreshDTO;
 import frodez.dao.param.user.RegisterDTO;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.IUserService;
@@ -57,7 +57,7 @@ public class LoginController {
 	@RepeatLock
 	@PostMapping("/refresh")
 	@ApiOperation(value = "重新登录接口")
-	public Result refresh(@RequestBody @ApiParam(value = "用户重新登录请求参数", required = true) ReLoginDTO param) {
+	public Result refresh(@RequestBody @ApiParam(value = "用户重新登录请求参数", required = true) RefreshDTO param) {
 		return userService.refresh(param);
 	}
 

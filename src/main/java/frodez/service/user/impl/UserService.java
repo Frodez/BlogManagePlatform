@@ -8,7 +8,7 @@ import frodez.constant.user.UserStatusEnum;
 import frodez.dao.mapper.user.UserMapper;
 import frodez.dao.model.user.User;
 import frodez.dao.param.user.LoginDTO;
-import frodez.dao.param.user.ReLoginDTO;
+import frodez.dao.param.user.RefreshDTO;
 import frodez.dao.param.user.RegisterDTO;
 import frodez.dao.result.user.PermissionInfo;
 import frodez.dao.result.user.UserInfo;
@@ -93,7 +93,7 @@ public class UserService implements IUserService {
 
 	@Check
 	@Override
-	public Result refresh(ReLoginDTO param) {
+	public Result refresh(RefreshDTO param) {
 		try {
 			Result result = authorityService.getUserInfo(param.getUsername());
 			if (result.unable()) {
