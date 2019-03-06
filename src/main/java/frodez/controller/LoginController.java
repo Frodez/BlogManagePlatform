@@ -5,7 +5,7 @@ import frodez.dao.param.user.LoginDTO;
 import frodez.dao.param.user.RefreshDTO;
 import frodez.dao.param.user.RegisterDTO;
 import frodez.service.user.facade.IAuthorityService;
-import frodez.service.user.facade.IUserService;
+import frodez.service.user.facade.ILoginService;
 import frodez.util.beans.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,11 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "登录控制器")
 public class LoginController {
 
-	/**
-	 * 用户服务
-	 */
 	@Autowired
-	private IUserService userService;
+	private ILoginService loginService;
 
 	@Autowired
 	private IAuthorityService authorityService;
@@ -46,7 +43,7 @@ public class LoginController {
 	@PostMapping("/auth")
 	@ApiOperation(value = "登录接口")
 	public Result auth(@RequestBody @ApiParam(value = "用户登录请求参数", required = true) LoginDTO param) {
-		return userService.login(param);
+		return loginService.login(param);
 	}
 
 	/**
@@ -58,7 +55,7 @@ public class LoginController {
 	@PostMapping("/refresh")
 	@ApiOperation(value = "重新登录接口")
 	public Result refresh(@RequestBody @ApiParam(value = "用户重新登录请求参数", required = true) RefreshDTO param) {
-		return userService.refresh(param);
+		return loginService.refresh(param);
 	}
 
 	/**
@@ -70,7 +67,7 @@ public class LoginController {
 	@PostMapping("/out")
 	@ApiOperation(value = "登出接口")
 	public Result out() {
-		return userService.logout();
+		return loginService.logout();
 	}
 
 	/**
@@ -82,7 +79,7 @@ public class LoginController {
 	@PostMapping("/register")
 	@ApiOperation(value = "注册接口")
 	public Result register(@RequestBody @ApiParam(value = "用户注册请求参数", required = true) RegisterDTO param) {
-		return userService.register(param);
+		return loginService.register(param);
 	}
 
 	/**

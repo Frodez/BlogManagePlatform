@@ -1,9 +1,8 @@
 package frodez.service.user.facade;
 
 import frodez.config.aop.validation.annotation.common.NotNullParam;
-import frodez.dao.param.user.LoginDTO;
-import frodez.dao.param.user.RefreshDTO;
-import frodez.dao.param.user.RegisterDTO;
+import frodez.dao.param.user.RolePermissionDTO;
+import frodez.util.beans.param.PageDTO;
 import frodez.util.beans.result.Result;
 import javax.validation.Valid;
 
@@ -15,31 +14,31 @@ import javax.validation.Valid;
 public interface IUserService {
 
 	/**
-	 * 用户登录
-	 * @author Frodez
-	 * @date 2018-12-03
-	 */
-	Result login(@Valid @NotNullParam LoginDTO param);
-
-	/**
-	 * 用户重新登录
-	 * @author Frodez
-	 * @date 2019-02-27
-	 */
-	Result refresh(@Valid @NotNullParam RefreshDTO param);
-
-	/**
-	 * 用户登出
-	 * @author Frodez
-	 * @date 2019-02-19
-	 */
-	Result logout();
-
-	/**
-	 * 用户注册
+	 * 添加角色
 	 * @author Frodez
 	 * @date 2019-02-02
 	 */
-	Result register(@Valid @NotNullParam RegisterDTO param);
+	Result addRole();
+
+	/**
+	 * 分页查询权限信息
+	 * @author Frodez
+	 * @date 2018-03-06
+	 */
+	Result getPermissions(@Valid @NotNullParam PageDTO param);
+
+	/**
+	 * 根据角色ID获取对应权限信息
+	 * @author Frodez
+	 * @date 2019-03-06
+	 */
+	Result getRolePermissions(@Valid @NotNullParam RolePermissionDTO param);
+
+	/**
+	 * 分页查询角色信息
+	 * @author Frodez
+	 * @date 2019-03-06
+	 */
+	Result getRoles(@Valid @NotNullParam PageDTO param);
 
 }

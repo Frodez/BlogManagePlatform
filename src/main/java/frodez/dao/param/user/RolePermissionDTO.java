@@ -1,6 +1,7 @@
 package frodez.dao.param.user;
 
 import frodez.util.beans.param.PageDTO;
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -23,12 +24,14 @@ public class RolePermissionDTO implements Serializable {
 	 * 角色ID
 	 */
 	@NotNull(message = "角色ID不能为空!")
+	@ApiModelProperty(value = "角色ID", required = true)
 	private Long roleId;
 
 	/**
-	 * 分页参数
+	 * 分页查询参数
 	 */
 	@Valid
+	@ApiModelProperty(value = PageDTO.DEFAULT_DESC)
 	private PageDTO page;
 
 }

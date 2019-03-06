@@ -1,6 +1,5 @@
 package frodez.service.user.impl;
 
-import com.github.pagehelper.PageHelper;
 import frodez.config.aop.validation.annotation.common.Check;
 import frodez.constant.user.UserStatusEnum;
 import frodez.dao.mapper.user.PermissionMapper;
@@ -8,12 +7,10 @@ import frodez.dao.mapper.user.RoleMapper;
 import frodez.dao.mapper.user.UserMapper;
 import frodez.dao.model.user.Role;
 import frodez.dao.model.user.User;
-import frodez.dao.param.user.RolePermissionDTO;
 import frodez.dao.result.user.PermissionInfo;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.vm.facade.NameCache;
 import frodez.service.user.facade.IAuthorityService;
-import frodez.util.beans.param.PageDTO;
 import frodez.util.beans.result.Result;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -41,11 +38,6 @@ public class AuthorityService implements IAuthorityService {
 
 	@Autowired
 	private RoleMapper roleMapper;
-
-	@Override
-	public Result addRole() {
-		return Result.errorService();
-	}
 
 	@Check
 	@Override
@@ -93,38 +85,6 @@ public class AuthorityService implements IAuthorityService {
 	public Result getAllPermissions() {
 		try {
 			return Result.success(permissionMapper.selectAll());
-		} catch (Exception e) {
-			log.error("[getAllPermissions]", e);
-			return Result.errorService();
-		}
-	}
-
-	/**
-	 * 获取所有角色信息
-	 * @author Frodez
-	 * @date 2019-03-06
-	 */
-	@Override
-	public Result getAllRoles() {
-		try {
-			return Result.success(roleMapper.selectAll());
-		} catch (Exception e) {
-			log.error("[getAllRoles]", e);
-			return Result.errorService();
-		}
-	}
-
-	/**
-	 * 根据角色ID获取对应权限信息
-	 * @author Frodez
-	 * @date 2019-03-06
-	 */
-	@Check
-	@Override
-	public Result getRolePermissions(RolePermissionDTO param) {
-		try {
-			return Result.page(PageHelper.startPage(PageDTO.resonable(param.getPage())).doSelectPage(
-				() -> permissionMapper.getPermissions(param.getRoleId())));
 		} catch (Exception e) {
 			log.error("[getAllPermissions]", e);
 			return Result.errorService();

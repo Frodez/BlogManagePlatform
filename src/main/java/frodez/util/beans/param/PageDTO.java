@@ -26,6 +26,8 @@ public class PageDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	public static final String DEFAULT_DESC = "分页查询参数";
+
 	/**
 	 * 合理化请求参数
 	 * @author Frodez
@@ -34,9 +36,6 @@ public class PageDTO implements Serializable {
 	public static PageDTO resonable(PageDTO page) {
 		if (page == null) {
 			return new PageDTO(DefPage.PAGE_NUM, DefPage.PAGE_SIZE);
-		}
-		if (page.getPageSize() > DefPage.MAX_PAGE_SIZE) {
-			page.setPageSize(DefPage.MAX_PAGE_SIZE);
 		}
 		return page;
 	}
