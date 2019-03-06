@@ -1,11 +1,10 @@
 package frodez.service.user.facade;
 
-import frodez.util.beans.param.PageDTO;
+import frodez.config.aop.validation.annotation.common.NotNullParam;
+import frodez.dao.param.user.RolePermissionDTO;
 import frodez.util.beans.result.Result;
-import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * 权限信息服务
@@ -47,6 +46,6 @@ public interface IAuthorityService {
 	 * @author Frodez
 	 * @date 2019-03-06
 	 */
-	Result getRolePermissions(@NotNull(message = "角色ID不能为空!") Long roleId, @Valid @Nullable PageDTO page);
+	Result getRolePermissions(@Valid @NotNullParam RolePermissionDTO param);
 
 }

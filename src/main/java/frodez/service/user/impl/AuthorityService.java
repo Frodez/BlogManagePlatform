@@ -1,6 +1,5 @@
 package frodez.service.user.impl;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import frodez.config.aop.validation.annotation.common.Check;
 import frodez.constant.user.UserStatusEnum;
@@ -9,6 +8,7 @@ import frodez.dao.mapper.user.RoleMapper;
 import frodez.dao.mapper.user.UserMapper;
 import frodez.dao.model.user.Role;
 import frodez.dao.model.user.User;
+import frodez.dao.param.user.RolePermissionDTO;
 import frodez.dao.result.user.PermissionInfo;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.vm.facade.NameCache;
@@ -16,7 +16,6 @@ import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.param.PageDTO;
 import frodez.util.beans.result.Result;
 import java.util.List;
-import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -120,12 +119,12 @@ public class AuthorityService implements IAuthorityService {
 	 * @author Frodez
 	 * @date 2019-03-06
 	 */
+	@Check
 	@Override
-	public Result getRolePermissions(Long roleId, @Nullable PageDTO page) {
+	public Result getRolePermissions(RolePermissionDTO param) {
 		try {
-			Page<PermissionInfo> info = PageHelper.startPage(PageDTO.resonable(page)).doSelectPage(
-				() -> permissionMapper.getPermissions(roleId));
-			return Result.page(info.getTotal(), info.getResult());
+			return Result.page(PageHelper.startPage(PageDTO.resonable(param.getPage())).doSelectPage(
+				() -> permissionMapper.getPermissions(param.getRoleId())));
 		} catch (Exception e) {
 			log.error("[getAllPermissions]", e);
 			return Result.errorService();

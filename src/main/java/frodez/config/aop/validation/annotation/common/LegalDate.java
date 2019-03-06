@@ -24,7 +24,7 @@ import javax.validation.Payload;
  * @date 2019-03-01
  */
 @Documented
-@Target({ ElementType.FIELD })
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = LegalDate.Validator.class)
 public @interface LegalDate {

@@ -1,9 +1,10 @@
 package frodez.util.beans.result;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
 import frodez.config.error.exception.ParseException;
 import frodez.util.json.JSONUtil;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,9 +99,21 @@ public class Result implements Serializable {
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */
-	public static <T> Result page(long total, Collection<T> data) {
-		Assert.notNull(data, "数据不能为空!");
-		return new Result(ResultEnum.SUCCESS, new PageVO<>(total, data));
+	public static <T> Result page(Page<T> page) {
+		Assert.notNull(page, "数据不能为空!");
+		return new Result(ResultEnum.SUCCESS, new PageVO<>(page.getTotal(), page.getPageNum(), page.getPageSize(), page
+			.getResult()));
+	}
+
+	/**
+	 * 返回分页查询类型结果(仅在成功时使用)
+	 * @author Frodez
+	 * @date 2019-01-15
+	 */
+	public static <T> Result page(PageInfo<T> page) {
+		Assert.notNull(page, "数据不能为空!");
+		return new Result(ResultEnum.SUCCESS, new PageVO<>(page.getTotal(), page.getPageNum(), page.getPageSize(), page
+			.getList()));
 	}
 
 	/**

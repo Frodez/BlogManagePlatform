@@ -28,6 +28,18 @@ public class PageVO<T> implements Serializable {
 	private long total;
 
 	/**
+	 * 页码数
+	 */
+	@Getter
+	private int pageNum;
+
+	/**
+	 * 单页容量
+	 */
+	@Getter
+	private int pageSize;
+
+	/**
 	 * 分页数据
 	 */
 	@Getter

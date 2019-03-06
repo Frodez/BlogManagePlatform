@@ -17,7 +17,7 @@ import javax.validation.ConstraintValidatorContext;
  * @date 2019-03-03
  */
 @Documented
-@Target({ ElementType.FIELD })
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = IdCard.Validator.class)
 public @interface IdCard {

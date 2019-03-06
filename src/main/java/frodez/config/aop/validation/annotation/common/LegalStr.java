@@ -17,13 +17,13 @@ import javax.validation.constraints.Pattern.Flag;
  * @date 2019-03-03
  */
 @Documented
-@Target({ ElementType.FIELD })
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = LegalStr.Validator.class)
 public @interface LegalStr {
 
 	// 错误信息
-	String message() default "身份证号格式错误!";
+	String message() default "字符串格式错误!";
 
 	// 正则表达式
 	String regex();

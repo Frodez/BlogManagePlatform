@@ -48,7 +48,7 @@ import javax.validation.Payload;
  * @date 2018-12-03
  */
 @Documented
-@Target({ ElementType.FIELD })
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = LegalEnum.Validator.class)
 public @interface LegalEnum {
