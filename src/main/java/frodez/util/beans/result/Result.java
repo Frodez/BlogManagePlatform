@@ -98,9 +98,9 @@ public class Result implements Serializable {
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */
-	public static <T> Result page(int total, Collection<T> data) {
+	public static <T> Result page(long total, Collection<T> data) {
 		Assert.notNull(data, "数据不能为空!");
-		return new Result(ResultEnum.SUCCESS, new Page<>(total, data));
+		return new Result(ResultEnum.SUCCESS, new PageVO<>(total, data));
 	}
 
 	/**
@@ -248,13 +248,13 @@ public class Result implements Serializable {
 	 * @date 2018-11-13
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> Page<T> page(Class<T> klass) throws ClassCastException, ParseException {
+	public <T> PageVO<T> page(Class<T> klass) throws ClassCastException, ParseException {
 		Assert.notNull(klass, "类型不能为空!");
 		check();
 		if (data == null) {
 			throw new ParseException("数据为空!");
 		}
-		return (Page<T>) data;
+		return (PageVO<T>) data;
 	}
 
 	/**

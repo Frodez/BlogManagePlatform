@@ -1,5 +1,6 @@
 package frodez.service.user.impl;
 
+import frodez.config.aop.validation.annotation.common.Check;
 import frodez.config.error.exception.ServiceException;
 import frodez.config.error.status.ErrorCode;
 import frodez.config.security.util.TokenManager;
@@ -61,6 +62,7 @@ public class UserService implements IUserService {
 	@Autowired
 	private UserMapper userMapper;
 
+	@Check
 	@Override
 	public Result login(LoginDTO param) {
 		try {
@@ -89,6 +91,7 @@ public class UserService implements IUserService {
 		}
 	}
 
+	@Check
 	@Override
 	public Result refresh(ReLoginDTO param) {
 		try {
@@ -137,8 +140,9 @@ public class UserService implements IUserService {
 		}
 	}
 
-	@Override
+	@Check
 	@Transactional
+	@Override
 	public Result register(RegisterDTO param) {
 		try {
 			User user = new User();

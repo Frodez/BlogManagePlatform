@@ -1,6 +1,5 @@
 package frodez.service.user.facade;
 
-import frodez.config.aop.validation.annotation.common.Check;
 import frodez.dao.param.user.LoginDTO;
 import frodez.dao.param.user.ReLoginDTO;
 import frodez.dao.param.user.RegisterDTO;
@@ -20,7 +19,6 @@ public interface IUserService {
 	 * @author Frodez
 	 * @date 2018-12-03
 	 */
-	@Check
 	Result login(@Valid @NotNull(message = "请求参数不能为空!") LoginDTO param);
 
 	/**
@@ -28,7 +26,6 @@ public interface IUserService {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	@Check
 	Result refresh(@Valid @NotNull(message = "请求参数不能为空!") ReLoginDTO param);
 
 	/**
@@ -43,7 +40,6 @@ public interface IUserService {
 	 * @author Frodez
 	 * @date 2019-02-02
 	 */
-	@Check
 	Result register(@Valid @NotNull(message = "请求参数不能为空!") RegisterDTO param);
 
 }

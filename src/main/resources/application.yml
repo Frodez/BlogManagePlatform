@@ -12,7 +12,7 @@ mybatis:
 pagehelper:
   helperDialect: mysql
   params: count=countSql
-  reasonable: true
+  pageSizeZero: true
   supportMethodsArguments: true
   
 server:

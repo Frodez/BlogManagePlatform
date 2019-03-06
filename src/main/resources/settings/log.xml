@@ -33,7 +33,7 @@
         </File> -->
         <!-- 这个会打印出所有的info及以下级别的信息，每次大小超过size，
         则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RollingFile name="RollingFileInfo" fileName="D:/Code/eclipse/Logs/BlogManagePlatform/info.log"
+        <RollingFile name="RollingFileInfo" fileName="D:/Code/Eclipse/Logs/BlogManagePlatform/info.log"
                      filePattern="D:/Code/eclipse/Logs/BlogManagePlatform/history/info-%d{yyyy-MM-dd}-%i.log">
             <Filters>
                 <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
@@ -47,7 +47,7 @@
             </Policies>
         </RollingFile>
  
-        <RollingFile name="RollingFileWarn" fileName="D:/Code/eclipse/Logs/BlogManagePlatform/warn.log"
+        <RollingFile name="RollingFileWarn" fileName="D:/Code/Eclipse/Logs/BlogManagePlatform/warn.log"
                      filePattern="D:/Code/eclipse/Logs/BlogManagePlatform/history/warn-%d{yyyy-MM-dd}-%i.log">
             <Filters>
                 <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
@@ -62,7 +62,7 @@
             <DefaultRolloverStrategy max="30"/>
         </RollingFile>
  
-        <RollingFile name="RollingFileError" fileName="D:/Code/eclipse/Logs/BlogManagePlatform/error.log"
+        <RollingFile name="RollingFileError" fileName="D:/Code/Eclipse/Logs/BlogManagePlatform/error.log"
                      filePattern="D:/Code/eclipse/Logs/BlogManagePlatform/history/error-%d{yyyy-MM-dd}-%i.log">
             <ThresholdFilter level="ERROR"/>
             <PatternLayout pattern="%d{HH:mm:ss:SSS} %-5p - %l - %m%n"/>

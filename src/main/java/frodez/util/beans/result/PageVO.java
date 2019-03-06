@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class Page<T> implements Serializable {
+public class PageVO<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -25,7 +25,7 @@ public class Page<T> implements Serializable {
 	 * 查询总数
 	 */
 	@Getter
-	private int total;
+	private long total;
 
 	/**
 	 * 分页数据
