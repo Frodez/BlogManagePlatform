@@ -41,7 +41,7 @@ public class ArticleService implements IArticleService {
 			if (UserUtil.get().getRoleLevel() > article.getPermitLevel()) {
 				return Result.noAccess();
 			}
-			if (article.getIsDelete().equals(DeleteEnum.YES.getVal())) {
+			if (DeleteEnum.YES.getVal() == article.getIsDelete()) {
 				return Result.fail("文章已删除");
 			}
 			Result result = userService.getUserInfo(article.getUserId());
