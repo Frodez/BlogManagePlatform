@@ -67,7 +67,7 @@ public class UserService implements IUserService {
 	public Result login(LoginDTO param) {
 		try {
 			Result result = authorityService.getUserInfo(param.getUsername());
-			if (result.unable()) {
+			if (result.isUnable()) {
 				return result;
 			}
 			UserInfo userInfo = result.as(UserInfo.class);
@@ -96,7 +96,7 @@ public class UserService implements IUserService {
 	public Result refresh(RefreshDTO param) {
 		try {
 			Result result = authorityService.getUserInfo(param.getUsername());
-			if (result.unable()) {
+			if (result.isUnable()) {
 				return result;
 			}
 			UserInfo userInfo = result.as(UserInfo.class);

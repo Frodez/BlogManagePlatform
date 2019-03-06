@@ -340,7 +340,7 @@ public class Result implements Serializable {
 	 * @date 2019-02-13
 	 */
 	public void check() throws ParseException {
-		if (code != ResultEnum.SUCCESS.getVal()) {
+		if (code != ResultEnum.SUCCESS.val) {
 			throw new ParseException(message);
 		}
 	}
@@ -350,7 +350,7 @@ public class Result implements Serializable {
 	 * <strong>常用例子:</strong>
 	 *
 	 * <pre>
-	 * if (result.unable()) {
+	 * if (result.isUnable()) {
 	 * 	return result;
 	 * }
 	 * </pre>
@@ -358,8 +358,8 @@ public class Result implements Serializable {
 	 * @author Frodez
 	 * @date 2018-11-13
 	 */
-	public boolean unable() {
-		return code != ResultEnum.SUCCESS.getVal();
+	public boolean isUnable() {
+		return code != ResultEnum.SUCCESS.val;
 	}
 
 	/**
@@ -368,7 +368,7 @@ public class Result implements Serializable {
 	 * @date 2019-03-02
 	 */
 	public HttpStatus httpStatus() {
-		return ResultEnum.of(code).getStatus();
+		return ResultEnum.of(code).status;
 	}
 
 	/**
