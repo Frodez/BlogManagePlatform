@@ -164,6 +164,13 @@
 		    <artifactId>disruptor</artifactId>
 		    <version>3.4.2</version>
 		</dependency>
+		
+		<!-- org.eclipse.jdt.core -->
+		<dependency>
+		    <groupId>org.eclipse.jdt</groupId>
+		    <artifactId>org.eclipse.jdt.core</artifactId>
+		    <version>3.16.0</version>
+		</dependency>
 
 	</dependencies>
 
