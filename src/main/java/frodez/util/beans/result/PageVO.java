@@ -1,5 +1,8 @@
 package frodez.util.beans.result;
 
+import frodez.constant.setting.DefDesc;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +20,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiModel(description = DefDesc.Message.PAGE_VO)
 public class PageVO<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -25,12 +29,14 @@ public class PageVO<T> implements Serializable {
 	 * 查询总数
 	 */
 	@Getter
+	@ApiModelProperty(value = "查询总数")
 	private long total;
 
 	/**
 	 * 页码数
 	 */
 	@Getter
+	@ApiModelProperty(value = "页码数")
 	private int pageNum;
 
 	/**

@@ -1,11 +1,15 @@
 package frodez.controller.user;
 
+import frodez.constant.setting.DefDesc;
+import frodez.dao.model.user.Role;
 import frodez.service.user.facade.IUserService;
 import frodez.util.beans.param.PageQuery;
 import frodez.util.beans.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +36,9 @@ public class RoleController {
 	 */
 	@GetMapping
 	@ApiOperation(value = "分页查询角色信息接口")
-	public Result getRoles(@RequestBody @ApiParam(value = PageQuery.DEFAULT_DESC, required = true) PageQuery param) {
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Role.class) })
+	public Result getRoles(@RequestBody @ApiParam(value = DefDesc.Message.PAGE_QUERY,
+		required = true) PageQuery param) {
 		return userService.getRoles(param);
 	}
 

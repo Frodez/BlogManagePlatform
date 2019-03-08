@@ -21,6 +21,11 @@ public class PropertyKey {
 		 */
 		public static final String BASE_PATH = "server.servlet.context-path";
 
+		/**
+		 * 项目端口
+		 */
+		public static final String PORT = "server.port";
+
 	}
 
 	/**

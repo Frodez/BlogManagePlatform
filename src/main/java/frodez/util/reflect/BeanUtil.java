@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Nullable;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.util.Assert;
@@ -19,8 +20,9 @@ public class BeanUtil {
 
 	private static BeanCopier getCopier(Object source, Object target) {
 		String key = source.getClass().getName() + target.getClass().getName();
-		if (!COPIER_CACHE.containsKey(key)) {
-			BeanCopier copier = BeanCopier.create(source.getClass(), target.getClass(), false);
+		BeanCopier copier = COPIER_CACHE.get(key);
+		if (copier == null) {
+			copier = BeanCopier.create(source.getClass(), target.getClass(), false);
 			COPIER_CACHE.put(key, copier);
 			return copier;
 		} else {
@@ -43,7 +45,8 @@ public class BeanUtil {
 	 * @date 2019-02-08
 	 */
 	@SuppressWarnings("unchecked")
-	public static Map<String, Object> map(Object bean) {
+	public static Map<String, Object> map(@Nullable Object bean) {
+		Assert.notNull(bean, "bean不能为空!");
 		Map<String, Object> map = new HashMap<>();
 		map.putAll(BeanMap.create(bean));
 		return map;
@@ -55,6 +58,7 @@ public class BeanUtil {
 	 * @date 2019-02-08
 	 */
 	public static <T> T as(Map<String, Object> map, Class<T> klass) {
+		Assert.notNull(map, "map不能为空!");
 		try {
 			T bean = klass.getDeclaredConstructor().newInstance();
 			BeanMap.create(bean).putAll(map);

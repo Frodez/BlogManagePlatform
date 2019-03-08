@@ -45,7 +45,7 @@ public class ArticleService implements IArticleService {
 				return Result.fail("文章已删除");
 			}
 			Result result = userService.getUserInfo(article.getUserId());
-			if (result.isUnable()) {
+			if (result.unable()) {
 				return result;
 			}
 			UserInfo userInfo = result.as(UserInfo.class);

@@ -62,5 +62,3 @@ spring:
         max-wait: 45000
         max-idle: -1
         min-idle: 10
-  session:
-    store-type: redis

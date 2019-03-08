@@ -3,7 +3,10 @@ package frodez.util.beans.result;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import frodez.config.error.exception.ParseException;
+import frodez.constant.setting.DefDesc;
 import frodez.util.json.JSONUtil;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +24,7 @@ import org.springframework.util.Assert;
  * @date 2018-11-13
  */
 @EqualsAndHashCode
+@ApiModel(description = DefDesc.Message.RESULT)
 public class Result implements Serializable {
 
 	/**
@@ -48,18 +52,21 @@ public class Result implements Serializable {
 	 * 状态
 	 */
 	@Getter
+	@ApiModelProperty(value = "状态", example = "1000")
 	private int code;
 
 	/**
 	 * 消息
 	 */
 	@Getter
+	@ApiModelProperty(value = "消息", example = "成功")
 	private String message;
 
 	/**
 	 * 数据
 	 */
 	@Getter
+	@ApiModelProperty(value = "数据")
 	private Object data;
 
 	/**
@@ -358,7 +365,7 @@ public class Result implements Serializable {
 	 * @author Frodez
 	 * @date 2018-11-13
 	 */
-	public boolean isUnable() {
+	public boolean unable() {
 		return code != ResultEnum.SUCCESS.val;
 	}
 

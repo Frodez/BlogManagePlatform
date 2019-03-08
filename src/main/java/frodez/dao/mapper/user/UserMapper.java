@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 /**
  * @description 用户表
  * @table tb_user
- * @date 2019-01-13
+ * @date 2019-03-06
  */
 @Repository
 public interface UserMapper extends DataMapper<User> {

@@ -47,7 +47,7 @@ public class BaseRedisCache {
 		if (value == null) {
 			return null;
 		}
-		if (value.getClass() == String.class) {
+		if (value instanceof String) {
 			return (String) value;
 		}
 		return JSONUtil.string(value);
@@ -216,7 +216,7 @@ public class BaseRedisCache {
 		if (value == null) {
 			return null;
 		}
-		if (value.getClass() == String.class) {
+		if (value instanceof String) {
 			return (String) value;
 		}
 		return JSONUtil.string(value);

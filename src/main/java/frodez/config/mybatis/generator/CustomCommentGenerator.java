@@ -28,19 +28,27 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 		klass.addImportedType("javax.persistence.Table");
 		klass.addImportedType("javax.persistence.Column");
 		klass.addImportedType("javax.persistence.Entity");
+		klass.addImportedType("io.swagger.annotations.ApiModel");
+		klass.addImportedType("io.swagger.annotations.ApiModelProperty");
 		for (IntrospectedColumn iter : table.getAllColumns()) {
 			if (!iter.isNullable()) {
 				klass.addImportedType("javax.validation.constraints.NotNull");
 			}
 		}
 		klass.addJavaDocLine("/**");
-		klass.addJavaDocLine(" * @description " + (table.getRemarks() == null ? "" : table.getRemarks()));
+		String tableRemark = table.getRemarks() == null ? "" : table.getRemarks();
+		klass.addJavaDocLine(" * @description " + tableRemark);
 		klass.addJavaDocLine(" * @table " + table.getFullyQualifiedTable());
 		klass.addJavaDocLine(" * @date " + LocalDate.now().toString());
 		klass.addJavaDocLine(" */");
 		klass.addAnnotation("@Data");
 		klass.addAnnotation("@Entity");
+		String description = tableRemark;
+		if (description.endsWith("表")) {
+			description = description.substring(0, description.length() - 1).concat("返回数据");
+		}
 		klass.addAnnotation("@Table(name = \"" + table.getFullyQualifiedTable() + "\")");
+		klass.addAnnotation("@ApiModel(description = \"" + description + "\")");
 	}
 
 	/**
@@ -52,14 +60,20 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 	public void addFieldComment(Field field, IntrospectedTable table, IntrospectedColumn column) {
 		String columnName = column.getActualColumnName();
 		List<IntrospectedColumn> primaryKey = table.getPrimaryKeyColumns();
+		String remark = column.getRemarks();
 		for (IntrospectedColumn pk : primaryKey) {
 			if (columnName.equals(pk.getActualColumnName())) {
 				field.addAnnotation("@Id");
+				String tableRemark = table.getRemarks();
+				if (tableRemark.endsWith("表")) {
+					tableRemark = tableRemark.substring(0, tableRemark.length() - 1);
+				}
+				remark = tableRemark + remark;
 				break;
 			}
 		}
 		field.addJavaDocLine("/** ");
-		field.addJavaDocLine(" * " + column.getRemarks());
+		field.addJavaDocLine(" * " + remark);
 		String defaultValue = column.getDefaultValue();
 		if (EmptyUtil.no(defaultValue)) {
 			if (field.getType().getShortName().equals("Byte")) {
@@ -99,6 +113,12 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 		}
 		columnAnnotation = columnAnnotation + ")";
 		field.addAnnotation(columnAnnotation);
+		String apiModelProperty = "@ApiModelProperty(value = \"" + remark + "\"";
+		if (EmptyUtil.no(defaultValue)) {
+			apiModelProperty = apiModelProperty + ", example = \"" + defaultValue + "\"";
+		}
+		apiModelProperty = apiModelProperty + ")";
+		field.addAnnotation(apiModelProperty);
 	}
 
 }

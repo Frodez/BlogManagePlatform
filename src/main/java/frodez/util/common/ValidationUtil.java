@@ -1,5 +1,6 @@
 package frodez.util.common;
 
+import frodez.constant.setting.DefDesc;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import javax.validation.ConstraintViolation;
@@ -24,19 +25,14 @@ public class ValidationUtil {
 	private static final ExecutableValidator EXEC_VAL = VAL.forExecutables();
 
 	/**
-	 * 空对象的默认返回值
-	 */
-	private static final String DEFAULT_NULL_MESSAGE = "输入不能为空!";
-
-	/**
 	 * 对对象进行验证,如果验证通过,返回空字符串<br>
 	 * 空对象默认返回值参见ValidationUtil.DEFAULT_NULL_MESSAGE
 	 * @author Frodez
 	 * @param Object 需要验证的对象
 	 * @date 2018-12-03
 	 */
-	public static String validate(Object object) {
-		return validate(object, DEFAULT_NULL_MESSAGE);
+	public static String validate(final Object object) {
+		return validate(object, DefDesc.Warn.NULL_WARN);
 	}
 
 	/**
@@ -46,7 +42,7 @@ public class ValidationUtil {
 	 * @param nullMessage 验证对象为空时返回的字符串
 	 * @date 2018-12-03
 	 */
-	public static String validate(Object object, String nullMessage) {
+	public static String validate(final Object object, String nullMessage) {
 		if (object == null) {
 			return nullMessage;
 		}
@@ -64,7 +60,7 @@ public class ValidationUtil {
 	 * @date 2019-01-12
 	 */
 	public static String validateParam(Object instance, Method method, Object[] args) {
-		return validateParam(instance, method, args, DEFAULT_NULL_MESSAGE);
+		return validateParam(instance, method, args, DefDesc.Warn.NULL_WARN);
 	}
 
 	/**

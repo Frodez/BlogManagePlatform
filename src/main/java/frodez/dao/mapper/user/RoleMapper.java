@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 /**
  * @description 用户角色表
  * @table tb_role
- * @date 2019-01-13
+ * @date 2019-03-06
  */
 @Repository
 public interface RoleMapper extends DataMapper<Role> {

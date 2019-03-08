@@ -40,7 +40,7 @@ public class DateUtil {
 	 * @author Frodez
 	 * @date 2019-01-28
 	 */
-	public static String dateStr(Date date) {
+	public static String dateStr(final Date date) {
 		Assert.notNull(date, "参数不能为空!");
 		return LocalDate.ofInstant(date.toInstant(), ZoneId.systemDefault()).toString();
 	}

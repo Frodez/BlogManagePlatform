@@ -67,7 +67,7 @@ public class LoginService implements ILoginService {
 	public Result login(LoginParam param) {
 		try {
 			Result result = authorityService.getUserInfo(param.getUsername());
-			if (result.isUnable()) {
+			if (result.unable()) {
 				return result;
 			}
 			UserInfo userInfo = result.as(UserInfo.class);
@@ -96,7 +96,7 @@ public class LoginService implements ILoginService {
 	public Result refresh(RefreshParam param) {
 		try {
 			Result result = authorityService.getUserInfo(param.getUsername());
-			if (result.isUnable()) {
+			if (result.unable()) {
 				return result;
 			}
 			UserInfo userInfo = result.as(UserInfo.class);

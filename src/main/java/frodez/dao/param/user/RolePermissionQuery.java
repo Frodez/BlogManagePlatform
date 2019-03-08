@@ -1,5 +1,6 @@
 package frodez.dao.param.user;
 
+import frodez.constant.setting.DefDesc;
 import frodez.util.beans.param.PageQuery;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -31,7 +32,7 @@ public class RolePermissionQuery implements Serializable {
 	 * 分页查询参数
 	 */
 	@Valid
-	@ApiModelProperty(value = PageQuery.DEFAULT_DESC)
+	@ApiModelProperty(value = DefDesc.Message.PAGE_QUERY)
 	private PageQuery page;
 
 }

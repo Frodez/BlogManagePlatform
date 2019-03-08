@@ -17,7 +17,7 @@ import org.hibernate.validator.constraints.Length;
  */
 @Data
 @NoArgsConstructor
-@ApiModel(value = "用户注册请求参数", description = "用户注册请求参数")
+@ApiModel(description = "用户注册请求参数")
 public class RegisterParam implements Serializable {
 
 	/**

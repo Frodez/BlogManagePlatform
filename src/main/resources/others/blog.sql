@@ -22,7 +22,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_permission`;
 CREATE TABLE `tb_permission`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `create_time` datetime(0) NOT NULL COMMENT '创建时间',
   `type` tinyint(4) NOT NULL DEFAULT 0 COMMENT '类型  0:ALL  1:GET  2:POST  3:DELETE  4:PUT',
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '权限名称',
@@ -36,7 +36,7 @@ CREATE TABLE `tb_permission`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_role`;
 CREATE TABLE `tb_role`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `create_time` datetime(0) NOT NULL COMMENT '创建时间',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色名称',
   `level` tinyint(4) NOT NULL DEFAULT 0 COMMENT '角色等级  0-9  0最高,9最低',
@@ -49,7 +49,7 @@ CREATE TABLE `tb_role`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_role_permission`;
 CREATE TABLE `tb_role_permission`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `create_time` datetime(0) NOT NULL COMMENT '创建时间',
   `role_id` bigint(20) NOT NULL COMMENT '角色ID',
   `permission_id` bigint(20) NOT NULL COMMENT '权限ID',
@@ -61,7 +61,7 @@ CREATE TABLE `tb_role_permission`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_user`;
 CREATE TABLE `tb_user`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `create_time` datetime(0) NOT NULL COMMENT '创建时间',
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户名',
   `password` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '密码',
@@ -78,10 +78,10 @@ CREATE TABLE `tb_user`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_article`;
 CREATE TABLE `tb_article` (
-  `id` bigint(20) NOT NULL COMMENT '主键ID',
+  `id` bigint(20) NOT NULL COMMENT 'ID',
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NOT NULL COMMENT '修改时间',
-  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `user_id` bigint(20) NOT NULL COMMENT '作者ID',
   `permit_level` tinyint(4) NOT NULL COMMENT '可见角色最低等级',
   `is_delete` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否被删除  1:未删除  2:已删除',
   `title` varchar(127) NOT NULL COMMENT '标题',

@@ -1,5 +1,7 @@
 package frodez.dao.model.article;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -17,16 +19,18 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "tb_article")
+@ApiModel(description = "文章返回数据")
 public class Article implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 主键ID
+	 * 文章ID
 	 */
 	@Id
 	@NotNull
 	@Column(name = "id")
+	@ApiModelProperty(value = "文章ID")
 	private Long id;
 
 	/**
@@ -34,6 +38,7 @@ public class Article implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "create_time")
+	@ApiModelProperty(value = "创建时间")
 	private Date createTime;
 
 	/**
@@ -41,13 +46,15 @@ public class Article implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "update_time")
+	@ApiModelProperty(value = "修改时间")
 	private Date updateTime;
 
 	/**
-	 * 用户ID
+	 * 作者ID
 	 */
 	@NotNull
 	@Column(name = "user_id")
+	@ApiModelProperty(value = "作者ID")
 	private Long userId;
 
 	/**
@@ -55,6 +62,7 @@ public class Article implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "permit_level")
+	@ApiModelProperty(value = "可见角色最低等级")
 	private Byte permitLevel;
 
 	/**
@@ -62,6 +70,7 @@ public class Article implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "is_delete")
+	@ApiModelProperty(value = "是否被删除  1:未删除  2:已删除", example = "1")
 	private Byte isDelete = 1;
 
 	/**
@@ -69,18 +78,21 @@ public class Article implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "title", length = 127)
+	@ApiModelProperty(value = "标题")
 	private String title;
 
 	/**
 	 * 简介
 	 */
 	@Column(name = "description", length = 255)
+	@ApiModelProperty(value = "简介")
 	private String description;
 
 	/**
 	 * 标签
 	 */
 	@Column(name = "tag", length = 255)
+	@ApiModelProperty(value = "标签")
 	private String tag;
 
 	/**
@@ -88,5 +100,6 @@ public class Article implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "content", length = 65535)
+	@ApiModelProperty(value = "内容")
 	private String content;
 }

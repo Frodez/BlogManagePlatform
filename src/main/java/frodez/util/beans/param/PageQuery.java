@@ -1,6 +1,8 @@
 package frodez.util.beans.param;
 
+import frodez.constant.setting.DefDesc;
 import frodez.constant.setting.DefPage;
+import io.swagger.annotations.ApiModel;
 import java.io.Serializable;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
@@ -19,14 +21,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@ApiModel(description = DefDesc.Message.PAGE_QUERY)
 public class PageQuery implements Serializable {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public static final String DEFAULT_DESC = "分页查询参数";
 
 	/**
 	 * 合理化请求参数

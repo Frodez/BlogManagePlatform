@@ -13,7 +13,7 @@ import org.aspectj.lang.reflect.MethodSignature;
  */
 public class AspectUtil {
 
-	private static MethodSignature methodSignature(JoinPoint point) {
+	private static MethodSignature methodSignature(final JoinPoint point) {
 		return MethodSignature.class.cast(point.getSignature());
 	}
 
@@ -22,7 +22,7 @@ public class AspectUtil {
 	 * @author Frodez
 	 * @date 2019-01-12
 	 */
-	public static Method method(JoinPoint point) {
+	public static Method method(final JoinPoint point) {
 		return methodSignature(point).getMethod();
 	}
 
@@ -31,7 +31,7 @@ public class AspectUtil {
 	 * @author Frodez
 	 * @date 2019-01-12
 	 */
-	public static String methodName(JoinPoint point) {
+	public static String methodName(final JoinPoint point) {
 		return methodSignature(point).getMethod().getName();
 	}
 
@@ -40,7 +40,7 @@ public class AspectUtil {
 	 * @author Frodez
 	 * @date 2019-01-12
 	 */
-	public static String fullMethodName(JoinPoint point) {
+	public static String fullMethodName(final JoinPoint point) {
 		Method method = methodSignature(point).getMethod();
 		return method.getDeclaringClass().getName() + "." + method.getName();
 	}
@@ -50,7 +50,7 @@ public class AspectUtil {
 	 * @author Frodez
 	 * @date 2019-01-09
 	 */
-	public static <T extends Annotation> T annotation(JoinPoint point, Class<T> klass) {
+	public static <T extends Annotation> T annotation(final JoinPoint point, final Class<T> klass) {
 		return methodSignature(point).getMethod().getAnnotation(klass);
 	}
 
@@ -59,7 +59,7 @@ public class AspectUtil {
 	 * @author Frodez
 	 * @date 2019-01-09
 	 */
-	public static Parameter[] params(JoinPoint point) {
+	public static Parameter[] params(final JoinPoint point) {
 		return methodSignature(point).getMethod().getParameters();
 	}
 
