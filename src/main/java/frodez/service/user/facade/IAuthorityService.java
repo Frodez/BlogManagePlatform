@@ -1,7 +1,7 @@
 package frodez.service.user.facade;
 
-import frodez.config.aop.validation.annotation.common.NotNullParam;
 import frodez.util.beans.result.Result;
+import javax.validation.constraints.NotNull;
 
 /**
  * 权限信息服务
@@ -15,7 +15,7 @@ public interface IAuthorityService {
 	 * @author Frodez
 	 * @date 2018-11-14
 	 */
-	Result getUserInfo(@NotNullParam String userName);
+	Result getUserInfo(@NotNull String userName);
 
 	/**
 	 * 获取所有权限信息

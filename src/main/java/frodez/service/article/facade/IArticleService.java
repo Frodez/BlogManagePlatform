@@ -1,8 +1,8 @@
 package frodez.service.article.facade;
 
-import frodez.config.aop.validation.annotation.common.NotNullParam;
 import frodez.util.beans.result.Result;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * 文章信息服务
@@ -11,6 +11,6 @@ import javax.validation.Valid;
  */
 public interface IArticleService {
 
-	Result getDetail(@Valid @NotNullParam Long articleId);
+	Result getDetail(@Valid @NotNull Long articleId);
 
 }

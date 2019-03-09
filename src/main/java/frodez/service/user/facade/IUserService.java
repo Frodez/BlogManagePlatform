@@ -1,10 +1,10 @@
 package frodez.service.user.facade;
 
-import frodez.config.aop.validation.annotation.common.NotNullParam;
 import frodez.dao.param.user.RolePermissionQuery;
 import frodez.util.beans.param.PageQuery;
 import frodez.util.beans.result.Result;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * 用户信息服务
@@ -18,7 +18,7 @@ public interface IUserService {
 	 * @author Frodez
 	 * @date 2019-03-06
 	 */
-	Result getUserInfo(@Valid @NotNullParam Long userId);
+	Result getUserInfo(@Valid @NotNull Long userId);
 
 	/**
 	 * 添加角色
@@ -32,20 +32,20 @@ public interface IUserService {
 	 * @author Frodez
 	 * @date 2018-03-06
 	 */
-	Result getPermissions(@Valid @NotNullParam PageQuery param);
+	Result getPermissions(@Valid @NotNull PageQuery param);
 
 	/**
 	 * 根据角色ID获取对应权限信息
 	 * @author Frodez
 	 * @date 2019-03-06
 	 */
-	Result getRolePermissions(@Valid @NotNullParam RolePermissionQuery param);
+	Result getRolePermissions(@Valid @NotNull RolePermissionQuery param);
 
 	/**
 	 * 分页查询角色信息
 	 * @author Frodez
 	 * @date 2019-03-06
 	 */
-	Result getRoles(@Valid @NotNullParam PageQuery param);
+	Result getRoles(@Valid @NotNull PageQuery param);
 
 }
