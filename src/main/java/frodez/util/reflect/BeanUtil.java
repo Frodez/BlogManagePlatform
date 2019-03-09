@@ -20,15 +20,8 @@ public class BeanUtil {
 	private static final Map<String, BeanCopier> COPIER_CACHE = new ConcurrentHashMap<>();
 
 	private static BeanCopier getCopier(Object source, Object target) {
-		String key = source.getClass().getName() + target.getClass().getName();
-		BeanCopier copier = COPIER_CACHE.get(key);
-		if (copier == null) {
-			copier = BeanCopier.create(source.getClass(), target.getClass(), false);
-			COPIER_CACHE.put(key, copier);
-			return copier;
-		} else {
-			return COPIER_CACHE.get(key);
-		}
+		return COPIER_CACHE.computeIfAbsent(new StringBuilder(source.getClass().getName()).append(target.getClass()
+			.getName()).toString(), i -> BeanCopier.create(source.getClass(), target.getClass(), false));
 	}
 
 	/**

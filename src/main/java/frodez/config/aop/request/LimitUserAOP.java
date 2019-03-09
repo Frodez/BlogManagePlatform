@@ -26,12 +26,8 @@ public class LimitUserAOP {
 
 	@Around("@annotation(frodez.config.aop.request.annotation.Limit)")
 	public Object limit(ProceedingJoinPoint point) throws Throwable {
-		String url = ContextUtil.request().getRequestURI();
-		RateLimiter limiter = limitCache.get(url);
-		if (limiter == null) {
-			limiter = RateLimiter.create(AspectUtil.annotation(point, Limit.class).value());
-			limitCache.put(url, limiter);
-		}
+		RateLimiter limiter = limitCache.computeIfAbsent(ContextUtil.request().getRequestURI(), i -> RateLimiter.create(
+			AspectUtil.annotation(point, Limit.class).value()));
 		//默认请求时长的100倍
 		if (!limiter.tryAcquire((long) (100 * 1000 / limiter.getRate()), DefTime.UNIT)) {
 			return Result.fail("请求超时");

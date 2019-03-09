@@ -26,35 +26,35 @@ public class ReflectUtil {
 	public static FastMethod getFastMethod(Class<?> klass, String method, Class<?>... params) {
 		String className = klass.getName();
 		FastClass fastClass = CGLIB_CLASS_CACHE.get(className);
-		if (fastClass != null) {
+		if (fastClass == null) {
+			fastClass = FastClass.create(klass);
 			int index = fastClass.getIndex(method, params);
 			if (index < 0) {
 				throw new NoSuchElementException();
 			}
-			FastMethod fastMethod = CGLIB_METHOD_CACHE.get(className).get(index);
-			if (fastMethod != null) {
+			synchronized (CGLIB_CLASS_CACHE) {
+				FastMethod fastMethod = fastClass.getMethod(method, params);
+				CGLIB_CLASS_CACHE.put(className, fastClass);
+				if (CGLIB_METHOD_CACHE.containsKey(className)) {
+					CGLIB_METHOD_CACHE.get(className).set(index, fastMethod);
+				}
+				List<FastMethod> methods = new ArrayList<>(fastClass.getMaxIndex());
+				methods.set(index, fastMethod);
+				CGLIB_METHOD_CACHE.put(className, methods);
 				return fastMethod;
 			}
-			fastMethod = fastClass.getMethod(method, params);
-			CGLIB_METHOD_CACHE.get(className).set(index, fastMethod);
-			return fastMethod;
 		}
-		fastClass = FastClass.create(klass);
 		int index = fastClass.getIndex(method, params);
 		if (index < 0) {
 			throw new NoSuchElementException();
 		}
-		synchronized (CGLIB_CLASS_CACHE) {
-			FastMethod fastMethod = fastClass.getMethod(method, params);
-			CGLIB_CLASS_CACHE.put(className, fastClass);
-			if (CGLIB_METHOD_CACHE.containsKey(className)) {
-				CGLIB_METHOD_CACHE.get(className).set(index, fastMethod);
-			}
-			List<FastMethod> methods = new ArrayList<>(fastClass.getMaxIndex());
-			methods.set(index, fastMethod);
-			CGLIB_METHOD_CACHE.put(className, methods);
+		FastMethod fastMethod = CGLIB_METHOD_CACHE.get(className).get(index);
+		if (fastMethod != null) {
 			return fastMethod;
 		}
+		fastMethod = fastClass.getMethod(method, params);
+		CGLIB_METHOD_CACHE.get(className).set(index, fastMethod);
+		return fastMethod;
 	}
 
 	/**
