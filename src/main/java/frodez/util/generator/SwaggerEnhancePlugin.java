@@ -1,5 +1,7 @@
 package frodez.util.generator;
 
+import frodez.constant.setting.DefDesc;
+import frodez.util.beans.param.PageQuery;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
@@ -59,8 +61,14 @@ public class SwaggerEnhancePlugin extends EnhancePlugin {
 			FieldDeclaration field = (FieldDeclaration) object;
 			List<String> fieldJavaDocs = JDTUtil.pureJavaDoc(field.getJavadoc());
 			if (!fieldJavaDocs.isEmpty()) {
+				boolean isPageQuery = JDTUtil.belongTo(field.getType(), PageQuery.class);
 				Map<String, Object> properties = new HashMap<>();
-				properties.put("value", fieldJavaDocs.get(0));
+				if (isPageQuery) {
+					properties.put("value", "DefDesc.Message.PAGE_QUERY");
+					JDTUtil.addImport(unit, DefDesc.class);
+				} else {
+					properties.put("value", fieldJavaDocs.get(0));
+				}
 				if (isNotNull(field)) {
 					properties.put("required", true);
 				}

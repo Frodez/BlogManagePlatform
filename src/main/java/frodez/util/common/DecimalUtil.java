@@ -2,8 +2,10 @@ package frodez.util.common;
 
 import frodez.constant.setting.DefDecimal;
 import java.math.BigDecimal;
-import org.springframework.util.Assert;
+import java.util.Objects;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class DecimalUtil {
 
 	/**
@@ -12,7 +14,7 @@ public class DecimalUtil {
 	 * @date 2019-01-28
 	 */
 	public static BigDecimal normalize(BigDecimal decimal) {
-		Assert.notNull(decimal, "参数不能为空!");
+		Objects.requireNonNull(decimal);
 		return decimal.setScale(DefDecimal.PRECISION, DefDecimal.ROUND_MODE);
 	}
 
@@ -22,7 +24,7 @@ public class DecimalUtil {
 	 * @date 2019-01-28
 	 */
 	public static BigDecimal normalize(Integer value) {
-		Assert.notNull(value, "参数不能为空!");
+		Objects.requireNonNull(value);
 		return new BigDecimal(value).setScale(DefDecimal.PRECISION, DefDecimal.ROUND_MODE);
 	}
 
@@ -32,7 +34,7 @@ public class DecimalUtil {
 	 * @date 2019-01-28
 	 */
 	public static BigDecimal normalize(Double value) {
-		Assert.notNull(value, "参数不能为空!");
+		Objects.requireNonNull(value);
 		return new BigDecimal(value).setScale(DefDecimal.PRECISION, DefDecimal.ROUND_MODE);
 	}
 
@@ -42,7 +44,7 @@ public class DecimalUtil {
 	 * @date 2019-01-28
 	 */
 	public static BigDecimal normalize(Long value) {
-		Assert.notNull(value, "参数不能为空!");
+		Objects.requireNonNull(value);
 		return new BigDecimal(value).setScale(DefDecimal.PRECISION, DefDecimal.ROUND_MODE);
 	}
 
@@ -52,7 +54,7 @@ public class DecimalUtil {
 	 * @date 2019-01-28
 	 */
 	public static BigDecimal normalize(String value) {
-		Assert.notNull(value, "参数不能为空!");
+		Objects.requireNonNull(value);
 		return new BigDecimal(value).setScale(DefDecimal.PRECISION, DefDecimal.ROUND_MODE);
 	}
 

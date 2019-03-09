@@ -14,6 +14,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
+import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
@@ -24,8 +25,11 @@ import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
+import org.eclipse.jdt.core.dom.PrimitiveType;
+import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.TagElement;
+import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jface.text.BadLocationException;
@@ -53,7 +57,7 @@ public class JDTUtil {
 	public static void commit(String path, Document document, CompilationUnit unit) throws MalformedTreeException,
 		BadLocationException, IOException, URISyntaxException {
 		unit.rewrite(document, defaultOptions()).apply(document);
-		FileUtil.stringToFile(path, document.get());
+		FileUtil.writeString(document.get(), path);
 	}
 
 	public static List<String> pureJavaDoc(Javadoc javadoc) {
@@ -182,6 +186,27 @@ public class JDTUtil {
 			index++;
 		}
 		list.add(index, annotation);
+	}
+
+	public static boolean belongTo(Type type, Class<?> klass) {
+		if (type == null || klass == null) {
+			throw new IllegalArgumentException();
+		}
+		if (type.isArrayType()) {
+			return belongTo(((ArrayType) type).getElementType(), klass);
+		}
+		if (type.isPrimitiveType()) {
+			return ((PrimitiveType) type).getPrimitiveTypeCode().toString().equalsIgnoreCase(klass.getSimpleName());
+		}
+		if (type.isSimpleType()) {
+			SimpleType simpleType = (SimpleType) type;
+			if (simpleType.getName().isQualifiedName()) {
+				return simpleType.getName().getFullyQualifiedName().equals(klass.getName());
+			} else {
+				return simpleType.getName().getFullyQualifiedName().equals(klass.getSimpleName());
+			}
+		}
+		return false;
 	}
 
 }

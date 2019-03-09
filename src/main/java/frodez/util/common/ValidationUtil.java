@@ -7,6 +7,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.executable.ExecutableValidator;
+import lombok.experimental.UtilityClass;
 import org.hibernate.validator.HibernateValidator;
 
 /**
@@ -14,6 +15,7 @@ import org.hibernate.validator.HibernateValidator;
  * @author Frodez
  * @date 2018-12-02
  */
+@UtilityClass
 public class ValidationUtil {
 
 	/**

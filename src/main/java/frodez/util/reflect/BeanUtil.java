@@ -3,17 +3,18 @@ package frodez.util.reflect;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.Nullable;
+import lombok.experimental.UtilityClass;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.beans.BeanMap;
-import org.springframework.util.Assert;
 
 /**
  * Java Bean工具类
  * @author Frodez
  * @date 2019-01-15
  */
+@UtilityClass
 public class BeanUtil {
 
 	private static final Map<String, BeanCopier> COPIER_CACHE = new ConcurrentHashMap<>();
@@ -45,8 +46,8 @@ public class BeanUtil {
 	 * @date 2019-02-08
 	 */
 	@SuppressWarnings("unchecked")
-	public static Map<String, Object> map(@Nullable Object bean) {
-		Assert.notNull(bean, "bean不能为空!");
+	public static Map<String, Object> map(Object bean) {
+		Objects.requireNonNull(bean);
 		Map<String, Object> map = new HashMap<>();
 		map.putAll(BeanMap.create(bean));
 		return map;
@@ -58,7 +59,7 @@ public class BeanUtil {
 	 * @date 2019-02-08
 	 */
 	public static <T> T as(Map<String, Object> map, Class<T> klass) {
-		Assert.notNull(map, "map不能为空!");
+		Objects.requireNonNull(map);
 		try {
 			T bean = klass.getDeclaredConstructor().newInstance();
 			BeanMap.create(bean).putAll(map);
@@ -74,7 +75,7 @@ public class BeanUtil {
 	 * @date 2019-02-08
 	 */
 	public static boolean isClear(Object bean) {
-		Assert.notNull(bean, "参数不能为空!");
+		Objects.requireNonNull(bean);
 		try {
 			for (Field field : bean.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
@@ -95,7 +96,7 @@ public class BeanUtil {
 	 * @date 2019-02-08
 	 */
 	public static void clear(Object bean) {
-		Assert.notNull(bean, "参数不能为空!");
+		Objects.requireNonNull(bean);
 		try {
 			for (Field field : bean.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
@@ -113,7 +114,7 @@ public class BeanUtil {
 	 * @date 2019-02-08
 	 */
 	public static <T> T clearInstance(Class<T> klass) {
-		Assert.notNull(klass, "类型不能为空!");
+		Objects.requireNonNull(klass);
 		try {
 			T bean = klass.getDeclaredConstructor().newInstance();
 			for (Field field : klass.getDeclaredFields()) {

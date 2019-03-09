@@ -10,12 +10,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.experimental.UtilityClass;
 
 /**
  * json工具类
  * @author Frodez
  * @date 2018-11-27
  */
+@UtilityClass
 public class JSONUtil {
 
 	/**

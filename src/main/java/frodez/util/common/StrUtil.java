@@ -2,7 +2,9 @@ package frodez.util.common;
 
 import frodez.constant.setting.DefDecimal;
 import java.math.BigDecimal;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class StrUtil {
 
 	public static String get(Object object) {

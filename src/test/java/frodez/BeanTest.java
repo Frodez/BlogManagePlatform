@@ -1,19 +1,17 @@
 package frodez;
 
-import frodez.util.beans.param.PageQuery;
-import frodez.util.json.JSONUtil;
 import java.util.Date;
 import lombok.Data;
 
 public class BeanTest {
 
 	public static void main(String[] args) {
-		PageQuery page = new PageQuery(1, 2);
-		String json = JSONUtil.string(page);
-		System.out.println(json);
-		page = JSONUtil.as(json, PageQuery.class);
-		json = JSONUtil.string(page);
-		System.out.println(json);
+		//		PageQuery page = new PageQuery(1, 2);
+		//		String json = JSONUtil.string(page);
+		//		System.out.println(json);
+		//		page = JSONUtil.as(json, PageQuery.class);
+		//		json = JSONUtil.string(page);
+		//		System.out.println(json);
 		//		Date date = new Date();
 		//		BeanOne one = new BeanOne();
 		//		one.setDate(date);

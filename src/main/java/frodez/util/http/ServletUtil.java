@@ -3,17 +3,19 @@ package frodez.util.http;
 import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
 import java.io.PrintWriter;
+import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.Assert;
 
 /**
  * HTTP工具类
  * @author Frodez
  * @date 2018-12-21
  */
+@UtilityClass
 public class ServletUtil {
 
 	/**
@@ -58,7 +60,7 @@ public class ServletUtil {
 	 * @date 2019-01-07
 	 */
 	public static void writeJson(HttpServletResponse response, Result result) {
-		Assert.notNull(result, "result不能为空!");
+		Objects.requireNonNull(result);
 		if (response.isCommitted()) {
 			return;
 		}

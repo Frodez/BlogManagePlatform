@@ -2,6 +2,7 @@ package frodez.util.common;
 
 import java.util.Collection;
 import java.util.Map;
+import lombok.experimental.UtilityClass;
 
 /**
  * 判空工具类<br>
@@ -9,6 +10,7 @@ import java.util.Map;
  * @author Frodez
  * @date 2019-02-17
  */
+@UtilityClass
 public class EmptyUtil {
 
 	/**

@@ -5,7 +5,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import javax.validation.constraints.Pattern.Flag;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class RegexUtil {
 
 	private static final Map<String, Pattern> CACHE = new ConcurrentHashMap<>();

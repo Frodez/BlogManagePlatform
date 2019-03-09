@@ -19,7 +19,7 @@ public abstract class EnhancePlugin {
 
 	void init(String path) throws IOException, URISyntaxException {
 		ASTParser parser = JDTUtil.defaultParser();
-		String source = FileUtil.fileToString(path);
+		String source = FileUtil.readString(path);
 		parser.setSource(source.toCharArray());
 		this.path = path;
 		unit = (CompilationUnit) parser.createAST(null);

@@ -11,12 +11,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.Assert;
 
 /**
  * 通用返回参数<br>
@@ -97,7 +97,7 @@ public class Result implements Serializable {
 	 * @date 2019-01-15
 	 */
 	public static Result success(Object data) {
-		Assert.notNull(data, "数据不能为空!");
+		Objects.requireNonNull(data);
 		return new Result(ResultEnum.SUCCESS, data);
 	}
 
@@ -107,7 +107,7 @@ public class Result implements Serializable {
 	 * @date 2019-01-15
 	 */
 	public static <T> Result page(Page<T> page) {
-		Assert.notNull(page, "数据不能为空!");
+		Objects.requireNonNull(page);
 		return new Result(ResultEnum.SUCCESS, new PageVO<>(page.getTotal(), page.getPageNum(), page.getPageSize(), page
 			.getResult()));
 	}
@@ -118,7 +118,7 @@ public class Result implements Serializable {
 	 * @date 2019-01-15
 	 */
 	public static <T> Result page(PageInfo<T> page) {
-		Assert.notNull(page, "数据不能为空!");
+		Objects.requireNonNull(page);
 		return new Result(ResultEnum.SUCCESS, new PageVO<>(page.getTotal(), page.getPageNum(), page.getPageSize(), page
 			.getList()));
 	}
@@ -138,7 +138,7 @@ public class Result implements Serializable {
 	 * @date 2019-01-15
 	 */
 	public static Result fail(String message) {
-		Assert.notNull(message, "信息不能为空!");
+		Objects.requireNonNull(message);
 		return new Result(message, ResultEnum.FAIL);
 	}
 
@@ -157,7 +157,7 @@ public class Result implements Serializable {
 	 * @date 2019-02-02
 	 */
 	public static Result errorRequest(String message) {
-		Assert.notNull(message, "信息不能为空!");
+		Objects.requireNonNull(message);
 		return new Result(message, ResultEnum.ERROR_REQUEST);
 	}
 
@@ -176,7 +176,7 @@ public class Result implements Serializable {
 	 * @date 2019-01-15
 	 */
 	public static Result errorService(String message) {
-		Assert.notNull(message, "信息不能为空!");
+		Objects.requireNonNull(message);
 		return new Result(message, ResultEnum.ERROR_SERVICE);
 	}
 
@@ -253,7 +253,7 @@ public class Result implements Serializable {
 	 * @date 2018-11-13
 	 */
 	public <T> T as(Class<T> klass) throws ClassCastException, ParseException {
-		Assert.notNull(klass, "类型不能为空!");
+		Objects.requireNonNull(klass);
 		check();
 		if (data == null) {
 			throw new ParseException("数据为空!");
@@ -269,7 +269,7 @@ public class Result implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> PageVO<T> page(Class<T> klass) throws ClassCastException, ParseException {
-		Assert.notNull(klass, "类型不能为空!");
+		Objects.requireNonNull(klass);
 		check();
 		if (data == null) {
 			throw new ParseException("数据为空!");
@@ -285,7 +285,7 @@ public class Result implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> List<T> list(Class<T> klass) throws ClassCastException, ParseException {
-		Assert.notNull(klass, "类型不能为空!");
+		Objects.requireNonNull(klass);
 		check();
 		if (data == null) {
 			throw new ParseException("数据为空!");
@@ -301,7 +301,7 @@ public class Result implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> Set<T> set(Class<T> klass) throws ClassCastException, ParseException {
-		Assert.notNull(klass, "类型不能为空!");
+		Objects.requireNonNull(klass);
 		check();
 		if (data == null) {
 			throw new ParseException("数据为空!");
@@ -332,8 +332,8 @@ public class Result implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public <K, V> Map<K, V> map(Class<K> keyClass, Class<V> valueClass) throws ClassCastException, ParseException {
-		Assert.notNull(keyClass, "键类型不能为空!");
-		Assert.notNull(valueClass, "值类型不能为空!");
+		Objects.requireNonNull(keyClass);
+		Objects.requireNonNull(valueClass);
 		check();
 		if (data == null) {
 			throw new ParseException("数据为空!");

@@ -5,16 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.experimental.UtilityClass;
 import org.springframework.cglib.reflect.FastClass;
 import org.springframework.cglib.reflect.FastMethod;
-import org.springframework.util.Assert;
 
 /**
  * 反射工具类
  * @author Frodez
  * @date 2019-01-13
  */
+@UtilityClass
 public class ReflectUtil {
 
 	private static final Map<String, FastClass> CGLIB_CLASS_CACHE = new ConcurrentHashMap<>();
@@ -61,7 +63,6 @@ public class ReflectUtil {
 	 * @date 2019-01-13
 	 */
 	public static String getFullMethodName(Method method) {
-		Assert.notNull(method, "方法不能为空!");
 		return method.getDeclaringClass().getName() + "." + method.getName();
 	}
 
@@ -71,7 +72,6 @@ public class ReflectUtil {
 	 * @date 2019-01-13
 	 */
 	public static String getShortMethodName(Method method) {
-		Assert.notNull(method, "方法不能为空!");
 		return method.getDeclaringClass().getSimpleName() + "." + method.getName();
 	}
 
@@ -82,10 +82,10 @@ public class ReflectUtil {
 	 * @date 2018-12-17
 	 */
 	public static Object baseRevert(Object value, Class<?> parameterClass) {
+		Objects.requireNonNull(parameterClass);
 		if (value == null) {
 			return null;
 		}
-		Assert.notNull(parameterClass, "目标类型不能为空!");
 		Class<?> valueClass = value.getClass();
 		if (valueClass == byte.class || valueClass == Byte.class) {
 			return castByteValue(parameterClass, (Byte) value);

@@ -3,6 +3,7 @@ package frodez.util.aop;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import lombok.experimental.UtilityClass;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
@@ -11,6 +12,7 @@ import org.aspectj.lang.reflect.MethodSignature;
  * @author Frodez
  * @date 2019-01-09
  */
+@UtilityClass
 public class AspectUtil {
 
 	private static MethodSignature methodSignature(final JoinPoint point) {
