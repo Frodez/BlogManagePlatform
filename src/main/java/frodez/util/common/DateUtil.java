@@ -1,6 +1,6 @@
 package frodez.util.common;
 
-import frodez.constant.setting.DefTime;
+import frodez.util.constant.setting.DefTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

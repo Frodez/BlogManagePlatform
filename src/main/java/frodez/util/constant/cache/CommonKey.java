@@ -1,4 +1,4 @@
-package frodez.constant.cache;
+package frodez.util.constant.cache;
 
 /**
  * 缓存key标志常量<br>

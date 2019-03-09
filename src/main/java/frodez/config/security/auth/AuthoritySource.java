@@ -1,10 +1,10 @@
 package frodez.config.security.auth;
 
 import frodez.config.security.settings.SecurityProperties;
-import frodez.constant.user.PermissionTypeEnum;
 import frodez.dao.model.user.Permission;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.common.EmptyUtil;
+import frodez.util.constant.user.PermissionTypeEnum;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

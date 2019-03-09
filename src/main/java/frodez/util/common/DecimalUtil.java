@@ -1,6 +1,6 @@
 package frodez.util.common;
 
-import frodez.constant.setting.DefDecimal;
+import frodez.util.constant.setting.DefDecimal;
 import java.math.BigDecimal;
 import java.util.Objects;
 import lombok.experimental.UtilityClass;

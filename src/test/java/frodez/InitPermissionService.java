@@ -1,10 +1,10 @@
 package frodez;
 
-import frodez.constant.setting.PropertyKey;
-import frodez.constant.user.PermissionTypeEnum;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.model.user.Permission;
 import frodez.util.common.EmptyUtil;
+import frodez.util.constant.setting.PropertyKey;
+import frodez.util.constant.user.PermissionTypeEnum;
 import frodez.util.http.URLMatcher;
 import frodez.util.json.JSONUtil;
 import frodez.util.reflect.ReflectUtil;

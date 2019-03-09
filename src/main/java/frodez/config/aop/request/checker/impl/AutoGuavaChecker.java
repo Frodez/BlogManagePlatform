@@ -4,7 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import frodez.config.aop.request.checker.facade.AutoChecker;
 import frodez.config.cache.CacheProperties;
-import frodez.constant.setting.DefTime;
+import frodez.util.constant.setting.DefTime;
 import frodez.util.spring.context.ContextUtil;
 import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.DependsOn;

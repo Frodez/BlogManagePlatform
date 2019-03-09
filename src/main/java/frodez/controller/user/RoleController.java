@@ -1,10 +1,10 @@
 package frodez.controller.user;
 
-import frodez.constant.setting.DefDesc;
 import frodez.dao.model.user.Role;
 import frodez.service.user.facade.IUserService;
 import frodez.util.beans.param.PageQuery;
 import frodez.util.beans.result.Result;
+import frodez.util.constant.setting.DefDesc;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

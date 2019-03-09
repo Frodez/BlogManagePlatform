@@ -1,6 +1,6 @@
 package frodez;
 
-import frodez.constant.user.PermissionTypeEnum;
+import frodez.util.constant.user.PermissionTypeEnum;
 import java.util.Random;
 
 public class EnumTest {

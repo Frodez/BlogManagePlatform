@@ -2,8 +2,6 @@ package frodez.service.article.impl;
 
 import com.google.common.collect.Lists;
 import frodez.config.security.login.UserUtil;
-import frodez.constant.common.DeleteEnum;
-import frodez.constant.setting.DefStr;
 import frodez.dao.mapper.article.ArticleMapper;
 import frodez.dao.model.article.Article;
 import frodez.dao.result.article.ArticleInfo;
@@ -12,6 +10,8 @@ import frodez.service.article.facade.IArticleService;
 import frodez.service.user.impl.UserService;
 import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
+import frodez.util.constant.common.DeleteEnum;
+import frodez.util.constant.setting.DefStr;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

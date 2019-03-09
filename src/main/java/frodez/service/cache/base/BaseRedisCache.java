@@ -1,7 +1,7 @@
 package frodez.service.cache.base;
 
-import frodez.constant.setting.DefTime;
 import frodez.util.common.EmptyUtil;
+import frodez.util.constant.setting.DefTime;
 import frodez.util.json.JSONUtil;
 import java.util.Arrays;
 import java.util.List;

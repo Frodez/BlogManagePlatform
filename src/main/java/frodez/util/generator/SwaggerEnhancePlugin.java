@@ -1,7 +1,7 @@
 package frodez.util.generator;
 
-import frodez.constant.setting.DefDesc;
 import frodez.util.beans.param.PageQuery;
+import frodez.util.constant.setting.DefDesc;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;

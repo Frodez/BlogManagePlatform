@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties
 public class CacheProperties {
 
+	private StandardProperties standard = new StandardProperties();
+
 	private AutoGuavaCheckerProperties autoGuavaChecker = new AutoGuavaCheckerProperties();
 
 	private ManualGuavaCheckerProperties manualGuavaChecker = new ManualGuavaCheckerProperties();
@@ -23,6 +25,13 @@ public class CacheProperties {
 	private LimitUserGuavaCheckerProperties limitUserGuavaChecker = new LimitUserGuavaCheckerProperties();
 
 	private URLMatcherProperties urlMatcher = new URLMatcherProperties();
+
+	@Data
+	public static class StandardProperties {
+
+		private Integer timeout = 60000;
+
+	}
 
 	@Data
 	public static class AutoGuavaCheckerProperties {

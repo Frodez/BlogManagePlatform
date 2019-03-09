@@ -3,7 +3,7 @@ package frodez.util.beans.result;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import frodez.config.error.exception.ParseException;
-import frodez.constant.setting.DefDesc;
+import frodez.util.constant.setting.DefDesc;
 import frodez.util.json.JSONUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

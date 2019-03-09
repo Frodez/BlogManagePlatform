@@ -1,6 +1,6 @@
 package frodez.util.common;
 
-import frodez.constant.setting.DefDesc;
+import frodez.util.constant.setting.DefDesc;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import javax.validation.ConstraintViolation;

@@ -2,7 +2,7 @@ package frodez.util.io;
 
 import com.google.common.io.FileWriteMode;
 import com.google.common.io.Files;
-import frodez.constant.setting.DefCode;
+import frodez.util.constant.setting.DefCode;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

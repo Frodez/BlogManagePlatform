@@ -1,7 +1,7 @@
 package frodez.util.beans.param;
 
-import frodez.constant.setting.DefDesc;
-import frodez.constant.setting.DefPage;
+import frodez.util.constant.setting.DefDesc;
+import frodez.util.constant.setting.DefPage;
 import io.swagger.annotations.ApiModel;
 import java.io.Serializable;
 import javax.validation.constraints.Max;

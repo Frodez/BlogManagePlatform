@@ -1,6 +1,6 @@
 package frodez.util.common;
 
-import frodez.constant.setting.DefStr;
+import frodez.util.constant.setting.DefStr;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;

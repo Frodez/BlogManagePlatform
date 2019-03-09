@@ -1,4 +1,4 @@
-package frodez.constant.setting;
+package frodez.util.constant.setting;
 
 import java.util.concurrent.TimeUnit;
 

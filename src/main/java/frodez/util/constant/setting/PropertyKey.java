@@ -1,4 +1,4 @@
-package frodez.constant.setting;
+package frodez.util.constant.setting;
 
 /**
  * spring配置key常量<br>

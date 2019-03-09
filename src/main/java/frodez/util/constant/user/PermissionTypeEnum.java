@@ -1,4 +1,4 @@
-package frodez.constant.user;
+package frodez.util.constant.user;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -2,9 +2,9 @@ package frodez.config.aop.request;
 
 import com.google.common.util.concurrent.RateLimiter;
 import frodez.config.aop.request.annotation.Limit;
-import frodez.constant.setting.DefTime;
 import frodez.util.aop.AspectUtil;
 import frodez.util.beans.result.Result;
+import frodez.util.constant.setting.DefTime;
 import frodez.util.spring.context.ContextUtil;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

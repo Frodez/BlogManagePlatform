@@ -1,4 +1,4 @@
-package frodez.constant.setting;
+package frodez.util.constant.setting;
 
 public class DefStr {
 

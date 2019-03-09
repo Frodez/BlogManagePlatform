@@ -1,7 +1,7 @@
 package frodez.dao.param.user;
 
-import frodez.constant.setting.DefDesc;
 import frodez.util.beans.param.PageQuery;
+import frodez.util.constant.setting.DefDesc;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;

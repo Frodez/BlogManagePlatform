@@ -2,7 +2,6 @@ package frodez.service.user.impl;
 
 import com.github.pagehelper.PageHelper;
 import frodez.config.aop.validation.annotation.common.Check;
-import frodez.constant.user.UserStatusEnum;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.mapper.user.RoleMapper;
 import frodez.dao.mapper.user.UserMapper;
@@ -15,6 +14,7 @@ import frodez.service.cache.vm.facade.UserIdCache;
 import frodez.service.user.facade.IUserService;
 import frodez.util.beans.param.PageQuery;
 import frodez.util.beans.result.Result;
+import frodez.util.constant.user.UserStatusEnum;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

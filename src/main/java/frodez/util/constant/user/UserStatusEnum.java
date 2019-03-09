@@ -1,4 +1,4 @@
-package frodez.constant.common;
+package frodez.util.constant.user;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,37 +6,37 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 删除状态枚举
+ * 用户状态枚举
  * @author Frodez
- * @date 2018-12-04
+ * @date 2018-11-14
  */
 @Getter
 @AllArgsConstructor
-public enum DeleteEnum {
+public enum UserStatusEnum {
 
 	/**
-	 * 未删除
+	 * 0:禁用
 	 */
-	NO((byte) 1, "未删除"),
+	FORBIDDEN((byte) 0, "禁用"),
 	/**
-	 * 已删除
+	 * 1:正常
 	 */
-	YES((byte) 2, "已删除");
+	NORMAL((byte) 1, "正常");
 
 	private byte val;
 
 	private String desc;
 
-	private static final Map<Byte, DeleteEnum> enumMap;
+	private static final Map<Byte, UserStatusEnum> enumMap;
 
 	static {
 		enumMap = new HashMap<>();
-		for (DeleteEnum iter : DeleteEnum.values()) {
+		for (UserStatusEnum iter : UserStatusEnum.values()) {
 			enumMap.put(iter.val, iter);
 		}
 	}
 
-	public static DeleteEnum of(byte value) {
+	public static UserStatusEnum of(byte value) {
 		return enumMap.get(value);
 	}
 

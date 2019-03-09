@@ -1,4 +1,4 @@
-package frodez.constant.setting;
+package frodez.util.constant.setting;
 
 /**
  * 默认分页参数设置
