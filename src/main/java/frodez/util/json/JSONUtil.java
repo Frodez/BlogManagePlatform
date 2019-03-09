@@ -3,6 +3,7 @@ package frodez.util.json;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -32,6 +33,9 @@ public class JSONUtil {
 					JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
 
 	private static final TypeFactory TYPE_FACTORY = OBJECT_MAPPER.getTypeFactory();
+
+	private static final JavaType DEFAULT_MAP_TYPE = TYPE_FACTORY.constructParametricType(HashMap.class, String.class,
+		Object.class);
 
 	/**
 	 * 获取jackson对象
@@ -81,8 +85,7 @@ public class JSONUtil {
 	 */
 	public static Map<String, Object> map(String json) {
 		try {
-			return OBJECT_MAPPER.readValue(json, TYPE_FACTORY.constructParametricType(HashMap.class, String.class,
-				Object.class));
+			return OBJECT_MAPPER.readValue(json, DEFAULT_MAP_TYPE);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -29,7 +29,7 @@ public class URLMatcher {
 	/**
 	 * url匹配缓存
 	 */
-	private static Cache<String, Boolean> URL_CACHE;
+	private static Cache<String, Boolean> cache;
 
 	@PostConstruct
 	private void init() {
@@ -40,8 +40,8 @@ public class URLMatcher {
 		for (String path : securityProperties.getAuth().getPermitAllPath()) {
 			permitPaths.add(PropertyUtil.get(PropertyKey.Web.BASE_PATH) + path);
 		}
-		URL_CACHE = CacheBuilder.newBuilder().maximumSize(cacheProperties.getUrlMatcher().getMaxSize())
-			.expireAfterAccess(cacheProperties.getUrlMatcher().getTimeout(), DefTime.UNIT).build();
+		cache = CacheBuilder.newBuilder().maximumSize(cacheProperties.getUrlMatcher().getMaxSize()).expireAfterAccess(
+			cacheProperties.getUrlMatcher().getTimeout(), DefTime.UNIT).build();
 	}
 
 	/**
@@ -52,17 +52,17 @@ public class URLMatcher {
 	 * @date 2019-01-06
 	 */
 	public static boolean needVerify(String url) {
-		Boolean result = URL_CACHE.getIfPresent(url);
+		Boolean result = cache.getIfPresent(url);
 		if (result != null) {
 			return result;
 		}
 		for (String path : permitPaths) {
 			if (matcher.match(path, url)) {
-				URL_CACHE.put(url, false);
+				cache.put(url, false);
 				return false;
 			}
 		}
-		URL_CACHE.put(url, true);
+		cache.put(url, true);
 		return true;
 	}
 
