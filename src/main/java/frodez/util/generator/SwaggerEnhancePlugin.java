@@ -2,6 +2,8 @@ package frodez.util.generator;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,12 +13,25 @@ import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.text.edits.MalformedTreeException;
 
-public class SwaggerEnhancePlugin {
+public class SwaggerEnhancePlugin extends EnhancePlugin {
 
-	public void run(CompilationUnit unit) {
-		addApiModel(unit);
-		addApiModelProperty(unit);
+	@Override
+	public void init(String path) throws IOException, URISyntaxException {
+		super.init(path);
+	}
+
+	@Override
+	public void run() {
+		addApiModel(super.unit);
+		addApiModelProperty(super.unit);
+	}
+
+	@Override
+	public void close() throws MalformedTreeException, BadLocationException, IOException, URISyntaxException {
+		super.close();
 	}
 
 	private void addApiModel(CompilationUnit unit) {
