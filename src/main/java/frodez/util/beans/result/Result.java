@@ -108,7 +108,7 @@ public class Result implements Serializable {
 	 */
 	public static <T> Result page(Page<T> page) {
 		Objects.requireNonNull(page);
-		return new Result(ResultEnum.SUCCESS, new PageVO<>(page.getTotal(), page.getPageNum(), page.getPageSize(), page
+		return new Result(ResultEnum.SUCCESS, new PageVO<>(page.getPageNum(), page.getPageSize(), page.getTotal(), page
 			.getResult()));
 	}
 
@@ -119,7 +119,7 @@ public class Result implements Serializable {
 	 */
 	public static <T> Result page(PageInfo<T> page) {
 		Objects.requireNonNull(page);
-		return new Result(ResultEnum.SUCCESS, new PageVO<>(page.getTotal(), page.getPageNum(), page.getPageSize(), page
+		return new Result(ResultEnum.SUCCESS, new PageVO<>(page.getPageNum(), page.getPageSize(), page.getTotal(), page
 			.getList()));
 	}
 

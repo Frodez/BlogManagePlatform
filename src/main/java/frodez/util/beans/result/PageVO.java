@@ -26,13 +26,6 @@ public class PageVO<T> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 查询总数
-	 */
-	@Getter
-	@ApiModelProperty(value = "查询总数")
-	private long total;
-
-	/**
 	 * 页码数
 	 */
 	@Getter
@@ -43,12 +36,21 @@ public class PageVO<T> implements Serializable {
 	 * 单页容量
 	 */
 	@Getter
+	@ApiModelProperty(value = "单页容量")
 	private int pageSize;
+
+	/**
+	 * 查询总数
+	 */
+	@Getter
+	@ApiModelProperty(value = "查询总数")
+	private long total;
 
 	/**
 	 * 分页数据
 	 */
 	@Getter
+	@ApiModelProperty(value = "分页数据")
 	private Collection<T> page;
 
 	/**

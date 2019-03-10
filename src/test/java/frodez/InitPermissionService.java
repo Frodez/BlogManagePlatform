@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.boot.SpringApplication;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -35,8 +34,8 @@ public class InitPermissionService {
 		String errorPath = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + "/error";
 		List<Permission> permissionList = new ArrayList<>();
 		Date date = new Date();
-		BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false).values()
-			.stream().filter((iter) -> {
+		BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false)
+			.values().stream().filter((iter) -> {
 				return iter instanceof RequestMappingHandlerMapping;
 			}).map((iter) -> {
 				return RequestMappingHandlerMapping.class.cast(iter).getHandlerMethods().entrySet();
@@ -55,27 +54,16 @@ public class InitPermissionService {
 				permission.setUrl(requestUrl);
 				permission.setName(permissionName);
 				permission.setDescription(permissionName);
-				switch (HttpMethod.resolve(requestType)) {
-					case GET : {
-						permission.setType(PermissionTypeEnum.GET.getVal());
-						break;
-					}
-					case POST : {
-						permission.setType(PermissionTypeEnum.POST.getVal());
-						break;
-					}
-					case DELETE : {
-						permission.setType(PermissionTypeEnum.DELETE.getVal());
-						break;
-					}
-					case PUT : {
-						permission.setType(PermissionTypeEnum.PUT.getVal());
-						break;
-					}
-					default : {
-						permission.setType(PermissionTypeEnum.ALL.getVal());
-						break;
-					}
+				if (requestType.equals("GET")) {
+					permission.setType(PermissionTypeEnum.GET.getVal());
+				} else if (requestType.equals("POST")) {
+					permission.setType(PermissionTypeEnum.POST.getVal());
+				} else if (requestType.equals("DELETE")) {
+					permission.setType(PermissionTypeEnum.DELETE.getVal());
+				} else if (requestType.equals("PUT")) {
+					permission.setType(PermissionTypeEnum.PUT.getVal());
+				} else {
+					permission.setType(PermissionTypeEnum.ALL.getVal());
 				}
 				permissionList.add(permission);
 			});

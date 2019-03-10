@@ -1,5 +1,6 @@
 package frodez.util.reflect;
 
+import frodez.util.beans.pair.Pair;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,41 +20,37 @@ import org.springframework.cglib.reflect.FastMethod;
 @UtilityClass
 public class ReflectUtil {
 
-	private static final Map<String, FastClass> CGLIB_CLASS_CACHE = new ConcurrentHashMap<>();
-
-	private static final Map<String, List<FastMethod>> CGLIB_METHOD_CACHE = new ConcurrentHashMap<>();
+	private static final Map<String, Pair<FastClass, List<FastMethod>>> CGLIB_CACHE = new ConcurrentHashMap<>();
 
 	public static FastMethod getFastMethod(Class<?> klass, String method, Class<?>... params) {
 		String className = klass.getName();
-		FastClass fastClass = CGLIB_CLASS_CACHE.get(className);
-		if (fastClass == null) {
-			fastClass = FastClass.create(klass);
+		Pair<FastClass, List<FastMethod>> pair = CGLIB_CACHE.get(className);
+		if (pair == null) {
+			FastClass fastClass = FastClass.create(klass);
 			int index = fastClass.getIndex(method, params);
 			if (index < 0) {
 				throw new NoSuchElementException();
 			}
-			synchronized (CGLIB_CLASS_CACHE) {
-				FastMethod fastMethod = fastClass.getMethod(method, params);
-				CGLIB_CLASS_CACHE.put(className, fastClass);
-				if (CGLIB_METHOD_CACHE.containsKey(className)) {
-					CGLIB_METHOD_CACHE.get(className).set(index, fastMethod);
-				}
-				List<FastMethod> methods = new ArrayList<>(fastClass.getMaxIndex());
-				methods.set(index, fastMethod);
-				CGLIB_METHOD_CACHE.put(className, methods);
-				return fastMethod;
-			}
+			List<FastMethod> methods = new ArrayList<>(fastClass.getMaxIndex());
+			FastMethod fastMethod = fastClass.getMethod(method, params);
+			methods.set(index, fastMethod);
+			pair = new Pair<>();
+			pair.setKey(fastClass);
+			pair.setValue(methods);
+			CGLIB_CACHE.put(className, pair);
+			return fastMethod;
 		}
+		FastClass fastClass = pair.getKey();
 		int index = fastClass.getIndex(method, params);
 		if (index < 0) {
 			throw new NoSuchElementException();
 		}
-		FastMethod fastMethod = CGLIB_METHOD_CACHE.get(className).get(index);
-		if (fastMethod != null) {
-			return fastMethod;
+		List<FastMethod> methods = pair.getValue();
+		FastMethod fastMethod = methods.get(index);
+		if (fastMethod == null) {
+			fastMethod = fastClass.getMethod(method, params);
+			methods.set(index, fastMethod);
 		}
-		fastMethod = fastClass.getMethod(method, params);
-		CGLIB_METHOD_CACHE.get(className).set(index, fastMethod);
 		return fastMethod;
 	}
 

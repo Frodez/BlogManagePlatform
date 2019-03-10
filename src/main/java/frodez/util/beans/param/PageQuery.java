@@ -1,5 +1,6 @@
 package frodez.util.beans.param;
 
+import com.github.pagehelper.IPage;
 import frodez.util.constant.setting.DefDesc;
 import frodez.util.constant.setting.DefPage;
 import io.swagger.annotations.ApiModel;
@@ -22,12 +23,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ApiModel(description = DefDesc.Message.PAGE_QUERY)
-public class PageQuery implements Serializable {
+public class PageQuery implements IPage, Serializable {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
+
+	private static final PageQuery DEFAULT = new PageQuery(DefPage.PAGE_NUM, DefPage.PAGE_SIZE);
 
 	/**
 	 * 合理化请求参数
@@ -36,7 +39,7 @@ public class PageQuery implements Serializable {
 	 */
 	public static PageQuery resonable(PageQuery page) {
 		if (page == null) {
-			return new PageQuery(DefPage.PAGE_NUM, DefPage.PAGE_SIZE);
+			return PageQuery.DEFAULT;
 		}
 		return page;
 	}
@@ -49,5 +52,16 @@ public class PageQuery implements Serializable {
 	@Positive(message = "单页容量不能小于等于0!")
 	@Max(value = DefPage.MAX_PAGE_SIZE, message = "单页容量不能大于" + DefPage.MAX_PAGE_SIZE + "!")
 	private Integer pageSize;
+
+	/**
+	 * <strong>警告!不要使用本方法!本方法永远返回null!</strong><br>
+	 * <strong>请使用其他方式设置orderBy!<strong>
+	 * @author Frodez
+	 * @date 2019-03-10
+	 */
+	@Override
+	public String getOrderBy() {
+		return null;
+	}
 
 }
