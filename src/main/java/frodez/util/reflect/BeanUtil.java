@@ -1,13 +1,19 @@
 package frodez.util.reflect;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.experimental.UtilityClass;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.beans.BeanMap;
+import org.springframework.cglib.reflect.FastClass;
+import org.springframework.cglib.reflect.FastMethod;
 
 /**
  * Java Bean工具类
@@ -18,6 +24,10 @@ import org.springframework.cglib.beans.BeanMap;
 public class BeanUtil {
 
 	private static final Map<String, BeanCopier> COPIER_CACHE = new ConcurrentHashMap<>();
+
+	private static final Map<Class<?>, List<FastMethod>> setterCache = new ConcurrentHashMap<>();
+
+	private static final Object[] NULL_PARAM = new Object[] { null };
 
 	private static BeanCopier getCopier(Object source, Object target) {
 		return COPIER_CACHE.computeIfAbsent(new StringBuilder(source.getClass().getName()).append(target.getClass()
@@ -71,8 +81,8 @@ public class BeanUtil {
 		Objects.requireNonNull(bean);
 		try {
 			for (Field field : bean.getClass().getDeclaredFields()) {
-				field.setAccessible(true);
-				if (field.get(bean) != null) {
+				if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers()) && field
+					.trySetAccessible() && field.get(bean) != null) {
 					return false;
 				}
 			}
@@ -91,9 +101,20 @@ public class BeanUtil {
 	public static void clear(Object bean) {
 		Objects.requireNonNull(bean);
 		try {
-			for (Field field : bean.getClass().getDeclaredFields()) {
-				field.setAccessible(true);
-				field.set(bean, null);
+			List<FastMethod> methods = setterCache.get(bean.getClass());
+			if (methods == null) {
+				methods = new ArrayList<>();
+				FastClass fastClass = FastClass.create(bean.getClass());
+				for (Method method : bean.getClass().getMethods()) {
+					if (method.getName().startsWith("set") && method.getReturnType() == void.class && method
+						.getParameterCount() == 1) {
+						methods.add(fastClass.getMethod(method));
+					}
+				}
+				setterCache.put(bean.getClass(), methods);
+			}
+			for (FastMethod method : methods) {
+				method.invoke(bean, NULL_PARAM);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -110,10 +131,7 @@ public class BeanUtil {
 		Objects.requireNonNull(klass);
 		try {
 			T bean = klass.getDeclaredConstructor().newInstance();
-			for (Field field : klass.getDeclaredFields()) {
-				field.setAccessible(true);
-				field.set(bean, null);
-			}
+			clear(bean);
 			return bean;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

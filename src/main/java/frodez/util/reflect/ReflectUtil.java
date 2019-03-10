@@ -22,6 +22,21 @@ public class ReflectUtil {
 
 	private static final Map<String, Pair<FastClass, List<FastMethod>>> CGLIB_CACHE = new ConcurrentHashMap<>();
 
+	public static FastClass getFastClass(Class<?> klass) {
+		String className = klass.getName();
+		Pair<FastClass, List<FastMethod>> pair = CGLIB_CACHE.get(className);
+		if (pair == null) {
+			FastClass fastClass = FastClass.create(klass);
+			List<FastMethod> methods = new ArrayList<>(fastClass.getMaxIndex());
+			pair = new Pair<>();
+			pair.setKey(fastClass);
+			pair.setValue(methods);
+			CGLIB_CACHE.put(className, pair);
+			return fastClass;
+		}
+		return pair.getKey();
+	}
+
 	public static FastMethod getFastMethod(Class<?> klass, String method, Class<?>... params) {
 		String className = klass.getName();
 		Pair<FastClass, List<FastMethod>> pair = CGLIB_CACHE.get(className);

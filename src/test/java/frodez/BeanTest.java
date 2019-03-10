@@ -1,11 +1,21 @@
 package frodez;
 
+import frodez.dao.model.user.Role;
+import frodez.util.reflect.BeanUtil;
 import java.util.Date;
 import lombok.Data;
 
 public class BeanTest {
 
 	public static void main(String[] args) {
+		Role role = new Role();
+		BeanUtil.clear(role);
+		long start = System.currentTimeMillis();
+		for (int i = 0; i < 10000 * 10000; i++) {
+			BeanUtil.copy(role, new Role());
+			//BeanUtil.clearInstance(Role.class);
+		}
+		System.out.println(System.currentTimeMillis() - start);
 		//		PageQuery page = new PageQuery(1, 2);
 		//		String json = JSONUtil.string(page);
 		//		System.out.println(json);

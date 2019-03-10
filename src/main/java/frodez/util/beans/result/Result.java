@@ -51,23 +51,47 @@ public class Result implements Serializable {
 	/**
 	 * 状态
 	 */
-	@Getter
 	@ApiModelProperty(value = "状态", example = "1000")
 	private int code;
 
 	/**
+	 * 获取状态
+	 * @author Frodez
+	 * @date 2019-03-10
+	 */
+	public int getCode() {
+		return code;
+	}
+
+	/**
 	 * 消息
 	 */
-	@Getter
 	@ApiModelProperty(value = "消息", example = "成功")
 	private String message;
 
 	/**
+	 * 获取消息
+	 * @author Frodez
+	 * @date 2019-03-10
+	 */
+	public String getMessage() {
+		return message;
+	}
+
+	/**
 	 * 数据
 	 */
-	@Getter
 	@ApiModelProperty(value = "数据")
 	private Object data;
+
+	/**
+	 * <strong>此方法仅用于json解析,其他时候不得使用!!!</strong>
+	 * @author Frodez
+	 * @date 2019-03-10
+	 */
+	public Object getData() {
+		return data;
+	}
 
 	/**
 	 * 获取result的json字符串,如果存在异常,返回null
@@ -340,6 +364,12 @@ public class Result implements Serializable {
 	 * <pre>
 	 * if (result.unable()) {
 	 * 	return result;
+	 * }
+	 * </pre>
+	 *
+	 * <pre>
+	 * if (result.unable()) {
+	 * 	throw new RuntimeException();
 	 * }
 	 * </pre>
 	 *
