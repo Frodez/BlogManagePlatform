@@ -16,8 +16,8 @@ public class BeanTest {
 		map.put("id", 222L);
 		map.put("createTime", new Date());
 		long start = System.currentTimeMillis();
-		for (int i = 0; i < 100 * 10000; i++) {
-			BeanUtil.as(map, Role.class);
+		for (int i = 0; i < 10000 * 10000; i++) {
+			BeanUtil.clearInstance(Role.class);
 			//BeanUtil.clearInstance(Role.class);
 		}
 		System.out.println(System.currentTimeMillis() - start);

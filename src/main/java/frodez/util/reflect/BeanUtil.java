@@ -29,7 +29,7 @@ public class BeanUtil {
 	private static final Map<Class<?>, Map<String, Pair<FastMethod, FastMethod>>> propertyCache =
 		new ConcurrentHashMap<>();
 
-	private static final Map<Class<?>, List<FastMethod>> setterListCache = new ConcurrentHashMap<>();
+	private static final Map<Class<?>, List<FastMethod>> setterCache = new ConcurrentHashMap<>();
 
 	private static final Object[] NULL_PARAM = new Object[] { null };
 
@@ -68,7 +68,7 @@ public class BeanUtil {
 	public static <T> T as(Map<String, Object> map, Class<T> klass) {
 		Objects.requireNonNull(map);
 		try {
-			T bean = klass.getDeclaredConstructor().newInstance();
+			T bean = ReflectUtil.newInstance(klass);
 			BeanMap.create(bean).putAll(map);
 			return bean;
 		} catch (Exception e) {
@@ -105,7 +105,7 @@ public class BeanUtil {
 	public static void clear(Object bean) {
 		Objects.requireNonNull(bean);
 		try {
-			List<FastMethod> methods = getMethods(bean.getClass());
+			List<FastMethod> methods = getSetters(bean.getClass());
 			for (FastMethod method : methods) {
 				method.invoke(bean, NULL_PARAM);
 			}
@@ -114,8 +114,8 @@ public class BeanUtil {
 		}
 	}
 
-	private List<FastMethod> getMethods(Class<?> klass) {
-		List<FastMethod> methods = setterListCache.get(klass);
+	public List<FastMethod> getSetters(Class<?> klass) {
+		List<FastMethod> methods = setterCache.get(klass);
 		if (methods == null) {
 			methods = new ArrayList<>();
 			FastClass fastClass = FastClass.create(klass);
@@ -125,7 +125,7 @@ public class BeanUtil {
 					methods.add(fastClass.getMethod(method));
 				}
 			}
-			setterListCache.put(klass, methods);
+			setterCache.put(klass, methods);
 		}
 		return methods;
 	}
@@ -172,14 +172,9 @@ public class BeanUtil {
 	 * @date 2019-02-08
 	 */
 	public static <T> T clearInstance(Class<T> klass) {
-		Objects.requireNonNull(klass);
-		try {
-			T bean = klass.getDeclaredConstructor().newInstance();
-			clear(bean);
-			return bean;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		T bean = ReflectUtil.newInstance(klass);
+		clear(bean);
+		return bean;
 	}
 
 }

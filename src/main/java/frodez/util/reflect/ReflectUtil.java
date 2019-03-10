@@ -1,6 +1,7 @@
 package frodez.util.reflect;
 
 import frodez.util.beans.pair.Pair;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,26 +21,36 @@ import org.springframework.cglib.reflect.FastMethod;
 @UtilityClass
 public class ReflectUtil {
 
-	private static final Map<String, Pair<FastClass, List<FastMethod>>> CGLIB_CACHE = new ConcurrentHashMap<>();
+	private static final Map<Class<?>, Pair<FastClass, List<FastMethod>>> CGLIB_CACHE = new ConcurrentHashMap<>();
+
+	@SuppressWarnings("unchecked")
+	public <T> T newInstance(Class<T> klass) {
+		try {
+			return (T) getFastClass(klass).newInstance();
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException();
+		}
+	}
 
 	public static FastClass getFastClass(Class<?> klass) {
-		String className = klass.getName();
-		Pair<FastClass, List<FastMethod>> pair = CGLIB_CACHE.get(className);
+		Objects.requireNonNull(klass);
+		Pair<FastClass, List<FastMethod>> pair = CGLIB_CACHE.get(klass);
 		if (pair == null) {
 			FastClass fastClass = FastClass.create(klass);
 			List<FastMethod> methods = new ArrayList<>(fastClass.getMaxIndex());
 			pair = new Pair<>();
 			pair.setKey(fastClass);
 			pair.setValue(methods);
-			CGLIB_CACHE.put(className, pair);
+			CGLIB_CACHE.put(klass, pair);
 			return fastClass;
 		}
 		return pair.getKey();
 	}
 
 	public static FastMethod getFastMethod(Class<?> klass, String method, Class<?>... params) {
-		String className = klass.getName();
-		Pair<FastClass, List<FastMethod>> pair = CGLIB_CACHE.get(className);
+		Objects.requireNonNull(klass);
+		Objects.requireNonNull(method);
+		Pair<FastClass, List<FastMethod>> pair = CGLIB_CACHE.get(klass);
 		if (pair == null) {
 			FastClass fastClass = FastClass.create(klass);
 			int index = fastClass.getIndex(method, params);
@@ -52,7 +63,7 @@ public class ReflectUtil {
 			pair = new Pair<>();
 			pair.setKey(fastClass);
 			pair.setValue(methods);
-			CGLIB_CACHE.put(className, pair);
+			CGLIB_CACHE.put(klass, pair);
 			return fastMethod;
 		}
 		FastClass fastClass = pair.getKey();
