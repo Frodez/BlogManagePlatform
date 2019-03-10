@@ -1,10 +1,13 @@
 language: java
-script: "sudo ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
+script: 
+  "sudo ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
 sudo:
-  required
+  true
 jdk:
   openjdk11
 branches:
   only:
   - master
   - 0.2-alpha
+before_install:
+  - chmod +x mvnw
