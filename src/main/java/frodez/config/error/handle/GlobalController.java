@@ -5,7 +5,8 @@ import frodez.util.beans.result.Result;
 import frodez.util.http.ServletUtil;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -46,14 +47,26 @@ public class GlobalController {
 	/**
 	 * 默认异常处理器
 	 * @param HttpServletResponse 响应
-	 * @param HttpMessageNotReadableException 异常
+	 * @param HttpMessageConversionException 异常
 	 * @author Frodez
 	 * @date 2018-12-21
 	 */
-	@ExceptionHandler(value = HttpMessageNotReadableException.class)
-	public void httpMessageNotReadableExceptionHandler(HttpServletResponse response,
-		HttpMessageNotReadableException e) {
-		log.error("[httpMessageNotReadableExceptionHandler]{}", e.getMessage());
+	@ExceptionHandler(value = HttpMessageConversionException.class)
+	public void httpMessageConversionExceptionHandler(HttpServletResponse response, HttpMessageConversionException e) {
+		log.error("[httpMessageConversionExceptionHandler]{}", e.getMessage());
+		ServletUtil.writeJson(response, Result.errorRequest());
+	}
+
+	/**
+	 * 默认异常处理器
+	 * @param HttpServletResponse 响应
+	 * @param ServletRequestBindingException 异常
+	 * @author Frodez
+	 * @date 2018-12-21
+	 */
+	@ExceptionHandler(value = ServletRequestBindingException.class)
+	public void servletRequestBindingExceptionHandler(HttpServletResponse response, ServletRequestBindingException e) {
+		log.error("[servletRequestBindingExceptionHandler]{}", e.getMessage());
 		ServletUtil.writeJson(response, Result.errorRequest());
 	}
 

@@ -254,10 +254,7 @@ public class Result implements Serializable {
 	 */
 	public <T> T as(Class<T> klass) throws ClassCastException, ParseException {
 		Objects.requireNonNull(klass);
-		check();
-		if (data == null) {
-			throw new ParseException("数据为空!");
-		}
+		ableAndNotNull();
 		return klass.cast(data);
 	}
 
@@ -270,10 +267,7 @@ public class Result implements Serializable {
 	@SuppressWarnings("unchecked")
 	public <T> PageVO<T> page(Class<T> klass) throws ClassCastException, ParseException {
 		Objects.requireNonNull(klass);
-		check();
-		if (data == null) {
-			throw new ParseException("数据为空!");
-		}
+		ableAndNotNull();
 		return (PageVO<T>) data;
 	}
 
@@ -286,10 +280,7 @@ public class Result implements Serializable {
 	@SuppressWarnings("unchecked")
 	public <T> List<T> list(Class<T> klass) throws ClassCastException, ParseException {
 		Objects.requireNonNull(klass);
-		check();
-		if (data == null) {
-			throw new ParseException("数据为空!");
-		}
+		ableAndNotNull();
 		return (List<T>) data;
 	}
 
@@ -302,10 +293,7 @@ public class Result implements Serializable {
 	@SuppressWarnings("unchecked")
 	public <T> Set<T> set(Class<T> klass) throws ClassCastException, ParseException {
 		Objects.requireNonNull(klass);
-		check();
-		if (data == null) {
-			throw new ParseException("数据为空!");
-		}
+		ableAndNotNull();
 		return (Set<T>) data;
 	}
 
@@ -317,10 +305,7 @@ public class Result implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> map() throws ClassCastException, ParseException {
-		check();
-		if (data == null) {
-			throw new ParseException("数据为空!");
-		}
+		ableAndNotNull();
 		return (Map<String, Object>) data;
 	}
 
@@ -334,22 +319,18 @@ public class Result implements Serializable {
 	public <K, V> Map<K, V> map(Class<K> keyClass, Class<V> valueClass) throws ClassCastException, ParseException {
 		Objects.requireNonNull(keyClass);
 		Objects.requireNonNull(valueClass);
-		check();
-		if (data == null) {
-			throw new ParseException("数据为空!");
-		}
+		ableAndNotNull();
 		return (Map<K, V>) data;
 	}
 
 	/**
-	 * 判断是否成功,不成功抛出ParseException
+	 * 获取数据的类型
 	 * @author Frodez
-	 * @date 2019-02-13
+	 * @date 2019-03-10
 	 */
-	public void check() throws ParseException {
-		if (code != ResultEnum.SUCCESS.val) {
-			throw new ParseException(message);
-		}
+	public Class<?> dataType() {
+		ableAndNotNull();
+		return data.getClass();
 	}
 
 	/**
@@ -357,7 +338,7 @@ public class Result implements Serializable {
 	 * <strong>常用例子:</strong>
 	 *
 	 * <pre>
-	 * if (result.isUnable()) {
+	 * if (result.unable()) {
 	 * 	return result;
 	 * }
 	 * </pre>
@@ -376,6 +357,15 @@ public class Result implements Serializable {
 	 */
 	public HttpStatus httpStatus() {
 		return ResultEnum.of(code).status;
+	}
+
+	private void ableAndNotNull() {
+		if (code != ResultEnum.SUCCESS.val) {
+			throw new UnsupportedOperationException(message);
+		}
+		if (data == null) {
+			throw new ParseException("数据为空!");
+		}
 	}
 
 	/**

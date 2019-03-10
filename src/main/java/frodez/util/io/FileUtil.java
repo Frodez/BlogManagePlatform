@@ -2,7 +2,7 @@ package frodez.util.io;
 
 import com.google.common.io.FileWriteMode;
 import com.google.common.io.Files;
-import frodez.util.constant.setting.DefCode;
+import frodez.util.constant.setting.DefCharset;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +22,7 @@ public class FileUtil {
 	 * @date 2019-03-09
 	 */
 	public static String readString(String uri) throws IOException, URISyntaxException {
-		return readString(uri, DefCode.UTF_8_CHARSET);
+		return readString(uri, DefCharset.UTF_8_CHARSET);
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class FileUtil {
 	 * @date 2019-03-09
 	 */
 	public static List<String> readStrings(String uri) throws IOException, URISyntaxException {
-		return readStrings(uri, DefCode.UTF_8_CHARSET);
+		return readStrings(uri, DefCharset.UTF_8_CHARSET);
 	}
 
 	/**
@@ -69,10 +69,10 @@ public class FileUtil {
 	public static void writeString(String content, String uri, boolean isAppend) throws IOException,
 		URISyntaxException {
 		if (isAppend) {
-			Files.asCharSink(new File(new URI(uri)), Charset.forName(DefCode.UTF_8), FileWriteMode.APPEND).write(
+			Files.asCharSink(new File(new URI(uri)), Charset.forName(DefCharset.UTF_8), FileWriteMode.APPEND).write(
 				content);
 		} else {
-			Files.asCharSink(new File(new URI(uri)), Charset.forName(DefCode.UTF_8)).write(content);
+			Files.asCharSink(new File(new URI(uri)), Charset.forName(DefCharset.UTF_8)).write(content);
 		}
 	}
 

@@ -21,6 +21,8 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 @DependsOn(value = { "propertyUtil", "contextUtil" })
 public class URLMatcher {
 
+	private static PathMatcher matcher;
+
 	/**
 	 * 需验证url
 	 */
@@ -34,7 +36,7 @@ public class URLMatcher {
 	@PostConstruct
 	private void init() {
 		SecurityProperties securityProperties = ContextUtil.get(SecurityProperties.class);
-		PathMatcher matcher = ContextUtil.get(PathMatcher.class);
+		matcher = ContextUtil.get(PathMatcher.class);
 		String basePath = PropertyUtil.get(PropertyKey.Web.BASE_PATH);
 		List<String> permitPaths = new ArrayList<>();
 		for (String path : securityProperties.getAuth().getPermitAllPath()) {
@@ -82,6 +84,10 @@ public class URLMatcher {
 	 */
 	public static boolean isPermitAllPath(String url) {
 		return permitUrls.contains(url);
+	}
+
+	public static boolean match(String pattern, String path) {
+		return matcher.match(pattern, path);
 	}
 
 }
