@@ -10,11 +10,11 @@
 		<property name="endingDelimiter" value="`" />
 		<property name="javaFileEncoding" value="utf-8" />
 		<property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter" />
-		<property name="xmlFormatter" value="frodez.config.mybatis.generator.CustomXmlFormatter" />
+		<property name="xmlFormatter" value="mybatis.CustomXmlFormatter" />
 
-		<plugin type="frodez.config.mybatis.generator.CustomSettingsPlugin" />
+		<plugin type="mybatis.CustomSettingsPlugin" />
 
-		<commentGenerator type="frodez.config.mybatis.generator.CustomCommentGenerator">
+		<commentGenerator type="mybatis.CustomCommentGenerator">
 			<property name="suppressAllComments" value="true" />
 			<property name="suppressDate" value="true" />
 		</commentGenerator>
