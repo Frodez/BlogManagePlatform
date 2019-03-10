@@ -1,6 +1,6 @@
-package frodez.config.error.handle;
+package frodez.config.mvc.error.handle;
 
-import frodez.config.error.exception.ServiceException;
+import frodez.config.mvc.error.exception.ServiceException;
 import frodez.util.beans.result.Result;
 import frodez.util.http.ServletUtil;
 import javax.servlet.http.HttpServletResponse;

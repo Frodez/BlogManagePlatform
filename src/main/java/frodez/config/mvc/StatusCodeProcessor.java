@@ -1,4 +1,4 @@
-package frodez.config.result;
+package frodez.config.mvc;
 
 import frodez.util.beans.result.Result;
 import org.springframework.core.MethodParameter;

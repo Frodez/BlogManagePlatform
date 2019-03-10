@@ -13,6 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 
+/**
+ * 文件工具类
+ * @author Frodez
+ * @date 2019-03-11
+ */
 @UtilityClass
 public class FileUtil {
 

@@ -2,7 +2,7 @@ package frodez.util.beans.result;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
-import frodez.config.error.exception.ParseException;
+import frodez.config.mvc.error.exception.ParseException;
 import frodez.util.constant.setting.DefDesc;
 import frodez.util.json.JSONUtil;
 import io.swagger.annotations.ApiModel;
@@ -25,7 +25,7 @@ import org.springframework.http.HttpStatus;
  */
 @EqualsAndHashCode
 @ApiModel(description = DefDesc.Message.RESULT)
-public class Result implements Serializable {
+public final class Result implements Serializable {
 
 	/**
 	 *

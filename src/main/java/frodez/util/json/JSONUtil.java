@@ -9,8 +9,12 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -36,6 +40,10 @@ public class JSONUtil {
 
 	private static final JavaType DEFAULT_MAP_TYPE = TYPE_FACTORY.constructParametricType(HashMap.class, String.class,
 		Object.class);
+
+	private static final Map<Class<?>, JavaType> collectionTypeCache = new ConcurrentHashMap<>();
+
+	private static final Map<String, JavaType> mapTypeCache = new ConcurrentHashMap<>();
 
 	/**
 	 * 获取jackson对象
@@ -100,11 +108,18 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static <K, V> Map<K, V> map(String json, Class<K> k, Class<V> v) {
+		Objects.requireNonNull(k);
+		Objects.requireNonNull(v);
 		try {
-			return OBJECT_MAPPER.readValue(json, TYPE_FACTORY.constructParametricType(HashMap.class, k, v));
+			return OBJECT_MAPPER.readValue(json, getMapJavaType(k, v));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private static JavaType getMapJavaType(Class<?> k, Class<?> v) {
+		return mapTypeCache.computeIfAbsent(k.getName().concat(v.getName()), (i) -> TYPE_FACTORY
+			.constructParametricType(HashMap.class, k, v));
 	}
 
 	/**
@@ -115,11 +130,33 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static <T> List<T> list(String json, Class<T> klass) {
+		Objects.requireNonNull(klass);
 		try {
-			return OBJECT_MAPPER.readValue(json, TYPE_FACTORY.constructParametricType(ArrayList.class, klass));
+			return OBJECT_MAPPER.readValue(json, getCollectionJavaType(ArrayList.class, klass));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * 将json字符串转换成Set,发生异常返回null
+	 * @author Frodez
+	 * @param <T>
+	 * @param json json字符串
+	 * @date 2018-12-02
+	 */
+	public static <T> Set<T> set(String json, Class<T> klass) {
+		Objects.requireNonNull(klass);
+		try {
+			return OBJECT_MAPPER.readValue(json, getCollectionJavaType(HashSet.class, klass));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static JavaType getCollectionJavaType(Class<?> collection, Class<?> klass) {
+		return collectionTypeCache.computeIfAbsent(klass, (i) -> TYPE_FACTORY.constructParametricType(collection,
+			klass));
 	}
 
 }

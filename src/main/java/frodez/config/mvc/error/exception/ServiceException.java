@@ -1,6 +1,6 @@
-package frodez.config.error.exception;
+package frodez.config.mvc.error.exception;
 
-import frodez.config.error.status.ErrorCode;
+import frodez.config.mvc.error.status.ErrorCode;
 
 /**
  * 标准服务异常

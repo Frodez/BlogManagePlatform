@@ -1,4 +1,4 @@
-package frodez.config.error.handle;
+package frodez.config.mvc.error.handle;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;

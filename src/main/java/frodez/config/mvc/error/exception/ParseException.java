@@ -1,4 +1,4 @@
-package frodez.config.error.exception;
+package frodez.config.mvc.error.exception;
 
 /**
  * Result解析异常

@@ -1,4 +1,4 @@
-package frodez.config.error.status;
+package frodez.config.mvc.error.status;
 
 import java.util.HashMap;
 import java.util.Map;

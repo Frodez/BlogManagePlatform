@@ -1,8 +1,8 @@
 package frodez.service.user.impl;
 
 import frodez.config.aop.validation.annotation.common.Check;
-import frodez.config.error.exception.ServiceException;
-import frodez.config.error.status.ErrorCode;
+import frodez.config.mvc.error.exception.ServiceException;
+import frodez.config.mvc.error.status.ErrorCode;
 import frodez.config.security.util.TokenManager;
 import frodez.dao.mapper.user.UserMapper;
 import frodez.dao.model.user.User;
