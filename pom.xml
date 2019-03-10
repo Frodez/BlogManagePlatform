@@ -182,6 +182,10 @@
 				<configuration>
 					<excludes>
 						<exclude>
+							<groupId>org.mybatis.generator</groupId>
+							<artifactId>mybatis-generator-core</artifactId>
+						</exclude>
+						<exclude>
 							<groupId>org.eclipse.jdt</groupId>
 		    				<artifactId>org.eclipse.jdt.core</artifactId>
 						</exclude>
