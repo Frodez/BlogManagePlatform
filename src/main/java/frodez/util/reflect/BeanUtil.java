@@ -33,6 +33,10 @@ public class BeanUtil {
 
 	private static final Object[] NULL_PARAM = new Object[] { null };
 
+	private static final int PROPERTY_MODIFIER = Modifier.PRIVATE;
+
+	private static final int GETTER_SETTER_MODIFIER = Modifier.PUBLIC;
+
 	private static BeanCopier getCopier(Object source, Object target) {
 		return COPIER_CACHE.computeIfAbsent(new StringBuilder(source.getClass().getName()).append(target.getClass()
 			.getName()).toString(), i -> BeanCopier.create(source.getClass(), target.getClass(), false));
@@ -45,6 +49,50 @@ public class BeanUtil {
 	 */
 	public static void copy(Object source, Object target) {
 		getCopier(source, target).copy(source, target, null);
+	}
+
+	/**
+	 * 清空目标bean的所有属性,然后copy原对象属性.<br>
+	 * 注意:请不要这样使用本方法:<br>
+	 *
+	 * <pre>
+	 * Bean one = new Bean();
+	 * Bean two = new Bean();
+	 * BeanUtil.cover(one, two);
+	 * </pre>
+	 *
+	 * 因为本方法先清空属性然后赋值,所以如果这样做,未清空属性的bean会将清空部分覆盖.<br>
+	 * 请务必考虑清楚,原对象不为null的属性有哪些.<br>
+	 * 否则这样使用等于无用功.<br>
+	 * @author Frodez
+	 * @date 2019-03-10
+	 */
+	public static void cover(Object source, Object target) {
+		clear(target);
+		getCopier(source, target).copy(source, target, null);
+	}
+
+	/**
+	 * 创造一个不具有初始值的,copy自原对象属性的bean<br>
+	 * 注意:请不要这样使用本方法:<br>
+	 *
+	 * <pre>
+	 * Bean one = new Bean();
+	 * Bean two = new Bean();
+	 * BeanUtil.cover(one, two);
+	 * </pre>
+	 *
+	 * 因为本方法先清空属性然后赋值,所以如果这样做,未清空属性的bean会将清空部分覆盖.<br>
+	 * 请务必考虑清楚,原对象不为null的属性有哪些.<br>
+	 * 否则这样使用等于无用功.<br>
+	 * @author Frodez
+	 * @param <T>
+	 * @date 2019-03-10
+	 */
+	public static <T> T cover(Object source, Class<T> target) {
+		T bean = clearInstance(target);
+		getCopier(source, bean).copy(source, bean, null);
+		return bean;
 	}
 
 	/**
@@ -85,8 +133,7 @@ public class BeanUtil {
 		Objects.requireNonNull(bean);
 		try {
 			for (Field field : bean.getClass().getDeclaredFields()) {
-				if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers()) && field
-					.trySetAccessible() && field.get(bean) != null) {
+				if (PROPERTY_MODIFIER == field.getModifiers() && field.trySetAccessible() && field.get(bean) != null) {
 					return false;
 				}
 			}
@@ -105,8 +152,7 @@ public class BeanUtil {
 	public static void clear(Object bean) {
 		Objects.requireNonNull(bean);
 		try {
-			List<FastMethod> methods = getSetters(bean.getClass());
-			for (FastMethod method : methods) {
+			for (FastMethod method : getSetters(bean.getClass())) {
 				method.invoke(bean, NULL_PARAM);
 			}
 		} catch (Exception e) {
@@ -137,8 +183,7 @@ public class BeanUtil {
 			FastClass fastClass = FastClass.create(klass);
 			List<FastMethod> methods = new ArrayList<>();
 			for (Method method : klass.getMethods()) {
-				if (Modifier.isPublic(method.getModifiers()) && !Modifier.isNative(method.getModifiers()) && !Modifier
-					.isFinal(method.getModifiers()) && !Modifier.isStatic(method.getModifiers())) {
+				if (GETTER_SETTER_MODIFIER == method.getModifiers()) {
 					methods.add(fastClass.getMethod(method));
 				}
 			}

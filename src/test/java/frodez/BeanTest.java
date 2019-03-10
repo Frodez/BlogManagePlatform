@@ -3,21 +3,17 @@ package frodez;
 import frodez.dao.model.user.Role;
 import frodez.util.reflect.BeanUtil;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.Data;
 
 public class BeanTest {
 
 	public static void main(String[] args) {
-		Role role = new Role();
-		BeanUtil.clear(role);
-		Map<String, Object> map = new HashMap<>();
-		map.put("id", 222L);
-		map.put("createTime", new Date());
+		BeanUtil.getProperties(Role.class);
+		System.out.println(BeanUtil.isClear(new Role()));
+		System.out.println(BeanUtil.isClear(BeanUtil.clearInstance(Role.class)));
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < 10000 * 10000; i++) {
-			BeanUtil.clearInstance(Role.class);
+			BeanUtil.isClear(new Role());
 			//BeanUtil.clearInstance(Role.class);
 		}
 		System.out.println(System.currentTimeMillis() - start);
