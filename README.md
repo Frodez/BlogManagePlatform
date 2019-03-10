@@ -16,9 +16,9 @@
 1. 这个项目只包括了服务端API部分,前端页面部分可自行接入各种实现。
 2. src文件夹为项目文件夹。src/test文件夹为测试文件存放处。src/main/resources文件夹为配置文件存放处，其中application.yml位于主目录，others文件夹存放了sql，settings文件夹存放了自定义的配置文件。
 3. src/main/generator文件夹为代码生成器的存放处。这里存放了自行实现的mybatis-generator插件和基于eclipde.jdt的代码生成插件，可以简化开发中的重复操作。
-4. src/main/java/frodez文件夹为项目代码存放处。
-4.1. config文件夹存放了项目的配置，以及一些功能(AOP, spring security, mapper, swagger等)的实现。
-4.2. controller文件夹存放了项目的controller。
-4.3. dao文件夹存放了mapper,mapper.xml,数据库orm映射实体,以及其他与数据库相关的bean。
-4.4. service文件夹存放了项目的主体业务逻辑实现。
-4.5. util文件夹存放了工具类和常用常量。
+4. src/main/java/frodez文件夹为项目代码存放处。 
+    1. config文件夹存放了项目的配置，以及一些功能(AOP, spring security, mapper, swagger等)的实现。 
+    2. controller文件夹存放了项目的controller。 
+    3. dao文件夹存放了mapper,mapper.xml,数据库orm映射实体,以及其他与数据库相关的bean。 
+    4. service文件夹存放了项目的主体业务逻辑实现。 
+    5. util文件夹存放了工具类和常用常量。 
