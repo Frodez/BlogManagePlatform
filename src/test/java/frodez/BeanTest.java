@@ -13,8 +13,8 @@ public class BeanTest {
 		System.out.println(BeanUtil.isClear(BeanUtil.clearInstance(Role.class)));
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < 10000 * 10000; i++) {
-			BeanUtil.isClear(new Role());
-			//BeanUtil.clearInstance(Role.class);
+			//BeanUtil.isClear(new Role());
+			BeanUtil.clear(new Role());
 		}
 		System.out.println(System.currentTimeMillis() - start);
 		//		PageQuery page = new PageQuery(1, 2);

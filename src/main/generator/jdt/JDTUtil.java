@@ -1,4 +1,4 @@
-package frodez.util.generator;
+package jdt;
 
 import frodez.util.io.FileUtil;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package frodez.config.mybatis.generator;
+package mybatis;
 
 import java.util.Collections;
 import org.mybatis.generator.api.XmlFormatter;

@@ -1,4 +1,4 @@
-package frodez.config.mybatis.generator;
+package mybatis;
 
 import frodez.util.common.EmptyUtil;
 import java.time.LocalDate;

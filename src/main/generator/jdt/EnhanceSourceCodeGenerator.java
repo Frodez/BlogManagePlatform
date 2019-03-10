@@ -1,4 +1,4 @@
-package frodez.util.generator;
+package jdt;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

@@ -179,6 +179,66 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.eclipse.jdt</groupId>
+		    				<artifactId>org.eclipse.jdt.core</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.eclipse.platform</groupId>
+  							<artifactId>org.eclipse.core.resources</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.eclipse.platform</groupId>
+		    				<artifactId>org.eclipse.core.expressions</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.eclipse.platform</groupId>
+		    				<artifactId>org.eclipse.core.runtime</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.eclipse.platform</groupId>
+		    				<artifactId>org.eclipse.core.jobs</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.eclipse.platform</groupId>
+		    				<artifactId>org.eclipse.core.contenttype</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.eclipse.platform</groupId>
+		    				<artifactId>org.eclipse.core.filesystem</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.eclipse.platform</groupId>
+		    				<artifactId>org.eclipse.core.commands</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.eclipse.platform</groupId>
+		    				<artifactId>org.eclipse.osgi</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.eclipse.platform</groupId>
+		    				<artifactId>org.eclipse.equinox.common</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.eclipse.platform</groupId>
+		    				<artifactId>org.eclipse.equinox.registry</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.eclipse.platform</groupId>
+		    				<artifactId>org.eclipse.equinox.preferences</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.eclipse.platform</groupId>
+		    				<artifactId>org.eclipse.equinox.app</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.eclipse.platform</groupId>
+		    				<artifactId>org.eclipse.text</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 			<plugin>  
 	            <artifactId>maven-resources-plugin</artifactId>  
@@ -211,6 +271,7 @@
 			    </configuration>
 			</plugin>
 		</plugins>
+		
 	</build>
 
 </project>

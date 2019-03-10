@@ -1,4 +1,4 @@
-package frodez.util.generator;
+package jdt;
 
 import frodez.util.beans.param.PageQuery;
 import frodez.util.constant.setting.DefDesc;
