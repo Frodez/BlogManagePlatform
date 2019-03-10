@@ -1,6 +1,5 @@
 language: java
 script: 
-  - "mvn -N io.takari:maven:wrapper"
   - "./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
 sudo:
   true
@@ -11,4 +10,5 @@ branches:
   - master
   - 0.2-alpha
 before_install:
-  - chmod +x mvnw
+  - "chmod +x mvnw"
+  - "mvn -N io.takari:maven:wrapper"
