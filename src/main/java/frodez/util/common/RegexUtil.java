@@ -30,8 +30,8 @@ public class RegexUtil {
 		if (flag == 0) {
 			return CACHE.computeIfAbsent(regex, i -> Pattern.compile(i)).matcher(input).matches();
 		}
-		return CACHE.computeIfAbsent(new StringBuilder(regex).append(DefStr.SEPERATOR).append(flag).toString(),
-			i -> Pattern.compile(i)).matcher(input).matches();
+		return CACHE.computeIfAbsent(regex.concat(DefStr.SEPERATOR).concat(Integer.toString(flag)), i -> Pattern
+			.compile(i)).matcher(input).matches();
 	}
 
 	/**

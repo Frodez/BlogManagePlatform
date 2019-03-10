@@ -38,8 +38,8 @@ public class BeanUtil {
 	private static final int GETTER_SETTER_MODIFIER = Modifier.PUBLIC;
 
 	private static BeanCopier getCopier(Object source, Object target) {
-		return COPIER_CACHE.computeIfAbsent(new StringBuilder(source.getClass().getName()).append(target.getClass()
-			.getName()).toString(), i -> BeanCopier.create(source.getClass(), target.getClass(), false));
+		return COPIER_CACHE.computeIfAbsent(source.getClass().getName().concat(target.getClass().getName()).toString(),
+			i -> BeanCopier.create(source.getClass(), target.getClass(), false));
 	}
 
 	/**
@@ -202,8 +202,8 @@ public class BeanUtil {
 					Pair<FastMethod, FastMethod> pair = new Pair<>();
 					pair.setKey(getter);
 					pair.setValue(method);
-					properties.put(new StringBuilder().append(Character.toLowerCase(propertyName.charAt(0))).append(
-						propertyName.substring(1)).toString(), pair);
+					properties.put(String.valueOf(Character.toLowerCase(propertyName.charAt(0))).concat(propertyName
+						.substring(1)), pair);
 				}
 			}
 		}

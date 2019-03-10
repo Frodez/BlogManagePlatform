@@ -11,18 +11,18 @@ import org.springframework.stereotype.Component;
 public class KeyGenerator {
 
 	public static String servletKey(String sault, HttpServletRequest request) {
-		StringBuilder builder = new StringBuilder(sault).append(DefStr.SEPERATOR).append(request.getRequestURI());
+		String key = sault.concat(DefStr.SEPERATOR).concat(request.getRequestURI());
 		if (URLMatcher.needVerify(request.getRequestURI())) {
 			// 非登录接口使用token判断,同一token不能重复请求
 			String fullToken = TokenManager.getFullToken(request);
 			if (fullToken == null) {
-				return builder.toString();
+				return key;
 			} else {
-				return builder.append(DefStr.SEPERATOR).append(fullToken).toString();
+				return key.concat(DefStr.SEPERATOR).concat(fullToken);
 			}
 		} else {
 			// 登录接口使用IP判断,同一IP不能重复请求
-			return builder.append(DefStr.SEPERATOR).append(ServletUtil.getAddr(request)).toString();
+			return key.concat(DefStr.SEPERATOR).concat(ServletUtil.getAddr(request));
 		}
 	}
 

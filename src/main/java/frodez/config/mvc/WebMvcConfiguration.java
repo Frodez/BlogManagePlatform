@@ -3,6 +3,7 @@ package frodez.config.mvc;
 import frodez.util.json.JSONUtil;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -18,7 +19,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 				break;
 			}
 		}
-		converters.add(0, new JsonHttpMessageConverer(JSONUtil.mapper()));
+		converters.add(0, new JsonHttpMessageConverer(JSONUtil.mapper(), MediaType.APPLICATION_JSON, new MediaType(
+			"application", "*+json")));
 	}
 
 }

@@ -35,7 +35,6 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJacksonInputMessage;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
 import org.springframework.util.TypeUtils;
 
 public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter<Object> {
@@ -66,7 +65,6 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 		DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
 		prettyPrinter.indentObjectsWith(new DefaultIndenter("  ", "\ndata:"));
 		this.ssePrettyPrinter = prettyPrinter;
-		setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, new MediaType("application", "*+json")));
 	}
 
 	public JsonHttpMessageConverer(ObjectMapper objectMapper, MediaType supportedMediaType) {
@@ -92,29 +90,6 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 		}
 		return contextCache.computeIfAbsent(type.getTypeName().concat(contextClass.getName()), (t) -> this.typeFactory
 			.constructType(GenericTypeResolver.resolveType(type, contextClass)));
-	}
-
-	/**
-	 * Set the {@code ObjectMapper} for this view. If not set, a default {@link ObjectMapper#ObjectMapper()
-	 * ObjectMapper} is used.
-	 * <p>
-	 * Setting a custom-configured {@code ObjectMapper} is one way to take further control of the JSON serialization
-	 * process. For example, an extended {@link com.fasterxml.jackson.databind.ser.SerializerFactory} can be configured
-	 * that provides custom serializers for specific types. The other option for refining the serialization process is
-	 * to use Jackson's provided annotations on the types to be serialized, in which case a custom-configured
-	 * ObjectMapper is unnecessary.
-	 */
-	public void setObjectMapper(ObjectMapper objectMapper) {
-		Assert.notNull(objectMapper, "ObjectMapper must not be null");
-		this.objectMapper = objectMapper;
-		configurePrettyPrint();
-	}
-
-	/**
-	 * Return the underlying {@code ObjectMapper} for this view.
-	 */
-	public ObjectMapper getObjectMapper() {
-		return this.objectMapper;
 	}
 
 	/**
