@@ -1,5 +1,6 @@
 package frodez.util.reflect;
 
+import frodez.util.beans.pair.Pair;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -25,7 +26,10 @@ public class BeanUtil {
 
 	private static final Map<String, BeanCopier> COPIER_CACHE = new ConcurrentHashMap<>();
 
-	private static final Map<Class<?>, List<FastMethod>> setterCache = new ConcurrentHashMap<>();
+	private static final Map<Class<?>, Map<String, Pair<FastMethod, FastMethod>>> propertyCache =
+		new ConcurrentHashMap<>();
+
+	private static final Map<Class<?>, List<FastMethod>> setterListCache = new ConcurrentHashMap<>();
 
 	private static final Object[] NULL_PARAM = new Object[] { null };
 
@@ -101,24 +105,64 @@ public class BeanUtil {
 	public static void clear(Object bean) {
 		Objects.requireNonNull(bean);
 		try {
-			List<FastMethod> methods = setterCache.get(bean.getClass());
-			if (methods == null) {
-				methods = new ArrayList<>();
-				FastClass fastClass = FastClass.create(bean.getClass());
-				for (Method method : bean.getClass().getMethods()) {
-					if (method.getName().startsWith("set") && method.getReturnType() == void.class && method
-						.getParameterCount() == 1) {
-						methods.add(fastClass.getMethod(method));
-					}
-				}
-				setterCache.put(bean.getClass(), methods);
-			}
+			List<FastMethod> methods = getMethods(bean.getClass());
 			for (FastMethod method : methods) {
 				method.invoke(bean, NULL_PARAM);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private List<FastMethod> getMethods(Class<?> klass) {
+		List<FastMethod> methods = setterListCache.get(klass);
+		if (methods == null) {
+			methods = new ArrayList<>();
+			FastClass fastClass = FastClass.create(klass);
+			for (Method method : klass.getMethods()) {
+				if (method.getName().startsWith("set") && method.getReturnType() == void.class && method
+					.getParameterCount() == 1) {
+					methods.add(fastClass.getMethod(method));
+				}
+			}
+			setterListCache.put(klass, methods);
+		}
+		return methods;
+	}
+
+	public Map<String, Pair<FastMethod, FastMethod>> getProperties(Class<?> klass) {
+		Map<String, Pair<FastMethod, FastMethod>> properties = propertyCache.get(klass);
+		if (properties == null) {
+			properties = new HashMap<>();
+			FastClass fastClass = FastClass.create(klass);
+			List<FastMethod> methods = new ArrayList<>();
+			for (Method method : klass.getMethods()) {
+				if (Modifier.isPublic(method.getModifiers()) && !Modifier.isNative(method.getModifiers()) && !Modifier
+					.isFinal(method.getModifiers()) && !Modifier.isStatic(method.getModifiers())) {
+					methods.add(fastClass.getMethod(method));
+				}
+			}
+			for (FastMethod method : methods) {
+				if (method.getName().startsWith("set") && method.getReturnType() == void.class && method
+					.getParameterTypes().length == 1) {
+					String propertyName = method.getName().substring(3);
+					FastMethod getter = null;
+					for (FastMethod iter : methods) {
+						if (iter.getName().endsWith(propertyName) && (iter.getName().startsWith("get") || iter.getName()
+							.startsWith("is"))) {
+							getter = iter;
+							break;
+						}
+					}
+					Pair<FastMethod, FastMethod> pair = new Pair<>();
+					pair.setKey(getter);
+					pair.setValue(method);
+					properties.put(new StringBuilder().append(Character.toLowerCase(propertyName.charAt(0))).append(
+						propertyName.substring(1)).toString(), pair);
+				}
+			}
+		}
+		return properties;
 	}
 
 	/**
