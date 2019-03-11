@@ -3,7 +3,7 @@ package frodez.dao.param.user;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -26,7 +26,7 @@ public class RefreshParam implements Serializable {
 	/**
 	 * 用户名
 	 */
-	@NotNull(message = "用户名不能为空!")
+	@NotBlank(message = "用户名不能为空!")
 	@Length(message = "用户名长度不能小于3位且不能大于25位!", min = 3, max = 25)
 	@ApiModelProperty(value = "用户名", required = true)
 	private String username;
@@ -34,7 +34,7 @@ public class RefreshParam implements Serializable {
 	/**
 	 * 原token
 	 */
-	@NotNull(message = "原token不能为空!")
+	@NotBlank(message = "原token不能为空!")
 	@ApiModelProperty(value = "原token", required = true)
 	private String oldToken;
 

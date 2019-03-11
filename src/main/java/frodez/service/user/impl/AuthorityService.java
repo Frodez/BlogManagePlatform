@@ -1,5 +1,6 @@
 package frodez.service.user.impl;
 
+import frodez.config.aop.log.annotation.MethodLog;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.mapper.user.RoleMapper;
@@ -40,6 +41,7 @@ public class AuthorityService implements IAuthorityService {
 	private RoleMapper roleMapper;
 
 	@Check
+	@MethodLog
 	@Override
 	public Result getUserInfo(String userName) {
 		try {
