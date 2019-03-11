@@ -1,4 +1,4 @@
-package frodez.config.aop.validation.annotation.common;
+package frodez.config.aop.validation.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

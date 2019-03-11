@@ -2,8 +2,8 @@ package frodez.util.beans.result;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
-import frodez.config.mvc.error.exception.ParseException;
 import frodez.util.constant.setting.DefDesc;
+import frodez.util.error.exception.ParseException;
 import frodez.util.json.JSONUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

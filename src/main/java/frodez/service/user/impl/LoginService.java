@@ -1,8 +1,6 @@
 package frodez.service.user.impl;
 
-import frodez.config.aop.validation.annotation.common.Check;
-import frodez.config.mvc.error.exception.ServiceException;
-import frodez.config.mvc.error.status.ErrorCode;
+import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.util.TokenManager;
 import frodez.dao.mapper.user.UserMapper;
 import frodez.dao.model.user.User;
@@ -16,6 +14,8 @@ import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.ILoginService;
 import frodez.util.beans.result.Result;
 import frodez.util.constant.user.UserStatusEnum;
+import frodez.util.error.ErrorCode;
+import frodez.util.error.exception.ServiceException;
 import frodez.util.spring.context.ContextUtil;
 import java.util.Date;
 import java.util.List;
