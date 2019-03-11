@@ -1,7 +1,7 @@
-package frodez.config.mvc.error.handle;
+package frodez.config.mvc.error;
 
-import frodez.config.mvc.error.exception.ServiceException;
 import frodez.util.beans.result.Result;
+import frodez.util.error.exception.ServiceException;
 import frodez.util.http.ServletUtil;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

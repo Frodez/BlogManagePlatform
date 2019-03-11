@@ -1,7 +1,7 @@
 package frodez.service.user.impl;
 
 import com.github.pagehelper.PageHelper;
-import frodez.config.aop.validation.annotation.common.Check;
+import frodez.config.aop.validation.annotation.Check;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.mapper.user.RoleMapper;
 import frodez.dao.mapper.user.UserMapper;
