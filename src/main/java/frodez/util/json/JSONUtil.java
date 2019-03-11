@@ -2,11 +2,15 @@ package frodez.util.json;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.SerializableString;
+import com.fasterxml.jackson.core.io.CharacterEscapes;
+import com.fasterxml.jackson.core.io.SerializedString;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.google.common.html.HtmlEscapers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,6 +48,37 @@ public class JSONUtil {
 	private static final Map<Class<?>, JavaType> collectionTypeCache = new ConcurrentHashMap<>();
 
 	private static final Map<String, JavaType> mapTypeCache = new ConcurrentHashMap<>();
+
+	/**
+	 * 增加危险字符的转义处理.由于统一使用json返回,因此可以视为所有的返回值中的危险字符均已处理.<br>
+	 * 另外,由于mybatis中采取预编译的方式注入参数(使用#{}标识符而非${}),sql注入的风险也基本解除.<br>
+	 */
+	static {
+		OBJECT_MAPPER.getFactory().setCharacterEscapes(new CharacterEscapes() {
+
+			private static final long serialVersionUID = 1L;
+
+			private int[] asciiEscapes = CharacterEscapes.standardAsciiEscapesForJSON();
+
+			{
+				asciiEscapes['<'] = CharacterEscapes.ESCAPE_CUSTOM;
+				asciiEscapes['>'] = CharacterEscapes.ESCAPE_CUSTOM;
+				asciiEscapes['&'] = CharacterEscapes.ESCAPE_CUSTOM;
+				asciiEscapes['"'] = CharacterEscapes.ESCAPE_CUSTOM;
+				asciiEscapes['\''] = CharacterEscapes.ESCAPE_CUSTOM;
+			}
+
+			@Override
+			public SerializableString getEscapeSequence(int ch) {
+				return new SerializedString(HtmlEscapers.htmlEscaper().escape(Character.toString(ch)));
+			}
+
+			@Override
+			public int[] getEscapeCodesForAscii() {
+				return asciiEscapes;
+			}
+		});
+	}
 
 	/**
 	 * 获取jackson对象

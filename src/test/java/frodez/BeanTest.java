@@ -1,22 +1,45 @@
 package frodez;
 
-import frodez.dao.model.user.Role;
-import frodez.util.reflect.BeanUtil;
+import frodez.util.json.JSONUtil;
 import java.util.Date;
+import java.util.List;
 import lombok.Data;
 
 public class BeanTest {
 
 	public static void main(String[] args) {
-		BeanUtil.getProperties(Role.class);
-		System.out.println(BeanUtil.isClear(new Role()));
-		System.out.println(BeanUtil.isClear(BeanUtil.clearInstance(Role.class)));
-		long start = System.currentTimeMillis();
-		for (int i = 0; i < 10000 * 10000; i++) {
-			//BeanUtil.isClear(new Role());
-			BeanUtil.clear(new Role());
+		List<Integer> list = List.of(3, 5, 6, 1, 2);
+		int quantity = 10000 * 10000;
+		String string = JSONUtil.string(list);
+		System.out.println(string);
+		for (int time = 0; time < 5; time++) {
+			long start = System.currentTimeMillis();
+			long duration = 0;
+			for (int i = 0; i < quantity; i++) {
+				JSONUtil.list(string, Integer.class);
+			}
+			duration = System.currentTimeMillis() - start;
+			System.out.println("v1");
+			System.out.println(duration);
+			System.out.println("------------------------------");
+			start = System.currentTimeMillis();
+			for (int i = 0; i < quantity; i++) {
+				//JSONUtil.listV2(string, Integer.class);
+			}
+			duration = System.currentTimeMillis() - start;
+			System.out.println("v2");
+			System.out.println(duration);
+			System.out.println("------------------------------");
 		}
-		System.out.println(System.currentTimeMillis() - start);
+		//		BeanUtil.getProperties(Role.class);
+		//		System.out.println(BeanUtil.isClear(new Role()));
+		//		System.out.println(BeanUtil.isClear(BeanUtil.clearInstance(Role.class)));
+		//		long start = System.currentTimeMillis();
+		//		for (int i = 0; i < 10000 * 10000; i++) {
+		//			//BeanUtil.isClear(new Role());
+		//			BeanUtil.clear(new Role());
+		//		}
+		//		System.out.println(System.currentTimeMillis() - start);
 		//		PageQuery page = new PageQuery(1, 2);
 		//		String json = JSONUtil.string(page);
 		//		System.out.println(json);
