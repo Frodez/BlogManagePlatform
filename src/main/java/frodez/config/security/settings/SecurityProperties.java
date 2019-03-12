@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.io.support.DefaultPropertySourceFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,8 +15,8 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@PropertySource("classpath:settings/security.properties")
-@ConfigurationProperties
+@PropertySource(value = { "classpath:settings/security.yml" }, factory = DefaultPropertySourceFactory.class)
+@ConfigurationProperties(prefix = "security")
 public class SecurityProperties {
 
 	/**

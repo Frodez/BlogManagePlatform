@@ -3,6 +3,7 @@ package frodez.config.swagger;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.io.support.DefaultPropertySourceFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,8 +13,8 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@PropertySource("classpath:settings/swagger.properties")
-@ConfigurationProperties
+@PropertySource(value = { "classpath:settings/swagger.yml" }, factory = DefaultPropertySourceFactory.class)
+@ConfigurationProperties(prefix = "swagger")
 public class SwaggerProperties {
 
 	/**

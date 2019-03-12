@@ -1,0 +1,15 @@
+security:
+  auth:
+    denied-role: USER_NO_PERMISSION
+    permit-all-path: /**,/login/auth,/login/register,/login/refresh,/swagger-resources/**,/swagger-ui.html**,/webjars/**,/v2/api-docs
+  cors:
+    allowed-headers: Origin,X-Requested-With,Content-Type,Accept,Accept-Encoding,Accept-Language,Host,Referer,Connection,User-Agent,Authorization
+    allowed-methods: GET,POST,DELETE,PUT,OPTIONS
+    allowed-origins: http://localhost:4200
+  jwt:
+    authority-claim: authorities
+    expiration: 7200
+    header: Authorization
+    issuer: ITRunner
+    secret: mySecret
+    token-prefix: 'Frodez:'

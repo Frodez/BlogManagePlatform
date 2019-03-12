@@ -3,6 +3,7 @@ package frodez.config.cache;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.io.support.DefaultPropertySourceFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,8 +13,8 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@PropertySource("classpath:settings/cache.properties")
-@ConfigurationProperties
+@PropertySource(value = { "classpath:settings/cache.yml" }, factory = DefaultPropertySourceFactory.class)
+@ConfigurationProperties(prefix = "cache")
 public class CacheProperties {
 
 	private StandardProperties standard = new StandardProperties();

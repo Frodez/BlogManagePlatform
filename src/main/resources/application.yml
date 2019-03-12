@@ -17,7 +17,7 @@ pagehelper:
   
 server:
   port: 9090
-  #不在此处理https
+  #不在此处理https,建议使用nginx
   #ssl:
     #在jdk目录下使用keytool.命令如下:
     #.\keytool.exe -genkey -alias Frodez -keyalg RSA -keysize 2048 -keypass 
