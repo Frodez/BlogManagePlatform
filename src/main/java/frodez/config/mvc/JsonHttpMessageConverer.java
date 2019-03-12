@@ -180,7 +180,8 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 		throws IOException, HttpMessageNotWritableException {
 		try {
 			if (object instanceof Result) {
-				outputMessage.getBody().write(((Result) object).toString().getBytes());
+				String message = ((Result) object).toString();
+				outputMessage.getBody().write(message.getBytes());
 				outputMessage.getBody().flush();
 			} else {
 				JsonGenerator generator = this.objectMapper.getFactory().createGenerator(outputMessage.getBody(),

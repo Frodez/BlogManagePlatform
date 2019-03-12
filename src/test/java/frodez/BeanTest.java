@@ -16,6 +16,8 @@ public class BeanTest {
 		BeanOne one = new BeanOne();
 		one.setDate(date);
 		Result result = Result.success(one);
+		System.out.println(JSONUtil.string(result));
+		System.out.println(JSONUtil.string(one));
 		int quantity = 1000 * 10000;
 		for (int time = 0; time < 5; time++) {
 			long start = System.currentTimeMillis();
@@ -24,10 +26,10 @@ public class BeanTest {
 				JSONUtil.string(result);
 			}
 			duration = System.currentTimeMillis() - start;
-			System.out.println("v1");
+			System.out.println("v1:" + time);
 			System.out.println(duration);
 			System.out.println("------------------------------");
-			ObjectWriter writer = JSONUtil.mapper().writerWithView(Result.class);
+			ObjectWriter writer = JSONUtil.mapper().writerFor(Result.class);
 			start = System.currentTimeMillis();
 			for (int i = 0; i < quantity; i++) {
 				try {
@@ -39,7 +41,7 @@ public class BeanTest {
 				//JSONUtil.listV2(string, Integer.class);
 			}
 			duration = System.currentTimeMillis() - start;
-			System.out.println("v2");
+			System.out.println("v2:" + time);
 			System.out.println(duration);
 			System.out.println("------------------------------");
 		}

@@ -51,7 +51,7 @@ public final class Result implements Serializable {
 	private static ObjectWriter writer;
 
 	static {
-		writer = JSONUtil.mapper().writerWithView(Result.class);
+		writer = JSONUtil.mapper().writerFor(Result.class);
 		for (ResultEnum item : ResultEnum.values()) {
 			Result result = new Result(item);
 			try {

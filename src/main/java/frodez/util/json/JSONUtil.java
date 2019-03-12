@@ -114,8 +114,8 @@ public class JSONUtil {
 	public static String string(Object object) {
 		Objects.requireNonNull(object);
 		try {
-			return writerCache.computeIfAbsent(object.getClass(), (o) -> OBJECT_MAPPER.writerWithView(object
-				.getClass())).writeValueAsString(object);
+			return writerCache.computeIfAbsent(object.getClass(), (o) -> OBJECT_MAPPER.writerFor(object.getClass()))
+				.writeValueAsString(object);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
