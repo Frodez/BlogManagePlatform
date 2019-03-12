@@ -33,6 +33,8 @@ server:
     enabled: true
     
 spring:
+  profiles:
+    active: dev
   resources:
     add-mappings: true
   aop:
@@ -48,8 +50,15 @@ spring:
     url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
     username: frodez
     password: 123456
-  profiles:
-    active: dev
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: true
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: false
+    generator:
+      WRITE_BIGDECIMAL_AS_PLAIN: true
+    parser:
+      ALLOW_UNQUOTED_CONTROL_CHARS: true  
   redis:
     database: 0
     host: 127.0.0.1

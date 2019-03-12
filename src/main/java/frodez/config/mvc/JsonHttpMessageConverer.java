@@ -3,18 +3,15 @@ package frodez.config.mvc;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.PrettyPrinter;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import frodez.util.beans.result.Result;
+import frodez.util.json.JSONUtil;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -32,10 +29,8 @@ import org.springframework.http.converter.AbstractGenericHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
-import org.springframework.http.converter.json.MappingJacksonInputMessage;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.lang.Nullable;
-import org.springframework.util.TypeUtils;
 
 public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter<Object> {
 
@@ -55,16 +50,10 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 	@Nullable
 	private Boolean prettyPrint;
 
-	@Nullable
-	private PrettyPrinter ssePrettyPrinter;
-
 	public JsonHttpMessageConverer(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 		setDefaultCharset(DEFAULT_CHARSET);
 		typeFactory = this.objectMapper.getTypeFactory();
-		DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
-		prettyPrinter.indentObjectsWith(new DefaultIndenter("  ", "\ndata:"));
-		this.ssePrettyPrinter = prettyPrinter;
 	}
 
 	public JsonHttpMessageConverer(ObjectMapper objectMapper, MediaType supportedMediaType) {
@@ -75,21 +64,6 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 	public JsonHttpMessageConverer(ObjectMapper objectMapper, MediaType... supportedMediaTypes) {
 		this(objectMapper);
 		setSupportedMediaTypes(Arrays.asList(supportedMediaTypes));
-	}
-
-	/**
-	 * Return the Jackson {@link JavaType} for the specified type and context class.
-	 * @param type the generic type to return the Jackson JavaType for
-	 * @param contextClass a context class for the target type, for example a class in which the target type appears in
-	 *        a method signature (can be {@code null})
-	 * @return the Jackson JavaType
-	 */
-	private JavaType getJavaType(Type type, @Nullable Class<?> contextClass) {
-		if (contextClass == null) {
-			return noContextCache.computeIfAbsent(type, (t) -> this.typeFactory.constructType(type));
-		}
-		return contextCache.computeIfAbsent(type.getTypeName().concat(contextClass.getName()), (t) -> this.typeFactory
-			.constructType(GenericTypeResolver.resolveType(type, contextClass)));
 	}
 
 	/**
@@ -123,7 +97,13 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 		if (!canRead(mediaType)) {
 			return false;
 		}
-		JavaType javaType = getJavaType(type, contextClass);
+		JavaType javaType;
+		if (contextClass == null) {
+			javaType = noContextCache.computeIfAbsent(type, (t) -> this.typeFactory.constructType(type));
+		} else {
+			javaType = contextCache.computeIfAbsent(type.getTypeName().concat(contextClass.getName()), (
+				t) -> this.typeFactory.constructType(GenericTypeResolver.resolveType(type, contextClass)));
+		}
 		AtomicReference<Throwable> causeRef = new AtomicReference<>();
 		if (this.objectMapper.canDeserialize(javaType, causeRef)) {
 			return true;
@@ -174,26 +154,19 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 	@Override
 	protected Object readInternal(Class<?> clazz, HttpInputMessage inputMessage) throws IOException,
 		HttpMessageNotReadableException {
-		JavaType javaType = getJavaType(clazz, null);
-		return readJavaType(javaType, inputMessage);
+		return readJavaType(noContextCache.computeIfAbsent(clazz, (t) -> this.typeFactory.constructType(clazz)),
+			inputMessage);
 	}
 
 	@Override
 	public Object read(Type type, @Nullable Class<?> contextClass, HttpInputMessage inputMessage) throws IOException,
 		HttpMessageNotReadableException {
-		JavaType javaType = getJavaType(type, contextClass);
-		return readJavaType(javaType, inputMessage);
+		return readJavaType(contextCache.computeIfAbsent(type.getTypeName().concat(contextClass.getName()), (
+			t) -> this.typeFactory.constructType(GenericTypeResolver.resolveType(type, contextClass))), inputMessage);
 	}
 
 	private Object readJavaType(JavaType javaType, HttpInputMessage inputMessage) throws IOException {
 		try {
-			if (inputMessage instanceof MappingJacksonInputMessage) {
-				Class<?> deserializationView = ((MappingJacksonInputMessage) inputMessage).getDeserializationView();
-				if (deserializationView != null) {
-					return this.objectMapper.readerWithView(deserializationView).forType(javaType).readValue(
-						inputMessage.getBody());
-				}
-			}
 			return this.objectMapper.readValue(inputMessage.getBody(), javaType);
 		} catch (InvalidDefinitionException ex) {
 			throw new HttpMessageConversionException("Type definition error: " + ex.getType(), ex);
@@ -205,31 +178,16 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 	@Override
 	protected void writeInternal(Object object, @Nullable Type type, HttpOutputMessage outputMessage)
 		throws IOException, HttpMessageNotWritableException {
-		MediaType contentType = outputMessage.getHeaders().getContentType();
-		JsonGenerator generator = this.objectMapper.getFactory().createGenerator(outputMessage.getBody(),
-			getJsonEncoding(contentType));
 		try {
+			JsonGenerator generator = this.objectMapper.getFactory().createGenerator(outputMessage.getBody(),
+				getJsonEncoding(outputMessage.getHeaders().getContentType()));
 			if (object instanceof Result) {
 				generator.writeRaw(((Result) object).toString());
 				generator.flush();
 				return;
+			} else {
+				generator.writeRaw(JSONUtil.string(object));
 			}
-			Object value = object;
-			JavaType javaType = null;
-			if (type != null && TypeUtils.isAssignable(type, value.getClass())) {
-				javaType = getJavaType(type, null);
-			}
-			ObjectWriter objectWriter = this.objectMapper.writer();
-			if (javaType != null && javaType.isContainerType()) {
-				objectWriter = objectWriter.forType(javaType);
-			}
-			SerializationConfig config = objectWriter.getConfig();
-			if (contentType != null && contentType.isCompatibleWith(MediaType.TEXT_EVENT_STREAM) && config.isEnabled(
-				SerializationFeature.INDENT_OUTPUT)) {
-				objectWriter = objectWriter.with(this.ssePrettyPrinter);
-			}
-			objectWriter.writeValue(generator, value);
-			generator.flush();
 		} catch (InvalidDefinitionException ex) {
 			throw new HttpMessageConversionException("Type definition error: " + ex.getType(), ex);
 		} catch (JsonProcessingException ex) {

@@ -1,12 +1,14 @@
 package frodez.util.json;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.core.SerializableString;
+import com.fasterxml.jackson.core.io.CharacterEscapes;
+import com.fasterxml.jackson.core.io.SerializedString;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.google.common.escape.Escaper;
+import com.google.common.escape.Escapers;
+import frodez.util.spring.context.ContextUtil;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,14 +17,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import lombok.experimental.UtilityClass;
+import javax.annotation.PostConstruct;
+import org.springframework.stereotype.Component;
 
 /**
  * json工具类
  * @author Frodez
  * @date 2018-11-27
  */
-@UtilityClass
+@Component
 public class JSONUtil {
 
 	/**
@@ -30,20 +33,53 @@ public class JSONUtil {
 	 * 二是保证系统中所有使用objectMapper的方法均保持一致的行为,<br>
 	 * 而不必担心不同处objectMapper配置不一致导致行为不一致.
 	 */
-	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().configure(
-		SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true).configure(
-			DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).configure(
-				JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN, true).configure(
-					JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
+	private static ObjectMapper OBJECT_MAPPER = ContextUtil.get(ObjectMapper.class);
 
-	private static final TypeFactory TYPE_FACTORY = OBJECT_MAPPER.getTypeFactory();
+	private static TypeFactory TYPE_FACTORY;
 
-	private static final JavaType DEFAULT_MAP_TYPE = TYPE_FACTORY.constructParametricType(HashMap.class, String.class,
-		Object.class);
+	private static JavaType DEFAULT_MAP_TYPE;
 
 	private static final Map<Class<?>, JavaType> collectionTypeCache = new ConcurrentHashMap<>();
 
 	private static final Map<String, JavaType> mapTypeCache = new ConcurrentHashMap<>();
+
+	/**
+	 * 增加危险字符的转义处理.由于统一使用json返回,因此可以视为所有的返回值中的危险字符均已处理.<br>
+	 * 另外,由于mybatis中采取预编译的方式注入参数(使用#{}标识符而非${}),sql注入的风险也基本解除.<br>
+	 */
+	@PostConstruct
+	private void init() {
+		TYPE_FACTORY = OBJECT_MAPPER.getTypeFactory();
+		DEFAULT_MAP_TYPE = TYPE_FACTORY.constructParametricType(HashMap.class, String.class, Object.class);
+		OBJECT_MAPPER.getFactory().setCharacterEscapes(new CharacterEscapes() {
+
+			private static final long serialVersionUID = 1L;
+
+			private int[] asciiEscapes = CharacterEscapes.standardAsciiEscapesForJSON();
+
+			// Note: "&apos;" is not defined in HTML 4.01.
+			private Escaper escaper = Escapers.builder().addEscape('"', "&quot;").addEscape('\'', "&#39;").addEscape(
+				'&', "&amp;").addEscape('<', "&lt;").addEscape('>', "&gt;").build();
+
+			{
+				asciiEscapes['<'] = CharacterEscapes.ESCAPE_CUSTOM;
+				asciiEscapes['>'] = CharacterEscapes.ESCAPE_CUSTOM;
+				asciiEscapes['&'] = CharacterEscapes.ESCAPE_CUSTOM;
+				asciiEscapes['"'] = CharacterEscapes.ESCAPE_CUSTOM;
+				asciiEscapes['\''] = CharacterEscapes.ESCAPE_CUSTOM;
+			}
+
+			@Override
+			public SerializableString getEscapeSequence(int ch) {
+				return new SerializedString(escaper.escape(Character.toString(ch)));
+			}
+
+			@Override
+			public int[] getEscapeCodesForAscii() {
+				return asciiEscapes;
+			}
+		});
+	}
 
 	/**
 	 * 获取jackson对象

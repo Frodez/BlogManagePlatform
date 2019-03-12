@@ -1,8 +1,8 @@
 package frodez.config.security.auth;
 
 import frodez.config.security.settings.SecurityProperties;
+import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.model.user.Permission;
-import frodez.service.user.facade.IAuthorityService;
 import frodez.util.common.EmptyUtil;
 import frodez.util.constant.user.PermissionTypeEnum;
 import java.util.ArrayList;
@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.ConfigAttribute;
@@ -32,7 +33,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 * 用户授权服务
 	 */
 	@Autowired
-	private IAuthorityService authorityService;
+	private PermissionMapper permissionMapper;
 
 	/**
 	 * 访问控制参数配置
@@ -60,9 +61,10 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */
+	@PostConstruct
 	private void init() {
 		if (allCache == null) {
-			List<Permission> permissions = authorityService.getAllPermissions().list(Permission.class);
+			List<Permission> permissions = permissionMapper.selectAll();
 			allCache = permissions.stream().map((iter) -> {
 				return new SecurityConfig(iter.getName());
 			}).collect(Collectors.toList());
@@ -160,7 +162,6 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 */
 	@Override
 	public Collection<ConfigAttribute> getAllConfigAttributes() {
-		init();
 		Collection<ConfigAttribute> attributes = new ArrayList<>();
 		attributes.addAll(allCache.stream().collect(Collectors.toList()));
 		return attributes;
