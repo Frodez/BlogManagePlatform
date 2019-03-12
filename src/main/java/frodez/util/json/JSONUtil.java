@@ -3,9 +3,9 @@ package frodez.util.json;
 import com.fasterxml.jackson.core.SerializableString;
 import com.fasterxml.jackson.core.io.CharacterEscapes;
 import com.fasterxml.jackson.core.io.SerializedString;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
 import frodez.util.spring.context.ContextUtil;
@@ -35,13 +35,28 @@ public class JSONUtil {
 	 */
 	private static ObjectMapper OBJECT_MAPPER = ContextUtil.get(ObjectMapper.class);
 
-	private static TypeFactory TYPE_FACTORY;
+	@SuppressWarnings("rawtypes")
+	private static Class<HashMap> DEFAULT_MAP_CLASS = HashMap.class;
 
-	private static JavaType DEFAULT_MAP_TYPE;
+	@SuppressWarnings("rawtypes")
+	private static Class<ArrayList> DEFAULT_LIST_CLASS = ArrayList.class;
 
-	private static final Map<Class<?>, JavaType> collectionTypeCache = new ConcurrentHashMap<>();
+	@SuppressWarnings("rawtypes")
+	private static Class<HashSet> DEFAULT_SET_CLASS = HashSet.class;
 
-	private static final Map<String, JavaType> mapTypeCache = new ConcurrentHashMap<>();
+	private static String DEFAULT_MAP_CLASS_NAME = DEFAULT_MAP_CLASS.getName();
+
+	private static String DEFAULT_LIST_CLASS_NAME = DEFAULT_LIST_CLASS.getName();
+
+	private static String DEFAULT_SET_CLASS_NAME = DEFAULT_SET_CLASS.getName();
+
+	private static ObjectReader DEFAULT_MAP_READER;
+
+	private static Map<Class<?>, ObjectReader> singleTypeReaderCache = new ConcurrentHashMap<>();
+
+	private static Map<String, ObjectReader> multiTypeReaderCache = new ConcurrentHashMap<>();
+
+	private static Map<Class<?>, ObjectWriter> writerCache = new ConcurrentHashMap<>();
 
 	/**
 	 * 增加危险字符的转义处理.由于统一使用json返回,因此可以视为所有的返回值中的危险字符均已处理.<br>
@@ -49,8 +64,8 @@ public class JSONUtil {
 	 */
 	@PostConstruct
 	private void init() {
-		TYPE_FACTORY = OBJECT_MAPPER.getTypeFactory();
-		DEFAULT_MAP_TYPE = TYPE_FACTORY.constructParametricType(HashMap.class, String.class, Object.class);
+		DEFAULT_MAP_READER = OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(
+			DEFAULT_MAP_CLASS, String.class, Object.class));
 		OBJECT_MAPPER.getFactory().setCharacterEscapes(new CharacterEscapes() {
 
 			private static final long serialVersionUID = 1L;
@@ -97,8 +112,10 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static String string(Object object) {
+		Objects.requireNonNull(object);
 		try {
-			return OBJECT_MAPPER.writeValueAsString(object);
+			return writerCache.computeIfAbsent(object.getClass(), (o) -> OBJECT_MAPPER.writerWithView(object
+				.getClass())).writeValueAsString(object);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -113,7 +130,8 @@ public class JSONUtil {
 	 */
 	public static <T> T as(String json, Class<T> klass) {
 		try {
-			return OBJECT_MAPPER.readValue(json, klass);
+			return singleTypeReaderCache.computeIfAbsent(klass, (k) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER
+				.getTypeFactory().constructType(klass))).readValue(json);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -129,7 +147,7 @@ public class JSONUtil {
 	 */
 	public static Map<String, Object> map(String json) {
 		try {
-			return OBJECT_MAPPER.readValue(json, DEFAULT_MAP_TYPE);
+			return DEFAULT_MAP_READER.readValue(json);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -147,15 +165,12 @@ public class JSONUtil {
 		Objects.requireNonNull(k);
 		Objects.requireNonNull(v);
 		try {
-			return OBJECT_MAPPER.readValue(json, getMapJavaType(k, v));
+			return multiTypeReaderCache.computeIfAbsent(DEFAULT_MAP_CLASS_NAME.concat(k.getName()).concat(v.getName()),
+				(i) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(DEFAULT_MAP_CLASS,
+					k, v))).readValue(json);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private static JavaType getMapJavaType(Class<?> k, Class<?> v) {
-		return mapTypeCache.computeIfAbsent(k.getName().concat(v.getName()), (i) -> TYPE_FACTORY
-			.constructParametricType(HashMap.class, k, v));
 	}
 
 	/**
@@ -168,7 +183,9 @@ public class JSONUtil {
 	public static <T> List<T> list(String json, Class<T> klass) {
 		Objects.requireNonNull(klass);
 		try {
-			return OBJECT_MAPPER.readValue(json, getCollectionJavaType(ArrayList.class, klass));
+			return multiTypeReaderCache.computeIfAbsent(DEFAULT_LIST_CLASS_NAME.concat(klass.getName()), (
+				i) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(DEFAULT_LIST_CLASS,
+					klass))).readValue(json);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -184,15 +201,12 @@ public class JSONUtil {
 	public static <T> Set<T> set(String json, Class<T> klass) {
 		Objects.requireNonNull(klass);
 		try {
-			return OBJECT_MAPPER.readValue(json, getCollectionJavaType(HashSet.class, klass));
+			return multiTypeReaderCache.computeIfAbsent(DEFAULT_SET_CLASS_NAME.concat(klass.getName()), (
+				i) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(DEFAULT_SET_CLASS,
+					klass))).readValue(json);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private static JavaType getCollectionJavaType(Class<?> collection, Class<?> klass) {
-		return collectionTypeCache.computeIfAbsent(klass, (i) -> TYPE_FACTORY.constructParametricType(collection,
-			klass));
 	}
 
 }
