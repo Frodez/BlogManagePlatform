@@ -179,14 +179,15 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 	protected void writeInternal(Object object, @Nullable Type type, HttpOutputMessage outputMessage)
 		throws IOException, HttpMessageNotWritableException {
 		try {
-			JsonGenerator generator = this.objectMapper.getFactory().createGenerator(outputMessage.getBody(),
-				getJsonEncoding(outputMessage.getHeaders().getContentType()));
 			if (object instanceof Result) {
-				generator.writeRaw(((Result) object).toString());
-				generator.flush();
-				return;
+				String message = ((Result) object).toString();
+				outputMessage.getBody().write(message.getBytes());
+				outputMessage.getBody().flush();
 			} else {
+				JsonGenerator generator = this.objectMapper.getFactory().createGenerator(outputMessage.getBody(),
+					getJsonEncoding(outputMessage.getHeaders().getContentType()));
 				generator.writeRaw(JSONUtil.string(object));
+				generator.flush();
 			}
 		} catch (InvalidDefinitionException ex) {
 			throw new HttpMessageConversionException("Type definition error: " + ex.getType(), ex);

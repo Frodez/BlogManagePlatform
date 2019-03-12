@@ -1,5 +1,7 @@
 package frodez.util.beans.result;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import frodez.util.constant.setting.DefDesc;
@@ -8,6 +10,7 @@ import frodez.util.json.JSONUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,18 +36,30 @@ public final class Result implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 是否为默认类型实例
+	 * 默认json,只有默认类型实例才存在
 	 */
-	private boolean isDefault = false;
+	private String json;
 
 	/**
-	 * 默认类型实例字符串缓存
+	 * 默认类型实例
 	 */
-	private static final Map<Integer, String> DEFAULT_STRING_CACHE = new HashMap<>();
+	private static final Map<ResultEnum, Result> DEFAULT_RESULT_CACHE = new EnumMap<>(ResultEnum.class);
+
+	/**
+	 * jackson writer
+	 */
+	private static ObjectWriter writer;
 
 	static {
+		writer = JSONUtil.mapper().writerFor(Result.class);
 		for (ResultEnum item : ResultEnum.values()) {
-			DEFAULT_STRING_CACHE.put(item.val, JSONUtil.string(new Result(item)));
+			Result result = new Result(item);
+			try {
+				result.json = writer.writeValueAsString(result);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException(e);
+			}
+			DEFAULT_RESULT_CACHE.put(item, result);
 		}
 	}
 
@@ -100,10 +115,14 @@ public final class Result implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		if (isDefault) {
-			return DEFAULT_STRING_CACHE.get(code);
+		if (json != null) {
+			return json;
 		}
-		return JSONUtil.string(this);
+		try {
+			return writer.writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -112,7 +131,7 @@ public final class Result implements Serializable {
 	 * @date 2019-01-15
 	 */
 	public static Result success() {
-		return new Result(ResultEnum.SUCCESS);
+		return DEFAULT_RESULT_CACHE.get(ResultEnum.SUCCESS);
 	}
 
 	/**
@@ -153,7 +172,7 @@ public final class Result implements Serializable {
 	 * @date 2019-01-15
 	 */
 	public static Result fail() {
-		return new Result(ResultEnum.FAIL);
+		return DEFAULT_RESULT_CACHE.get(ResultEnum.FAIL);
 	}
 
 	/**
@@ -172,7 +191,7 @@ public final class Result implements Serializable {
 	 * @date 2019-02-02
 	 */
 	public static Result errorRequest() {
-		return new Result(ResultEnum.ERROR_REQUEST);
+		return DEFAULT_RESULT_CACHE.get(ResultEnum.ERROR_REQUEST);
 	}
 
 	/**
@@ -191,7 +210,7 @@ public final class Result implements Serializable {
 	 * @date 2019-01-15
 	 */
 	public static Result errorService() {
-		return new Result(ResultEnum.ERROR_SERVICE);
+		return DEFAULT_RESULT_CACHE.get(ResultEnum.ERROR_SERVICE);
 	}
 
 	/**
@@ -210,7 +229,7 @@ public final class Result implements Serializable {
 	 * @date 2019-03-02
 	 */
 	public static Result notLogin() {
-		return new Result(ResultEnum.NOT_LOGIN);
+		return DEFAULT_RESULT_CACHE.get(ResultEnum.NOT_LOGIN);
 	}
 
 	/**
@@ -219,7 +238,7 @@ public final class Result implements Serializable {
 	 * @date 2019-03-02
 	 */
 	public static Result expired() {
-		return new Result(ResultEnum.EXPIRED);
+		return DEFAULT_RESULT_CACHE.get(ResultEnum.EXPIRED);
 	}
 
 	/**
@@ -228,7 +247,7 @@ public final class Result implements Serializable {
 	 * @date 2019-03-02
 	 */
 	public static Result noAuth() {
-		return new Result(ResultEnum.NO_AUTH);
+		return DEFAULT_RESULT_CACHE.get(ResultEnum.NO_AUTH);
 	}
 
 	/**
@@ -237,7 +256,7 @@ public final class Result implements Serializable {
 	 * @date 2019-03-02
 	 */
 	public static Result noAccess() {
-		return new Result(ResultEnum.NO_ACCESS);
+		return DEFAULT_RESULT_CACHE.get(ResultEnum.NO_ACCESS);
 	}
 
 	/**
@@ -246,7 +265,7 @@ public final class Result implements Serializable {
 	 * @date 2019-03-02
 	 */
 	public static Result repeatRequest() {
-		return new Result(ResultEnum.REPEAT_REQUEST);
+		return DEFAULT_RESULT_CACHE.get(ResultEnum.REPEAT_REQUEST);
 	}
 
 	private Result() {
@@ -267,7 +286,6 @@ public final class Result implements Serializable {
 	private Result(ResultEnum status) {
 		this.message = status.getDesc();
 		this.code = status.getVal();
-		this.isDefault = true;
 	}
 
 	/**

@@ -1,33 +1,47 @@
 package frodez;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import frodez.util.beans.result.Result;
 import frodez.util.json.JSONUtil;
 import java.util.Date;
-import java.util.List;
 import lombok.Data;
+import org.springframework.boot.SpringApplication;
 
 public class BeanTest {
 
 	public static void main(String[] args) {
-		List<Integer> list = List.of(3, 5, 6, 1, 2);
-		int quantity = 10000 * 10000;
-		String string = JSONUtil.string(list);
-		System.out.println(string);
+		SpringApplication.run(BlogManagePlatformApplication.class, args);
+		Date date = new Date();
+		BeanOne one = new BeanOne();
+		one.setDate(date);
+		Result result = Result.success(one);
+		System.out.println(JSONUtil.string(result));
+		System.out.println(JSONUtil.string(one));
+		int quantity = 1000 * 10000;
 		for (int time = 0; time < 5; time++) {
 			long start = System.currentTimeMillis();
 			long duration = 0;
 			for (int i = 0; i < quantity; i++) {
-				JSONUtil.list(string, Integer.class);
+				JSONUtil.string(result);
 			}
 			duration = System.currentTimeMillis() - start;
-			System.out.println("v1");
+			System.out.println("v1:" + time);
 			System.out.println(duration);
 			System.out.println("------------------------------");
+			ObjectWriter writer = JSONUtil.mapper().writerFor(Result.class);
 			start = System.currentTimeMillis();
 			for (int i = 0; i < quantity; i++) {
+				try {
+					writer.writeValueAsString(result);
+				} catch (JsonProcessingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				//JSONUtil.listV2(string, Integer.class);
 			}
 			duration = System.currentTimeMillis() - start;
-			System.out.println("v2");
+			System.out.println("v2:" + time);
 			System.out.println(duration);
 			System.out.println("------------------------------");
 		}
