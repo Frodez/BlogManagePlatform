@@ -7,6 +7,7 @@ import frodez.config.security.settings.SecurityProperties;
 import frodez.util.spring.context.ContextUtil;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.DependsOn;
@@ -59,6 +60,13 @@ public class TokenManager {
 		header = properties.getJwt().getHeader();
 		tokenPrefix = properties.getJwt().getTokenPrefix();
 		tokenPrefixLength = tokenPrefix.length();
+		Objects.requireNonNull(algorithm);
+		Objects.requireNonNull(issuer);
+		Objects.requireNonNull(expiration);
+		Objects.requireNonNull(claim);
+		Objects.requireNonNull(header);
+		Objects.requireNonNull(tokenPrefix);
+		Objects.requireNonNull(tokenPrefixLength);
 	}
 
 	/**
@@ -69,7 +77,7 @@ public class TokenManager {
 	 */
 	public static String generate(UserDetails user) {
 		try {
-			Long now = System.currentTimeMillis();
+			long now = System.currentTimeMillis();
 			return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withExpiresAt(new Date(now + expiration))
 				.withSubject(user.getUsername()).withArrayClaim(claim, AuthorityUtil.get(user)).sign(algorithm);
 		} catch (Exception e) {
@@ -85,7 +93,7 @@ public class TokenManager {
 	 */
 	public static String generate(String username, List<String> authorities) {
 		try {
-			Long now = System.currentTimeMillis();
+			long now = System.currentTimeMillis();
 			return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withExpiresAt(new Date(now + expiration))
 				.withSubject(username).withArrayClaim(claim, authorities.toArray(String[]::new)).sign(algorithm);
 		} catch (Exception e) {

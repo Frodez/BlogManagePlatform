@@ -4,6 +4,7 @@ import frodez.util.constant.setting.PropertyKey;
 import frodez.util.spring.context.ContextUtil;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.env.Environment;
@@ -26,6 +27,7 @@ public class PropertyUtil {
 	@PostConstruct
 	private void init() {
 		env = ContextUtil.get(Environment.class);
+		Objects.requireNonNull(env);
 	}
 
 	/**

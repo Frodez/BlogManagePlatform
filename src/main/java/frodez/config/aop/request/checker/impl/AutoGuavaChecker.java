@@ -6,6 +6,7 @@ import frodez.config.aop.request.checker.facade.AutoChecker;
 import frodez.config.cache.CacheProperties;
 import frodez.util.constant.setting.DefTime;
 import frodez.util.spring.context.ContextUtil;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
@@ -23,8 +24,9 @@ public class AutoGuavaChecker implements AutoChecker {
 
 	@PostConstruct
 	private void init() {
-		cache = CacheBuilder.newBuilder().expireAfterAccess(ContextUtil.get(CacheProperties.class)
-			.getAutoGuavaChecker().getTimeout(), DefTime.UNIT).build();
+		cache = CacheBuilder.newBuilder().expireAfterAccess(ContextUtil.get(CacheProperties.class).getAutoGuavaChecker()
+			.getTimeout(), DefTime.UNIT).build();
+		Objects.requireNonNull(cache);
 	}
 
 	@Override

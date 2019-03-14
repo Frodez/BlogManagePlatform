@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,6 +109,10 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 				urlTypeCache.put(url, typeMap);
 			}
 		}
+		Objects.requireNonNull(defaultDeniedRoles);
+		Objects.requireNonNull(allCache);
+		Objects.requireNonNull(urlCache);
+		Objects.requireNonNull(urlTypeCache);
 	}
 
 	/**

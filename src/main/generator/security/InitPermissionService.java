@@ -1,5 +1,6 @@
-package frodez;
+package security;
 
+import frodez.BlogManagePlatformApplication;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.model.user.Permission;
 import frodez.util.common.EmptyUtil;

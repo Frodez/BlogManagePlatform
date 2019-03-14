@@ -100,6 +100,8 @@ public class JSONUtil {
 				return asciiEscapes;
 			}
 		});
+		Objects.requireNonNull(OBJECT_MAPPER);
+		Objects.requireNonNull(DEFAULT_MAP_READER);
 	}
 
 	/**
@@ -108,9 +110,6 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static ObjectMapper mapper() {
-		if (OBJECT_MAPPER == null) {
-			throw new NullPointerException("获取mapper失败!");
-		}
 		return OBJECT_MAPPER;
 	}
 
