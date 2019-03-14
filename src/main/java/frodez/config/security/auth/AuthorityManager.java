@@ -3,13 +3,18 @@ package frodez.config.security.auth;
 import frodez.config.security.settings.SecurityProperties;
 import frodez.util.common.EmptyUtil;
 import frodez.util.http.URLMatcher;
+import frodez.util.spring.context.ContextUtil;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.PostConstruct;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,13 +27,17 @@ import org.springframework.stereotype.Component;
  * @date 2018-12-03
  */
 @Component
+@DependsOn("contextUtil")
 public class AuthorityManager implements AccessDecisionManager {
 
-	/**
-	 * 访问控制参数配置
-	 */
-	@Autowired
-	private SecurityProperties properties;
+	private Collection<ConfigAttribute> defaultDeniedRoles;
+
+	@PostConstruct
+	private void init() {
+		SecurityProperties properties = ContextUtil.get(SecurityProperties.class);
+		defaultDeniedRoles = Arrays.asList(new SecurityConfig(properties.getAuth().getDeniedRole()));
+		Objects.requireNonNull(defaultDeniedRoles);
+	}
 
 	/**
 	 * 判定是否拥有权限<br>
@@ -51,7 +60,7 @@ public class AuthorityManager implements AccessDecisionManager {
 			throw new AccessDeniedException("无访问权限!");
 		}
 		// 当包含无访问权限时,直接驳回(此时只有无访问权限一个权限)
-		if (permissions.iterator().next().getAttribute().equals(properties.getAuth().getDeniedRole())) {
+		if (permissions.equals(defaultDeniedRoles)) {
 			throw new AccessDeniedException("无访问权限!");
 		}
 		List<String> auths = auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors

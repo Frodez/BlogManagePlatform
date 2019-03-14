@@ -5,6 +5,7 @@ import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.vm.facade.TokenCache;
 import frodez.util.http.URLMatcher;
 import frodez.util.spring.context.ContextUtil;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.DependsOn;
@@ -24,6 +25,7 @@ public class UserUtil {
 	@PostConstruct
 	private void init() {
 		tokenCache = ContextUtil.get(TokenCache.class);
+		Objects.requireNonNull(tokenCache);
 	}
 
 	/**

@@ -27,8 +27,21 @@ public class ValidationUtil {
 	private static final ExecutableValidator EXEC_VAL = VAL.forExecutables();
 
 	/**
-	 * 对对象进行验证,如果验证通过,返回空字符串<br>
-	 * 空对象默认返回值参见ValidationUtil.DEFAULT_NULL_MESSAGE
+	 * 对方法参数进行验证,如果验证通过,返回null<br>
+	 * @author Frodez
+	 * @param instance 需要验证的方法所在类实例
+	 * @param method 需要验证的方法
+	 * @param args 方法参数
+	 * @date 2019-01-12
+	 */
+	public static String validateParam(final Object instance, final Method method, final Object[] args) {
+		Iterator<ConstraintViolation<Object>> iterator = EXEC_VAL.validateParameters(instance, method, args).iterator();
+		return iterator.hasNext() ? iterator.next().getMessage() : null;
+	}
+
+	/**
+	 * 对对象进行验证,如果验证通过,返回null<br>
+	 * 空对象默认返回值参见DefDesc.Warn.NULL_WARN
 	 * @author Frodez
 	 * @param Object 需要验证的对象
 	 * @date 2018-12-03
@@ -49,36 +62,6 @@ public class ValidationUtil {
 			return nullMessage;
 		}
 		Iterator<ConstraintViolation<Object>> iterator = VAL.validate(object).iterator();
-		return iterator.hasNext() ? iterator.next().getMessage() : null;
-	}
-
-	/**
-	 * 对方法参数进行验证,如果验证通过,返回空字符串<br>
-	 * 空方法参数默认返回值参见ValidationUtil.DEFAULT_NULL_MESSAGE
-	 * @author Frodez
-	 * @param instance 需要验证的方法所在类实例
-	 * @param method 需要验证的方法
-	 * @param args 方法参数
-	 * @date 2019-01-12
-	 */
-	public static String validateParam(Object instance, Method method, Object[] args) {
-		return validateParam(instance, method, args, DefDesc.Warn.NULL_WARN);
-	}
-
-	/**
-	 * 对方法参数进行验证,如果验证通过,返回空字符串<br>
-	 * @author Frodez
-	 * @param instance 需要验证的方法所在类实例
-	 * @param method 需要验证的方法
-	 * @param args 方法参数
-	 * @param nullMessage 验证方法参数为空时返回的字符串
-	 * @date 2019-01-12
-	 */
-	public static String validateParam(Object instance, Method method, Object[] args, String nullMessage) {
-		if (instance == null) {
-			return nullMessage;
-		}
-		Iterator<ConstraintViolation<Object>> iterator = EXEC_VAL.validateParameters(instance, method, args).iterator();
 		return iterator.hasNext() ? iterator.next().getMessage() : null;
 	}
 

@@ -74,10 +74,9 @@ public class FileUtil {
 	public static void writeString(String content, String uri, boolean isAppend) throws IOException,
 		URISyntaxException {
 		if (isAppend) {
-			Files.asCharSink(new File(new URI(uri)), Charset.forName(DefCharset.UTF_8), FileWriteMode.APPEND).write(
-				content);
+			Files.asCharSink(new File(new URI(uri)), DefCharset.UTF_8_CHARSET, FileWriteMode.APPEND).write(content);
 		} else {
-			Files.asCharSink(new File(new URI(uri)), Charset.forName(DefCharset.UTF_8)).write(content);
+			Files.asCharSink(new File(new URI(uri)), DefCharset.UTF_8_CHARSET).write(content);
 		}
 	}
 
