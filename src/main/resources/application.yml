@@ -5,10 +5,6 @@ mapper:
   identity: MYSQL
   mappers: frodez.config.mybatis.DataMapper
   
-mybatis:
-  mapper-locations: classpath:frodez/service/*Mapper.xml
-  type-aliases-package: frodez.dao.model
-  
 pagehelper:
   helperDialect: mysql
   params: count=countSql
@@ -58,7 +54,7 @@ spring:
     generator:
       WRITE_BIGDECIMAL_AS_PLAIN: true
     parser:
-      ALLOW_UNQUOTED_CONTROL_CHARS: true  
+      ALLOW_UNQUOTED_CONTROL_CHARS: true
   redis:
     database: 0
     host: 127.0.0.1

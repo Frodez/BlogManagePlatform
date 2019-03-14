@@ -1,18 +1,15 @@
 package frodez.config.mvc;
 
-import com.fasterxml.jackson.core.JsonEncoding;
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import frodez.util.beans.result.Result;
+import frodez.util.constant.setting.DefCharset;
 import frodez.util.json.JSONUtil;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -28,14 +25,12 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.lang.Nullable;
 
+/**
+ * 自定义jacksonHttpMessageConverter
+ * @author Frodez
+ * @date 2019-03-14
+ */
 public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter<Object> {
-
-	/**
-	 * The default charset used by the converter.
-	 */
-	public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-
-	private ObjectMapper objectMapper;
 
 	private Map<String, Boolean> contextDeserializeCache = new ConcurrentHashMap<>();
 
@@ -43,18 +38,13 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 
 	private Map<Class<?>, Boolean> serializeCache = new ConcurrentHashMap<>();
 
-	public JsonHttpMessageConverer(ObjectMapper objectMapper) {
-		this.objectMapper = objectMapper;
-		setDefaultCharset(DEFAULT_CHARSET);
-	}
-
-	public JsonHttpMessageConverer(ObjectMapper objectMapper, MediaType supportedMediaType) {
-		this(objectMapper);
+	public JsonHttpMessageConverer(MediaType supportedMediaType) {
+		setDefaultCharset(DefCharset.UTF_8_CHARSET);
 		setSupportedMediaTypes(Collections.singletonList(supportedMediaType));
 	}
 
-	public JsonHttpMessageConverer(ObjectMapper objectMapper, MediaType... supportedMediaTypes) {
-		this(objectMapper);
+	public JsonHttpMessageConverer(MediaType... supportedMediaTypes) {
+		setDefaultCharset(DefCharset.UTF_8_CHARSET);
 		setSupportedMediaTypes(Arrays.asList(supportedMediaTypes));
 	}
 
@@ -78,10 +68,10 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 		if (cacheResult != null) {
 			return cacheResult;
 		}
-		JavaType javaType = objectMapper.getTypeFactory().constructType(GenericTypeResolver.resolveType(type,
+		JavaType javaType = JSONUtil.mapper().getTypeFactory().constructType(GenericTypeResolver.resolveType(type,
 			contextClass));
 		AtomicReference<Throwable> causeRef = new AtomicReference<>();
-		if (this.objectMapper.canDeserialize(javaType, causeRef)) {
+		if (JSONUtil.mapper().canDeserialize(javaType, causeRef)) {
 			if (hasContextClass) {
 				contextDeserializeCache.put(type.getTypeName().concat(contextClass.getName()), true);
 			} else {
@@ -108,7 +98,7 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 			return cacheResult;
 		}
 		AtomicReference<Throwable> causeRef = new AtomicReference<>();
-		if (this.objectMapper.canSerialize(clazz, causeRef)) {
+		if (JSONUtil.mapper().canSerialize(clazz, causeRef)) {
 			serializeCache.put(clazz, true);
 			return true;
 		}
@@ -160,36 +150,17 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 		throws IOException, HttpMessageNotWritableException {
 		try {
 			if (object instanceof Result) {
-				outputMessage.getBody().write(((Result) object).toString().getBytes());
+				outputMessage.getBody().write(object.toString().getBytes());
 				outputMessage.getBody().flush();
 			} else {
-				JsonGenerator generator = this.objectMapper.getFactory().createGenerator(outputMessage.getBody(),
-					getJsonEncoding(outputMessage.getHeaders().getContentType()));
-				generator.writeRaw(JSONUtil.string(object));
-				generator.flush();
+				outputMessage.getBody().write(JSONUtil.string(object).getBytes());
+				outputMessage.getBody().flush();
 			}
 		} catch (InvalidDefinitionException ex) {
 			throw new HttpMessageConversionException("Type definition error: " + ex.getType(), ex);
 		} catch (JsonProcessingException ex) {
 			throw new HttpMessageNotWritableException("Could not write JSON: " + ex.getOriginalMessage(), ex);
 		}
-	}
-
-	/**
-	 * Determine the JSON encoding to use for the given content type.
-	 * @param contentType the media type as requested by the caller
-	 * @return the JSON encoding to use (never {@code null})
-	 */
-	private JsonEncoding getJsonEncoding(@Nullable MediaType contentType) {
-		if (contentType != null && contentType.getCharset() != null) {
-			Charset charset = contentType.getCharset();
-			for (JsonEncoding encoding : JsonEncoding.values()) {
-				if (charset.name().equals(encoding.getJavaName())) {
-					return encoding;
-				}
-			}
-		}
-		return JsonEncoding.UTF8;
 	}
 
 	@Override

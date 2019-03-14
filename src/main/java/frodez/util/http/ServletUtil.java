@@ -2,6 +2,7 @@ package frodez.util.http;
 
 import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
+import frodez.util.constant.setting.DefCharset;
 import java.io.PrintWriter;
 import java.util.Objects;
 import javax.annotation.Nullable;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 /**
  * HTTP工具类
@@ -65,8 +67,8 @@ public class ServletUtil {
 			return;
 		}
 		response.setStatus(result.httpStatus().value());
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json; charset=utf-8");
+		response.setCharacterEncoding(DefCharset.UTF_8);
+		response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 		PrintWriter out = null;
 		try {
 			out = response.getWriter();
@@ -93,8 +95,8 @@ public class ServletUtil {
 		if (status != null) {
 			response.setStatus(status.value());
 		}
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json; charset=utf-8");
+		response.setCharacterEncoding(DefCharset.UTF_8);
+		response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 		PrintWriter out = null;
 		try {
 			out = response.getWriter();
@@ -121,8 +123,8 @@ public class ServletUtil {
 		if (status != null) {
 			response.setStatus(status.value());
 		}
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("text/plain; charset=utf-8");
+		response.setCharacterEncoding(DefCharset.UTF_8);
+		response.setContentType(MediaType.TEXT_PLAIN_VALUE);
 		PrintWriter out = null;
 		try {
 			out = response.getWriter();
