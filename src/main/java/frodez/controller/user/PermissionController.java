@@ -1,10 +1,10 @@
 package frodez.controller.user;
 
 import frodez.dao.model.user.Permission;
-import frodez.dao.param.user.RolePermissionQuery;
+import frodez.dao.param.user.QueryRolePermission;
 import frodez.dao.result.user.PermissionInfo;
-import frodez.service.user.facade.IUserService;
-import frodez.util.beans.param.PageQuery;
+import frodez.service.user.facade.IAuthorityService;
+import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.constant.setting.DefDesc;
 import io.swagger.annotations.Api;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PermissionController {
 
 	@Autowired
-	private IUserService userService;
+	private IAuthorityService authorityService;
 
 	/**
 	 * 分页查询权限信息
@@ -40,8 +40,8 @@ public class PermissionController {
 	@ApiOperation(value = "分页查询权限信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Permission.class) })
 	public Result getPermissions(@RequestBody @ApiParam(value = DefDesc.Message.PAGE_QUERY,
-		required = true) PageQuery param) {
-		return userService.getPermissions(param);
+		required = true) QueryPage param) {
+		return authorityService.getPermissions(param);
 	}
 
 	/**
@@ -53,8 +53,8 @@ public class PermissionController {
 	@ApiOperation(value = "根据角色ID获取权限信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = PermissionInfo.class) })
 	public Result getRolePermissions(@RequestBody @ApiParam(value = "权限信息获取请求参数",
-		required = true) RolePermissionQuery param) {
-		return userService.getRolePermissions(param);
+		required = true) QueryRolePermission param) {
+		return authorityService.getRolePermissions(param);
 	}
 
 }

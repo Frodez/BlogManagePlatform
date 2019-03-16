@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @NoArgsConstructor
 @ApiModel(description = "用户注册请求参数")
-public class RegisterParam implements Serializable {
+public class Doregister implements Serializable {
 
 	/**
 	 *

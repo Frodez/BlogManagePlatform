@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(description = DefDesc.Message.PAGE_VO)
-public class PageVO<T> implements Serializable {
+public class PageData<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

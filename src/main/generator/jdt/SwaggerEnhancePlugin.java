@@ -1,6 +1,6 @@
 package jdt;
 
-import frodez.util.beans.param.PageQuery;
+import frodez.util.beans.param.QueryPage;
 import frodez.util.constant.setting.DefDesc;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -61,7 +61,7 @@ public class SwaggerEnhancePlugin extends EnhancePlugin {
 			FieldDeclaration field = (FieldDeclaration) object;
 			List<String> fieldJavaDocs = JDTUtil.pureJavaDoc(field.getJavadoc());
 			if (!fieldJavaDocs.isEmpty()) {
-				boolean isPageQuery = JDTUtil.belongTo(field.getType(), PageQuery.class);
+				boolean isPageQuery = JDTUtil.belongTo(field.getType(), QueryPage.class);
 				Map<String, Object> properties = new HashMap<>();
 				if (isPageQuery) {
 					properties.put("value", "DefDesc.Message.PAGE_QUERY");
@@ -81,7 +81,8 @@ public class SwaggerEnhancePlugin extends EnhancePlugin {
 		for (Object item : field.modifiers()) {
 			if (item instanceof NormalAnnotation) {
 				NormalAnnotation annotation = (NormalAnnotation) item;
-				if (annotation.getTypeName().getFullyQualifiedName().equals("NotNull")) {
+				if (annotation.getTypeName().getFullyQualifiedName().equals("NotNull") || annotation.getTypeName()
+					.getFullyQualifiedName().equals("NotBlank")) {
 					return true;
 				}
 				for (Object value : annotation.values()) {

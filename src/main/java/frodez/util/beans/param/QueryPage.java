@@ -23,23 +23,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ApiModel(description = DefDesc.Message.PAGE_QUERY)
-public class PageQuery implements IPage, Serializable {
+public class QueryPage implements IPage, Serializable {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final PageQuery DEFAULT = new PageQuery(DefPage.PAGE_NUM, DefPage.PAGE_SIZE);
+	private static final QueryPage DEFAULT = new QueryPage(DefPage.PAGE_NUM, DefPage.PAGE_SIZE);
 
 	/**
 	 * 合理化请求参数
 	 * @author Frodez
 	 * @date 2019-03-06
 	 */
-	public static PageQuery resonable(PageQuery page) {
+	public static QueryPage resonable(QueryPage page) {
 		if (page == null) {
-			return PageQuery.DEFAULT;
+			return QueryPage.DEFAULT;
 		}
 		return page;
 	}

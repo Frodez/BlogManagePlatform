@@ -30,7 +30,7 @@ public class LimitUserAOP {
 		RateLimiter limiter = limitCache.computeIfAbsent(ContextUtil.request().getRequestURI(), i -> RateLimiter.create(
 			limit.value()));
 		if (!limiter.tryAcquire(limit.timeout(), DefTime.UNIT)) {
-			return Result.fail("请求超时");
+			return Result.busy();
 		}
 		return point.proceed();
 	}

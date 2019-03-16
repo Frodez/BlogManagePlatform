@@ -1,6 +1,6 @@
 package frodez.dao.param.user;
 
-import frodez.util.beans.param.PageQuery;
+import frodez.util.beans.param.QueryPage;
 import frodez.util.constant.setting.DefDesc;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,7 +16,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(description = "权限查询请求参数")
-public class RolePermissionQuery implements Serializable {
+public class QueryRolePermission implements Serializable {
 
 	/**
 	 *
@@ -35,6 +35,6 @@ public class RolePermissionQuery implements Serializable {
 	 */
 	@Valid
 	@ApiModelProperty(value = DefDesc.Message.PAGE_QUERY)
-	private PageQuery page;
+	private QueryPage page;
 
 }

@@ -1,8 +1,8 @@
 package frodez.controller.user;
 
 import frodez.dao.model.user.Role;
-import frodez.service.user.facade.IUserService;
-import frodez.util.beans.param.PageQuery;
+import frodez.service.user.facade.IAuthorityService;
+import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.constant.setting.DefDesc;
 import io.swagger.annotations.Api;
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoleController {
 
 	@Autowired
-	private IUserService userService;
+	private IAuthorityService authorityService;
 
 	/**
 	 * 分页查询角色信息
@@ -38,8 +38,8 @@ public class RoleController {
 	@ApiOperation(value = "分页查询角色信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Role.class) })
 	public Result getRoles(@RequestBody @ApiParam(value = DefDesc.Message.PAGE_QUERY,
-		required = true) PageQuery param) {
-		return userService.getRoles(param);
+		required = true) QueryPage param) {
+		return authorityService.getRoles(param);
 	}
 
 }

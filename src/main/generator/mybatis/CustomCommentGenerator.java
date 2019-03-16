@@ -31,8 +31,9 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 		klass.addImportedType("io.swagger.annotations.ApiModel");
 		klass.addImportedType("io.swagger.annotations.ApiModelProperty");
 		for (IntrospectedColumn iter : table.getAllColumns()) {
-			if (!iter.isNullable()) {
-				klass.addImportedType("javax.validation.constraints.NotNull");
+			if (iter.isNullable()) {
+				klass.addImportedType("javax.annotation.Nullable");
+				break;
 			}
 		}
 		klass.addJavaDocLine("/**");
@@ -73,8 +74,18 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 			}
 		}
 		field.addJavaDocLine("/** ");
-		field.addJavaDocLine(" * " + remark);
+		String javadocRemark = remark;
 		String defaultValue = column.getDefaultValue();
+		if (!column.isNullable() && EmptyUtil.no(defaultValue)) {
+			javadocRemark = javadocRemark + "(不能为空,默认值:" + defaultValue + ")";
+		}
+		if (!column.isNullable() && EmptyUtil.yes(defaultValue)) {
+			javadocRemark = javadocRemark + "(不能为空)";
+		}
+		if (column.isNullable() && EmptyUtil.no(defaultValue)) {
+			javadocRemark = javadocRemark + "(默认值:" + defaultValue + ")";
+		}
+		field.addJavaDocLine(" * " + javadocRemark);
 		if (EmptyUtil.no(defaultValue)) {
 			if (field.getType().getShortName().equals("Byte")) {
 				field.setInitializationString(defaultValue);
@@ -99,8 +110,8 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 			}
 		}
 		field.addJavaDocLine(" */");
-		if (!column.isNullable()) {
-			field.addAnnotation("@NotNull");
+		if (column.isNullable()) {
+			field.addAnnotation("@Nullable");
 		}
 		String columnAnnotation = "@Column(name = \"" + column.getActualColumnName() + "\"";
 		if (field.getType().getShortName().equals("String") || field.getType().getShortName().equals("BigDecimal")) {
