@@ -16,7 +16,7 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @NoArgsConstructor
 @ApiModel(description = "用户重新登录请求参数")
-public class RefreshParam implements Serializable {
+public class DoRefresh implements Serializable {
 
 	/**
 	 *

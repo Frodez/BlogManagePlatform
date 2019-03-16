@@ -16,7 +16,7 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @NoArgsConstructor
 @ApiModel(description = "用户登录请求参数")
-public class LoginParam implements Serializable {
+public class DoLogin implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

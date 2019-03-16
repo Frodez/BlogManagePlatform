@@ -151,7 +151,7 @@ public final class Result implements Serializable {
 	 */
 	public static <T> Result page(Page<T> page) {
 		Objects.requireNonNull(page);
-		return new Result(ResultEnum.SUCCESS, new PageVO<>(page.getPageNum(), page.getPageSize(), page.getTotal(), page
+		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(), page
 			.getResult()));
 	}
 
@@ -162,7 +162,7 @@ public final class Result implements Serializable {
 	 */
 	public static <T> Result page(PageInfo<T> page) {
 		Objects.requireNonNull(page);
-		return new Result(ResultEnum.SUCCESS, new PageVO<>(page.getPageNum(), page.getPageSize(), page.getTotal(), page
+		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(), page
 			.getList()));
 	}
 
@@ -268,6 +268,15 @@ public final class Result implements Serializable {
 		return DEFAULT_RESULT_CACHE.get(ResultEnum.REPEAT_REQUEST);
 	}
 
+	/**
+	 * 返回服务器繁忙结果
+	 * @author Frodez
+	 * @date 2019-03-02
+	 */
+	public static Result busy() {
+		return DEFAULT_RESULT_CACHE.get(ResultEnum.BUSY);
+	}
+
 	private Result() {
 
 	}
@@ -307,10 +316,10 @@ public final class Result implements Serializable {
 	 * @date 2018-11-13
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> PageVO<T> page(Class<T> klass) throws ClassCastException, ParseException {
+	public <T> PageData<T> page(Class<T> klass) throws ClassCastException, ParseException {
 		Objects.requireNonNull(klass);
 		ableAndNotNull();
-		return (PageVO<T>) data;
+		return (PageData<T>) data;
 	}
 
 	/**
@@ -453,7 +462,6 @@ public final class Result implements Serializable {
 		 * 未通过验证
 		 */
 		NO_AUTH(2003, HttpStatus.NETWORK_AUTHENTICATION_REQUIRED, "未通过验证"),
-
 		/**
 		 * 缺少操作权限
 		 */
@@ -461,7 +469,11 @@ public final class Result implements Serializable {
 		/**
 		 * 重复请求
 		 */
-		REPEAT_REQUEST(2005, HttpStatus.LOCKED, "重复请求");
+		REPEAT_REQUEST(2005, HttpStatus.LOCKED, "重复请求"),
+		/**
+		 * 服务器繁忙
+		 */
+		BUSY(2006, HttpStatus.SERVICE_UNAVAILABLE, "服务器繁忙");
 
 		/**
 		 * 自定义状态码

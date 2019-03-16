@@ -1,24 +1,23 @@
 package frodez.service.user.impl;
 
-import com.github.pagehelper.PageHelper;
 import frodez.config.aop.validation.annotation.Check;
-import frodez.dao.mapper.user.PermissionMapper;
-import frodez.dao.mapper.user.RoleMapper;
+import frodez.config.security.login.UserUtil;
 import frodez.dao.mapper.user.UserMapper;
-import frodez.dao.model.user.Role;
 import frodez.dao.model.user.User;
-import frodez.dao.param.user.RolePermissionQuery;
-import frodez.dao.result.user.PermissionInfo;
+import frodez.dao.param.user.Doregister;
 import frodez.dao.result.user.UserInfo;
-import frodez.service.cache.vm.facade.UserIdCache;
+import frodez.service.user.facade.ILoginService;
 import frodez.service.user.facade.IUserService;
-import frodez.util.beans.param.PageQuery;
 import frodez.util.beans.result.Result;
 import frodez.util.constant.user.UserStatusEnum;
-import java.util.List;
+import frodez.util.error.ErrorCode;
+import frodez.util.error.exception.ServiceException;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 用户信息服务
@@ -30,94 +29,56 @@ import org.springframework.stereotype.Service;
 public class UserService implements IUserService {
 
 	@Autowired
-	private PermissionMapper permissionMapper;
-
-	@Autowired
-	private RoleMapper roleMapper;
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private UserMapper userMapper;
 
 	@Autowired
-	private UserIdCache userIdCache;
+	private ILoginService loginService;
 
+	@Check
+	@Transactional
 	@Override
-	public Result getUserInfo(Long userId) {
+	public Result register(Doregister param) {
 		try {
-			UserInfo data = userIdCache.get(userId);
-			if (data != null) {
-				return Result.success(data);
-			}
-			User user = userMapper.selectByPrimaryKey(userId);
-			if (user == null) {
-				return Result.fail("未查询到用户信息!");
-			}
-			if (user.getStatus().equals(UserStatusEnum.FORBIDDEN.getVal())) {
-				return Result.fail("用户已禁用!");
-			}
-			Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
-			if (role == null) {
-				return Result.fail("未查询到用户角色信息!");
-			}
-			List<PermissionInfo> permissionList = permissionMapper.getPermissions(user.getRoleId());
-			data = new UserInfo();
-			data.setId(user.getId());
-			data.setPassword(user.getPassword());
-			data.setName(user.getName());
-			data.setNickname(user.getNickname());
-			data.setEmail(user.getEmail());
-			data.setPhone(user.getPhone());
-			data.setRoleId(user.getRoleId());
-			data.setRoleName(role.getName());
-			data.setRoleLevel(role.getLevel());
-			data.setRoleDescription(role.getDescription());
-			data.setPermissionList(permissionList);
-			userIdCache.save(userId, data);
-			return Result.success(data);
+			User user = new User();
+			user.setCreateTime(new Date());
+			user.setName(param.getName());
+			user.setPassword(passwordEncoder.encode(param.getPassword()));
+			user.setNickname(param.getNickname());
+			user.setEmail(param.getEmail());
+			user.setPhone(param.getPhone());
+			user.setStatus(UserStatusEnum.NORMAL.getVal());
+			//暂时写死
+			user.setRoleId(1L);
+			userMapper.insert(user);
+			return Result.success();
 		} catch (Exception e) {
-			log.error("[getAllRoles]", e);
-			return Result.errorService();
+			log.error("[register]", e);
+			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
 		}
 	}
 
+	/**
+	 * 用户注销
+	 * @author Frodez
+	 * @date 2019-03-15
+	 */
+	@Transactional
 	@Override
-	public Result addRole() {
-		return Result.errorService();
-	}
-
-	@Check
-	@Override
-	public Result getPermissions(PageQuery param) {
+	public Result logOff() {
 		try {
-			return Result.page(PageHelper.startPage(PageQuery.resonable(param)).doSelectPage(() -> permissionMapper
-				.selectAll()));
+			UserInfo userInfo = UserUtil.get();
+			userMapper.deleteByPrimaryKey(userInfo.getId());
+			Result result = loginService.logout();
+			if (result.unable()) {
+				throw new ServiceException(result);
+			}
+			return Result.success();
 		} catch (Exception e) {
-			log.error("[getAllRoles]", e);
-			return Result.errorService();
-		}
-	}
-
-	@Check
-	@Override
-	public Result getRolePermissions(RolePermissionQuery param) {
-		try {
-			return Result.page(PageHelper.startPage(PageQuery.resonable(param.getPage())).doSelectPage(
-				() -> permissionMapper.getPermissions(param.getRoleId())));
-		} catch (Exception e) {
-			log.error("[getAllPermissions]", e);
-			return Result.errorService();
-		}
-	}
-
-	@Check
-	@Override
-	public Result getRoles(PageQuery param) {
-		try {
-			return Result.page(PageHelper.startPage(PageQuery.resonable(param)).doSelectPage(() -> roleMapper
-				.selectAll()));
-		} catch (Exception e) {
-			log.error("[getAllRoles]", e);
-			return Result.errorService();
+			log.error("[logOff]", e);
+			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
 		}
 	}
 

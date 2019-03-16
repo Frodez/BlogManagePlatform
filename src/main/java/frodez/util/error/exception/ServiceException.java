@@ -1,5 +1,6 @@
 package frodez.util.error.exception;
 
+import frodez.util.beans.result.Result;
 import frodez.util.error.ErrorCode;
 
 /**
@@ -13,6 +14,10 @@ public class ServiceException extends RuntimeException {
 
 	public ServiceException(String message) {
 		super(message);
+	}
+
+	public ServiceException(Result result) {
+		super(result.getMessage());
 	}
 
 	public ServiceException(ErrorCode error) {

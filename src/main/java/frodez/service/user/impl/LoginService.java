@@ -2,22 +2,15 @@ package frodez.service.user.impl;
 
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.util.TokenManager;
-import frodez.dao.mapper.user.UserMapper;
-import frodez.dao.model.user.User;
-import frodez.dao.param.user.LoginParam;
-import frodez.dao.param.user.RefreshParam;
-import frodez.dao.param.user.RegisterParam;
+import frodez.dao.param.user.DoLogin;
+import frodez.dao.param.user.DoRefresh;
 import frodez.dao.result.user.PermissionInfo;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.vm.facade.TokenCache;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.ILoginService;
 import frodez.util.beans.result.Result;
-import frodez.util.constant.user.UserStatusEnum;
-import frodez.util.error.ErrorCode;
-import frodez.util.error.exception.ServiceException;
 import frodez.util.spring.context.ContextUtil;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +23,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 登录管理服务
@@ -59,12 +51,9 @@ public class LoginService implements ILoginService {
 	@Autowired
 	private IAuthorityService authorityService;
 
-	@Autowired
-	private UserMapper userMapper;
-
 	@Check
 	@Override
-	public Result login(LoginParam param) {
+	public Result login(DoLogin param) {
 		try {
 			Result result = authorityService.getUserInfo(param.getUsername());
 			if (result.unable()) {
@@ -93,7 +82,7 @@ public class LoginService implements ILoginService {
 
 	@Check
 	@Override
-	public Result refresh(RefreshParam param) {
+	public Result refresh(DoRefresh param) {
 		try {
 			Result result = authorityService.getUserInfo(param.getUsername());
 			if (result.unable()) {
@@ -137,29 +126,6 @@ public class LoginService implements ILoginService {
 		} catch (Exception e) {
 			log.error("[logout]", e);
 			return Result.errorService();
-		}
-	}
-
-	@Check
-	@Transactional
-	@Override
-	public Result register(RegisterParam param) {
-		try {
-			User user = new User();
-			user.setCreateTime(new Date());
-			user.setName(param.getName());
-			user.setPassword(passwordEncoder.encode(param.getPassword()));
-			user.setNickname(param.getNickname());
-			user.setEmail(param.getEmail());
-			user.setPhone(param.getPhone());
-			user.setStatus(UserStatusEnum.NORMAL.getVal());
-			//暂时写死
-			user.setRoleId(1L);
-			userMapper.insert(user);
-			return Result.success();
-		} catch (Exception e) {
-			log.error("[register]", e);
-			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
 		}
 	}
 

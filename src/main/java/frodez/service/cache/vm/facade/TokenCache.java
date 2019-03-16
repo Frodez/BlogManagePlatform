@@ -2,6 +2,8 @@ package frodez.service.cache.vm.facade;
 
 import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.base.ICache;
+import java.util.List;
+import java.util.function.Predicate;
 
 public interface TokenCache extends ICache<String, UserInfo> {
 
@@ -36,6 +38,20 @@ public interface TokenCache extends ICache<String, UserInfo> {
 	 */
 	@Override
 	UserInfo get(String token);
+
+	/**
+	 * 通过自定义查询条件获取token,如果存在多个,只返回其中一个
+	 * @author Frodez
+	 * @date 2019-03-16
+	 */
+	String getTokenByCondition(Predicate<UserInfo> predicate);
+
+	/**
+	 * 通过自定义查询条件获取tokens
+	 * @author Frodez
+	 * @date 2019-03-16
+	 */
+	List<String> getTokensByCondition(Predicate<UserInfo> predicate);
 
 	/**
 	 * 根据token删除对应缓存

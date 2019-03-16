@@ -7,7 +7,6 @@ import frodez.dao.model.article.Article;
 import frodez.dao.result.article.ArticleInfo;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.article.facade.IArticleService;
-import frodez.service.user.impl.UserService;
 import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
 import frodez.util.constant.common.DeleteEnum;
@@ -28,9 +27,6 @@ public class ArticleService implements IArticleService {
 	@Autowired
 	private ArticleMapper articleMapper;
 
-	@Autowired
-	private UserService userService;
-
 	@Override
 	public Result getDetail(Long articleId) {
 		try {
@@ -44,11 +40,10 @@ public class ArticleService implements IArticleService {
 			if (DeleteEnum.YES.getVal() == article.getIsDelete()) {
 				return Result.fail("文章已删除");
 			}
-			Result result = userService.getUserInfo(article.getUserId());
-			if (result.unable()) {
-				return result;
+			UserInfo userInfo = UserUtil.get(article.getUserId());
+			if (userInfo == null) {
+				return Result.fail();
 			}
-			UserInfo userInfo = result.as(UserInfo.class);
 			ArticleInfo info = new ArticleInfo();
 			info.setTitle(article.getTitle());
 			info.setDescription(StrUtil.get(article.getDescription()));

@@ -1,14 +1,24 @@
 package frodez.util.spring.context;
 
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /**
  * spring工具类
@@ -83,6 +93,26 @@ public class ContextUtil implements ApplicationContextAware {
 	 */
 	public static <T> T get(String beanName, Class<T> klass) {
 		return klass.cast(context().getBean(beanName));
+	}
+
+	/**
+	 * 使用spring上下文环境获取所有端点,按请求方式分类(同一端点可能有多种请求方式)
+	 * @author Frodez
+	 * @date 2019-03-16
+	 */
+	public static Map<RequestMethod, List<RequestMappingInfo>> getAllEndPoints() {
+		Map<RequestMethod, List<RequestMappingInfo>> endPoints = new EnumMap<>(RequestMethod.class);
+		for (RequestMethod method : RequestMethod.values()) {
+			endPoints.put(method, BeanFactoryUtils.beansOfTypeIncludingAncestors(context(), HandlerMapping.class, true,
+				false).values().stream().filter((iter) -> {
+					return iter instanceof RequestMappingHandlerMapping;
+				}).map((iter) -> {
+					return RequestMappingHandlerMapping.class.cast(iter).getHandlerMethods().keySet();
+				}).flatMap(Collection::stream).filter((iter) -> {
+					return iter.getMethodsCondition().getMethods().contains(method);
+				}).collect(Collectors.toList()));
+		}
+		return endPoints;
 	}
 
 }

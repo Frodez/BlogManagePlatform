@@ -15,6 +15,11 @@ public class UserIdMapCache implements UserIdCache {
 	private Map<Long, UserInfo> cache = new ConcurrentHashMap<>();
 
 	@Override
+	public int size() {
+		return cache.size();
+	}
+
+	@Override
 	public boolean existKey(Long userId) {
 		return cache.containsKey(userId);
 	}

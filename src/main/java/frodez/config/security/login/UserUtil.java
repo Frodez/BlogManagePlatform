@@ -3,6 +3,8 @@ package frodez.config.security.login;
 import frodez.config.security.util.TokenManager;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.vm.facade.TokenCache;
+import frodez.service.user.facade.IAuthorityService;
+import frodez.util.beans.result.Result;
 import frodez.util.http.URLMatcher;
 import frodez.util.spring.context.ContextUtil;
 import java.util.Objects;
@@ -22,9 +24,13 @@ public class UserUtil {
 
 	private static TokenCache tokenCache;
 
+	private static IAuthorityService authorityService;
+
 	@PostConstruct
 	private void init() {
+		authorityService = ContextUtil.get(IAuthorityService.class);
 		tokenCache = ContextUtil.get(TokenCache.class);
+		Objects.requireNonNull(authorityService);
 		Objects.requireNonNull(tokenCache);
 	}
 
@@ -39,6 +45,30 @@ public class UserUtil {
 			throw new RuntimeException("不能在免验证URI中获取token信息!");
 		}
 		return tokenCache.get(TokenManager.getRealToken(request));
+	}
+
+	public static UserInfo get(Long userId) {
+		Result result = authorityService.getUserInfo(userId);
+		if (result.unable()) {
+			return null;
+		}
+		return result.as(UserInfo.class);
+	}
+
+	public static UserInfo get(String userName) {
+		Result result = authorityService.getUserInfo(userName);
+		if (result.unable()) {
+			return null;
+		}
+		return result.as(UserInfo.class);
+	}
+
+	public static Result find(Long userId) {
+		return authorityService.getUserInfo(userId);
+	}
+
+	public static Result find(String userName) {
+		return authorityService.getUserInfo(userName);
 	}
 
 }

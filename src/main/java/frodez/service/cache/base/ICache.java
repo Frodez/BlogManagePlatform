@@ -3,6 +3,13 @@ package frodez.service.cache.base;
 public interface ICache<K, V> {
 
 	/**
+	 * 获取缓存当前容量
+	 * @author Frodez
+	 * @date 2019-03-17
+	 */
+	int size();
+
+	/**
 	 * 判断key是否存在于缓存
 	 * @author Frodez
 	 * @date 2019-02-27

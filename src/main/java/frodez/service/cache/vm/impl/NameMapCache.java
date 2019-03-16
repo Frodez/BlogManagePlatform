@@ -15,6 +15,11 @@ public class NameMapCache implements NameCache {
 	private Map<String, UserInfo> cache = new ConcurrentHashMap<>();
 
 	@Override
+	public int size() {
+		return cache.size();
+	}
+
+	@Override
 	public boolean existKey(String name) {
 		return cache.containsKey(name);
 	}

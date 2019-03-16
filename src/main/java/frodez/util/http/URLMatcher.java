@@ -51,7 +51,7 @@ public class URLMatcher {
 				return RequestMappingHandlerMapping.class.cast(iter).getHandlerMethods().entrySet();
 			}).flatMap(Collection::stream).forEach((entry) -> {
 				String requestUrl = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + entry.getKey().getPatternsCondition()
-					.getPatterns().stream().findFirst().get();
+					.getPatterns().iterator().next();
 				if (requestUrl.equals(errorPath)) {
 					return;
 				}
