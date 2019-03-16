@@ -170,7 +170,7 @@ public class AuthorityService implements IAuthorityService {
 			example.createCriteria().andIn("name", userNames);
 			List<User> users = userMapper.selectByExample(example);
 			if (users.size() != userNames.size()) {
-				return Result.fail("存在错误的用户ID!");
+				return Result.fail("存在错误的用户名!");
 			}
 			return Result.success(getUserInfos(users));
 		} catch (Exception e) {
@@ -205,7 +205,7 @@ public class AuthorityService implements IAuthorityService {
 			example.createCriteria().andIn("name", userNames);
 			List<User> users = userMapper.selectByExample(example);
 			if (users.size() != userNames.size()) {
-				return Result.fail("存在错误的用户ID!");
+				return Result.fail("存在错误的用户名!");
 			}
 			refreshUserInfo(getUserInfos(users));
 			return Result.success();
@@ -409,6 +409,34 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result setRolePermission(SetRolePermission param) {
 		try {
+			Role role = roleMapper.selectByPrimaryKey(param.getRoleId());
+			if (role == null) {
+				return Result.fail("找不到该角色!");
+			}
+			if (EmptyUtil.no(param.getPermissionIds())) {
+				Example example = ExampleUtil.get(Permission.class);
+				example.createCriteria().andIn("id", param.getPermissionIds());
+				if (permissionMapper.selectCountByExample(example) != param.getPermissionIds().size()) {
+					return Result.fail("存在错误的权限!");
+				}
+			}
+			Example example = ExampleUtil.get(RolePermission.class);
+			example.createCriteria().andEqualTo("roleId", param.getRoleId());
+			rolePermissionMapper.deleteByExample(example);
+			if (EmptyUtil.no(param.getPermissionIds())) {
+				Date date = new Date();
+				List<RolePermission> rolePermissions = param.getPermissionIds().stream().map((iter) -> {
+					RolePermission item = new RolePermission();
+					item.setCreateTime(date);
+					item.setPermissionId(iter);
+					item.setRoleId(param.getRoleId());
+					return item;
+				}).collect(Collectors.toList());
+				rolePermissionMapper.insertList(rolePermissions);
+			}
+			example = ExampleUtil.get(User.class);
+			example.createCriteria().andEqualTo("roleId", param.getRoleId());
+			refreshUserInfo(getUserInfos(userMapper.selectByExample(example)));
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[setRolePermission]", e);

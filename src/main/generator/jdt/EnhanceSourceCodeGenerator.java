@@ -12,10 +12,12 @@ public class EnhanceSourceCodeGenerator {
 
 	public static void main(String[] args) throws URISyntaxException, IOException, MalformedTreeException,
 		BadLocationException {
+		System.out.println("代码生成开始!");
 		EnhancePlugin plugin = new SwaggerEnhancePlugin();
 		plugin.init(PATH);
 		plugin.run();
 		plugin.close();
+		System.out.println("代码生成成功!");
 	}
 
 }
