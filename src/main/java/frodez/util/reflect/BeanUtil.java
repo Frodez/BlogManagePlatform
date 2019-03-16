@@ -43,7 +43,8 @@ public class BeanUtil {
 	}
 
 	/**
-	 * copy对象属性
+	 * copy对象属性<br>
+	 * 建议insert时使用本方法，update时使用cover方法。<br>
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */
@@ -53,6 +54,7 @@ public class BeanUtil {
 
 	/**
 	 * 清空目标bean的所有属性,然后copy原对象属性.<br>
+	 * 建议update时使用本方法，insert时使用copy方法。<br>
 	 * 注意:请不要这样使用本方法:<br>
 	 *
 	 * <pre>
@@ -74,6 +76,7 @@ public class BeanUtil {
 
 	/**
 	 * 创造一个不具有初始值的,copy自原对象属性的bean<br>
+	 * 建议update时使用本方法，insert时使用copy方法。<br>
 	 * 注意:请不要这样使用本方法:<br>
 	 *
 	 * <pre>

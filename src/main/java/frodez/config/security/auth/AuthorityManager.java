@@ -40,6 +40,18 @@ public class AuthorityManager implements AccessDecisionManager {
 	}
 
 	/**
+	 * 更新权限信息
+	 * @author Frodez
+	 * @date 2019-03-17
+	 */
+	public void refresh() {
+		synchronized (this) {
+			defaultDeniedRoles = null;
+			init();
+		}
+	}
+
+	/**
 	 * 判定是否拥有权限<br>
 	 * authentication是UserDetailsServiceImpl中添加到GrantedAuthority中的权限信息.<br>
 	 * object包含客户端请求的request信息，可转换为HttpServletRequest,方法如下:<br>
