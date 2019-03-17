@@ -151,8 +151,8 @@ public final class Result implements Serializable {
 	 */
 	public static <T> Result page(Page<T> page) {
 		Objects.requireNonNull(page);
-		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(), page
-			.getResult()));
+		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(),
+			page.getResult()));
 	}
 
 	/**
@@ -162,8 +162,8 @@ public final class Result implements Serializable {
 	 */
 	public static <T> Result page(PageInfo<T> page) {
 		Objects.requireNonNull(page);
-		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(), page
-			.getList()));
+		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(),
+			page.getList()));
 	}
 
 	/**

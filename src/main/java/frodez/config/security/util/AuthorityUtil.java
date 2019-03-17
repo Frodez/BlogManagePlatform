@@ -21,7 +21,7 @@ public class AuthorityUtil {
 	 * @param authorities 权限信息
 	 * @date 2018-11-21
 	 */
-	public static List<GrantedAuthority> get(List<PermissionInfo> authorities) {
+	public static List<GrantedAuthority> make(List<PermissionInfo> authorities) {
 		return authorities.stream().map(authority -> new SimpleGrantedAuthority(authority.getName())).collect(Collectors
 			.toList());
 	}
@@ -32,7 +32,7 @@ public class AuthorityUtil {
 	 * @param authorities 权限信息
 	 * @date 2018-11-21
 	 */
-	public static List<GrantedAuthority> get(String... authorities) {
+	public static List<GrantedAuthority> make(String... authorities) {
 		return Stream.of(authorities).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 	}
 

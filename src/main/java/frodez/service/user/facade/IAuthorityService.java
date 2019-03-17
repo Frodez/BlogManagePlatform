@@ -113,7 +113,7 @@ public interface IAuthorityService {
 	Result updatePermission(@Valid @NotNull UpdatePermission param);
 
 	/**
-	 * 赋予角色权限
+	 * 赋予角色权限(并覆盖原权限)
 	 * @author Frodez
 	 * @date 2019-03-15
 	 */
