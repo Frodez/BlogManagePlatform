@@ -4,6 +4,8 @@ import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.AddRole;
 import frodez.dao.param.user.QueryRolePermission;
 import frodez.dao.param.user.SetRolePermission;
+import frodez.dao.param.user.UpdatePermission;
+import frodez.dao.param.user.UpdateRole;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import java.util.List;
@@ -90,6 +92,13 @@ public interface IAuthorityService {
 	Result addRole(@Valid @NotNull AddRole param);
 
 	/**
+	 * 修改角色
+	 * @author Frodez
+	 * @date 2019-03-17
+	 */
+	Result updateRole(@Valid @NotNull UpdateRole param);
+
+	/**
 	 * 添加新权限
 	 * @author Frodez
 	 * @date 2019-03-15
@@ -97,7 +106,14 @@ public interface IAuthorityService {
 	Result addPermission(@Valid @NotNull AddPermission param);
 
 	/**
-	 * 赋予角色权限
+	 * 修改权限
+	 * @author Frodez
+	 * @date 2019-03-17
+	 */
+	Result updatePermission(@Valid @NotNull UpdatePermission param);
+
+	/**
+	 * 赋予角色权限(并覆盖原权限)
 	 * @author Frodez
 	 * @date 2019-03-15
 	 */

@@ -116,7 +116,7 @@ public class TokenManager {
 		} else {
 			jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
 		}
-		return new User(jwt.getSubject(), "N/A", AuthorityUtil.get(jwt.getClaim(claim).asArray(String.class)));
+		return new User(jwt.getSubject(), "N/A", AuthorityUtil.make(jwt.getClaim(claim).asArray(String.class)));
 	}
 
 	/**

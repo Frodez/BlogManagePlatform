@@ -2,6 +2,8 @@ package frodez.service.user.impl;
 
 import com.github.pagehelper.PageHelper;
 import frodez.config.aop.validation.annotation.Check;
+import frodez.config.security.auth.AuthorityManager;
+import frodez.config.security.auth.AuthoritySource;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.mapper.user.RoleMapper;
 import frodez.dao.mapper.user.RolePermissionMapper;
@@ -14,6 +16,8 @@ import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.AddRole;
 import frodez.dao.param.user.QueryRolePermission;
 import frodez.dao.param.user.SetRolePermission;
+import frodez.dao.param.user.UpdatePermission;
+import frodez.dao.param.user.UpdateRole;
 import frodez.dao.result.user.PermissionInfo;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.vm.facade.NameCache;
@@ -24,11 +28,11 @@ import frodez.util.beans.pair.Pair;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
+import frodez.util.constant.common.OperationEnum;
 import frodez.util.constant.user.PermissionTypeEnum;
 import frodez.util.constant.user.UserStatusEnum;
 import frodez.util.error.ErrorCode;
 import frodez.util.error.exception.ServiceException;
-import frodez.util.mapper.ExampleUtil;
 import frodez.util.reflect.BeanUtil;
 import frodez.util.spring.context.ContextUtil;
 import java.util.ArrayList;
@@ -76,6 +80,12 @@ public class AuthorityService implements IAuthorityService {
 	@Autowired
 	private RoleMapper roleMapper;
 
+	@Autowired
+	private AuthorityManager authorityManager;
+
+	@Autowired
+	private AuthoritySource authoritySource;
+
 	@Override
 	public Result getUserInfo(Long userId) {
 		try {
@@ -117,7 +127,7 @@ public class AuthorityService implements IAuthorityService {
 			if (data != null) {
 				return Result.success(data);
 			}
-			Example example = ExampleUtil.get(User.class);
+			Example example = new Example(User.class);
 			example.createCriteria().andEqualTo("name", userName);
 			User user = userMapper.selectOneByExample(example);
 			if (user == null) {
@@ -149,13 +159,13 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result getUserInfosByIds(List<Long> userIds) {
 		try {
-			Example example = ExampleUtil.get(User.class);
-			example.createCriteria().andIn("id", userIds);
+			Example example = new Example(User.class);
+			example.createCriteria().andEqualTo("status", UserStatusEnum.NORMAL.getVal()).andIn("id", userIds);
 			List<User> users = userMapper.selectByExample(example);
 			if (users.size() != userIds.size()) {
-				return Result.fail("存在错误的用户ID!");
+				return Result.fail("存在非法的用户ID!");
 			}
-			return Result.success();
+			return Result.success(getUserInfos(users));
 		} catch (Exception e) {
 			log.error("[getUserInfosByIds]", e);
 			return Result.errorService();
@@ -167,10 +177,10 @@ public class AuthorityService implements IAuthorityService {
 	public Result getUserInfosByNames(List<String> userNames) {
 		try {
 			Example example = new Example(User.class);
-			example.createCriteria().andIn("name", userNames);
+			example.createCriteria().andEqualTo("status", UserStatusEnum.NORMAL.getVal()).andIn("name", userNames);
 			List<User> users = userMapper.selectByExample(example);
 			if (users.size() != userNames.size()) {
-				return Result.fail("存在错误的用户名!");
+				return Result.fail("存在非法的用户名!");
 			}
 			return Result.success(getUserInfos(users));
 		} catch (Exception e) {
@@ -183,11 +193,11 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result refreshUserInfoByIds(List<Long> userIds) {
 		try {
-			Example example = ExampleUtil.get(User.class);
-			example.createCriteria().andIn("id", userIds);
+			Example example = new Example(User.class);
+			example.createCriteria().andEqualTo("status", UserStatusEnum.NORMAL.getVal()).andIn("id", userIds);
 			List<User> users = userMapper.selectByExample(example);
 			if (users.size() != userIds.size()) {
-				return Result.fail("存在错误的用户ID!");
+				return Result.fail("存在非法的用户ID!");
 			}
 			refreshUserInfo(getUserInfos(users));
 			return Result.success();
@@ -202,10 +212,10 @@ public class AuthorityService implements IAuthorityService {
 	public Result refreshUserInfoByNames(List<String> userNames) {
 		try {
 			Example example = new Example(User.class);
-			example.createCriteria().andIn("name", userNames);
+			example.createCriteria().andEqualTo("status", UserStatusEnum.NORMAL.getVal()).andIn("name", userNames);
 			List<User> users = userMapper.selectByExample(example);
 			if (users.size() != userNames.size()) {
-				return Result.fail("存在错误的用户名!");
+				return Result.fail("存在非法的用户名!");
 			}
 			refreshUserInfo(getUserInfos(users));
 			return Result.success();
@@ -217,11 +227,11 @@ public class AuthorityService implements IAuthorityService {
 
 	private List<UserInfo> getUserInfos(List<User> users) {
 		List<Long> roleIds = users.stream().map(User::getRoleId).collect(Collectors.toList());
-		Example example = ExampleUtil.get(Permission.class);
+		Example example = new Example(Permission.class);
 		example.createCriteria().andIn("id", rolePermissionMapper.batchGetPermissions(roleIds).stream().map(
 			Pair::getValue).collect(Collectors.toList()));
 		List<Permission> permissions = permissionMapper.selectByExample(example);
-		example = ExampleUtil.get(Role.class);
+		example = new Example(Role.class);
 		example.createCriteria().andIn("id", roleIds);
 		Map<Long, Role> roleMap = roleMapper.selectByExample(example).stream().collect(Collectors.toMap(Role::getId, (
 			iter) -> {
@@ -336,71 +346,135 @@ public class AuthorityService implements IAuthorityService {
 	@Check
 	@Transactional
 	@Override
+	public Result updateRole(UpdateRole param) {
+		try {
+			Role role = roleMapper.selectByPrimaryKey(param.getId());
+			if (role == null) {
+				return Result.fail("未找到该角色!");
+			}
+			if (param.getName() != null && checkRoleName(param.getName())) {
+				return Result.fail("角色不能重名!");
+			}
+			BeanUtil.cover(param, role);
+			roleMapper.updateByPrimaryKeySelective(role);
+			return Result.success();
+		} catch (Exception e) {
+			log.error("[addRole]", e);
+			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
+		}
+	}
+
+	/**
+	 * 检查角色名称是否重名,true为存在重名,false为不存在重名
+	 * @author Frodez
+	 * @date 2019-03-17
+	 */
+	private boolean checkRoleName(String name) {
+		return roleMapper.selectAll().stream().filter((iter) -> {
+			return iter.getName().equals(name);
+		}).count() != 0;
+	}
+
+	/**
+	 * 检查权限名称是否重名,true为存在重名,false为不存在重名
+	 * @author Frodez
+	 * @date 2019-03-17
+	 */
+	private boolean checkPermissionName(String name) {
+		return permissionMapper.selectAll().stream().filter((iter) -> {
+			return iter.getName().equals(name);
+		}).count() != 0;
+	}
+
+	@Check
+	@Transactional
+	@Override
 	public Result addPermission(AddPermission param) {
 		try {
-			if (permissionMapper.selectAll().stream().filter((iter) -> {
-				return iter.getName().equals(param.getName());
-			}).count() != 0) {
+			if (checkPermissionName(param.getName())) {
 				return Result.fail("权限不能重名!");
 			}
-			switch (PermissionTypeEnum.of(param.getType())) {
-				case GET : {
-					if (ContextUtil.getAllEndPoints().get(RequestMethod.GET).stream().filter((iter) -> {
-						return iter.getPatternsCondition().getPatterns().iterator().next().equals(param.getUrl());
-					}).count() == 0) {
-						return Result.fail("系统不存在与此匹配的url!");
-					}
-					break;
-				}
-				case POST : {
-					if (ContextUtil.getAllEndPoints().get(RequestMethod.POST).stream().filter((iter) -> {
-						return iter.getPatternsCondition().getPatterns().iterator().next().equals(param.getUrl());
-					}).count() == 0) {
-						return Result.fail("系统不存在与此匹配的url!");
-					}
-					break;
-				}
-				case DELETE : {
-					if (ContextUtil.getAllEndPoints().get(RequestMethod.DELETE).stream().filter((iter) -> {
-						return iter.getPatternsCondition().getPatterns().iterator().next().equals(param.getUrl());
-					}).count() == 0) {
-						return Result.fail("系统不存在与此匹配的url!");
-					}
-					break;
-				}
-				case PUT : {
-					if (ContextUtil.getAllEndPoints().get(RequestMethod.PUT).stream().filter((iter) -> {
-						return iter.getPatternsCondition().getPatterns().iterator().next().equals(param.getUrl());
-					}).count() == 0) {
-						return Result.fail("系统不存在与此匹配的url!");
-					}
-					break;
-				}
-				case ALL : {
-					if (ContextUtil.getAllEndPoints().get(RequestMethod.GET).stream().filter((iter) -> {
-						return iter.getPatternsCondition().getPatterns().iterator().next().equals(param.getUrl());
-					}).count() == 0) {
-						return Result.fail("系统不存在与此匹配的url!");
-					}
-					break;
-				}
-				default : {
-					if (ContextUtil.getAllEndPoints().values().stream().flatMap(Collection::stream).filter((iter) -> {
-						return iter.getPatternsCondition().getPatterns().iterator().next().equals(param.getUrl());
-					}).count() == 0) {
-						return Result.fail("系统不存在与此匹配的url!");
-					}
-					break;
-				}
+			if (!checkPermissionUrl(PermissionTypeEnum.of(param.getType()), param.getUrl())) {
+				return Result.fail("系统不存在与此匹配的url!");
 			}
 			Permission permission = new Permission();
 			BeanUtil.copy(param, permission);
 			permission.setCreateTime(new Date());
 			permissionMapper.insert(permission);
+			authorityManager.refresh();
+			authoritySource.refresh();
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[addPermission]", e);
 			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
+		}
+	}
+
+	@Check
+	@Transactional
+	@Override
+	public Result updatePermission(UpdatePermission param) {
+		try {
+			if (param.getType() == null && param.getUrl() != null || param.getType() != null && param
+				.getUrl() == null) {
+				return Result.errorRequest("类型和url必须同时存在!");
+			}
+			Permission permission = permissionMapper.selectByPrimaryKey(param.getId());
+			if (permission == null) {
+				return Result.fail("找不到该权限!");
+			}
+			if (param.getName() != null && checkPermissionName(param.getName())) {
+				return Result.fail("权限不能重名!");
+			}
+			if (!checkPermissionUrl(PermissionTypeEnum.of(param.getType()), param.getUrl())) {
+				return Result.fail("系统不存在与此匹配的url!");
+			}
+			BeanUtil.cover(param, permission);
+			permissionMapper.updateByPrimaryKeySelective(permission);
+			authorityManager.refresh();
+			authoritySource.refresh();
+			return Result.success();
+		} catch (Exception e) {
+			log.error("[addPermission]", e);
+			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
+		}
+	}
+
+	/**
+	 * 检查权限url是否符合要求,true为符合要求,false为不符合要求
+	 * @author Frodez
+	 * @date 2019-03-17
+	 */
+	private boolean checkPermissionUrl(PermissionTypeEnum type, String url) {
+		switch (type) {
+			case GET : {
+				return ContextUtil.getAllEndPoints().get(RequestMethod.GET).stream().filter((iter) -> {
+					return iter.getPatternsCondition().getPatterns().iterator().next().equals(url);
+				}).count() != 0;
+			}
+			case POST : {
+				return ContextUtil.getAllEndPoints().get(RequestMethod.POST).stream().filter((iter) -> {
+					return iter.getPatternsCondition().getPatterns().iterator().next().equals(url);
+				}).count() != 0;
+			}
+			case DELETE : {
+				return ContextUtil.getAllEndPoints().get(RequestMethod.DELETE).stream().filter((iter) -> {
+					return iter.getPatternsCondition().getPatterns().iterator().next().equals(url);
+				}).count() != 0;
+			}
+			case PUT : {
+				return ContextUtil.getAllEndPoints().get(RequestMethod.PUT).stream().filter((iter) -> {
+					return iter.getPatternsCondition().getPatterns().iterator().next().equals(url);
+				}).count() != 0;
+			}
+			case ALL : {
+				return ContextUtil.getAllEndPoints().values().stream().flatMap(Collection::stream).filter((iter) -> {
+					return iter.getPatternsCondition().getPatterns().contains(url);
+				}).count() != 0;
+			}
+			default : {
+				throw new RuntimeException("错误的类型!");
+			}
 		}
 	}
 
@@ -413,28 +487,77 @@ public class AuthorityService implements IAuthorityService {
 			if (role == null) {
 				return Result.fail("找不到该角色!");
 			}
-			if (EmptyUtil.no(param.getPermissionIds())) {
-				Example example = ExampleUtil.get(Permission.class);
-				example.createCriteria().andIn("id", param.getPermissionIds());
-				if (permissionMapper.selectCountByExample(example) != param.getPermissionIds().size()) {
-					return Result.fail("存在错误的权限!");
+			if (OperationEnum.SELECT.getVal() == param.getOperationType()) {
+				return Result.errorRequest("本方法不支持查询类型!");
+			}
+			if (OperationEnum.UPDATE.getVal() != param.getOperationType() && EmptyUtil.yes(param.getPermissionIds())) {
+				return Result.errorRequest("新增和删除角色对应权限时,权限ID不能为空!");
+			}
+			switch (OperationEnum.of(param.getOperationType())) {
+				case INSERT : {
+					Example example = new Example(Permission.class);
+					example.createCriteria().andIn("id", param.getPermissionIds());
+					List<Long> permissionIds = permissionMapper.selectByExample(example).stream().map(Permission::getId)
+						.collect(Collectors.toList());
+					if (permissionIds.size() != param.getPermissionIds().size()) {
+						return Result.fail("存在错误的权限!");
+					}
+					example = new Example(RolePermission.class);
+					example.createCriteria().andIn("permissionId", param.getPermissionIds()).andEqualTo("roleId", param
+						.getRoleId());
+					if (rolePermissionMapper.selectCountByExample(example) != 0) {
+						return Result.fail("不能添加已拥有的权限!");
+					}
+					Date date = new Date();
+					List<RolePermission> rolePermissions = param.getPermissionIds().stream().map((iter) -> {
+						RolePermission item = new RolePermission();
+						item.setCreateTime(date);
+						item.setPermissionId(iter);
+						item.setRoleId(param.getRoleId());
+						return item;
+					}).collect(Collectors.toList());
+					rolePermissionMapper.insertList(rolePermissions);
+					break;
+				}
+				case DELETE : {
+					Example example = new Example(RolePermission.class);
+					example.createCriteria().andIn("permissionId", param.getPermissionIds()).andEqualTo("roleId", param
+						.getRoleId());
+					if (rolePermissionMapper.selectCountByExample(example) != param.getPermissionIds().size()) {
+						return Result.fail("存在错误的权限!");
+					}
+					rolePermissionMapper.deleteByExample(example);
+					break;
+				}
+				case UPDATE : {
+					if (EmptyUtil.no(param.getPermissionIds())) {
+						Example example = new Example(Permission.class);
+						example.createCriteria().andIn("id", param.getPermissionIds());
+						if (permissionMapper.selectCountByExample(example) != param.getPermissionIds().size()) {
+							return Result.fail("存在错误的权限!");
+						}
+					}
+					Example example = new Example(RolePermission.class);
+					example.createCriteria().andEqualTo("roleId", param.getRoleId());
+					rolePermissionMapper.deleteByExample(example);
+					if (EmptyUtil.no(param.getPermissionIds())) {
+						Date date = new Date();
+						List<RolePermission> rolePermissions = param.getPermissionIds().stream().map((iter) -> {
+							RolePermission item = new RolePermission();
+							item.setCreateTime(date);
+							item.setPermissionId(iter);
+							item.setRoleId(param.getRoleId());
+							return item;
+						}).collect(Collectors.toList());
+						rolePermissionMapper.insertList(rolePermissions);
+					}
+					break;
+				}
+				default : {
+					break;
 				}
 			}
-			Example example = ExampleUtil.get(RolePermission.class);
-			example.createCriteria().andEqualTo("roleId", param.getRoleId());
-			rolePermissionMapper.deleteByExample(example);
-			if (EmptyUtil.no(param.getPermissionIds())) {
-				Date date = new Date();
-				List<RolePermission> rolePermissions = param.getPermissionIds().stream().map((iter) -> {
-					RolePermission item = new RolePermission();
-					item.setCreateTime(date);
-					item.setPermissionId(iter);
-					item.setRoleId(param.getRoleId());
-					return item;
-				}).collect(Collectors.toList());
-				rolePermissionMapper.insertList(rolePermissions);
-			}
-			example = ExampleUtil.get(User.class);
+			Example example = new Example(User.class);
 			example.createCriteria().andEqualTo("roleId", param.getRoleId());
 			refreshUserInfo(getUserInfos(userMapper.selectByExample(example)));
 			return Result.success();

@@ -45,17 +45,32 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	/**
 	 * 权限缓存
 	 */
-	private Collection<ConfigAttribute> allCache = null;
+	private Collection<ConfigAttribute> allCache;
 
 	/**
 	 * 权限缓存(按url区分)
 	 */
-	private Map<String, Collection<ConfigAttribute>> urlCache = null;
+	private Map<String, Collection<ConfigAttribute>> urlCache;
 
 	/**
 	 * 权限缓存(按url和请求方式区分)
 	 */
-	private Map<String, Map<PermissionTypeEnum, Collection<ConfigAttribute>>> urlTypeCache = null;
+	private Map<String, Map<PermissionTypeEnum, Collection<ConfigAttribute>>> urlTypeCache;
+
+	/**
+	 * 更新权限信息
+	 * @author Frodez
+	 * @date 2019-03-17
+	 */
+	public void refresh() {
+		synchronized (this) {
+			defaultDeniedRoles = null;
+			allCache = null;
+			urlCache = null;
+			urlTypeCache = null;
+			init();
+		}
+	}
 
 	/**
 	 * 初始化

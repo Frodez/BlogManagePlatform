@@ -52,9 +52,9 @@ public class AddRole implements Serializable {
 	private String description;
 
 	/**
-	 * 角色ID
+	 * 权限ID
 	 */
-	@ApiModelProperty(value = "角色ID")
+	@ApiModelProperty(value = "权限ID")
 	private List<Long> permissionIds;
 
 }
