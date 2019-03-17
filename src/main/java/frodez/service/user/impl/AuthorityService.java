@@ -491,7 +491,7 @@ public class AuthorityService implements IAuthorityService {
 				return Result.errorRequest("本方法不支持查询类型!");
 			}
 			if (OperationEnum.UPDATE.getVal() != param.getOperationType() && EmptyUtil.yes(param.getPermissionIds())) {
-				return Result.errorRequest("新增和删除角色对应权限时,权限ID不能为空!");
+				return Result.errorRequest("不能对角色新增或者删除一个空的权限!");
 			}
 			switch (OperationEnum.of(param.getOperationType())) {
 				case INSERT : {

@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +23,7 @@ import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 /**
  * 获取权限资源
@@ -124,10 +124,10 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 				urlTypeCache.put(url, typeMap);
 			}
 		}
-		Objects.requireNonNull(defaultDeniedRoles);
-		Objects.requireNonNull(allCache);
-		Objects.requireNonNull(urlCache);
-		Objects.requireNonNull(urlTypeCache);
+		Assert.notNull(defaultDeniedRoles, "defaultDeniedRoles must not be null");
+		Assert.notNull(allCache, "allCache must not be null");
+		Assert.notNull(urlCache, "urlCache must not be null");
+		Assert.notNull(urlTypeCache, "urlTypeCache must not be null");
 	}
 
 	/**

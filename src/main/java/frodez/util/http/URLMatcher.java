@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -62,8 +62,8 @@ public class URLMatcher {
 				}
 				needVerifyUrls.add(requestUrl);
 			});
-		Objects.requireNonNull(needVerifyUrls);
-		Objects.requireNonNull(permitUrls);
+		Assert.notNull(needVerifyUrls, "needVerifyUrls must not be null");
+		Assert.notNull(permitUrls, "permitUrls must not be null");
 	}
 
 	/**

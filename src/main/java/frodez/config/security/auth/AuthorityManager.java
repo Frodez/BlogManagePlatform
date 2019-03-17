@@ -7,7 +7,6 @@ import frodez.util.spring.context.ContextUtil;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.DependsOn;
@@ -20,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 /**
  * 权限匹配管理器
@@ -36,7 +36,7 @@ public class AuthorityManager implements AccessDecisionManager {
 	private void init() {
 		SecurityProperties properties = ContextUtil.get(SecurityProperties.class);
 		defaultDeniedRoles = Arrays.asList(new SecurityConfig(properties.getAuth().getDeniedRole()));
-		Objects.requireNonNull(defaultDeniedRoles);
+		Assert.notNull(defaultDeniedRoles, "defaultDeniedRoles must not be null");
 	}
 
 	/**

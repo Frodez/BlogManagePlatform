@@ -7,11 +7,11 @@ import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.result.Result;
 import frodez.util.http.URLMatcher;
 import frodez.util.spring.context.ContextUtil;
-import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 /**
  * 登录用户信息获取工具类
@@ -30,8 +30,8 @@ public class UserUtil {
 	private void init() {
 		authorityService = ContextUtil.get(IAuthorityService.class);
 		tokenCache = ContextUtil.get(TokenCache.class);
-		Objects.requireNonNull(authorityService);
-		Objects.requireNonNull(tokenCache);
+		Assert.notNull(authorityService, "authorityService must not be null");
+		Assert.notNull(tokenCache, "tokenCache must not be null");
 	}
 
 	/**

@@ -4,11 +4,11 @@ import frodez.util.constant.setting.PropertyKey;
 import frodez.util.spring.context.ContextUtil;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 /**
  * 访问控制参数配置
@@ -27,7 +27,7 @@ public class PropertyUtil {
 	@PostConstruct
 	private void init() {
 		env = ContextUtil.get(Environment.class);
-		Objects.requireNonNull(env);
+		Assert.notNull(env, "env must not be null");
 	}
 
 	/**

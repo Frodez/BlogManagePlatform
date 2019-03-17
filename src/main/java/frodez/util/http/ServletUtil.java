@@ -4,13 +4,13 @@ import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
 import frodez.util.constant.setting.DefCharset;
 import java.io.PrintWriter;
-import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.util.Assert;
 
 /**
  * HTTP工具类
@@ -62,7 +62,7 @@ public class ServletUtil {
 	 * @date 2019-01-07
 	 */
 	public static void writeJson(HttpServletResponse response, Result result) {
-		Objects.requireNonNull(result);
+		Assert.notNull(result, "result must not be null");
 		if (response.isCommitted()) {
 			return;
 		}

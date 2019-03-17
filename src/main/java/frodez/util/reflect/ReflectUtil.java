@@ -5,12 +5,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 import lombok.experimental.UtilityClass;
 import org.springframework.cglib.reflect.FastClass;
 import org.springframework.cglib.reflect.FastMethod;
+import org.springframework.util.Assert;
 
 /**
  * 反射工具类
@@ -32,7 +32,7 @@ public class ReflectUtil {
 	}
 
 	public static FastClass getFastClass(Class<?> klass) {
-		Objects.requireNonNull(klass);
+		Assert.notNull(klass, "klass must not be null");
 		Pair<FastClass, FastMethod[]> pair = CGLIB_CACHE.get(klass);
 		if (pair == null) {
 			FastClass fastClass = FastClass.create(klass);
@@ -47,8 +47,8 @@ public class ReflectUtil {
 	}
 
 	public static FastMethod getFastMethod(Class<?> klass, String method, Class<?>... params) {
-		Objects.requireNonNull(klass);
-		Objects.requireNonNull(method);
+		Assert.notNull(klass, "klass must not be null");
+		Assert.notNull(method, "method must not be null");
 		Pair<FastClass, FastMethod[]> pair = CGLIB_CACHE.get(klass);
 		if (pair == null) {
 			FastClass fastClass = FastClass.create(klass);
@@ -101,7 +101,7 @@ public class ReflectUtil {
 	 * @date 2018-12-17
 	 */
 	public static Object primitiveAdapt(@Nullable Object value, Class<?> parameterClass) {
-		Objects.requireNonNull(parameterClass);
+		Assert.notNull(parameterClass, "parameterClass must not be null");
 		if (value == null) {
 			return null;
 		}
