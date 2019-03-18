@@ -1,6 +1,7 @@
 package frodez.controller.user;
 
 import frodez.config.aop.request.annotation.RepeatLock;
+import frodez.config.security.login.UserUtil;
 import frodez.dao.param.user.Doregister;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.IUserService;
@@ -8,11 +9,13 @@ import frodez.util.beans.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -32,24 +35,57 @@ public class UserController {
 	private IUserService userService;
 
 	@RepeatLock
-	@GetMapping("/self")
-	@ApiOperation(value = "查看本用户详情接口")
-	public Result getUserDetail() {
-		return null;
+	@GetMapping("/info/self")
+	@ApiOperation(value = "查看本用户信息接口")
+	public Result getUserInfo() {
+		return Result.success(UserUtil.get());
+	}
+
+	@RepeatLock
+	@GetMapping("/info/byId")
+	@ApiOperation(value = "查看用户信息接口")
+	public Result getUserInfoById(@RequestParam("userId") @ApiParam(value = "用户ID", required = true) Long userId) {
+		return authorityService.getUserInfo(userId);
+	}
+
+	@RepeatLock
+	@GetMapping("/info/byName")
+	@ApiOperation(value = "查看用户信息接口")
+	public Result getUserInfoByName(@RequestParam("userName") @ApiParam(value = "用户名",
+		required = true) String userName) {
+		return authorityService.getUserInfo(userName);
+	}
+
+	@RepeatLock
+	@GetMapping("/infos/byId")
+	@ApiOperation(value = "批量查看用户信息接口")
+	public Result getUserInfosById(@RequestParam("userId") @ApiParam(value = "用户ID", required = true) List<
+		Long> userIds) {
+		return authorityService.getUserInfosByIds(userIds, false);
+	}
+
+	@RepeatLock
+	@GetMapping("/infos/byName")
+	@ApiOperation(value = "批量查看用户信息接口")
+	public Result getUserInfosByName(@RequestParam("userName") @ApiParam(value = "用户名", required = true) List<
+		String> userNames) {
+		return authorityService.getUserInfosByNames(userNames, false);
 	}
 
 	@RepeatLock
 	@GetMapping("/detail")
 	@ApiOperation(value = "查看用户详情接口")
-	public Result getUserDetail(Long userId) {
-		return authorityService.getUserInfo(userId);
+	public Result getUserDetail(@RequestParam("userId") @ApiParam(value = "用户ID", required = true) Long userId) {
+		return null;
 	}
 
-	/**
-	 * 注册接口
-	 * @author Frodez
-	 * @date 2019-02-02
-	 */
+	@RepeatLock
+	@GetMapping("/detail/self")
+	@ApiOperation(value = "查看本用户详情接口")
+	public Result getUserDetail() {
+		return null;
+	}
+
 	@RepeatLock
 	@PostMapping("/register")
 	@ApiOperation(value = "注册接口")

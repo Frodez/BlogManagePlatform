@@ -1,6 +1,9 @@
 package frodez.controller.user;
 
 import frodez.dao.model.user.Role;
+import frodez.dao.param.user.AddRole;
+import frodez.dao.param.user.UpdateRole;
+import frodez.dao.param.user.UpdateRolePermission;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
@@ -11,9 +14,12 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -22,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2018-12-01
  */
 @RestController
-@RequestMapping("/user/roles")
+@RequestMapping("/role")
 @Api(tags = "用户角色信息控制器")
 public class RoleController {
 
@@ -40,6 +46,31 @@ public class RoleController {
 	public Result getRoles(@RequestBody @ApiParam(value = DefDesc.Message.PAGE_QUERY,
 		required = true) QueryPage param) {
 		return authorityService.getRoles(param);
+	}
+
+	@PostMapping("/updatePermission")
+	@ApiOperation(value = "修改角色权限接口")
+	public Result updateRolePermission(@RequestBody @ApiParam(value = "修改角色权限请求参数",
+		required = true) UpdateRolePermission param) {
+		return authorityService.updateRolePermission(param);
+	}
+
+	@DeleteMapping
+	@ApiOperation(value = "删除角色接口")
+	public Result removeRole(@RequestParam("id") @ApiParam(value = "角色ID", required = true) Long id) {
+		return authorityService.removeRole(id);
+	}
+
+	@PostMapping("/add")
+	@ApiOperation(value = "添加新角色接口")
+	public Result addRole(@RequestBody @ApiParam(value = "新增角色请求参数", required = true) AddRole param) {
+		return authorityService.addRole(param);
+	}
+
+	@PostMapping("/update")
+	@ApiOperation(value = "修改角色接口")
+	public Result updateRole(@RequestBody @ApiParam(value = "修改角色请求参数", required = true) UpdateRole param) {
+		return authorityService.updateRole(param);
 	}
 
 }

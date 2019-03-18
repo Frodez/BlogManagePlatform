@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.ConfigAttribute;
@@ -35,11 +34,8 @@ import org.springframework.util.Assert;
 public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 
 	/**
-	 * 用户授权服务
+	 * 默认无权限角色
 	 */
-	@Autowired
-	private PermissionMapper permissionMapper;
-
 	private Collection<ConfigAttribute> defaultDeniedRoles;
 
 	/**
@@ -82,7 +78,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 		SecurityProperties properties = ContextUtil.get(SecurityProperties.class);
 		defaultDeniedRoles = Arrays.asList(new SecurityConfig(properties.getAuth().getDeniedRole()));
 		if (allCache == null) {
-			List<Permission> permissions = permissionMapper.selectAll();
+			List<Permission> permissions = ContextUtil.get(PermissionMapper.class).selectAll();
 			allCache = permissions.stream().map((iter) -> {
 				return new SecurityConfig(iter.getName());
 			}).collect(Collectors.toList());

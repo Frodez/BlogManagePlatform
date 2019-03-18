@@ -1,6 +1,7 @@
 package frodez.util.http;
 
 import frodez.config.security.settings.SecurityProperties;
+import frodez.dao.mapper.user.PermissionMapper;
 import frodez.util.constant.setting.PropertyKey;
 import frodez.util.spring.context.ContextUtil;
 import frodez.util.spring.properties.PropertyUtil;
@@ -64,6 +65,11 @@ public class URLMatcher {
 			});
 		Assert.notNull(needVerifyUrls, "needVerifyUrls must not be null");
 		Assert.notNull(permitUrls, "permitUrls must not be null");
+		if (ContextUtil.get(PermissionMapper.class).selectAll().stream().filter((iter) -> {
+			return permitUrls.contains(PropertyUtil.get(PropertyKey.Web.BASE_PATH) + iter.getUrl());
+		}).count() != 0) {
+			throw new RuntimeException("不能在免验证路径下配置权限!");
+		}
 	}
 
 	/**

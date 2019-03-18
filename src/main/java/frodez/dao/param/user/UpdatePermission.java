@@ -7,6 +7,8 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 修改权限请求参数
@@ -15,6 +17,7 @@ import org.hibernate.validator.constraints.Length;
  */
 @Data
 @NoArgsConstructor
+@ApiModel(description = "修改权限请求参数")
 public class UpdatePermission implements Serializable {
 
 	/**
@@ -26,29 +29,34 @@ public class UpdatePermission implements Serializable {
 	 * 权限ID
 	 */
 	@NotNull(message = "权限ID不能为空!")
+	@ApiModelProperty(value = "权限ID", required = true)
 	private Long id;
 
 	/**
 	 * 类型 0:ALL 1:GET 2:POST 3:DELETE 4:PUT
 	 */
 	@LegalEnum(message = "类型错误!", type = PermissionTypeEnum.class)
+	@ApiModelProperty(value = "类型 0:ALL 1:GET 2:POST 3:DELETE 4:PUT")
 	private Byte type;
 
 	/**
 	 * 权限名称
 	 */
 	@Length(max = 255)
+	@ApiModelProperty(value = "权限名称")
 	private String name;
 
 	/**
 	 * 地址
 	 */
+	@ApiModelProperty(value = "地址")
 	private String url;
 
 	/**
 	 * 描述
 	 */
 	@Length(max = 1000)
+	@ApiModelProperty(value = "描述")
 	private String description;
 
 }
