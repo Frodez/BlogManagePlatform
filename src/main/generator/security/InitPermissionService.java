@@ -32,7 +32,7 @@ public class InitPermissionService {
 	public static void main(String[] args) {
 		SpringApplication.run(BlogManagePlatformApplication.class, args);
 		PermissionMapper permissionMapper = ContextUtil.get(PermissionMapper.class);
-		String errorPath = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + "/error";
+		String errorPath = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + PropertyUtil.get(PropertyKey.Web.ERROR_PATH);
 		List<Permission> permissionList = new ArrayList<>();
 		Date date = new Date();
 		BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false)

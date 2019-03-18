@@ -12,6 +12,8 @@ pagehelper:
   supportMethodsArguments: true
   
 server:
+  error:
+    path: /error
   port: 9090
   #不在此处理https,建议使用nginx
   #ssl:

@@ -35,15 +35,14 @@ public class URLMatcher {
 
 	@PostConstruct
 	private void init() {
-		SecurityProperties securityProperties = ContextUtil.get(SecurityProperties.class);
 		PathMatcher matcher = ContextUtil.get(PathMatcher.class);
 		String basePath = PropertyUtil.get(PropertyKey.Web.BASE_PATH);
 		List<String> permitPaths = new ArrayList<>();
-		for (String path : securityProperties.getAuth().getPermitAllPath()) {
+		for (String path : ContextUtil.get(SecurityProperties.class).getAuth().getPermitAllPath()) {
 			permitUrls.add(basePath + path);
 			permitPaths.add(basePath + path);
 		}
-		String errorPath = basePath + "/error";
+		String errorPath = basePath + PropertyUtil.get(PropertyKey.Web.ERROR_PATH);
 		permitUrls.add(errorPath);
 		BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false)
 			.values().stream().filter((iter) -> {

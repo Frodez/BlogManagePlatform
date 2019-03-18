@@ -75,8 +75,8 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 */
 	@PostConstruct
 	private void init() {
-		SecurityProperties properties = ContextUtil.get(SecurityProperties.class);
-		defaultDeniedRoles = Arrays.asList(new SecurityConfig(properties.getAuth().getDeniedRole()));
+		defaultDeniedRoles = Arrays.asList(new SecurityConfig(ContextUtil.get(SecurityProperties.class).getAuth()
+			.getDeniedRole()));
 		if (allCache == null) {
 			List<Permission> permissions = ContextUtil.get(PermissionMapper.class).selectAll();
 			allCache = permissions.stream().map((iter) -> {
