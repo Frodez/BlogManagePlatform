@@ -39,17 +39,17 @@ public final class Result implements Serializable {
 	/**
 	 * 默认json,只有默认类型实例才存在
 	 */
-	private String json;
+	private transient String json;
 
 	/**
 	 * 默认类型实例
 	 */
-	private static final Map<ResultEnum, Result> DEFAULT_RESULT_CACHE = new EnumMap<>(ResultEnum.class);
+	private static transient final Map<ResultEnum, Result> DEFAULT_RESULT_CACHE = new EnumMap<>(ResultEnum.class);
 
 	/**
 	 * jackson writer
 	 */
-	private static ObjectWriter writer;
+	private static transient ObjectWriter writer;
 
 	static {
 		writer = JSONUtil.mapper().writerFor(Result.class);
@@ -151,7 +151,7 @@ public final class Result implements Serializable {
 	 * @date 2019-01-15
 	 */
 	public static <T> Result page(int pageNum, int pageSize, long total, Collection<T> data) {
-		Assert.notNull(data, "page must not be null");
+		Assert.notNull(data, "data must not be null");
 		return new Result(ResultEnum.SUCCESS, new PageData<>(pageNum, pageSize, total, data));
 	}
 
