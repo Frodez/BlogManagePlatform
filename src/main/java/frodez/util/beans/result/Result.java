@@ -10,6 +10,7 @@ import frodez.util.json.JSONUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -142,6 +143,16 @@ public final class Result implements Serializable {
 	public static Result success(Object data) {
 		Assert.notNull(data, "data must not be null");
 		return new Result(ResultEnum.SUCCESS, data);
+	}
+
+	/**
+	 * 返回分页查询类型结果(仅在成功时使用)
+	 * @author Frodez
+	 * @date 2019-01-15
+	 */
+	public static <T> Result page(int pageNum, int pageSize, long total, Collection<T> data) {
+		Assert.notNull(data, "page must not be null");
+		return new Result(ResultEnum.SUCCESS, new PageData<>(pageNum, pageSize, total, data));
 	}
 
 	/**

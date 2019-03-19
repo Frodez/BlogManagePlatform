@@ -1,5 +1,6 @@
 package frodez.service.user.impl;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.auth.AuthorityManager;
@@ -15,9 +16,9 @@ import frodez.dao.model.user.User;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.AddRole;
 import frodez.dao.param.user.QueryRolePermission;
-import frodez.dao.param.user.UpdateRolePermission;
 import frodez.dao.param.user.UpdatePermission;
 import frodez.dao.param.user.UpdateRole;
+import frodez.dao.param.user.UpdateRolePermission;
 import frodez.dao.result.user.PermissionInfo;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.vm.facade.NameCache;
@@ -29,13 +30,17 @@ import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
 import frodez.util.constant.common.ModifyEnum;
+import frodez.util.constant.setting.PropertyKey;
 import frodez.util.constant.user.PermissionTypeEnum;
 import frodez.util.constant.user.UserStatusEnum;
 import frodez.util.error.ErrorCode;
 import frodez.util.error.exception.ServiceException;
 import frodez.util.http.URLMatcher;
 import frodez.util.reflect.BeanUtil;
+import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.context.ContextUtil;
+import frodez.util.spring.properties.PropertyUtil;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,10 +49,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import tk.mybatis.mapper.entity.Example;
 
 /**
@@ -151,6 +160,20 @@ public class AuthorityService implements IAuthorityService {
 			return Result.success(data);
 		} catch (Exception e) {
 			log.error("[getUserInfo]", e);
+			return Result.errorService();
+		}
+	}
+
+	@Check
+	@Override
+	public Result getUserInfos(QueryPage param) {
+		try {
+			Page<User> page = PageHelper.startPage(QueryPage.resonable(param)).doSelectPage(() -> {
+				userMapper.selectAll();
+			});
+			return Result.page(page.getPageNum(), page.getPageSize(), page.getTotal(), getUserInfos(page.getResult()));
+		} catch (Exception e) {
+			log.error("[getUserInfos]", e);
 			return Result.errorService();
 		}
 	}
@@ -414,12 +437,14 @@ public class AuthorityService implements IAuthorityService {
 			BeanUtil.copy(param, permission);
 			permission.setCreateTime(new Date());
 			permissionMapper.insert(permission);
-			authorityManager.refresh();
-			authoritySource.refresh();
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[addPermission]", e);
-			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return Result.errorService();
+		} finally {
+			authorityManager.refresh();
+			authoritySource.refresh();
 		}
 	}
 
@@ -447,12 +472,14 @@ public class AuthorityService implements IAuthorityService {
 			}
 			BeanUtil.cover(param, permission);
 			permissionMapper.updateByPrimaryKeySelective(permission);
-			authorityManager.refresh();
-			authoritySource.refresh();
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[addPermission]", e);
-			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return Result.errorService();
+		} finally {
+			authorityManager.refresh();
+			authoritySource.refresh();
 		}
 	}
 
@@ -576,7 +603,11 @@ public class AuthorityService implements IAuthorityService {
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[setRolePermission]", e);
-			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return Result.errorService();
+		} finally {
+			authorityManager.refresh();
+			authoritySource.refresh();
 		}
 	}
 
@@ -598,12 +629,14 @@ public class AuthorityService implements IAuthorityService {
 			example = new Example(RolePermission.class);
 			example.createCriteria().andEqualTo("roleId", roleId);
 			rolePermissionMapper.deleteByExample(example);
-			authorityManager.refresh();
-			authoritySource.refresh();
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[removeRole]", e);
-			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return Result.errorService();
+		} finally {
+			authorityManager.refresh();
+			authoritySource.refresh();
 		}
 	}
 
@@ -623,12 +656,14 @@ public class AuthorityService implements IAuthorityService {
 			}
 			rolePermissionMapper.deleteByExample(example);
 			permissionMapper.deleteByPrimaryKey(permissionId);
-			authorityManager.refresh();
-			authoritySource.refresh();
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[removePermission]", e);
-			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return Result.errorService();
+		} finally {
+			authorityManager.refresh();
+			authoritySource.refresh();
 		}
 	}
 
@@ -636,12 +671,50 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result scanAndCreatePermissions() {
 		try {
-			authorityManager.refresh();
-			authoritySource.refresh();
+			List<Permission> permissionList = new ArrayList<>();
+			Date date = new Date();
+			BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false)
+				.values().stream().filter((iter) -> {
+					return iter instanceof RequestMappingHandlerMapping;
+				}).map((iter) -> {
+					return ((RequestMappingHandlerMapping) iter).getHandlerMethods().entrySet();
+				}).flatMap(Collection::stream).forEach((entry) -> {
+					String requestUrl = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + entry.getKey()
+						.getPatternsCondition().getPatterns().stream().findFirst().get();
+					if (!URLMatcher.needVerify(requestUrl)) {
+						return;
+					}
+					requestUrl = requestUrl.substring(PropertyUtil.get(PropertyKey.Web.BASE_PATH).length());
+					String requestType = entry.getKey().getMethodsCondition().getMethods().stream().map(
+						RequestMethod::name).findFirst().orElse(PermissionTypeEnum.ALL.name());
+					String permissionName = ReflectUtil.getShortMethodName(entry.getValue().getMethod());
+					Permission permission = new Permission();
+					permission.setCreateTime(date);
+					permission.setUrl(requestUrl);
+					permission.setName(permissionName);
+					permission.setDescription(permissionName);
+					if (requestType.equals("GET")) {
+						permission.setType(PermissionTypeEnum.GET.getVal());
+					} else if (requestType.equals("POST")) {
+						permission.setType(PermissionTypeEnum.POST.getVal());
+					} else if (requestType.equals("DELETE")) {
+						permission.setType(PermissionTypeEnum.DELETE.getVal());
+					} else if (requestType.equals("PUT")) {
+						permission.setType(PermissionTypeEnum.PUT.getVal());
+					} else {
+						permission.setType(PermissionTypeEnum.ALL.getVal());
+					}
+					permissionList.add(permission);
+				});
+			permissionMapper.insertList(permissionList);
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[scanAndCreatePermissions]", e);
-			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return Result.errorService();
+		} finally {
+			authorityManager.refresh();
+			authoritySource.refresh();
 		}
 	}
 

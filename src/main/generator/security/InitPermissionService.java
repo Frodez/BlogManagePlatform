@@ -32,7 +32,6 @@ public class InitPermissionService {
 	public static void main(String[] args) {
 		SpringApplication.run(BlogManagePlatformApplication.class, args);
 		PermissionMapper permissionMapper = ContextUtil.get(PermissionMapper.class);
-		String errorPath = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + PropertyUtil.get(PropertyKey.Web.ERROR_PATH);
 		List<Permission> permissionList = new ArrayList<>();
 		Date date = new Date();
 		BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false)
@@ -43,7 +42,7 @@ public class InitPermissionService {
 			}).flatMap(Collection::stream).forEach((entry) -> {
 				String requestUrl = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + entry.getKey().getPatternsCondition()
 					.getPatterns().stream().findFirst().get();
-				if (!URLMatcher.needVerify(requestUrl) || requestUrl.equals(errorPath)) {
+				if (!URLMatcher.needVerify(requestUrl)) {
 					return;
 				}
 				requestUrl = requestUrl.substring(PropertyUtil.get(PropertyKey.Web.BASE_PATH).length());

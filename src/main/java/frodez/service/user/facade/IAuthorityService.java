@@ -3,9 +3,9 @@ package frodez.service.user.facade;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.AddRole;
 import frodez.dao.param.user.QueryRolePermission;
-import frodez.dao.param.user.UpdateRolePermission;
 import frodez.dao.param.user.UpdatePermission;
 import frodez.dao.param.user.UpdateRole;
+import frodez.dao.param.user.UpdateRolePermission;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.constant.annotation.ServiceOnly;
@@ -23,35 +23,42 @@ import javax.validation.constraints.NotNull;
 public interface IAuthorityService {
 
 	/**
-	 * 根据用户ID查询用户信息
+	 * 根据用户ID查询用户基本信息
 	 * @author Frodez
 	 * @date 2019-03-06
 	 */
-	Result getUserInfo(@Valid @NotNull Long userId);
+	Result getUserInfo(@NotNull Long userId);
 
 	/**
-	 * 根据用户名获取用户信息
+	 * 根据用户名获取用户基本信息
 	 * @author Frodez
 	 * @date 2018-11-14
 	 */
 	Result getUserInfo(@NotBlank String userName);
 
 	/**
-	 * 根据用户ID批量获取用户信息
+	 * 分页查询用户基本信息
+	 * @author Frodez
+	 * @date 2019-03-19
+	 */
+	Result getUserInfos(@Valid @NotNull QueryPage param);
+
+	/**
+	 * 根据用户ID批量获取用户基本信息
 	 * @author Frodez
 	 * @date 2019-03-17
 	 */
 	Result getUserInfosByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens);
 
 	/**
-	 * 根据用户名批量获取用户信息
+	 * 根据用户名批量获取用户基本信息
 	 * @author Frodez
 	 * @date 2019-03-17
 	 */
 	Result getUserInfosByNames(@NotEmpty List<String> userNames, boolean includeFobiddens);
 
 	/**
-	 * 根据用户ID更新用户信息
+	 * 根据用户ID更新用户基本信息
 	 * @author Frodez
 	 * @date 2019-03-16
 	 */
@@ -59,7 +66,7 @@ public interface IAuthorityService {
 	Result refreshUserInfoByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens);
 
 	/**
-	 * 根据用户名更新用户信息
+	 * 根据用户名更新用户基本信息
 	 * @author Frodez
 	 * @date 2019-03-16
 	 */
