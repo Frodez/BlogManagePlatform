@@ -19,7 +19,9 @@ import frodez.dao.param.user.QueryRolePermission;
 import frodez.dao.param.user.UpdatePermission;
 import frodez.dao.param.user.UpdateRole;
 import frodez.dao.param.user.UpdateRolePermission;
+import frodez.dao.result.user.PermissionDetail;
 import frodez.dao.result.user.PermissionInfo;
+import frodez.dao.result.user.RoleDetail;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.vm.facade.NameCache;
 import frodez.service.cache.vm.facade.TokenCache;
@@ -310,10 +312,52 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
+	public Result getPermission(Long permissionId) {
+		try {
+			Permission permission = permissionMapper.selectByPrimaryKey(permissionId);
+			if (permission == null) {
+				return Result.fail("未找到该权限!");
+			}
+			PermissionDetail data = new PermissionDetail();
+			BeanUtil.copy(permission, data);
+			Example example = new Example(RolePermission.class);
+			example.createCriteria().andEqualTo("permissionId", permissionId);
+			data.setRoleIds(rolePermissionMapper.selectByExample(example).stream().map(RolePermission::getRoleId)
+				.collect(Collectors.toList()));
+			return Result.success(data);
+		} catch (Exception e) {
+			log.error("[getAllRoles]", e);
+			return Result.errorService();
+		}
+	}
+
+	@Check
+	@Override
 	public Result getPermissions(QueryPage param) {
 		try {
 			return Result.page(PageHelper.startPage(QueryPage.resonable(param)).doSelectPage(() -> permissionMapper
 				.selectAll()));
+		} catch (Exception e) {
+			log.error("[getAllRoles]", e);
+			return Result.errorService();
+		}
+	}
+
+	@Check
+	@Override
+	public Result getRole(Long roleId) {
+		try {
+			Role role = roleMapper.selectByPrimaryKey(roleId);
+			if (role == null) {
+				return Result.fail("未找到该角色!");
+			}
+			RoleDetail data = new RoleDetail();
+			BeanUtil.copy(role, data);
+			Example example = new Example(RolePermission.class);
+			example.createCriteria().andEqualTo("roleId", roleId);
+			data.setPermissionIds(rolePermissionMapper.selectByExample(example).stream().map(
+				RolePermission::getPermissionId).collect(Collectors.toList()));
+			return Result.success(data);
 		} catch (Exception e) {
 			log.error("[getAllRoles]", e);
 			return Result.errorService();

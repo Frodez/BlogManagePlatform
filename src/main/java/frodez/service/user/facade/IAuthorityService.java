@@ -74,11 +74,25 @@ public interface IAuthorityService {
 	Result refreshUserInfoByNames(@NotEmpty List<String> userNames, boolean includeFobiddens);
 
 	/**
+	 * 获取权限信息
+	 * @author Frodez
+	 * @date 2019-03-19
+	 */
+	Result getPermission(@NotNull Long permissionId);
+
+	/**
 	 * 分页查询权限信息
 	 * @author Frodez
 	 * @date 2018-03-06
 	 */
 	Result getPermissions(@Valid @NotNull QueryPage param);
+
+	/**
+	 * 获取角色信息
+	 * @author Frodez
+	 * @date 2019-03-19
+	 */
+	Result getRole(@NotNull Long roleId);
 
 	/**
 	 * 分页查询角色信息

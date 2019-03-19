@@ -4,6 +4,7 @@ import frodez.dao.model.user.Permission;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.QueryRolePermission;
 import frodez.dao.param.user.UpdatePermission;
+import frodez.dao.result.user.PermissionDetail;
 import frodez.dao.result.user.PermissionInfo;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.param.QueryPage;
@@ -37,6 +38,13 @@ public class PermissionController {
 	private IAuthorityService authorityService;
 
 	@GetMapping
+	@ApiOperation(value = "查询权限信息接口")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = PermissionDetail.class) })
+	public Result getPermission(@RequestParam("id") @ApiParam(value = "权限ID", required = true) Long id) {
+		return authorityService.getPermission(id);
+	}
+
+	@GetMapping("/page")
 	@ApiOperation(value = "分页查询权限信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Permission.class) })
 	public Result getPermissions(@RequestBody @ApiParam(value = DefDesc.Message.PAGE_QUERY,

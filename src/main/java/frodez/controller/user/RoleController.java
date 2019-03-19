@@ -4,6 +4,7 @@ import frodez.dao.model.user.Role;
 import frodez.dao.param.user.AddRole;
 import frodez.dao.param.user.UpdateRole;
 import frodez.dao.param.user.UpdateRolePermission;
+import frodez.dao.result.user.RoleDetail;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
@@ -35,12 +36,19 @@ public class RoleController {
 	@Autowired
 	private IAuthorityService authorityService;
 
+	@GetMapping
+	@ApiOperation(value = "查询角色信息接口")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = RoleDetail.class) })
+	public Result getRole(@RequestParam("id") @ApiParam(value = "角色ID", required = true) Long id) {
+		return authorityService.getRole(id);
+	}
+
 	/**
 	 * 分页查询角色信息
 	 * @author Frodez
 	 * @date 2019-03-06
 	 */
-	@GetMapping
+	@GetMapping("/page")
 	@ApiOperation(value = "分页查询角色信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Role.class) })
 	public Result getRoles(@RequestBody @ApiParam(value = DefDesc.Message.PAGE_QUERY,
