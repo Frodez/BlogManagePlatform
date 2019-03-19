@@ -303,10 +303,11 @@ public final class Result implements Serializable {
 	 * @param klass 类型
 	 * @date 2018-11-13
 	 */
+	@SuppressWarnings("unchecked")
 	public <T> T as(Class<T> klass) throws ClassCastException, ParseException {
 		Assert.notNull(klass, "klass must not be null");
 		ableAndNotNull();
-		return klass.cast(data);
+		return (T) data;
 	}
 
 	/**

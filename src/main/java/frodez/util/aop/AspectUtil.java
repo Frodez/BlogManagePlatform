@@ -16,7 +16,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 public class AspectUtil {
 
 	private static MethodSignature methodSignature(final JoinPoint point) {
-		return MethodSignature.class.cast(point.getSignature());
+		return (MethodSignature) point.getSignature();
 	}
 
 	/**

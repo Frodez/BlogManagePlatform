@@ -17,7 +17,7 @@ public class StrUtil {
 			return defaultStr;
 		}
 		if (object.getClass() == BigDecimal.class) {
-			return BigDecimal.class.cast(object).setScale(DefDecimal.PRECISION, DefDecimal.ROUND_MODE).toString();
+			return ((BigDecimal) object).setScale(DefDecimal.PRECISION, DefDecimal.ROUND_MODE).toString();
 		}
 		return object.toString();
 	}

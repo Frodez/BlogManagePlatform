@@ -33,6 +33,9 @@ public class ContextUtil implements ApplicationContextAware {
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		context = applicationContext;
+		if (context == null) {
+			throw new RuntimeException("获取spring上下文环境失败!");
+		}
 	}
 
 	/**
@@ -50,7 +53,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @date 2019-01-09
 	 */
 	public static HttpServletResponse response() {
-		return ServletRequestAttributes.class.cast(RequestContextHolder.getRequestAttributes()).getResponse();
+		return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 	}
 
 	/**
@@ -59,7 +62,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @date 2019-01-09
 	 */
 	public static HttpServletRequest request() {
-		return ServletRequestAttributes.class.cast(RequestContextHolder.getRequestAttributes()).getRequest();
+		return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 	}
 
 	/**
@@ -68,9 +71,6 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @date 2018-12-21
 	 */
 	public static ApplicationContext context() {
-		if (context == null) {
-			throw new RuntimeException("获取spring上下文环境失败!");
-		}
 		return context;
 	}
 
@@ -91,8 +91,9 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @author Frodez
 	 * @date 2018-12-21
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T get(String beanName, Class<T> klass) {
-		return klass.cast(context().getBean(beanName));
+		return (T) context().getBean(beanName);
 	}
 
 	/**
@@ -107,7 +108,7 @@ public class ContextUtil implements ApplicationContextAware {
 				false).values().stream().filter((iter) -> {
 					return iter instanceof RequestMappingHandlerMapping;
 				}).map((iter) -> {
-					return RequestMappingHandlerMapping.class.cast(iter).getHandlerMethods().keySet();
+					return ((RequestMappingHandlerMapping) iter).getHandlerMethods().keySet();
 				}).flatMap(Collection::stream).filter((iter) -> {
 					return iter.getMethodsCondition().getMethods().contains(method);
 				}).collect(Collectors.toList()));
