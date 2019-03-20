@@ -4,16 +4,16 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import frodez.config.security.settings.SecurityProperties;
-import frodez.util.spring.context.ContextUtil;
+import frodez.util.spring.ContextUtil;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 /**
  * token工具类
@@ -60,13 +60,13 @@ public class TokenManager {
 		header = properties.getJwt().getHeader();
 		tokenPrefix = properties.getJwt().getTokenPrefix();
 		tokenPrefixLength = tokenPrefix.length();
-		Objects.requireNonNull(algorithm);
-		Objects.requireNonNull(issuer);
-		Objects.requireNonNull(expiration);
-		Objects.requireNonNull(claim);
-		Objects.requireNonNull(header);
-		Objects.requireNonNull(tokenPrefix);
-		Objects.requireNonNull(tokenPrefixLength);
+		Assert.notNull(algorithm, "algorithm must not be null");
+		Assert.notNull(issuer, "issuer must not be null");
+		Assert.notNull(expiration, "expiration must not be null");
+		Assert.notNull(claim, "claim must not be null");
+		Assert.notNull(header, "header must not be null");
+		Assert.notNull(tokenPrefix, "tokenPrefix must not be null");
+		Assert.notNull(tokenPrefixLength, "tokenPrefixLength must not be null");
 	}
 
 	/**

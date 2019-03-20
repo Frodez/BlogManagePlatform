@@ -1,18 +1,11 @@
-logging:
-  config: classpath:settings/log.xml
-
-mapper:
-  identity: MYSQL
-  mappers: frodez.config.mybatis.DataMapper
-  
-pagehelper:
-  helperDialect: mysql
-  params: count=countSql
-  pageSizeZero: true
-  supportMethodsArguments: true
-  
 server:
+  error:
+    path: /error
   port: 9090
+  servlet:
+    context-path: /api
+  http2:
+    enabled: true
   #不在此处理https,建议使用nginx
   #ssl:
     #在jdk目录下使用keytool.命令如下:
@@ -23,23 +16,15 @@ server:
     #key-store: classpath:settings/https.jks
     #key-store-password: 123456
     #key-password: 123456
-  servlet:
-    context-path: /api
-  http2:
-    enabled: true
     
 spring:
+  task:
+    scheduling:
+      pool:
+        size: 4
+      thread-name-prefix: spring-task-thread
   profiles:
     active: dev
-  resources:
-    add-mappings: true
-  aop:
-    auto: true
-    proxy-target-class: true
-  data:
-    redis:
-      repositories:
-        enabled: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
@@ -67,3 +52,16 @@ spring:
         max-wait: 45000
         max-idle: -1
         min-idle: 10
+
+logging:
+  config: classpath:settings/log.xml
+
+mapper:
+  identity: MYSQL
+  mappers: frodez.config.mybatis.DataMapper
+  
+pagehelper:
+  helperDialect: mysql
+  params: count=countSql
+  pageSizeZero: true
+  supportMethodsArguments: true

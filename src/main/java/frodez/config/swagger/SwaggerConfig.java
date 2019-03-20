@@ -4,7 +4,7 @@ import com.fasterxml.classmate.TypeResolver;
 import frodez.config.security.settings.SecurityProperties;
 import frodez.util.beans.result.Result;
 import frodez.util.constant.setting.PropertyKey;
-import frodez.util.spring.properties.PropertyUtil;
+import frodez.util.spring.PropertyUtil;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;

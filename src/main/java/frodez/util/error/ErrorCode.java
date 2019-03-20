@@ -2,7 +2,6 @@ package frodez.util.error;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,7 +9,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
-	USER_SERVICE_ERROR("用户信息服务失败!");
+	USER_SERVICE_ERROR("用户信息服务失败!"),
+
+	TASK_SERVICE_ERROR("定时任务服务失败!");
 
 	private String description;
 

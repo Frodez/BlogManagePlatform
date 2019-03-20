@@ -4,7 +4,7 @@ import frodez.config.security.settings.SecurityProperties;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.model.user.Permission;
 import frodez.util.constant.user.PermissionTypeEnum;
-import frodez.util.spring.context.ContextUtil;
+import frodez.util.spring.ContextUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,10 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.ConfigAttribute;
@@ -24,6 +22,7 @@ import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 /**
  * 获取权限资源
@@ -35,11 +34,8 @@ import org.springframework.stereotype.Component;
 public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 
 	/**
-	 * 用户授权服务
+	 * 默认无权限角色
 	 */
-	@Autowired
-	private PermissionMapper permissionMapper;
-
 	private Collection<ConfigAttribute> defaultDeniedRoles;
 
 	/**
@@ -79,10 +75,10 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 */
 	@PostConstruct
 	private void init() {
-		SecurityProperties properties = ContextUtil.get(SecurityProperties.class);
-		defaultDeniedRoles = Arrays.asList(new SecurityConfig(properties.getAuth().getDeniedRole()));
+		defaultDeniedRoles = Arrays.asList(new SecurityConfig(ContextUtil.get(SecurityProperties.class).getAuth()
+			.getDeniedRole()));
 		if (allCache == null) {
-			List<Permission> permissions = permissionMapper.selectAll();
+			List<Permission> permissions = ContextUtil.get(PermissionMapper.class).selectAll();
 			allCache = permissions.stream().map((iter) -> {
 				return new SecurityConfig(iter.getName());
 			}).collect(Collectors.toList());
@@ -124,10 +120,10 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 				urlTypeCache.put(url, typeMap);
 			}
 		}
-		Objects.requireNonNull(defaultDeniedRoles);
-		Objects.requireNonNull(allCache);
-		Objects.requireNonNull(urlCache);
-		Objects.requireNonNull(urlTypeCache);
+		Assert.notNull(defaultDeniedRoles, "defaultDeniedRoles must not be null");
+		Assert.notNull(allCache, "allCache must not be null");
+		Assert.notNull(urlCache, "urlCache must not be null");
+		Assert.notNull(urlTypeCache, "urlTypeCache must not be null");
 	}
 
 	/**

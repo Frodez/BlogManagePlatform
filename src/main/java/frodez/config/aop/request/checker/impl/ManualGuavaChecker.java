@@ -5,11 +5,11 @@ import com.google.common.cache.CacheBuilder;
 import frodez.config.aop.request.checker.facade.ManualChecker;
 import frodez.config.cache.CacheProperties;
 import frodez.util.constant.setting.DefTime;
-import frodez.util.spring.context.ContextUtil;
-import java.util.Objects;
+import frodez.util.spring.ContextUtil;
 import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 /**
  * 阻塞型重复请求检查HASHMAP实现
@@ -26,7 +26,7 @@ public class ManualGuavaChecker implements ManualChecker {
 	private void init() {
 		cache = CacheBuilder.newBuilder().expireAfterAccess(ContextUtil.get(CacheProperties.class)
 			.getManualGuavaChecker().getTimeout(), DefTime.UNIT).build();
-		Objects.requireNonNull(cache);
+		Assert.notNull(cache, "cache must not be null");
 	}
 
 	@Override

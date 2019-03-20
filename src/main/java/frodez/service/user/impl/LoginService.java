@@ -10,7 +10,7 @@ import frodez.service.cache.vm.facade.TokenCache;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.ILoginService;
 import frodez.util.beans.result.Result;
-import frodez.util.spring.context.ContextUtil;
+import frodez.util.spring.MVCUtil;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
@@ -100,7 +100,7 @@ public class LoginService implements ILoginService {
 			String token = TokenManager.generate(param.getUsername(), authorities);
 			tokenCache.remove(param.getOldToken());
 			tokenCache.save(token, userInfo);
-			logoutHandler.logout(ContextUtil.request(), ContextUtil.response(), SecurityContextHolder.getContext()
+			logoutHandler.logout(MVCUtil.request(), MVCUtil.response(), SecurityContextHolder.getContext()
 				.getAuthentication());
 			SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(param.getUsername(), userInfo.getPassword())));
@@ -114,14 +114,13 @@ public class LoginService implements ILoginService {
 	@Override
 	public Result logout() {
 		try {
-			HttpServletRequest request = ContextUtil.request();
+			HttpServletRequest request = MVCUtil.request();
 			String token = TokenManager.getRealToken(request);
 			if (!tokenCache.existKey(token)) {
 				return Result.fail("用户已下线!");
 			}
 			tokenCache.remove(token);
-			logoutHandler.logout(request, ContextUtil.response(), SecurityContextHolder.getContext()
-				.getAuthentication());
+			logoutHandler.logout(request, MVCUtil.response(), SecurityContextHolder.getContext().getAuthentication());
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[logout]", e);

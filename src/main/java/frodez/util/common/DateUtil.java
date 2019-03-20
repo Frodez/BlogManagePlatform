@@ -9,8 +9,8 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.Objects;
 import lombok.experimental.UtilityClass;
+import org.springframework.util.Assert;
 
 /**
  * 日期工具类
@@ -79,7 +79,7 @@ public class DateUtil {
 	 * @date 2019-03-01
 	 */
 	public static boolean isDate(String date) {
-		Objects.requireNonNull(date);
+		Assert.notNull(date, "date must not be null");
 		try {
 			LocalDate.parse(date, DATE_FORMATTER);
 			return true;
@@ -103,7 +103,7 @@ public class DateUtil {
 	 * @date 2019-03-01
 	 */
 	public static boolean isTime(String date) {
-		Objects.requireNonNull(date);
+		Assert.notNull(date, "date must not be null");
 		try {
 			LocalTime.parse(date, TIME_FORMATTER);
 			return true;
@@ -127,7 +127,7 @@ public class DateUtil {
 	 * @date 2019-03-01
 	 */
 	public static boolean isDateTime(String date) {
-		Objects.requireNonNull(date);
+		Assert.notNull(date, "date must not be null");
 		try {
 			LocalDateTime.parse(date, DATE_TIME_FORMATTER);
 			return true;

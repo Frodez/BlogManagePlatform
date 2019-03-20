@@ -47,9 +47,7 @@ import org.springframework.boot.autoconfigure.integration.IntegrationAutoConfigu
 import org.springframework.boot.autoconfigure.jdbc.JndiDataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.XADataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jersey.JerseyAutoConfiguration;
-import org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration;
 import org.springframework.boot.autoconfigure.jms.JndiConnectionFactoryAutoConfiguration;
-import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQAutoConfiguration;
 import org.springframework.boot.autoconfigure.jms.artemis.ArtemisAutoConfiguration;
 import org.springframework.boot.autoconfigure.jooq.JooqAutoConfiguration;
 import org.springframework.boot.autoconfigure.jsonb.JsonbAutoConfiguration;
@@ -73,7 +71,6 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
 import org.springframework.boot.autoconfigure.sendgrid.SendGridAutoConfiguration;
 import org.springframework.boot.autoconfigure.session.SessionAutoConfiguration;
 import org.springframework.boot.autoconfigure.solr.SolrAutoConfiguration;
-import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.jta.JtaAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.HttpHandlerAutoConfiguration;
@@ -87,6 +84,7 @@ import org.springframework.boot.autoconfigure.webservices.client.WebServiceTempl
 import org.springframework.boot.autoconfigure.websocket.reactive.WebSocketReactiveAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketMessagingAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServletAutoConfiguration;
+import org.springframework.jms.annotation.EnableJms;
 import tk.mybatis.spring.annotation.MapperScan;
 
 /**
@@ -94,19 +92,19 @@ import tk.mybatis.spring.annotation.MapperScan;
  * @author Frodez
  * @date 2019-01-07
  */
-@MapperScan(basePackages = "frodez.dao.mapper")
-@SpringBootApplication(exclude = { ActiveMQAutoConfiguration.class, ArtemisAutoConfiguration.class,
-	BatchAutoConfiguration.class, CacheAutoConfiguration.class, CassandraAutoConfiguration.class,
-	CassandraDataAutoConfiguration.class, CassandraReactiveDataAutoConfiguration.class,
-	CassandraReactiveRepositoriesAutoConfiguration.class, CassandraRepositoriesAutoConfiguration.class,
-	ClientHttpConnectorAutoConfiguration.class, CloudServiceConnectorsAutoConfiguration.class,
-	CouchbaseAutoConfiguration.class, CouchbaseDataAutoConfiguration.class,
-	CouchbaseReactiveDataAutoConfiguration.class, CouchbaseReactiveRepositoriesAutoConfiguration.class,
-	CouchbaseRepositoriesAutoConfiguration.class, XADataSourceAutoConfiguration.class,
-	WebSocketServletAutoConfiguration.class, WebSocketMessagingAutoConfiguration.class,
-	WebSocketReactiveAutoConfiguration.class, WebServicesAutoConfiguration.class,
-	WebServiceTemplateAutoConfiguration.class, WebFluxAutoConfiguration.class, WebClientAutoConfiguration.class,
-	ThymeleafAutoConfiguration.class, TaskSchedulingAutoConfiguration.class, SessionAutoConfiguration.class,
+@EnableJms
+@MapperScan(basePackages = { "frodez.dao.mapper" })
+@SpringBootApplication(exclude = { ArtemisAutoConfiguration.class, BatchAutoConfiguration.class,
+	CacheAutoConfiguration.class, CassandraAutoConfiguration.class, CassandraDataAutoConfiguration.class,
+	CassandraReactiveDataAutoConfiguration.class, CassandraReactiveRepositoriesAutoConfiguration.class,
+	CassandraRepositoriesAutoConfiguration.class, ClientHttpConnectorAutoConfiguration.class,
+	CloudServiceConnectorsAutoConfiguration.class, CouchbaseAutoConfiguration.class,
+	CouchbaseDataAutoConfiguration.class, CouchbaseReactiveDataAutoConfiguration.class,
+	CouchbaseReactiveRepositoriesAutoConfiguration.class, CouchbaseRepositoriesAutoConfiguration.class,
+	XADataSourceAutoConfiguration.class, WebSocketServletAutoConfiguration.class,
+	WebSocketMessagingAutoConfiguration.class, WebSocketReactiveAutoConfiguration.class,
+	WebServicesAutoConfiguration.class, WebServiceTemplateAutoConfiguration.class, WebFluxAutoConfiguration.class,
+	WebClientAutoConfiguration.class, ThymeleafAutoConfiguration.class, SessionAutoConfiguration.class,
 	SolrAutoConfiguration.class, SolrRepositoriesAutoConfiguration.class, SendGridAutoConfiguration.class,
 	UserDetailsServiceAutoConfiguration.class, RepositoryRestMvcAutoConfiguration.class,
 	RestClientAutoConfiguration.class, ReactiveWebServerFactoryAutoConfiguration.class,
@@ -120,15 +118,14 @@ import tk.mybatis.spring.annotation.MapperScan;
 	MessageSourceAutoConfiguration.class, LiquibaseAutoConfiguration.class, LdapRepositoriesAutoConfiguration.class,
 	LdapAutoConfiguration.class, KafkaAutoConfiguration.class, JtaAutoConfiguration.class, JsonbAutoConfiguration.class,
 	JpaRepositoriesAutoConfiguration.class, JooqAutoConfiguration.class, JndiDataSourceAutoConfiguration.class,
-	JndiConnectionFactoryAutoConfiguration.class, JmsAutoConfiguration.class, JestAutoConfiguration.class,
-	JerseyAutoConfiguration.class, JdbcRepositoriesAutoConfiguration.class, IntegrationAutoConfiguration.class,
-	InfluxDbAutoConfiguration.class, HypermediaAutoConfiguration.class, HttpHandlerAutoConfiguration.class,
-	HibernateJpaAutoConfiguration.class, HazelcastJpaDependencyAutoConfiguration.class,
-	HazelcastAutoConfiguration.class, H2ConsoleAutoConfiguration.class, GsonAutoConfiguration.class,
-	GroovyTemplateAutoConfiguration.class, FreeMarkerAutoConfiguration.class, FlywayAutoConfiguration.class,
-	ErrorWebFluxAutoConfiguration.class, EmbeddedMongoAutoConfiguration.class, EmbeddedLdapAutoConfiguration.class,
-	ElasticsearchRepositoriesAutoConfiguration.class, ElasticsearchDataAutoConfiguration.class,
-	ElasticsearchAutoConfiguration.class })
+	JndiConnectionFactoryAutoConfiguration.class, JestAutoConfiguration.class, JerseyAutoConfiguration.class,
+	JdbcRepositoriesAutoConfiguration.class, IntegrationAutoConfiguration.class, InfluxDbAutoConfiguration.class,
+	HypermediaAutoConfiguration.class, HttpHandlerAutoConfiguration.class, HibernateJpaAutoConfiguration.class,
+	HazelcastJpaDependencyAutoConfiguration.class, HazelcastAutoConfiguration.class, H2ConsoleAutoConfiguration.class,
+	GsonAutoConfiguration.class, GroovyTemplateAutoConfiguration.class, FreeMarkerAutoConfiguration.class,
+	FlywayAutoConfiguration.class, ErrorWebFluxAutoConfiguration.class, EmbeddedMongoAutoConfiguration.class,
+	EmbeddedLdapAutoConfiguration.class, ElasticsearchRepositoriesAutoConfiguration.class,
+	ElasticsearchDataAutoConfiguration.class, ElasticsearchAutoConfiguration.class })
 public class BlogManagePlatformApplication {
 
 	public static void main(String[] args) {

@@ -9,8 +9,8 @@ import frodez.util.constant.user.PermissionTypeEnum;
 import frodez.util.http.URLMatcher;
 import frodez.util.json.JSONUtil;
 import frodez.util.reflect.ReflectUtil;
-import frodez.util.spring.context.ContextUtil;
-import frodez.util.spring.properties.PropertyUtil;
+import frodez.util.spring.ContextUtil;
+import frodez.util.spring.PropertyUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -32,18 +32,17 @@ public class InitPermissionService {
 	public static void main(String[] args) {
 		SpringApplication.run(BlogManagePlatformApplication.class, args);
 		PermissionMapper permissionMapper = ContextUtil.get(PermissionMapper.class);
-		String errorPath = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + "/error";
 		List<Permission> permissionList = new ArrayList<>();
 		Date date = new Date();
 		BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false)
 			.values().stream().filter((iter) -> {
 				return iter instanceof RequestMappingHandlerMapping;
 			}).map((iter) -> {
-				return RequestMappingHandlerMapping.class.cast(iter).getHandlerMethods().entrySet();
+				return ((RequestMappingHandlerMapping) iter).getHandlerMethods().entrySet();
 			}).flatMap(Collection::stream).forEach((entry) -> {
 				String requestUrl = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + entry.getKey().getPatternsCondition()
 					.getPatterns().stream().findFirst().get();
-				if (!URLMatcher.needVerify(requestUrl) || requestUrl.equals(errorPath)) {
+				if (!URLMatcher.needVerify(requestUrl)) {
 					return;
 				}
 				requestUrl = requestUrl.substring(PropertyUtil.get(PropertyKey.Web.BASE_PATH).length());

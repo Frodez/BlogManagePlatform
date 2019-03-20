@@ -1,19 +1,20 @@
 package frodez.util.http;
 
 import frodez.config.security.settings.SecurityProperties;
+import frodez.dao.mapper.user.PermissionMapper;
 import frodez.util.constant.setting.PropertyKey;
-import frodez.util.spring.context.ContextUtil;
-import frodez.util.spring.properties.PropertyUtil;
+import frodez.util.spring.ContextUtil;
+import frodez.util.spring.PropertyUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -34,21 +35,20 @@ public class URLMatcher {
 
 	@PostConstruct
 	private void init() {
-		SecurityProperties securityProperties = ContextUtil.get(SecurityProperties.class);
 		PathMatcher matcher = ContextUtil.get(PathMatcher.class);
 		String basePath = PropertyUtil.get(PropertyKey.Web.BASE_PATH);
 		List<String> permitPaths = new ArrayList<>();
-		for (String path : securityProperties.getAuth().getPermitAllPath()) {
+		for (String path : ContextUtil.get(SecurityProperties.class).getAuth().getPermitAllPath()) {
 			permitUrls.add(basePath + path);
 			permitPaths.add(basePath + path);
 		}
-		String errorPath = basePath + "/error";
+		String errorPath = basePath + PropertyUtil.get(PropertyKey.Web.ERROR_PATH);
 		permitUrls.add(errorPath);
 		BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false)
 			.values().stream().filter((iter) -> {
 				return iter instanceof RequestMappingHandlerMapping;
 			}).map((iter) -> {
-				return RequestMappingHandlerMapping.class.cast(iter).getHandlerMethods().entrySet();
+				return ((RequestMappingHandlerMapping) iter).getHandlerMethods().entrySet();
 			}).flatMap(Collection::stream).forEach((entry) -> {
 				String requestUrl = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + entry.getKey().getPatternsCondition()
 					.getPatterns().iterator().next();
@@ -62,8 +62,13 @@ public class URLMatcher {
 				}
 				needVerifyUrls.add(requestUrl);
 			});
-		Objects.requireNonNull(needVerifyUrls);
-		Objects.requireNonNull(permitUrls);
+		Assert.notNull(needVerifyUrls, "needVerifyUrls must not be null");
+		Assert.notNull(permitUrls, "permitUrls must not be null");
+		if (ContextUtil.get(PermissionMapper.class).selectAll().stream().filter((iter) -> {
+			return permitUrls.contains(PropertyUtil.get(PropertyKey.Web.BASE_PATH) + iter.getUrl());
+		}).count() != 0) {
+			throw new RuntimeException("不能在免验证路径下配置权限!");
+		}
 	}
 
 	/**

@@ -25,11 +25,11 @@ public enum OperationEnum {
 	/**
 	 * 修改
 	 */
-	UPDATE((byte) 2, "修改"),
+	UPDATE((byte) 3, "修改"),
 	/**
 	 * 查询
 	 */
-	SELECT((byte) 2, "查询");
+	SELECT((byte) 4, "查询");
 
 	private byte val;
 

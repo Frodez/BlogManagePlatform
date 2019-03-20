@@ -26,6 +26,11 @@ public class PropertyKey {
 		 */
 		public static final String PORT = "server.port";
 
+		/**
+		 * 默认错误路径
+		 */
+		public static final String ERROR_PATH = "server.error.path";
+
 	}
 
 	/**

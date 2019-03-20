@@ -11,11 +11,29 @@
  Target Server Version : 80013
  File Encoding         : 65001
 
- Date: 06/01/2019 17:39:48
+ Date: 21/03/2019 02:46:13
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for tb_article
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_article`;
+CREATE TABLE `tb_article`  (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `update_time` datetime(0) NOT NULL COMMENT '修改时间',
+  `user_id` bigint(20) NOT NULL COMMENT '作者ID',
+  `permit_level` tinyint(4) NOT NULL COMMENT '可见角色最低等级',
+  `is_delete` tinyint(4) NOT NULL DEFAULT 1 COMMENT '是否被删除  1:未删除  2:已删除',
+  `title` varchar(127) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '标题',
+  `description` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '简介',
+  `tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '标签',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '内容',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文章表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_permission
@@ -29,7 +47,7 @@ CREATE TABLE `tb_permission`  (
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '地址',
   `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '描述',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_role
@@ -54,7 +72,21 @@ CREATE TABLE `tb_role_permission`  (
   `role_id` bigint(20) NOT NULL COMMENT '角色ID',
   `permission_id` bigint(20) NOT NULL COMMENT '权限ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色权限表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for tb_spring_task
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_spring_task`;
+CREATE TABLE `tb_spring_task`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  `status` tinyint(4) NOT NULL COMMENT '运行状态  1:活跃中  2:已暂停',
+  `target` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '目标',
+  `description` tinytext CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '任务描述',
+  `cron_exp` varchar(31) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'cron表达式',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '定时任务表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_user
@@ -72,23 +104,5 @@ CREATE TABLE `tb_user`  (
   `role_id` bigint(20) NOT NULL COMMENT '角色ID',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for tb_article
--- ----------------------------
-DROP TABLE IF EXISTS `tb_article`;
-CREATE TABLE `tb_article` (
-  `id` bigint(20) NOT NULL COMMENT 'ID',
-  `create_time` datetime NOT NULL COMMENT '创建时间',
-  `update_time` datetime NOT NULL COMMENT '修改时间',
-  `user_id` bigint(20) NOT NULL COMMENT '作者ID',
-  `permit_level` tinyint(4) NOT NULL COMMENT '可见角色最低等级',
-  `is_delete` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否被删除  1:未删除  2:已删除',
-  `title` varchar(127) NOT NULL COMMENT '标题',
-  `description` tinytext COMMENT '简介',
-  `tag` varchar(255) DEFAULT NULL COMMENT '标签',
-  `content` text NOT NULL COMMENT '内容',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章表';
 
 SET FOREIGN_KEY_CHECKS = 1;

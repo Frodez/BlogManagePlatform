@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.experimental.UtilityClass;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.cglib.reflect.FastClass;
 import org.springframework.cglib.reflect.FastMethod;
+import org.springframework.util.Assert;
 
 /**
  * Java Bean工具类
@@ -105,7 +105,7 @@ public class BeanUtil {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> map(Object bean) {
-		Objects.requireNonNull(bean);
+		Assert.notNull(bean, "bean must not be null");
 		Map<String, Object> map = new HashMap<>();
 		map.putAll(BeanMap.create(bean));
 		return map;
@@ -117,7 +117,7 @@ public class BeanUtil {
 	 * @date 2019-02-08
 	 */
 	public static <T> T as(Map<String, Object> map, Class<T> klass) {
-		Objects.requireNonNull(map);
+		Assert.notNull(map, "map must not be null");
 		try {
 			T bean = ReflectUtil.newInstance(klass);
 			BeanMap.create(bean).putAll(map);
@@ -133,7 +133,7 @@ public class BeanUtil {
 	 * @date 2019-02-08
 	 */
 	public static boolean isClear(Object bean) {
-		Objects.requireNonNull(bean);
+		Assert.notNull(bean, "bean must not be null");
 		try {
 			for (Field field : bean.getClass().getDeclaredFields()) {
 				if (PROPERTY_MODIFIER == field.getModifiers() && field.trySetAccessible() && field.get(bean) != null) {
@@ -153,7 +153,7 @@ public class BeanUtil {
 	 * @date 2019-02-08
 	 */
 	public static void clear(Object bean) {
-		Objects.requireNonNull(bean);
+		Assert.notNull(bean, "bean must not be null");
 		try {
 			for (FastMethod method : getSetters(bean.getClass())) {
 				method.invoke(bean, NULL_PARAM);

@@ -10,16 +10,17 @@ import frodez.util.json.JSONUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.Assert;
 
 /**
  * 通用返回参数<br>
@@ -38,17 +39,17 @@ public final class Result implements Serializable {
 	/**
 	 * 默认json,只有默认类型实例才存在
 	 */
-	private String json;
+	private transient String json;
 
 	/**
 	 * 默认类型实例
 	 */
-	private static final Map<ResultEnum, Result> DEFAULT_RESULT_CACHE = new EnumMap<>(ResultEnum.class);
+	private static transient final Map<ResultEnum, Result> DEFAULT_RESULT_CACHE = new EnumMap<>(ResultEnum.class);
 
 	/**
 	 * jackson writer
 	 */
-	private static ObjectWriter writer;
+	private static transient ObjectWriter writer;
 
 	static {
 		writer = JSONUtil.mapper().writerFor(Result.class);
@@ -140,7 +141,7 @@ public final class Result implements Serializable {
 	 * @date 2019-01-15
 	 */
 	public static Result success(Object data) {
-		Objects.requireNonNull(data);
+		Assert.notNull(data, "data must not be null");
 		return new Result(ResultEnum.SUCCESS, data);
 	}
 
@@ -149,8 +150,18 @@ public final class Result implements Serializable {
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */
+	public static <T> Result page(int pageNum, int pageSize, long total, Collection<T> data) {
+		Assert.notNull(data, "data must not be null");
+		return new Result(ResultEnum.SUCCESS, new PageData<>(pageNum, pageSize, total, data));
+	}
+
+	/**
+	 * 返回分页查询类型结果(仅在成功时使用)
+	 * @author Frodez
+	 * @date 2019-01-15
+	 */
 	public static <T> Result page(Page<T> page) {
-		Objects.requireNonNull(page);
+		Assert.notNull(page, "page must not be null");
 		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(),
 			page.getResult()));
 	}
@@ -161,7 +172,7 @@ public final class Result implements Serializable {
 	 * @date 2019-01-15
 	 */
 	public static <T> Result page(PageInfo<T> page) {
-		Objects.requireNonNull(page);
+		Assert.notNull(page, "page must not be null");
 		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(),
 			page.getList()));
 	}
@@ -181,7 +192,7 @@ public final class Result implements Serializable {
 	 * @date 2019-01-15
 	 */
 	public static Result fail(String message) {
-		Objects.requireNonNull(message);
+		Assert.notNull(message, "message must not be null");
 		return new Result(message, ResultEnum.FAIL);
 	}
 
@@ -200,7 +211,7 @@ public final class Result implements Serializable {
 	 * @date 2019-02-02
 	 */
 	public static Result errorRequest(String message) {
-		Objects.requireNonNull(message);
+		Assert.notNull(message, "message must not be null");
 		return new Result(message, ResultEnum.ERROR_REQUEST);
 	}
 
@@ -219,7 +230,7 @@ public final class Result implements Serializable {
 	 * @date 2019-01-15
 	 */
 	public static Result errorService(String message) {
-		Objects.requireNonNull(message);
+		Assert.notNull(message, "message must not be null");
 		return new Result(message, ResultEnum.ERROR_SERVICE);
 	}
 
@@ -303,10 +314,11 @@ public final class Result implements Serializable {
 	 * @param klass 类型
 	 * @date 2018-11-13
 	 */
+	@SuppressWarnings("unchecked")
 	public <T> T as(Class<T> klass) throws ClassCastException, ParseException {
-		Objects.requireNonNull(klass);
+		Assert.notNull(klass, "klass must not be null");
 		ableAndNotNull();
-		return klass.cast(data);
+		return (T) data;
 	}
 
 	/**
@@ -317,7 +329,7 @@ public final class Result implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> PageData<T> page(Class<T> klass) throws ClassCastException, ParseException {
-		Objects.requireNonNull(klass);
+		Assert.notNull(klass, "klass must not be null");
 		ableAndNotNull();
 		return (PageData<T>) data;
 	}
@@ -330,7 +342,7 @@ public final class Result implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> List<T> list(Class<T> klass) throws ClassCastException, ParseException {
-		Objects.requireNonNull(klass);
+		Assert.notNull(klass, "klass must not be null");
 		ableAndNotNull();
 		return (List<T>) data;
 	}
@@ -343,7 +355,7 @@ public final class Result implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> Set<T> set(Class<T> klass) throws ClassCastException, ParseException {
-		Objects.requireNonNull(klass);
+		Assert.notNull(klass, "klass must not be null");
 		ableAndNotNull();
 		return (Set<T>) data;
 	}
@@ -368,8 +380,8 @@ public final class Result implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public <K, V> Map<K, V> map(Class<K> keyClass, Class<V> valueClass) throws ClassCastException, ParseException {
-		Objects.requireNonNull(keyClass);
-		Objects.requireNonNull(valueClass);
+		Assert.notNull(keyClass, "keyClass must not be null");
+		Assert.notNull(valueClass, "valueClass must not be null");
 		ableAndNotNull();
 		return (Map<K, V>) data;
 	}

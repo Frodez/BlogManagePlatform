@@ -1,9 +1,13 @@
 package frodez;
 
+import frodez.util.spring.ContextUtil;
+import javax.jms.Destination;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -25,6 +29,9 @@ public class RedisTest {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BlogManagePlatformApplication.class, args);
+		JmsMessagingTemplate jmsTemplate = ContextUtil.get(JmsMessagingTemplate.class);
+		Destination log = new ActiveMQQueue("log.queue");
+		jmsTemplate.convertAndSend(log, "生产者发送了日志");
 		//RepeatChecker checker = ContextUtil.getBean(RepeatRedisChecker.class);
 		//		ManualChecker checker = ContextUtil.getBean(ManualGuavaChecker.class);
 		//		Long start = System.currentTimeMillis();

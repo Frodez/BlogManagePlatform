@@ -32,6 +32,11 @@ public class QueryPage implements IPage, Serializable {
 
 	private static final QueryPage DEFAULT = new QueryPage(DefPage.PAGE_NUM, DefPage.PAGE_SIZE);
 
+	public QueryPage(Integer pageSize) {
+		this.pageNum = DefPage.PAGE_NUM;
+		this.pageSize = pageSize == null ? DefPage.PAGE_SIZE : pageSize;
+	}
+
 	/**
 	 * 合理化请求参数
 	 * @author Frodez

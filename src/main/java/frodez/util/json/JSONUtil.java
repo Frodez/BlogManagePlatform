@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
 import frodez.util.common.EmptyUtil;
-import frodez.util.spring.context.ContextUtil;
+import frodez.util.spring.ContextUtil;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -17,12 +17,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 /**
  * json工具类
@@ -100,8 +100,8 @@ public class JSONUtil {
 				return asciiEscapes;
 			}
 		});
-		Objects.requireNonNull(OBJECT_MAPPER);
-		Objects.requireNonNull(DEFAULT_MAP_READER);
+		Assert.notNull(OBJECT_MAPPER, "OBJECT_MAPPER must not be null");
+		Assert.notNull(DEFAULT_MAP_READER, "DEFAULT_MAP_READER must not be null");
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static String string(Object object) {
-		Objects.requireNonNull(object);
+		Assert.notNull(object, "object must not be null");
 		try {
 			return writerCache.computeIfAbsent(object.getClass(), (o) -> OBJECT_MAPPER.writerFor(object.getClass()))
 				.writeValueAsString(object);
@@ -138,7 +138,7 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static Map<String, Object> map(InputStream stream) {
-		Objects.requireNonNull(stream);
+		Assert.notNull(stream, "stream must not be null");
 		try {
 			return DEFAULT_MAP_READER.readValue(stream);
 		} catch (Exception e) {
@@ -155,7 +155,7 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static Map<String, Object> map(String json) {
-		Objects.requireNonNull(json);
+		Assert.notNull(json, "json must not be null");
 		try {
 			return DEFAULT_MAP_READER.readValue(json);
 		} catch (Exception e) {
@@ -172,9 +172,9 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static <K, V> Map<K, V> map(InputStream stream, Class<K> k, Class<V> v) {
-		Objects.requireNonNull(stream);
-		Objects.requireNonNull(k);
-		Objects.requireNonNull(v);
+		Assert.notNull(stream, "stream must not be null");
+		Assert.notNull(k, "k must not be null");
+		Assert.notNull(v, "v must not be null");
 		try {
 			return multiClassReaderCache.computeIfAbsent(DEFAULT_MAP_CLASS_NAME.concat(k.getName()).concat(v.getName()),
 				(i) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(DEFAULT_MAP_CLASS,
@@ -193,9 +193,9 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static <K, V> Map<K, V> map(String json, Class<K> k, Class<V> v) {
-		Objects.requireNonNull(json);
-		Objects.requireNonNull(k);
-		Objects.requireNonNull(v);
+		Assert.notNull(json, "json must not be null");
+		Assert.notNull(k, "k must not be null");
+		Assert.notNull(v, "v must not be null");
 		try {
 			return multiClassReaderCache.computeIfAbsent(DEFAULT_MAP_CLASS_NAME.concat(k.getName()).concat(v.getName()),
 				(i) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(DEFAULT_MAP_CLASS,
@@ -213,8 +213,8 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static <T> List<T> list(InputStream stream, Class<T> klass) {
-		Objects.requireNonNull(stream);
-		Objects.requireNonNull(klass);
+		Assert.notNull(stream, "stream must not be null");
+		Assert.notNull(stream, "stream must not be null");
 		try {
 			return multiClassReaderCache.computeIfAbsent(DEFAULT_LIST_CLASS_NAME.concat(klass.getName()), (
 				i) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(DEFAULT_LIST_CLASS,
@@ -232,8 +232,8 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static <T> List<T> list(String json, Class<T> klass) {
-		Objects.requireNonNull(json);
-		Objects.requireNonNull(klass);
+		Assert.notNull(json, "json must not be null");
+		Assert.notNull(klass, "klass must not be null");
 		try {
 			return multiClassReaderCache.computeIfAbsent(DEFAULT_LIST_CLASS_NAME.concat(klass.getName()), (
 				i) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(DEFAULT_LIST_CLASS,
@@ -251,8 +251,8 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static <T> Set<T> set(InputStream stream, Class<T> klass) {
-		Objects.requireNonNull(stream);
-		Objects.requireNonNull(klass);
+		Assert.notNull(stream, "stream must not be null");
+		Assert.notNull(klass, "klass must not be null");
 		try {
 			return multiClassReaderCache.computeIfAbsent(DEFAULT_SET_CLASS_NAME.concat(klass.getName()), (
 				i) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(DEFAULT_SET_CLASS,
@@ -270,8 +270,8 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static <T> Set<T> set(String json, Class<T> klass) {
-		Objects.requireNonNull(json);
-		Objects.requireNonNull(klass);
+		Assert.notNull(json, "json must not be null");
+		Assert.notNull(klass, "klass must not be null");
 		try {
 			return multiClassReaderCache.computeIfAbsent(DEFAULT_SET_CLASS_NAME.concat(klass.getName()), (
 				i) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(DEFAULT_SET_CLASS,
@@ -289,8 +289,8 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static <T> T as(InputStream stream, Class<T> klass) {
-		Objects.requireNonNull(stream);
-		Objects.requireNonNull(klass);
+		Assert.notNull(stream, "stream must not be null");
+		Assert.notNull(klass, "klass must not be null");
 		try {
 			return singleClassReaderCache.computeIfAbsent(klass, (k) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER
 				.getTypeFactory().constructType(klass))).readValue(stream);
@@ -307,8 +307,8 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static <T> T as(String json, Class<T> klass) {
-		Objects.requireNonNull(json);
-		Objects.requireNonNull(klass);
+		Assert.notNull(json, "json must not be null");
+		Assert.notNull(klass, "klass must not be null");
 		try {
 			return singleClassReaderCache.computeIfAbsent(klass, (k) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER
 				.getTypeFactory().constructType(klass))).readValue(json);
@@ -325,8 +325,8 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static <T> T as(InputStream stream, Type type) {
-		Objects.requireNonNull(stream);
-		Objects.requireNonNull(type);
+		Assert.notNull(stream, "stream must not be null");
+		Assert.notNull(type, "type must not be null");
 		try {
 			return singleTypeReaderCache.computeIfAbsent(type, (k) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER
 				.getTypeFactory().constructType(type))).readValue(stream);
@@ -343,8 +343,8 @@ public class JSONUtil {
 	 * @date 2018-12-02
 	 */
 	public static <T> T as(String json, Type type) {
-		Objects.requireNonNull(json);
-		Objects.requireNonNull(type);
+		Assert.notNull(json, "json must not be null");
+		Assert.notNull(type, "type must not be null");
 		try {
 			return singleTypeReaderCache.computeIfAbsent(type, (k) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER
 				.getTypeFactory().constructType(type))).readValue(json);
@@ -361,8 +361,8 @@ public class JSONUtil {
 	 * @date 2019-03-13
 	 */
 	public static <T> T as(InputStream stream, Class<T> parametrized, @Nullable Class<?>... genericClasses) {
-		Objects.requireNonNull(stream);
-		Objects.requireNonNull(parametrized);
+		Assert.notNull(stream, "stream must not be null");
+		Assert.notNull(parametrized, "parametrized must not be null");
 		try {
 			if (EmptyUtil.yes(genericClasses)) {
 				return singleClassReaderCache.computeIfAbsent(parametrized, (k) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER
@@ -389,8 +389,8 @@ public class JSONUtil {
 	 * @date 2019-03-13
 	 */
 	public static <T> T as(String json, Class<T> parametrized, @Nullable Class<?>... genericClasses) {
-		Objects.requireNonNull(json);
-		Objects.requireNonNull(parametrized);
+		Assert.notNull(json, "json must not be null");
+		Assert.notNull(parametrized, "parametrized must not be null");
 		try {
 			if (EmptyUtil.yes(genericClasses)) {
 				return singleClassReaderCache.computeIfAbsent(parametrized, (k) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER
@@ -417,8 +417,8 @@ public class JSONUtil {
 	 * @date 2019-03-13
 	 */
 	public static Object object(String json, Class<?> parametrized, Class<?>... genericClasses) {
-		Objects.requireNonNull(json);
-		Objects.requireNonNull(parametrized);
+		Assert.notNull(json, "json must not be null");
+		Assert.notNull(parametrized, "parametrized must not be null");
 		try {
 			if (EmptyUtil.yes(genericClasses)) {
 				return singleClassReaderCache.computeIfAbsent(parametrized, (k) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER
@@ -445,8 +445,8 @@ public class JSONUtil {
 	 * @date 2019-03-13
 	 */
 	public static Object object(InputStream stream, Class<?> parametrized, Class<?>... genericClasses) {
-		Objects.requireNonNull(stream);
-		Objects.requireNonNull(parametrized);
+		Assert.notNull(stream, "stream must not be null");
+		Assert.notNull(parametrized, "parametrized must not be null");
 		try {
 			if (EmptyUtil.yes(genericClasses)) {
 				return singleClassReaderCache.computeIfAbsent(parametrized, (k) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER
