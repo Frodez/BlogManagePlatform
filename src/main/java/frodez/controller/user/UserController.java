@@ -73,20 +73,6 @@ public class UserController {
 	}
 
 	@RepeatLock
-	@GetMapping("/detail")
-	@ApiOperation(value = "查看用户详情接口")
-	public Result getUserDetail(@RequestParam("userId") @ApiParam(value = "用户ID", required = true) Long userId) {
-		return null;
-	}
-
-	@RepeatLock
-	@GetMapping("/detail/self")
-	@ApiOperation(value = "查看本用户详情接口")
-	public Result getUserDetail() {
-		return null;
-	}
-
-	@RepeatLock
 	@PostMapping("/register")
 	@ApiOperation(value = "注册接口")
 	public Result register(@RequestBody @ApiParam(value = "用户注册请求参数", required = true) Doregister param) {

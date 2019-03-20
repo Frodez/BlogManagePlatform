@@ -18,6 +18,11 @@ server:
     #key-password: 123456
     
 spring:
+  task:
+    scheduling:
+      pool:
+        size: 4
+      thread-name-prefix: spring-task-thread
   profiles:
     active: dev
   datasource:

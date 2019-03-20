@@ -40,8 +40,9 @@ import frodez.util.error.exception.ServiceException;
 import frodez.util.http.URLMatcher;
 import frodez.util.reflect.BeanUtil;
 import frodez.util.reflect.ReflectUtil;
-import frodez.util.spring.context.ContextUtil;
-import frodez.util.spring.properties.PropertyUtil;
+import frodez.util.spring.ContextUtil;
+import frodez.util.spring.MVCUtil;
+import frodez.util.spring.PropertyUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -535,27 +536,27 @@ public class AuthorityService implements IAuthorityService {
 	private boolean checkPermissionUrl(PermissionTypeEnum type, String url) {
 		switch (type) {
 			case GET : {
-				return ContextUtil.getAllEndPoints().get(RequestMethod.GET).stream().filter((iter) -> {
+				return MVCUtil.endPoints().get(RequestMethod.GET).stream().filter((iter) -> {
 					return iter.getPatternsCondition().getPatterns().iterator().next().equals(url);
 				}).count() != 0;
 			}
 			case POST : {
-				return ContextUtil.getAllEndPoints().get(RequestMethod.POST).stream().filter((iter) -> {
+				return MVCUtil.endPoints().get(RequestMethod.POST).stream().filter((iter) -> {
 					return iter.getPatternsCondition().getPatterns().iterator().next().equals(url);
 				}).count() != 0;
 			}
 			case DELETE : {
-				return ContextUtil.getAllEndPoints().get(RequestMethod.DELETE).stream().filter((iter) -> {
+				return MVCUtil.endPoints().get(RequestMethod.DELETE).stream().filter((iter) -> {
 					return iter.getPatternsCondition().getPatterns().iterator().next().equals(url);
 				}).count() != 0;
 			}
 			case PUT : {
-				return ContextUtil.getAllEndPoints().get(RequestMethod.PUT).stream().filter((iter) -> {
+				return MVCUtil.endPoints().get(RequestMethod.PUT).stream().filter((iter) -> {
 					return iter.getPatternsCondition().getPatterns().iterator().next().equals(url);
 				}).count() != 0;
 			}
 			case ALL : {
-				return ContextUtil.getAllEndPoints().values().stream().flatMap(Collection::stream).filter((iter) -> {
+				return MVCUtil.endPoints().values().stream().flatMap(Collection::stream).filter((iter) -> {
 					return iter.getPatternsCondition().getPatterns().contains(url);
 				}).count() != 0;
 			}

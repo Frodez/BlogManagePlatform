@@ -5,7 +5,7 @@ import frodez.config.aop.request.annotation.Limit;
 import frodez.util.aop.AspectUtil;
 import frodez.util.beans.result.Result;
 import frodez.util.constant.setting.DefTime;
-import frodez.util.spring.context.ContextUtil;
+import frodez.util.spring.MVCUtil;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -27,7 +27,7 @@ public class LimitUserAOP {
 	@Around("@annotation(frodez.config.aop.request.annotation.Limit)")
 	public Object limit(ProceedingJoinPoint point) throws Throwable {
 		Limit limit = AspectUtil.annotation(point, Limit.class);
-		RateLimiter limiter = limitCache.computeIfAbsent(ContextUtil.request().getRequestURI(), i -> RateLimiter.create(
+		RateLimiter limiter = limitCache.computeIfAbsent(MVCUtil.request().getRequestURI(), i -> RateLimiter.create(
 			limit.value()));
 		if (!limiter.tryAcquire(limit.timeout(), DefTime.UNIT)) {
 			return Result.busy();

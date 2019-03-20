@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
 import frodez.util.common.EmptyUtil;
-import frodez.util.spring.context.ContextUtil;
+import frodez.util.spring.ContextUtil;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;

@@ -8,7 +8,7 @@ import org.eclipse.text.edits.MalformedTreeException;
 public class EnhanceSourceCodeGenerator {
 
 	private static final String PATH =
-		"file:/D:/Code/Eclipse/workspace/BlogManagePlatform/src/main/java/frodez/dao/param/user/UpdatePermission.java";
+		"file:/D:/Code/Eclipse/workspace/BlogManagePlatform/src/main/java/frodez/dao/param/task/AddTask.java";
 
 	public static void main(String[] args) throws URISyntaxException, IOException, MalformedTreeException,
 		BadLocationException {

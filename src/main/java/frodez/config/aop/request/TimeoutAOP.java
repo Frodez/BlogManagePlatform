@@ -6,7 +6,7 @@ import frodez.config.aop.request.checker.impl.KeyGenerator;
 import frodez.util.aop.AspectUtil;
 import frodez.util.beans.result.Result;
 import frodez.util.http.ServletUtil;
-import frodez.util.spring.context.ContextUtil;
+import frodez.util.spring.MVCUtil;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -47,7 +47,7 @@ public class TimeoutAOP {
 	 */
 	@Around("@annotation(frodez.config.aop.request.annotation.TimeoutLock)")
 	public Object process(ProceedingJoinPoint point) throws Throwable {
-		HttpServletRequest request = ContextUtil.request();
+		HttpServletRequest request = MVCUtil.request();
 		TimeoutLock timeoutLock = AspectUtil.annotation(point, TimeoutLock.class);
 		String key = KeyGenerator.servletKey(AspectUtil.fullMethodName(point), request);
 		if (checker.check(key)) {

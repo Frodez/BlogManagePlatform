@@ -1,7 +1,6 @@
-package frodez.util.spring.properties;
+package frodez.util.spring;
 
 import frodez.util.constant.setting.PropertyKey;
-import frodez.util.spring.context.ContextUtil;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.PostConstruct;

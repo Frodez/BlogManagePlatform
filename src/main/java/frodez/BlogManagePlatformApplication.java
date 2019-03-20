@@ -73,7 +73,6 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
 import org.springframework.boot.autoconfigure.sendgrid.SendGridAutoConfiguration;
 import org.springframework.boot.autoconfigure.session.SessionAutoConfiguration;
 import org.springframework.boot.autoconfigure.solr.SolrAutoConfiguration;
-import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.jta.JtaAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.HttpHandlerAutoConfiguration;
@@ -94,7 +93,7 @@ import tk.mybatis.spring.annotation.MapperScan;
  * @author Frodez
  * @date 2019-01-07
  */
-@MapperScan(basePackages = "frodez.dao.mapper")
+@MapperScan(basePackages = { "frodez.dao.mapper" })
 @SpringBootApplication(exclude = { ActiveMQAutoConfiguration.class, ArtemisAutoConfiguration.class,
 	BatchAutoConfiguration.class, CacheAutoConfiguration.class, CassandraAutoConfiguration.class,
 	CassandraDataAutoConfiguration.class, CassandraReactiveDataAutoConfiguration.class,
@@ -106,14 +105,14 @@ import tk.mybatis.spring.annotation.MapperScan;
 	WebSocketServletAutoConfiguration.class, WebSocketMessagingAutoConfiguration.class,
 	WebSocketReactiveAutoConfiguration.class, WebServicesAutoConfiguration.class,
 	WebServiceTemplateAutoConfiguration.class, WebFluxAutoConfiguration.class, WebClientAutoConfiguration.class,
-	ThymeleafAutoConfiguration.class, TaskSchedulingAutoConfiguration.class, SessionAutoConfiguration.class,
-	SolrAutoConfiguration.class, SolrRepositoriesAutoConfiguration.class, SendGridAutoConfiguration.class,
-	UserDetailsServiceAutoConfiguration.class, RepositoryRestMvcAutoConfiguration.class,
-	RestClientAutoConfiguration.class, ReactiveWebServerFactoryAutoConfiguration.class,
-	ReactiveUserDetailsServiceAutoConfiguration.class, ReactiveOAuth2ClientAutoConfiguration.class,
-	ReactiveOAuth2ResourceServerAutoConfiguration.class, ReactiveSecurityAutoConfiguration.class,
-	RabbitAutoConfiguration.class, QuartzAutoConfiguration.class, ProjectInfoAutoConfiguration.class,
-	OAuth2ClientAutoConfiguration.class, OAuth2ResourceServerAutoConfiguration.class, Neo4jDataAutoConfiguration.class,
+	ThymeleafAutoConfiguration.class, SessionAutoConfiguration.class, SolrAutoConfiguration.class,
+	SolrRepositoriesAutoConfiguration.class, SendGridAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class,
+	RepositoryRestMvcAutoConfiguration.class, RestClientAutoConfiguration.class,
+	ReactiveWebServerFactoryAutoConfiguration.class, ReactiveUserDetailsServiceAutoConfiguration.class,
+	ReactiveOAuth2ClientAutoConfiguration.class, ReactiveOAuth2ResourceServerAutoConfiguration.class,
+	ReactiveSecurityAutoConfiguration.class, RabbitAutoConfiguration.class, QuartzAutoConfiguration.class,
+	ProjectInfoAutoConfiguration.class, OAuth2ClientAutoConfiguration.class,
+	OAuth2ResourceServerAutoConfiguration.class, Neo4jDataAutoConfiguration.class,
 	Neo4jRepositoriesAutoConfiguration.class, MustacheAutoConfiguration.class, MongoRepositoriesAutoConfiguration.class,
 	MongoReactiveAutoConfiguration.class, MongoReactiveRepositoriesAutoConfiguration.class,
 	MongoReactiveDataAutoConfiguration.class, MongoDataAutoConfiguration.class, MongoAutoConfiguration.class,

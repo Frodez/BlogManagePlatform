@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import frodez.config.security.settings.SecurityProperties;
-import frodez.util.spring.context.ContextUtil;
+import frodez.util.spring.ContextUtil;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;

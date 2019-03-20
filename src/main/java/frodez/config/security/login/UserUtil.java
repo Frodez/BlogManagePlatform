@@ -6,7 +6,8 @@ import frodez.service.cache.vm.facade.TokenCache;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.result.Result;
 import frodez.util.http.URLMatcher;
-import frodez.util.spring.context.ContextUtil;
+import frodez.util.spring.ContextUtil;
+import frodez.util.spring.MVCUtil;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.DependsOn;
@@ -40,7 +41,7 @@ public class UserUtil {
 	 * @date 2019-01-09
 	 */
 	public static UserInfo get() {
-		HttpServletRequest request = ContextUtil.request();
+		HttpServletRequest request = MVCUtil.request();
 		if (!URLMatcher.needVerify(request.getRequestURI())) {
 			throw new RuntimeException("不能在免验证URI中获取token信息!");
 		}

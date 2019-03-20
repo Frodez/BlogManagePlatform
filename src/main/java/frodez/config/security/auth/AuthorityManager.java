@@ -3,7 +3,7 @@ package frodez.config.security.auth;
 import frodez.config.security.settings.SecurityProperties;
 import frodez.util.common.EmptyUtil;
 import frodez.util.http.URLMatcher;
-import frodez.util.spring.context.ContextUtil;
+import frodez.util.spring.ContextUtil;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;

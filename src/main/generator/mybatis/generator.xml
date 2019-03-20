@@ -30,16 +30,16 @@
 		</javaTypeResolver>
 
 		<!-- model包路径 -->
-		<javaModelGenerator targetPackage="frodez.dao.model.user"
+		<javaModelGenerator targetPackage="frodez.dao.model.task"
 			targetProject="BlogManagePlatform/src/main/java" />
 		<!-- mapper.xml包路径 -->
-		<sqlMapGenerator targetPackage="frodez.dao.mapper.user"
+		<sqlMapGenerator targetPackage="frodez.dao.mapper.task"
 			targetProject="BlogManagePlatform/src/main/java" />
 		<!-- mapper包路径 -->
-		<javaClientGenerator targetPackage="frodez.dao.mapper.user"
+		<javaClientGenerator targetPackage="frodez.dao.mapper.task"
 			targetProject="BlogManagePlatform/src/main/java" type="XMLMAPPER" />
 		<!-- 表配置 -->
-		<table tableName="tb_role_permission" domainObjectName="RolePermission">
+		<table tableName="tb_spring_task" domainObjectName="Task">
 			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
 		</table>
 	</context>
