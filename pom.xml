@@ -83,6 +83,14 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-activemq</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-pool</artifactId>
+        </dependency>
 
 		<!-- mysql-connector-java -->
 		<dependency>
@@ -171,7 +179,6 @@
 		    <artifactId>org.eclipse.jdt.core</artifactId>
 		    <version>3.16.0</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>

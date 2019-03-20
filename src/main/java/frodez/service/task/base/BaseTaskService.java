@@ -76,7 +76,7 @@ public class BaseTaskService {
 				AvailableTaskInfo info = new AvailableTaskInfo();
 				info.setName(entry.getKey());
 				info.setDescription(entry.getValue().getDescription());
-				info.setPermitForceInterrupt(!isTransactional(entry.getValue()));
+				info.setPermitForceInterrupt(!canForcelyIntterrupt(entry.getValue()));
 				return info;
 			}).collect(Collectors.toList());
 			Example example = new Example(Task.class);
@@ -116,19 +116,12 @@ public class BaseTaskService {
 	}
 
 	/**
-	 * 判断是否为带有事务的接口
+	 * 判断是否为可以强行中断的接口
 	 * @author Frodez
 	 * @date 2019-03-21
 	 */
-	private boolean isTransactional(ITask task) {
-		try {
-			return task.getClass().getAnnotation(Transactional.class) != null || task.getClass().getMethod("run")
-				.getAnnotation(Transactional.class) != null;
-		} catch (NoSuchMethodException e) {
-			return false;
-		} catch (SecurityException e) {
-			return false;
-		}
+	private boolean canForcelyIntterrupt(Runnable runnable) {
+		return isTransactional(runnable);
 	}
 
 	/**
@@ -305,9 +298,9 @@ public class BaseTaskService {
 				} catch (ClassNotFoundException e) {
 					return Result.fail("类型初始化失败!");
 				}
-				boolean isTransactional = isTransactional(runnable);
-				if (!future.cancel(isTransactional)) {
-					if (isTransactional) {
+				boolean mayInterruptIfRunning = canForcelyIntterrupt(runnable);
+				if (!future.cancel(mayInterruptIfRunning)) {
+					if (mayInterruptIfRunning) {
 						return Result.fail("该任务正在执行,且不能强行中止,因此暂不能删除!");
 					} else {
 						return Result.fail("该任务正在执行,且中止失败,因此暂不能删除!");
