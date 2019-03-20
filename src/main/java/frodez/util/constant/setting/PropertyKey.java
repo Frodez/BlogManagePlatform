@@ -34,6 +34,20 @@ public class PropertyKey {
 	}
 
 	/**
+	 * freeMarker配置key
+	 * @author Frodez
+	 * @date 2019-03-21
+	 */
+	public class FreeMarker {
+
+		/**
+		 * 后缀
+		 */
+		public static final String SUFFIX = "spring.freemarker.suffix";
+
+	}
+
+	/**
 	 * 环境配置key
 	 * @author Frodez
 	 * @date 2019-02-08

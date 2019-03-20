@@ -1,37 +1,32 @@
 package frodez;
 
+import freemarker.core.ParseException;
+import freemarker.template.Configuration;
+import freemarker.template.MalformedTemplateNameException;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateNotFoundException;
 import frodez.util.spring.ContextUtil;
-import javax.jms.Destination;
-import org.apache.activemq.command.ActiveMQQueue;
-import org.junit.Test;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.HashMap;
 import org.junit.runner.RunWith;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 public class RedisTest {
 
-	@Test
-	public void test() {
-		//		Map<Object, Object> map = new HashMap<>();
-		//		map.put("1", 101);
-		//		map.put("2", 102);
-		//		map.put("3", 103);
-		//		redisService.hmset("testhm", map);
-		//		System.out.println(redisService.hmexists("testhm"));
-		//		redisService.delete("testhm");
-		//		//redisService.deletePattern("testhm");
-		//		System.out.println(redisService.hmexists("testhm"));
-	}
-
-	public static void main(String[] args) {
+	public static void main(String[] args) throws TemplateNotFoundException, MalformedTemplateNameException,
+		ParseException, IOException, TemplateException {
 		SpringApplication.run(BlogManagePlatformApplication.class, args);
-		JmsMessagingTemplate jmsTemplate = ContextUtil.get(JmsMessagingTemplate.class);
-		Destination log = new ActiveMQQueue("log.queue");
-		jmsTemplate.convertAndSend(log, "生产者发送了日志");
+		Configuration configuration = ContextUtil.get(Configuration.class);
+		Template template = configuration.getTemplate("test.ftl");
+		StringWriter writer = new StringWriter();
+		template.process(new HashMap<>(), writer);
+		System.out.println(writer.toString());
 		//RepeatChecker checker = ContextUtil.getBean(RepeatRedisChecker.class);
 		//		ManualChecker checker = ContextUtil.getBean(ManualGuavaChecker.class);
 		//		Long start = System.currentTimeMillis();

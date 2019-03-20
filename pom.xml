@@ -91,6 +91,14 @@
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-pool</artifactId>
         </dependency>
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-freemarker</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 
 		<!-- mysql-connector-java -->
 		<dependency>
@@ -122,13 +130,6 @@
 			<version>1.2.10</version>
 		</dependency>
 
-		<!-- mybatis-generator -->
-		<dependency>
-			<groupId>org.mybatis.generator</groupId>
-			<artifactId>mybatis-generator-core</artifactId>
-			<version>1.3.7</version>
-		</dependency>
-
 		<!-- commons-pool2 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -154,6 +155,7 @@
 			<version>2.9.2</version>
 		</dependency>
 		
+		<!-- guava -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
@@ -179,6 +181,14 @@
 		    <artifactId>org.eclipse.jdt.core</artifactId>
 		    <version>3.16.0</version>
 		</dependency>
+		
+		<!-- mybatis-generator -->
+		<dependency>
+			<groupId>org.mybatis.generator</groupId>
+			<artifactId>mybatis-generator-core</artifactId>
+			<version>1.3.7</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
