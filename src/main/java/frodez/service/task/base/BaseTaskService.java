@@ -76,7 +76,7 @@ public class BaseTaskService {
 				AvailableTaskInfo info = new AvailableTaskInfo();
 				info.setName(entry.getKey());
 				info.setDescription(entry.getValue().getDescription());
-				info.setPermitForceInterrupt(isTransactional(entry.getValue()));
+				info.setPermitForceInterrupt(!isTransactional(entry.getValue()));
 				return info;
 			}).collect(Collectors.toList());
 			Example example = new Example(Task.class);
