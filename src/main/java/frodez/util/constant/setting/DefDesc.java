@@ -1,7 +1,11 @@
 package frodez.util.constant.setting;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class DefDesc {
 
+	@UtilityClass
 	public class Warn {
 
 		/**
@@ -13,6 +17,7 @@ public class DefDesc {
 
 	}
 
+	@UtilityClass
 	public class Message {
 
 		public static final String PAGE_QUERY = "分页查询参数";

@@ -1,5 +1,7 @@
 package frodez.util.constant.cache;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * 缓存key标志常量<br>
  * 使用缓存时,应在key前面拼接常量中合适的标志.<br>
@@ -8,6 +10,7 @@ package frodez.util.constant.cache;
  * @author Frodez
  * @date 2018-12-21
  */
+@UtilityClass
 public class CommonKey {
 
 }

@@ -26,6 +26,24 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
+	public static String readString(File file) throws IOException {
+		return readString(file, DefCharset.UTF_8_CHARSET);
+	}
+
+	/**
+	 * 读取文件数据到字符串,需指定Charset
+	 * @author Frodez
+	 * @date 2019-03-09
+	 */
+	public static String readString(File file, Charset charset) throws IOException {
+		return Files.asCharSource(file, charset).read();
+	}
+
+	/**
+	 * 读取文件数据到字符串
+	 * @author Frodez
+	 * @date 2019-03-09
+	 */
 	public static String readString(String uri) throws IOException, URISyntaxException {
 		return readString(uri, DefCharset.UTF_8_CHARSET);
 	}
@@ -44,6 +62,24 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
+	public static List<String> readStrings(File file) throws IOException, URISyntaxException {
+		return readStrings(file, DefCharset.UTF_8_CHARSET);
+	}
+
+	/**
+	 * 读取文件数据到字符串List,需指定Charset
+	 * @author Frodez
+	 * @date 2019-03-09
+	 */
+	public static List<String> readStrings(File file, Charset charset) throws IOException, URISyntaxException {
+		return new ArrayList<>(Files.asCharSource(file, charset).readLines());
+	}
+
+	/**
+	 * 读取文件数据到字符串List
+	 * @author Frodez
+	 * @date 2019-03-09
+	 */
 	public static List<String> readStrings(String uri) throws IOException, URISyntaxException {
 		return readStrings(uri, DefCharset.UTF_8_CHARSET);
 	}
@@ -55,6 +91,28 @@ public class FileUtil {
 	 */
 	public static List<String> readStrings(String uri, Charset charset) throws IOException, URISyntaxException {
 		return new ArrayList<>(Files.asCharSource(new File(new URI(uri)), charset).readLines());
+	}
+
+	/**
+	 * 向文件写入字符串,默认覆盖原文件
+	 * @author Frodez
+	 * @date 2019-03-09
+	 */
+	public static void writeString(String content, File file) throws IOException, URISyntaxException {
+		writeString(content, file, false);
+	}
+
+	/**
+	 * 向文件写入字符串,需指定是否覆盖:true为不覆盖,false为覆盖
+	 * @author Frodez
+	 * @date 2019-03-09
+	 */
+	public static void writeString(String content, File file, boolean isAppend) throws IOException, URISyntaxException {
+		if (isAppend) {
+			Files.asCharSink(file, DefCharset.UTF_8_CHARSET, FileWriteMode.APPEND).write(content);
+		} else {
+			Files.asCharSink(file, DefCharset.UTF_8_CHARSET).write(content);
+		}
 	}
 
 	/**
@@ -85,6 +143,29 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
+	public static void writeString(String content, File file, Charset charset) throws IOException, URISyntaxException {
+		writeString(content, file, charset, false);
+	}
+
+	/**
+	 * 向文件写入字符串,需指定Charset,需指定是否覆盖:true为不覆盖,false为覆盖
+	 * @author Frodez
+	 * @date 2019-03-09
+	 */
+	public static void writeString(String content, File file, Charset charset, boolean isAppend) throws IOException,
+		URISyntaxException {
+		if (isAppend) {
+			Files.asCharSink(file, charset, FileWriteMode.APPEND).write(content);
+		} else {
+			Files.asCharSink(file, charset).write(content);
+		}
+	}
+
+	/**
+	 * 向文件写入字符串,默认覆盖原文件,需指定Charset
+	 * @author Frodez
+	 * @date 2019-03-09
+	 */
 	public static void writeString(String content, String uri, Charset charset) throws IOException, URISyntaxException {
 		writeString(content, uri, charset, false);
 	}
@@ -104,12 +185,52 @@ public class FileUtil {
 	}
 
 	/**
+	 * 读取文件数据到字符串
+	 * @author Frodez
+	 * @date 2019-03-09
+	 */
+	public static byte[] readByte(File file) throws IOException {
+		return readByte(file, DefCharset.UTF_8_CHARSET);
+	}
+
+	/**
+	 * 读取文件数据到字符串,需指定Charset
+	 * @author Frodez
+	 * @date 2019-03-09
+	 */
+	public static byte[] readByte(File file, Charset charset) throws IOException {
+		return Files.asByteSource(file).read();
+	}
+
+	/**
 	 * 读取文件数据到byte数组
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
 	public static byte[] readByte(String uri) throws IOException, URISyntaxException {
 		return Files.asByteSource(new File(new URI(uri))).read();
+	}
+
+	/**
+	 * 向文件写入byte数组,默认覆盖原文件
+	 * @author Frodez
+	 * @date 2019-03-09
+	 */
+	public static void writeByte(byte[] content, File file) throws IOException, URISyntaxException {
+		writeByte(content, file, false);
+	}
+
+	/**
+	 * 向文件写入byte数组,需指定是否覆盖:true为不覆盖,false为覆盖
+	 * @author Frodez
+	 * @date 2019-03-09
+	 */
+	public static void writeByte(byte[] content, File file, boolean isAppend) throws IOException, URISyntaxException {
+		if (isAppend) {
+			Files.asByteSink(file, FileWriteMode.APPEND).write(content);
+		} else {
+			Files.asByteSink(file).write(content);
+		}
 	}
 
 	/**
@@ -131,6 +252,28 @@ public class FileUtil {
 			Files.asByteSink(new File(new URI(uri)), FileWriteMode.APPEND).write(content);
 		} else {
 			Files.asByteSink(new File(new URI(uri))).write(content);
+		}
+	}
+
+	/**
+	 * 将输入流输入数据转入文件中,默认覆盖原文件
+	 * @author Frodez
+	 * @date 2019-03-09
+	 */
+	public static void transfer(InputStream input, File file) throws IOException, URISyntaxException {
+		transfer(input, file, false);
+	}
+
+	/**
+	 * 将输入流输入数据转入文件中,需指定是否覆盖:true为不覆盖,false为覆盖
+	 * @author Frodez
+	 * @date 2019-03-09
+	 */
+	public static void transfer(InputStream input, File file, boolean isAppend) throws IOException, URISyntaxException {
+		if (isAppend) {
+			Files.asByteSink(file, FileWriteMode.APPEND).writeFrom(input);
+		} else {
+			Files.asByteSink(file).writeFrom(input);
 		}
 	}
 

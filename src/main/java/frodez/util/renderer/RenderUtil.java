@@ -1,15 +1,17 @@
 package frodez.util.renderer;
 
 import freemarker.template.Configuration;
-import frodez.util.constant.setting.PropertyKey;
+import frodez.util.common.EmptyUtil;
+import frodez.util.reflect.ReflectUtil;
+import frodez.util.renderer.reverter.Reverter;
 import frodez.util.spring.ContextUtil;
-import frodez.util.spring.PropertyUtil;
-import java.io.IOException;
 import java.io.StringWriter;
-import java.io.Writer;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import lombok.Getter;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -18,14 +20,35 @@ public class RenderUtil {
 
 	private static Configuration configuration;
 
+	@Getter
+	private static String loaderPath;
+
+	@Getter
 	private static String suffix;
+
+	private static Map<RenderMode, Reverter> reverterMap = new EnumMap<>(RenderMode.class);
 
 	@PostConstruct
 	private void init() {
 		configuration = ContextUtil.get(Configuration.class);
-		suffix = PropertyUtil.get(PropertyKey.FreeMarker.SUFFIX);
+		FreeMarkerProperties properties = ContextUtil.get(FreeMarkerProperties.class);
+		loaderPath = properties.getTemplateLoaderPath()[0];
+		suffix = properties.getSuffix();
+		for (RenderMode mode : RenderMode.values()) {
+			reverterMap.put(mode, ReflectUtil.newInstance(mode.getReverter()));
+		}
 		Assert.notNull(configuration, "configuration must not be null");
+		Assert.notNull(loaderPath, "loaderPath must not be null");
 		Assert.notNull(suffix, "suffix must not be null");
+	}
+
+	private static String revert(String html, RenderMode... modes) {
+		if (EmptyUtil.no(modes)) {
+			for (RenderMode mode : modes) {
+				html = reverterMap.get(mode).revert(html);
+			}
+		}
+		return html;
 	}
 
 	public static Configuration configuration() {
@@ -33,12 +56,12 @@ public class RenderUtil {
 	}
 
 	/**
-	 * 渲染页面,并转变为String
+	 * 渲染页面,并转变为String(默认内联css)
 	 * @author Frodez
 	 * @date 2019-03-21
 	 */
 	public static String render(String templateName) {
-		return render(templateName, new HashMap<>());
+		return render(templateName, new HashMap<>(), RenderMode.CSSREVERTER);
 	}
 
 	/**
@@ -46,70 +69,24 @@ public class RenderUtil {
 	 * @author Frodez
 	 * @date 2019-03-21
 	 */
-	public static String render(String templateName, Map<String, Object> params) {
+	public static String render(String templateName, RenderMode... modes) {
+		return render(templateName, new HashMap<>(), modes);
+	}
+
+	/**
+	 * 渲染页面,并转变为String
+	 * @author Frodez
+	 * @date 2019-03-21
+	 */
+	public static String render(String templateName, Map<String, Object> params, RenderMode... modes) {
 		Assert.notNull(templateName, "templateName must not be null");
 		Assert.notNull(params, "params must not be null");
 		try {
 			StringWriter writer = new StringWriter();
 			configuration.getTemplate(templateName.concat(suffix)).process(params, writer);
-			return writer.toString();
+			return revert(writer.toString(), modes);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}
-	}
-
-	/**
-	 * 渲染页面,并转变为String<br>
-	 * 注意:本方法不会自动关闭流。
-	 * @author Frodez
-	 * @date 2019-03-21
-	 */
-	public static void render(String templateName, Writer writer) {
-		render(templateName, new HashMap<>(), writer, false);
-	}
-
-	/**
-	 * 渲染页面,并转变为String<br>
-	 * 注意:本方法不会自动关闭流。
-	 * @author Frodez
-	 * @date 2019-03-21
-	 */
-	public static void render(String templateName, Map<String, Object> params, Writer writer) {
-		render(templateName, params, writer, false);
-	}
-
-	/**
-	 * 渲染页面,并转变为String<br>
-	 * autoClose为true时,自动关闭流;为false时,不自动关闭流。
-	 * @author Frodez
-	 * @date 2019-03-21
-	 */
-	public static void render(String templateName, Writer writer, boolean autoClose) {
-		render(templateName, new HashMap<>(), writer, autoClose);
-	}
-
-	/**
-	 * 渲染页面,并转变为String<br>
-	 * autoClose为true时,自动关闭流;为false时,不自动关闭流。
-	 * @author Frodez
-	 * @date 2019-03-21
-	 */
-	public static void render(String templateName, Map<String, Object> params, Writer writer, boolean autoClose) {
-		Assert.notNull(templateName, "templateName must not be null");
-		Assert.notNull(params, "params must not be null");
-		Assert.notNull(writer, "writer must not be null");
-		try {
-			configuration.getTemplate(templateName.concat(suffix)).process(params, writer);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (autoClose) {
-				try {
-					writer.close();
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
 		}
 	}
 

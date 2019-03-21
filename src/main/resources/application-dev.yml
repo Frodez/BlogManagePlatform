@@ -22,7 +22,7 @@ spring:
   freemarker:
     cache: true
     template-loader-path:
-    - classpath:/templates/
+    - classpath:templates/
     charset: utf-8
     suffix: .ftl
     enabled: false #本项目http通信方式全部采用json,不使用freemarker直接渲染页面
