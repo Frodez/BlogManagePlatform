@@ -1,6 +1,9 @@
 package frodez.util.mail;
 
+import frodez.util.constant.setting.PropertyKey;
 import frodez.util.io.CircularByteBuffer;
+import frodez.util.spring.ContextUtil;
+import frodez.util.spring.PropertyUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -22,12 +25,16 @@ public class MailUtil {
 
 	@PostConstruct
 	private void init() {
-		//mailSender = ContextUtil.get(JavaMailSender.class);
-		//Assert.notNull(mailSender, "mailSender must not be null");
+		mailSender = ContextUtil.get(JavaMailSender.class);
+		Assert.notNull(mailSender, "mailSender must not be null");
 	}
 
 	public static JavaMailSender mailSender() {
 		return mailSender;
+	}
+
+	public static String ownUser() {
+		return PropertyUtil.get(PropertyKey.Mail.OWN_USER);
 	}
 
 	public static void send(String from, String to, String subject, String text) {

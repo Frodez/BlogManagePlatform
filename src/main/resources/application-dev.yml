@@ -1,0 +1,77 @@
+server:
+  error:
+    path: /error
+  port: 9090 #请注意服务器上是否配备了防火墙策略,该端口是否开放
+  servlet:
+    context-path: /api
+  http2:
+    enabled: true
+    
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: frodez
+    password: 123456
+  task:
+    scheduling:
+      pool:
+        size: 4
+      thread-name-prefix: spring-task-thread
+  freemarker:
+    cache: true
+    template-loader-path:
+    - classpath:/templates/
+    charset: utf-8
+    suffix: .ftl
+    enabled: false #本项目http通信方式全部采用json,不使用freemarker直接渲染页面
+  mail:
+    host: smtp.qq.com
+    username: test@qq.com
+    password: 123 #如果是qq邮箱,该密码为开启POP3/SMTP服务后获取的授权码
+    port: 25 #请注意服务器上是否配备了防火墙策略,该端口是否开放
+    default-encoding: utf-8
+    properties:      mail:
+        smtp:
+          timeout: 10000
+          writetimeout: 10000
+          connectiontimeout: 10000
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: true
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: false
+    generator:
+      WRITE_BIGDECIMAL_AS_PLAIN: true
+    parser:
+      ALLOW_UNQUOTED_CONTROL_CHARS: true
+  redis:
+    database: 0
+    host: 127.0.0.1
+    password: ''
+    port: 6379
+    timeout: 60000
+    lettuce:
+      pool:
+        max-active: -1
+        max-wait: 45000
+        max-idle: -1
+        min-idle: 10
+
+logging:
+  config: classpath:settings/dev/log.xml
+
+mapper:
+  identity: MYSQL
+  mappers: frodez.config.mybatis.DataMapper
+  
+pagehelper:
+  helperDialect: mysql
+  params: count=countSql
+  pageSizeZero: true
+  supportMethodsArguments: true

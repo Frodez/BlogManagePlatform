@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@PropertySource(value = { "classpath:settings/swagger.properties" })
+@PropertySource(value = { "classpath:settings/${spring.profiles.active}/swagger.properties" })
 @ConfigurationProperties(prefix = "swagger")
 public class SwaggerProperties {
 

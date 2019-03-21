@@ -76,4 +76,18 @@ public class PropertyKey {
 
 	}
 
+	/**
+	 * 邮件配置key
+	 * @author Frodez
+	 * @date 2019-03-21
+	 */
+	public class Mail {
+
+		/**
+		 * 自己的邮箱
+		 */
+		public static final String OWN_USER = "spring.mail.username";
+
+	}
+
 }

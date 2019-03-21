@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@PropertySource(value = { "classpath:settings/task.properties" })
+@PropertySource(value = { "classpath:settings/${spring.profiles.active}/task.properties" })
 @ConfigurationProperties(prefix = "task")
 public class TaskProperties {
 
