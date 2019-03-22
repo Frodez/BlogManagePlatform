@@ -38,6 +38,7 @@ import frodez.util.constant.user.UserStatusEnum;
 import frodez.util.error.ErrorCode;
 import frodez.util.error.exception.ServiceException;
 import frodez.util.http.URLMatcher;
+import frodez.util.mybatis.MybatisHelper;
 import frodez.util.reflect.BeanUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.ContextUtil;
@@ -412,7 +413,7 @@ public class AuthorityService implements IAuthorityService {
 					item.setPermissionId(id);
 					return item;
 				}).collect(Collectors.toList());
-				rolePermissionMapper.insertList(rolePermissions);
+				MybatisHelper.batchInsert(rolePermissionMapper, rolePermissions);
 			}
 			return Result.success();
 		} catch (Exception e) {
@@ -601,7 +602,7 @@ public class AuthorityService implements IAuthorityService {
 						item.setRoleId(param.getRoleId());
 						return item;
 					}).collect(Collectors.toList());
-					rolePermissionMapper.insertList(rolePermissions);
+					MybatisHelper.batchInsert(rolePermissionMapper, rolePermissions);
 					break;
 				}
 				case DELETE : {
@@ -634,7 +635,7 @@ public class AuthorityService implements IAuthorityService {
 							item.setRoleId(param.getRoleId());
 							return item;
 						}).collect(Collectors.toList());
-						rolePermissionMapper.insertList(rolePermissions);
+						MybatisHelper.batchInsert(rolePermissionMapper, rolePermissions);
 					}
 					break;
 				}
@@ -751,7 +752,7 @@ public class AuthorityService implements IAuthorityService {
 					}
 					permissionList.add(permission);
 				});
-			permissionMapper.insertList(permissionList);
+			MybatisHelper.batchInsert(permissionMapper, permissionList);
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[scanAndCreatePermissions]", e);
