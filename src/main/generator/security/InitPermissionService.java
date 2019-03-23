@@ -8,7 +8,6 @@ import frodez.util.constant.setting.PropertyKey;
 import frodez.util.constant.user.PermissionTypeEnum;
 import frodez.util.http.URLMatcher;
 import frodez.util.json.JSONUtil;
-import frodez.util.mybatis.MybatisHelper;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.ContextUtil;
 import frodez.util.spring.PropertyUtil;
@@ -73,7 +72,7 @@ public class InitPermissionService {
 		Example example = new Example(Permission.class);
 		permissionMapper.deleteByExample(example);
 		if (EmptyUtil.no(permissionList)) {
-			MybatisHelper.batchInsert(permissionMapper, permissionList);
+			permissionMapper.insertList(permissionList);
 		}
 		SpringApplication.exit(ContextUtil.context(), () -> 1);
 	}
