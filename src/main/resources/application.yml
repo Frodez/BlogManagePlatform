@@ -1,12 +1,8 @@
-server:
-  error:
-    path: /error
-  port: 9090
-  servlet:
-    context-path: /api
-  http2:
-    enabled: true
-  #不在此处理https,建议使用nginx
+spring:
+  profiles:
+    active: dev
+    
+#不在此处理https,建议使用nginx
   #ssl:
     #在jdk目录下使用keytool.命令如下:
     #.\keytool.exe -genkey -alias Frodez -keyalg RSA -keysize 2048 -keypass 
@@ -16,52 +12,3 @@ server:
     #key-store: classpath:settings/https.jks
     #key-store-password: 123456
     #key-password: 123456
-    
-spring:
-  task:
-    scheduling:
-      pool:
-        size: 4
-      thread-name-prefix: spring-task-thread
-  profiles:
-    active: dev
-  datasource:
-    type: com.zaxxer.hikari.HikariDataSource
-    driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
-    username: frodez
-    password: 123456
-  jackson:
-    serialization:
-      WRITE_DATES_AS_TIMESTAMPS: true
-    deserialization:
-      FAIL_ON_UNKNOWN_PROPERTIES: false
-    generator:
-      WRITE_BIGDECIMAL_AS_PLAIN: true
-    parser:
-      ALLOW_UNQUOTED_CONTROL_CHARS: true
-  redis:
-    database: 0
-    host: 127.0.0.1
-    password: ''
-    port: 6379
-    timeout: 60000
-    lettuce:
-      pool:
-        max-active: -1
-        max-wait: 45000
-        max-idle: -1
-        min-idle: 10
-
-logging:
-  config: classpath:settings/log.xml
-
-mapper:
-  identity: MYSQL
-  mappers: frodez.config.mybatis.DataMapper
-  
-pagehelper:
-  helperDialect: mysql
-  params: count=countSql
-  pageSizeZero: true
-  supportMethodsArguments: true

@@ -1,10 +1,13 @@
 package frodez.util.constant.setting;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * 默认分页参数设置
  * @author Frodez
  * @date 2019-03-06
  */
+@UtilityClass
 public class DefPage {
 
 	/**

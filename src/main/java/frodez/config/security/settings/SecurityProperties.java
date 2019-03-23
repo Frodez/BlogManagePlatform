@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@PropertySource(value = { "classpath:settings/security.properties" })
+@PropertySource(value = { "classpath:settings/${spring.profiles.active}/security.properties" })
 @ConfigurationProperties(prefix = "security")
 public class SecurityProperties {
 

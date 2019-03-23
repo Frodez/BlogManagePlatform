@@ -34,7 +34,6 @@ import org.springframework.boot.autoconfigure.data.solr.SolrRepositoriesAutoConf
 import org.springframework.boot.autoconfigure.elasticsearch.jest.JestAutoConfiguration;
 import org.springframework.boot.autoconfigure.elasticsearch.rest.RestClientAutoConfiguration;
 import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
-import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.autoconfigure.groovy.template.GroovyTemplateAutoConfiguration;
 import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
 import org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration;
@@ -122,10 +121,10 @@ import tk.mybatis.spring.annotation.MapperScan;
 	JdbcRepositoriesAutoConfiguration.class, IntegrationAutoConfiguration.class, InfluxDbAutoConfiguration.class,
 	HypermediaAutoConfiguration.class, HttpHandlerAutoConfiguration.class, HibernateJpaAutoConfiguration.class,
 	HazelcastJpaDependencyAutoConfiguration.class, HazelcastAutoConfiguration.class, H2ConsoleAutoConfiguration.class,
-	GsonAutoConfiguration.class, GroovyTemplateAutoConfiguration.class, FreeMarkerAutoConfiguration.class,
-	FlywayAutoConfiguration.class, ErrorWebFluxAutoConfiguration.class, EmbeddedMongoAutoConfiguration.class,
-	EmbeddedLdapAutoConfiguration.class, ElasticsearchRepositoriesAutoConfiguration.class,
-	ElasticsearchDataAutoConfiguration.class, ElasticsearchAutoConfiguration.class })
+	GsonAutoConfiguration.class, GroovyTemplateAutoConfiguration.class, FlywayAutoConfiguration.class,
+	ErrorWebFluxAutoConfiguration.class, EmbeddedMongoAutoConfiguration.class, EmbeddedLdapAutoConfiguration.class,
+	ElasticsearchRepositoriesAutoConfiguration.class, ElasticsearchDataAutoConfiguration.class,
+	ElasticsearchAutoConfiguration.class })
 public class BlogManagePlatformApplication {
 
 	public static void main(String[] args) {

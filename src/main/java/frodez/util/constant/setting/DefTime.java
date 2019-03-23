@@ -1,7 +1,9 @@
 package frodez.util.constant.setting;
 
 import java.util.concurrent.TimeUnit;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class DefTime {
 
 	/**
