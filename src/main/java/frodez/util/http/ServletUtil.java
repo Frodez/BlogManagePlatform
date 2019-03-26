@@ -4,12 +4,12 @@ import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
 import frodez.util.constant.setting.DefCharset;
 import java.io.PrintWriter;
-import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**

@@ -2,8 +2,8 @@ package frodez.util.common;
 
 import frodez.util.constant.setting.DefDecimal;
 import java.math.BigDecimal;
-import javax.annotation.Nullable;
 import lombok.experimental.UtilityClass;
+import org.springframework.lang.Nullable;
 
 @UtilityClass
 public class StrUtil {

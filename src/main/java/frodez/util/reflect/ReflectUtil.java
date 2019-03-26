@@ -6,10 +6,10 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.Nullable;
 import lombok.experimental.UtilityClass;
 import org.springframework.cglib.reflect.FastClass;
 import org.springframework.cglib.reflect.FastMethod;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**

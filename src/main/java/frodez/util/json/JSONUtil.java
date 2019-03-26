@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -225,7 +225,7 @@ public class JSONUtil {
 	}
 
 	/**
-	 * 将InputStream的数据转换成List
+	 * 将json字符串转换成List
 	 * @author Frodez
 	 * @param <T>
 	 * @param json json字符串

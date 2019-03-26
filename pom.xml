@@ -57,6 +57,10 @@
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-tomcat</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-json</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -109,21 +113,17 @@
 		<!-- tk-mybatis -->
 		<dependency>
 			<groupId>tk.mybatis</groupId>
-			<artifactId>mapper</artifactId>
-			<version>4.1.5</version>
-		</dependency>
-		<dependency>
-			<groupId>tk.mybatis</groupId>
 			<artifactId>mapper-spring-boot-starter</artifactId>
 			<version>2.1.5</version>
+			<exclusions>
+				<exclusion>
+					<groupId>tk.mybatis</groupId>
+					<artifactId>mapper-weekend</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- pagehelper -->
-		<dependency>
-			<groupId>com.github.pagehelper</groupId>
-			<artifactId>pagehelper</artifactId>
-			<version>5.1.8</version>
-		</dependency>
 		<dependency>
 			<groupId>com.github.pagehelper</groupId>
 			<artifactId>pagehelper-spring-boot-starter</artifactId>
@@ -160,6 +160,33 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>27.1-jre</version>
+			<exclusions>
+				<!-- 这几个依赖用于编译器增强,需要者可以引入,用于编写编译器相关插件,增强代码检查等方面功能 -->
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>listenablefuture</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>animal-sniffer-annotations</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.j2objc</groupId>
+					<artifactId>j2objc-annotations</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.code.findbugs</groupId>
+					<artifactId>jsr305</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.checkerframework</groupId>
+					<artifactId>checker-qual</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.errorprone</groupId>
+					<artifactId>error_prone_annotations</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		
 		<!-- log4j2 -->
@@ -200,6 +227,12 @@
 		    <groupId>org.apache.poi</groupId>
 		    <artifactId>poi-ooxml</artifactId>
 		    <version>4.0.1</version>
+		    <exclusions>
+		    	<exclusion>
+		    		<groupId>org.apache.poi</groupId>
+		    		<artifactId>poi-ooxml-schemas</artifactId>
+		    	</exclusion>
+		    </exclusions>
 		</dependency>
 		<!-- poi-scratchpad -->
 		<dependency>
