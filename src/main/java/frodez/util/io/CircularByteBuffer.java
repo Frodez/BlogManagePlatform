@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * 环形输入输出缓冲<br>
  * 常用方式:<br>
  *
  * <pre>

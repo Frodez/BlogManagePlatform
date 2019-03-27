@@ -1,6 +1,6 @@
 package frodez.config.aop.request.checker.impl;
 
-import frodez.config.security.util.TokenManager;
+import frodez.config.security.util.TokenUtil;
 import frodez.util.constant.setting.DefStr;
 import frodez.util.http.ServletUtil;
 import frodez.util.http.URLMatcher;
@@ -14,7 +14,7 @@ public class KeyGenerator {
 		String key = sault.concat(DefStr.SEPERATOR).concat(request.getRequestURI());
 		if (URLMatcher.needVerify(request.getRequestURI())) {
 			// 非登录接口使用token判断,同一token不能重复请求
-			String fullToken = TokenManager.getFullToken(request);
+			String fullToken = TokenUtil.getFullToken(request);
 			if (fullToken == null) {
 				return key;
 			} else {

@@ -22,9 +22,16 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
-@Slf4j
+/**
+ * PDF生成工具类<br>
+ * <strong>警告!!!如果要使用本类的方法,必须确保PDFConverter已经被初始化!</strong><br>
+ * <strong>方式:在使用本方法的类上加入@DependsOn("PDFConverter")注解。</strong>
+ * @author Frodez
+ * @date 2019-03-27
+ */
 @Lazy
-@Component
+@Slf4j
+@Component("PDFConverter")
 public class PDFConverter {
 
 	private static Map<String, FontProgram> fontCache = new HashMap<>();
@@ -40,6 +47,15 @@ public class PDFConverter {
 		} catch (IOException e) {
 			log.error("[init]", e);
 		}
+	}
+
+	/**
+	 * 获取所有的字体<br>
+	 * @author Frodez
+	 * @date 2019-03-27
+	 */
+	public static Map<String, FontProgram> fonts() {
+		return fontCache;
 	}
 
 	/**

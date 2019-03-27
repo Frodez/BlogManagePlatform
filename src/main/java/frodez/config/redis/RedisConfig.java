@@ -3,6 +3,7 @@ package frodez.config.redis;
 import frodez.util.json.JSONUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
@@ -14,6 +15,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * @date 2018-12-21
  */
 @Configuration
+@DependsOn("jsonUtil")
 public class RedisConfig {
 
 	/**

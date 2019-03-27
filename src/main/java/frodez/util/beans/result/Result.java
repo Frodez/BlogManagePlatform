@@ -101,7 +101,7 @@ public final class Result implements Serializable {
 	private Object data;
 
 	/**
-	 * <strong>此方法仅用于json解析,其他时候不得使用!!!</strong>
+	 * <strong>此方法用于json解析,不建议在其他时候使用!!!</strong>
 	 * @author Frodez
 	 * @date 2019-03-10
 	 */
@@ -110,7 +110,7 @@ public final class Result implements Serializable {
 	}
 
 	/**
-	 * 获取result的json字符串,如果存在异常,返回null
+	 * 获取result的json字符串
 	 * @author Frodez
 	 * @date 2018-11-27
 	 */

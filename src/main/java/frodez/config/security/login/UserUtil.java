@@ -1,6 +1,6 @@
 package frodez.config.security.login;
 
-import frodez.config.security.util.TokenManager;
+import frodez.config.security.util.TokenUtil;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.vm.facade.TokenCache;
 import frodez.service.user.facade.IAuthorityService;
@@ -45,9 +45,15 @@ public class UserUtil {
 		if (!URLMatcher.needVerify(request.getRequestURI())) {
 			throw new RuntimeException("不能在免验证URI中获取token信息!");
 		}
-		return tokenCache.get(TokenManager.getRealToken(request));
+		return tokenCache.get(TokenUtil.getRealToken(request));
 	}
 
+	/**
+	 * 根据用户id查询用户信息,以UserInfo形式返回,功能同UserUtil.find(userId)
+	 * @see frodez.config.security.login.UserUtil#find(Long)
+	 * @author Frodez
+	 * @date 2019-03-27
+	 */
 	public static UserInfo get(Long userId) {
 		Result result = authorityService.getUserInfo(userId);
 		if (result.unable()) {
@@ -56,6 +62,12 @@ public class UserUtil {
 		return result.as(UserInfo.class);
 	}
 
+	/**
+	 * 根据用户名查询用户信息,以UserInfo形式返回,功能同UserUtil.find(userName)
+	 * @see frodez.config.security.login.UserUtil#find(String)
+	 * @author Frodez
+	 * @date 2019-03-27
+	 */
 	public static UserInfo get(String userName) {
 		Result result = authorityService.getUserInfo(userName);
 		if (result.unable()) {
@@ -64,10 +76,22 @@ public class UserUtil {
 		return result.as(UserInfo.class);
 	}
 
+	/**
+	 * 根据用户id查询用户信息,以Result形式返回,功能同UserUtil.get(userId)
+	 * @see frodez.config.security.login.UserUtil#get(Long)
+	 * @author Frodez
+	 * @date 2019-03-27
+	 */
 	public static Result find(Long userId) {
 		return authorityService.getUserInfo(userId);
 	}
 
+	/**
+	 * 根据用户名查询用户信息,以Result形式返回,功能同UserUtil.get(userName)
+	 * @see frodez.config.security.login.UserUtil#get(String)
+	 * @author Frodez
+	 * @date 2019-03-27
+	 */
 	public static Result find(String userName) {
 		return authorityService.getUserInfo(userName);
 	}

@@ -29,15 +29,10 @@ import org.springframework.util.Assert;
  * @author Frodez
  * @date 2018-11-27
  */
-@Component
+@Component("jsonUtil")
 public class JSONUtil {
 
-	/**
-	 * 整个系统中所有的objectMapper均由此处提供,一是减少无用对象,<br>
-	 * 二是保证系统中所有使用objectMapper的方法均保持一致的行为,<br>
-	 * 而不必担心不同处objectMapper配置不一致导致行为不一致.
-	 */
-	private static ObjectMapper OBJECT_MAPPER = ContextUtil.get(ObjectMapper.class);
+	private static ObjectMapper OBJECT_MAPPER;
 
 	@SuppressWarnings("rawtypes")
 	private static Class<HashMap> DEFAULT_MAP_CLASS = HashMap.class;
@@ -70,6 +65,7 @@ public class JSONUtil {
 	 */
 	@PostConstruct
 	private void init() {
+		OBJECT_MAPPER = ContextUtil.get(ObjectMapper.class);
 		DEFAULT_MAP_READER = OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(
 			DEFAULT_MAP_CLASS, String.class, Object.class));
 		OBJECT_MAPPER.getFactory().setCharacterEscapes(new CharacterEscapes() {

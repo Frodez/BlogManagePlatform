@@ -141,6 +141,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return source;
 	}
 
+	/**
+	 * 设置登出处理器
+	 * @author Frodez
+	 * @date 2019-03-27
+	 */
 	@Bean
 	public SecurityContextLogoutHandler securityContextLogoutHandler() {
 		return new SecurityContextLogoutHandler();

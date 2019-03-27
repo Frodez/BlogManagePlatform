@@ -6,7 +6,6 @@ import java.util.Iterator;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.executable.ExecutableValidator;
 import lombok.experimental.UtilityClass;
 import org.hibernate.validator.HibernateValidator;
 
@@ -24,8 +23,6 @@ public class ValidationUtil {
 	private static final Validator VAL = Validation.byProvider(HibernateValidator.class).configure().failFast(true)
 		.buildValidatorFactory().getValidator();
 
-	private static final ExecutableValidator EXEC_VAL = VAL.forExecutables();
-
 	/**
 	 * 对方法参数进行验证,如果验证通过,返回null<br>
 	 * @author Frodez
@@ -35,7 +32,8 @@ public class ValidationUtil {
 	 * @date 2019-01-12
 	 */
 	public static String validateParam(final Object instance, final Method method, final Object[] args) {
-		Iterator<ConstraintViolation<Object>> iterator = EXEC_VAL.validateParameters(instance, method, args).iterator();
+		Iterator<ConstraintViolation<Object>> iterator = VAL.forExecutables().validateParameters(instance, method, args)
+			.iterator();
 		return iterator.hasNext() ? iterator.next().getMessage() : null;
 	}
 

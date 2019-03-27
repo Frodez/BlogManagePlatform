@@ -11,6 +11,7 @@ package frodez.util.io;
 import frodez.util.error.exception.BufferOverflowException;
 
 /**
+ * 环形输入输出缓冲<br>
  * 常用方式:<br>
  *
  * <pre>
@@ -23,7 +24,7 @@ import frodez.util.error.exception.BufferOverflowException;
  * // Empty the buffer.
  * System.out.print((String) (buffer.read()));
  * </pre>
- * 
+ *
  * Implements the Circular Buffer producer/consumer model for Objects. More information about this class is available
  * from <a target="_top" href= "http://ostermiller.org/utils/CircularObjectBuffer.html">ostermiller.org</a>.
  * <p>

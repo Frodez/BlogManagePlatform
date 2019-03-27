@@ -2,7 +2,7 @@ package frodez.config.security.filter;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import frodez.config.security.util.TokenManager;
+import frodez.config.security.util.TokenUtil;
 import frodez.util.beans.result.Result;
 import frodez.util.http.ServletUtil;
 import frodez.util.http.URLMatcher;
@@ -31,12 +31,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 		throws ServletException, IOException {
 		//建议url不要带入任何path类型参数,以提高handlemapping性能!
 		if (URLMatcher.needVerify(request.getRequestURI())) {
-			String authToken = TokenManager.getRealToken(request);
+			String authToken = TokenUtil.getRealToken(request);
 			if (authToken != null) {
 				// 将携带的token还原成用户信息
 				UserDetails user = null;
 				try {
-					user = TokenManager.verify(authToken, true);
+					user = TokenUtil.verify(authToken);
 				} catch (JWTVerificationException e) {
 					if (e instanceof TokenExpiredException) {
 						//如果token超时失效,这里不删除token,而是告诉客户端token失效,让客户端重新登陆.

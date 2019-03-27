@@ -5,6 +5,11 @@ import java.math.BigDecimal;
 import lombok.experimental.UtilityClass;
 import org.springframework.lang.Nullable;
 
+/**
+ * 字符串处理工具类
+ * @author Frodez
+ * @date 2019-03-27
+ */
 @UtilityClass
 public class StrUtil {
 

@@ -19,6 +19,13 @@ import org.springframework.util.PathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+/**
+ * url匹配器<br>
+ * 本匹配器只匹配系统中已存在的需验证url和免验证url。<br>
+ * 如果需要额外的匹配功能,请使用PathMatcher。
+ * @author Frodez
+ * @date 2019-03-27
+ */
 @Component
 @DependsOn(value = { "propertyUtil", "contextUtil" })
 public class URLMatcher {

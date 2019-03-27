@@ -14,6 +14,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 /**
+ * 环形输入输出缓冲<br>
  * 常用方式:<br>
  *
  * <pre>

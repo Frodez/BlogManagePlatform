@@ -11,7 +11,6 @@ import frodez.util.json.JSONUtil;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -37,11 +36,6 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 	private Map<Type, Boolean> noContextDeserializeCache = new ConcurrentHashMap<>();
 
 	private Map<Class<?>, Boolean> serializeCache = new ConcurrentHashMap<>();
-
-	public JsonHttpMessageConverer(MediaType supportedMediaType) {
-		setDefaultCharset(DefCharset.UTF_8_CHARSET);
-		setSupportedMediaTypes(Collections.singletonList(supportedMediaType));
-	}
 
 	public JsonHttpMessageConverer(MediaType... supportedMediaTypes) {
 		setDefaultCharset(DefCharset.UTF_8_CHARSET);
@@ -71,21 +65,14 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 		JavaType javaType = JSONUtil.mapper().getTypeFactory().constructType(GenericTypeResolver.resolveType(type,
 			contextClass));
 		AtomicReference<Throwable> causeRef = new AtomicReference<>();
-		if (JSONUtil.mapper().canDeserialize(javaType, causeRef)) {
-			if (hasContextClass) {
-				contextDeserializeCache.put(type.getTypeName().concat(contextClass.getName()), true);
-			} else {
-				noContextDeserializeCache.put(type, true);
-			}
-			return true;
-		}
+		cacheResult = JSONUtil.mapper().canDeserialize(javaType, causeRef);
 		logWarningIfNecessary(javaType, causeRef.get());
 		if (hasContextClass) {
-			contextDeserializeCache.put(type.getTypeName().concat(contextClass.getName()), false);
+			contextDeserializeCache.put(type.getTypeName().concat(contextClass.getName()), cacheResult);
 		} else {
-			noContextDeserializeCache.put(type, false);
+			noContextDeserializeCache.put(type, cacheResult);
 		}
-		return false;
+		return cacheResult;
 	}
 
 	@Override
@@ -98,13 +85,10 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 			return cacheResult;
 		}
 		AtomicReference<Throwable> causeRef = new AtomicReference<>();
-		if (JSONUtil.mapper().canSerialize(clazz, causeRef)) {
-			serializeCache.put(clazz, true);
-			return true;
-		}
+		cacheResult = JSONUtil.mapper().canSerialize(clazz, causeRef);
 		logWarningIfNecessary(clazz, causeRef.get());
-		serializeCache.put(clazz, false);
-		return false;
+		serializeCache.put(clazz, cacheResult);
+		return cacheResult;
 	}
 
 	/**
@@ -161,17 +145,6 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 		} catch (JsonProcessingException ex) {
 			throw new HttpMessageNotWritableException("Could not write JSON: " + ex.getOriginalMessage(), ex);
 		}
-	}
-
-	@Override
-	@Nullable
-	protected MediaType getDefaultContentType(Object object) throws IOException {
-		return super.getDefaultContentType(object);
-	}
-
-	@Override
-	protected Long getContentLength(Object object, @Nullable MediaType contentType) throws IOException {
-		return super.getContentLength(object, contentType);
 	}
 
 }

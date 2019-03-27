@@ -12,10 +12,19 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerProperties;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-@Component
+/**
+ * 模板引擎渲染工具类<br>
+ * <strong>警告!!!如果要使用本类的方法,必须确保RenderUtil已经被初始化!</strong><br>
+ * <strong>方式:在使用本方法的类上加入@DependsOn("renderUtil")注解。</strong>
+ * @author Frodez
+ * @date 2019-03-27
+ */
+@Lazy
+@Component("renderUtil")
 public class RenderUtil {
 
 	private static Configuration configuration;

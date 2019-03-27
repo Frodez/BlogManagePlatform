@@ -38,7 +38,7 @@ public @interface IdCard {
 		/**
 		 * 验证用的格式
 		 */
-		private static Pattern pattern = Pattern.compile(DefRegex.IDCARD);
+		private static Pattern pattern = DefRegex.IDCARD;
 
 		/**
 		 * 接受空值,默认值为false true:当为空时,直接通过验证 false:当为空时,拒绝通过验证
