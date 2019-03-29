@@ -22,7 +22,7 @@ public class RedisTest {
 		//RepeatChecker checker = ContextUtil.getBean(RepeatRedisChecker.class);
 		//		ManualChecker checker = ContextUtil.getBean(ManualGuavaChecker.class);
 		//		Long start = System.currentTimeMillis();
-		//		for (int i = 0; i < 10000000; i++) {
+		//		for (int i = 0; i < 10000000; ++i) {
 		//			String key = i + "";
 		//			checker.check(key);
 		//			checker.lock(key);

@@ -79,24 +79,33 @@ public class URLMatcher {
 	}
 
 	/**
-	 * 判断url是否需要验证,url为带有根路径的url<br>
+	 * 判断uri是否需要验证<br>
+	 * uri获取方式:<br>
+	 * <code>
+	 * HttpServletRequest request = ...;
+	 * String uri = request.getRequestURI();
+	 * </code><br>
 	 * <strong>true为需要验证,false为不需要验证</strong><br>
-	 * <strong>建议url不要带入任何path类型参数,以提高性能!</strong>
 	 * @author Frodez
 	 * @date 2019-01-06
 	 */
-	public static boolean needVerify(String url) {
-		return needVerifyUrls.contains(url);
+	public static boolean needVerify(String uri) {
+		return needVerifyUrls.contains(uri);
 	}
 
 	/**
-	 * 判断url是否为免验证路径,url为带有根路径的url<br>
+	 * 判断uri是否为免验证路径<br>
+	 * uri获取方式:<br>
+	 * <code>
+	 * HttpServletRequest request = ...;
+	 * String uri = request.getRequestURI();
+	 * </code><br>
 	 * <strong>true为需要验证,false为不需要验证</strong><br>
 	 * @author Frodez
 	 * @date 2019-03-10
 	 */
-	public static boolean isPermitAllPath(String url) {
-		return permitUrls.contains(url);
+	public static boolean isPermitAllPath(String uri) {
+		return permitUrls.contains(uri);
 	}
 
 }

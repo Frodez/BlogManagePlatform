@@ -37,7 +37,7 @@ public class LogAOP {
 		Parameter[] parameters = AspectUtil.params(point);
 		Object[] args = point.getArgs();
 		Map<String, Object> paramMap = new HashMap<>();
-		for (int i = 0; i < parameters.length; i++) {
+		for (int i = 0; i < parameters.length; ++i) {
 			paramMap.put(parameters[i].getName(), args[i]);
 		}
 		log.info("{} 请求参数:{}", AspectUtil.fullMethodName(point), JSONUtil.string(paramMap));
@@ -67,7 +67,7 @@ public class LogAOP {
 		String fullName = AspectUtil.fullMethodName(point);
 		Object[] args = point.getArgs();
 		Map<String, Object> paramMap = new HashMap<>();
-		for (int i = 0; i < parameters.length; i++) {
+		for (int i = 0; i < parameters.length; ++i) {
 			paramMap.put(parameters[i].getName(), args[i]);
 		}
 		log.info("{} 请求参数:{}", fullName, JSONUtil.string(paramMap));

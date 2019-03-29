@@ -19,10 +19,10 @@ public class BeanTest {
 		System.out.println(JSONUtil.string(result));
 		System.out.println(JSONUtil.string(one));
 		int quantity = 1000 * 10000;
-		for (int time = 0; time < 5; time++) {
+		for (int time = 0; time < 5; ++time) {
 			long start = System.currentTimeMillis();
 			long duration = 0;
-			for (int i = 0; i < quantity; i++) {
+			for (int i = 0; i < quantity; ++i) {
 				JSONUtil.string(result);
 			}
 			duration = System.currentTimeMillis() - start;
@@ -31,7 +31,7 @@ public class BeanTest {
 			System.out.println("------------------------------");
 			ObjectWriter writer = JSONUtil.mapper().writerFor(Result.class);
 			start = System.currentTimeMillis();
-			for (int i = 0; i < quantity; i++) {
+			for (int i = 0; i < quantity; ++i) {
 				try {
 					writer.writeValueAsString(result);
 				} catch (JsonProcessingException e) {
@@ -49,7 +49,7 @@ public class BeanTest {
 		//		System.out.println(BeanUtil.isClear(new Role()));
 		//		System.out.println(BeanUtil.isClear(BeanUtil.clearInstance(Role.class)));
 		//		long start = System.currentTimeMillis();
-		//		for (int i = 0; i < 10000 * 10000; i++) {
+		//		for (int i = 0; i < 10000 * 10000; ++i) {
 		//			//BeanUtil.isClear(new Role());
 		//			BeanUtil.clear(new Role());
 		//		}
@@ -72,12 +72,12 @@ public class BeanTest {
 		//			Result.class);
 		//		System.out.println(result2);
 		//		long start = System.currentTimeMillis();
-		//		for (int i = 0; i < 100000000; i++) {
+		//		for (int i = 0; i < 100000000; ++i) {
 		//			Result.success().toString();
 		//		}
 		//		System.out.println(System.currentTimeMillis() - start);
 		//		long start = System.currentTimeMillis();
-		//		for (int i = 0; i < 100000000; i++) {
+		//		for (int i = 0; i < 100000000; ++i) {
 		//			Map<String, Object> map = BeanUtil.asMap(one);
 		//		}
 		//		System.out.println(System.currentTimeMillis() - start);
@@ -86,7 +86,7 @@ public class BeanTest {
 		//		BeanOne one2 = new BeanOne();
 		//		BeanUtil.asBean(map, one2);
 		//		long start = System.currentTimeMillis();
-		//		for(int i = 0; i < 100000000; i++) {
+		//		for(int i = 0; i < 100000000; ++i) {
 		//			if((i & 0b11) == 0) {
 		//				BeanTwo two = new BeanTwo();
 		//				//BeanUtils.copyProperties(one, two);
@@ -110,7 +110,7 @@ public class BeanTest {
 		//		}
 		//		System.out.println(System.currentTimeMillis() - start);
 		//		start = System.currentTimeMillis();
-		//		for(int i = 0; i < 100000000; i++) {
+		//		for(int i = 0; i < 100000000; ++i) {
 		//			if((i & 0b11) == 0) {
 		//				BeanTwo two = new BeanTwo();
 		//				BeanUtils.copyProperties(one, two);

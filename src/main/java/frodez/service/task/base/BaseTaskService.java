@@ -227,7 +227,7 @@ public class BaseTaskService {
 				if (entry.getValue().cancel(true)) {
 					taskMap.remove(entry.getKey());
 					taskInfoMap.remove(entry.getKey());
-					alreadyCanceled++;
+					++alreadyCanceled;
 				}
 			}
 			return Result.success("共计" + total + "个任务正在执行,已取消" + alreadyCanceled + "个。");

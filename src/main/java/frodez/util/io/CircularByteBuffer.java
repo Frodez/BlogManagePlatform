@@ -448,7 +448,7 @@ public class CircularByteBuffer {
 					int available = CircularByteBuffer.this.available();
 					if (available > 0) {
 						int result = buffer[readPosition] & 0xff;
-						readPosition++;
+						++readPosition;
 						if (readPosition == buffer.length) {
 							readPosition = 0;
 						}
@@ -729,7 +729,7 @@ public class CircularByteBuffer {
 					}
 					if (spaceLeft > 0) {
 						buffer[writePosition] = (byte) (c & 0xff);
-						writePosition++;
+						++writePosition;
 						if (writePosition == buffer.length) {
 							writePosition = 0;
 						}

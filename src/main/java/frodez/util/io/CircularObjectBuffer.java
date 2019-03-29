@@ -282,7 +282,7 @@ public class CircularObjectBuffer<ElementType> {
 				int available = available();
 				if (available > 0) {
 					ElementType result = buffer[readPosition];
-					readPosition++;
+					++readPosition;
 					if (readPosition == buffer.length) {
 						readPosition = 0;
 					}
@@ -489,7 +489,7 @@ public class CircularObjectBuffer<ElementType> {
 				}
 				if (spaceLeft > 0) {
 					buffer[writePosition] = o;
-					writePosition++;
+					++writePosition;
 					if (writePosition == buffer.length) {
 						writePosition = 0;
 					}

@@ -80,7 +80,7 @@ public class DecimalUtil {
 	 */
 	public static BigDecimal add(boolean normalized, BigDecimal first, BigDecimal... args) {
 		BigDecimal result = first;
-		for (int i = 0; i < args.length; i++) {
+		for (int i = 0; i < args.length; ++i) {
 			result = result.add(args[i]);
 		}
 		if (normalized) {
@@ -106,7 +106,7 @@ public class DecimalUtil {
 	 */
 	public static BigDecimal subtract(boolean normalized, BigDecimal first, BigDecimal... args) {
 		BigDecimal result = first;
-		for (int i = 0; i < args.length; i++) {
+		for (int i = 0; i < args.length; ++i) {
 			result = result.subtract(args[i]);
 		}
 		if (normalized) {
@@ -132,7 +132,7 @@ public class DecimalUtil {
 	 */
 	public static BigDecimal multiply(boolean normalized, BigDecimal first, BigDecimal... args) {
 		BigDecimal result = first;
-		for (int i = 0; i < args.length; i++) {
+		for (int i = 0; i < args.length; ++i) {
 			result = result.multiply(args[i]);
 		}
 		if (normalized) {
@@ -159,7 +159,7 @@ public class DecimalUtil {
 	public static BigDecimal divide(boolean normalized, BigDecimal first, BigDecimal... args) {
 		BigDecimal result = first;
 		int precision = args.length + DefDecimal.PRECISION;
-		for (int i = 0; i < args.length; i++) {
+		for (int i = 0; i < args.length; ++i) {
 			result = result.divide(args[i], precision, DefDecimal.ROUND_MODE);
 		}
 		if (normalized) {

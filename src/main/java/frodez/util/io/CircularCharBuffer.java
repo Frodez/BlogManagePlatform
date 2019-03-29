@@ -431,7 +431,7 @@ public class CircularCharBuffer {
 					int available = available();
 					if (available > 0) {
 						int result = buffer[readPosition] & 0xffff;
-						readPosition++;
+						++readPosition;
 						if (readPosition == buffer.length) {
 							readPosition = 0;
 						}
@@ -729,7 +729,7 @@ public class CircularCharBuffer {
 					}
 					if (spaceLeft > 0) {
 						buffer[writePosition] = (char) (c & 0xffff);
-						writePosition++;
+						++writePosition;
 						if (writePosition == buffer.length) {
 							writePosition = 0;
 						}
@@ -794,11 +794,11 @@ public class CircularCharBuffer {
 					int firstLen = Math.min(realLen, buffer.length - writePosition);
 					int secondLen = Math.min(realLen - firstLen, buffer.length - markPosition - 1);
 					int written = firstLen + secondLen;
-					for (int i = 0; i < firstLen; i++) {
+					for (int i = 0; i < firstLen; ++i) {
 						buffer[writePosition + i] = str.charAt(off + i);
 					}
 					if (secondLen > 0) {
-						for (int i = 0; i < secondLen; i++) {
+						for (int i = 0; i < secondLen; ++i) {
 							buffer[i] = str.charAt(off + firstLen + i);
 						}
 						writePosition = secondLen;
