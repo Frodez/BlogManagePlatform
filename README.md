@@ -1,6 +1,7 @@
 ![Version 0.1-alpha](https://img.shields.io/github/tag-pre/Frodez/BlogManagePlatform.svg)
 [![License](https://img.shields.io/badge/license-apache-blue.svg)](https://github.com/Frodez/BlogManagePlatform/blob/master/LICENSE)
 [![Build Status](https://travis-ci.com/Frodez/BlogManagePlatform.svg)](https://travis-ci.org/Frodez/BlogManagePlatform)
+[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
 # BlogManagePlatform  
 ## 这是一个springboot项目的脚手架,追求简洁高速可扩展。  
 已完成了一些常用功能，包括:
