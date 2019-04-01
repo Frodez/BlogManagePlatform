@@ -1,50 +1,61 @@
 package frodez;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import frodez.util.beans.result.Result;
-import frodez.util.json.JSONUtil;
+import java.lang.management.CompilationMXBean;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
+import java.lang.management.RuntimeMXBean;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import lombok.Data;
-import org.springframework.boot.SpringApplication;
 
 public class BeanTest {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		SpringApplication.run(BlogManagePlatformApplication.class, args);
-		Date date = new Date();
-		BeanOne one = new BeanOne();
-		one.setDate(date);
-		Result result = Result.success(one);
-		System.out.println(JSONUtil.string(result));
-		System.out.println(JSONUtil.string(one));
-		int quantity = 1000 * 10000;
-		for (int time = 0; time < 5; ++time) {
-			long start = System.currentTimeMillis();
-			long duration = 0;
-			for (int i = 0; i < quantity; ++i) {
-				JSONUtil.string(result);
-			}
-			duration = System.currentTimeMillis() - start;
-			System.out.println("v1:" + time);
-			System.out.println(duration);
-			System.out.println("------------------------------");
-			ObjectWriter writer = JSONUtil.mapper().writerFor(Result.class);
-			start = System.currentTimeMillis();
-			for (int i = 0; i < quantity; ++i) {
-				try {
-					writer.writeValueAsString(result);
-				} catch (JsonProcessingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				//JSONUtil.listV2(string, Integer.class);
-			}
-			duration = System.currentTimeMillis() - start;
-			System.out.println("v2:" + time);
-			System.out.println(duration);
-			System.out.println("------------------------------");
-		}
+		CompilationMXBean compilationMXBean = ManagementFactory.getCompilationMXBean();
+		OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
+		RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+		List<String> arguments = runtimeMXBean.getInputArguments();
+		Map<String, String> map = runtimeMXBean.getSystemProperties();
+		System.out.println(arguments);
+		System.out.println(map);
+		System.out.println(map.get("CompactStrings"));
+		new String();
+		//		SpringApplication.run(BlogManagePlatformApplication.class, args);
+		//		Date date = new Date();
+		//		BeanOne one = new BeanOne();
+		//		one.setDate(date);
+		//		Result result = Result.success(one);
+		//		System.out.println(JSONUtil.string(result));
+		//		System.out.println(JSONUtil.string(one));
+		//		int quantity = 1000 * 10000;
+		//		for (int time = 0; time < 5; ++time) {
+		//			long start = System.currentTimeMillis();
+		//			long duration = 0;
+		//			for (int i = 0; i < quantity; ++i) {
+		//				JSONUtil.string(result);
+		//			}
+		//			duration = System.currentTimeMillis() - start;
+		//			System.out.println("v1:" + time);
+		//			System.out.println(duration);
+		//			System.out.println("------------------------------");
+		//			ObjectWriter writer = JSONUtil.mapper().writerFor(Result.class);
+		//			start = System.currentTimeMillis();
+		//			for (int i = 0; i < quantity; ++i) {
+		//				try {
+		//					writer.writeValueAsString(result);
+		//				} catch (JsonProcessingException e) {
+		//					// TODO Auto-generated catch block
+		//					e.printStackTrace();
+		//				}
+		//				//JSONUtil.listV2(string, Integer.class);
+		//			}
+		//			duration = System.currentTimeMillis() - start;
+		//			System.out.println("v2:" + time);
+		//			System.out.println(duration);
+		//			System.out.println("------------------------------");
+		//		}
 		//		BeanUtil.getProperties(Role.class);
 		//		System.out.println(BeanUtil.isClear(new Role()));
 		//		System.out.println(BeanUtil.isClear(BeanUtil.clearInstance(Role.class)));

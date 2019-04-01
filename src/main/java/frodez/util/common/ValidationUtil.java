@@ -2,7 +2,7 @@ package frodez.util.common;
 
 import frodez.util.constant.setting.DefDesc;
 import java.lang.reflect.Method;
-import java.util.Iterator;
+import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -32,9 +32,8 @@ public class ValidationUtil {
 	 * @date 2019-01-12
 	 */
 	public static String validateParam(final Object instance, final Method method, final Object[] args) {
-		Iterator<ConstraintViolation<Object>> iterator = VAL.forExecutables().validateParameters(instance, method, args)
-			.iterator();
-		return iterator.hasNext() ? iterator.next().getMessage() : null;
+		Set<ConstraintViolation<Object>> set = VAL.forExecutables().validateParameters(instance, method, args);
+		return set.isEmpty() ? null : set.iterator().next().getMessage();
 	}
 
 	/**
@@ -59,8 +58,8 @@ public class ValidationUtil {
 		if (object == null) {
 			return nullMessage;
 		}
-		Iterator<ConstraintViolation<Object>> iterator = VAL.validate(object).iterator();
-		return iterator.hasNext() ? iterator.next().getMessage() : null;
+		Set<ConstraintViolation<Object>> set = VAL.validate(object);
+		return set.isEmpty() ? null : set.iterator().next().getMessage();
 	}
 
 }
