@@ -158,61 +158,188 @@ public class EmptyUtil {
 	}
 
 	/**
-	 * 判断对象是否为空
+	 * 判断对象是否为空,默认关闭严格模式(即所有成员均不为空)
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */
 	public static boolean yes(Object[] array) {
-		return array == null || array.length == 0;
+		return yes(false, array);
 	}
 
 	/**
-	 * 判断对象是否不为空
+	 * 判断对象是否为空<br>
+	 * strictMode为true时开启严格模式,为false时关闭严格模式。
+	 * @author Frodez
+	 * @date 2019-02-17
+	 */
+	public static boolean yes(boolean strictMode, Object[] array) {
+		if (array == null || array.length == 0) {
+			return true;
+		}
+		if (!strictMode) {
+			return false;
+		}
+		for (Object object : array) {
+			if (object == null) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 判断对象是否不为空,默认关闭严格模式(即所有成员均不为空)
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */
 	public static boolean no(Object[] array) {
-		return array != null && array.length != 0;
+		return no(false, array);
 	}
 
 	/**
-	 * 判断对象是否为空
+	 * 判断对象是否不为空<br>
+	 * strictMode为true时开启严格模式,为false时关闭严格模式。
+	 * @author Frodez
+	 * @date 2019-02-17
+	 */
+	public static boolean no(boolean strictMode, Object[] array) {
+		if (array == null || array.length == 0) {
+			return false;
+		}
+		if (!strictMode) {
+			return true;
+		}
+		for (Object object : array) {
+			if (object == null) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 判断对象是否为空,默认关闭严格模式(即所有成员均不为空)
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */
 	public static boolean yes(Collection<?> collection) {
-		return collection == null || collection.isEmpty();
+		return yes(false, collection);
 	}
 
 	/**
-	 * 判断对象是否不为空
+	 * 判断对象是否为空<br>
+	 * strictMode为true时开启严格模式,为false时关闭严格模式。
+	 * @author Frodez
+	 * @date 2019-02-17
+	 */
+	public static boolean yes(boolean strictMode, Collection<?> collection) {
+		if (collection == null || collection.isEmpty()) {
+			return true;
+		}
+		if (!strictMode) {
+			return false;
+		}
+		for (Object object : collection) {
+			if (object == null) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 判断对象是否不为空,默认关闭严格模式(即所有成员均不为空)
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */
 	public static boolean no(Collection<?> collection) {
-		return collection != null && !collection.isEmpty();
+		return no(false, collection);
 	}
 
 	/**
-	 * 判断对象是否为空
+	 * 判断对象是否不为空<br>
+	 * strictMode为true时开启严格模式,为false时关闭严格模式。
+	 * @author Frodez
+	 * @date 2019-02-17
+	 */
+	public static boolean no(boolean strictMode, Collection<?> collection) {
+		if (collection == null || collection.isEmpty()) {
+			return false;
+		}
+		if (!strictMode) {
+			return true;
+		}
+		for (Object object : collection) {
+			if (object == null) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 判断对象是否为空,默认关闭严格模式(即所有成员均不为空)
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */
 	public static boolean yes(Map<?, ?> map) {
-		return map == null || map.isEmpty();
+		return yes(false, map);
 	}
 
 	/**
-	 * 判断对象是否不为空
+	 * 判断对象是否为空<br>
+	 * strictMode为true时开启严格模式,为false时关闭严格模式。
+	 * @author Frodez
+	 * @date 2019-02-17
+	 */
+	public static boolean yes(boolean strictMode, Map<?, ?> map) {
+		if (map == null || map.isEmpty()) {
+			return true;
+		}
+		if (!strictMode) {
+			return false;
+		}
+		for (Object object : map.values()) {
+			if (object == null) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 判断对象是否不为空,默认关闭严格模式(即所有成员均不为空)
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */
 	public static boolean no(Map<?, ?> map) {
-		return map != null && !map.isEmpty();
+		return no(false, map);
 	}
 
 	/**
-	 * 判断对象是否为空
+	 * 判断对象是否不为空<br>
+	 * strictMode为true时开启严格模式,为false时关闭严格模式。
+	 * @author Frodez
+	 * @date 2019-02-17
+	 */
+	public static boolean no(boolean strictMode, Map<?, ?> map) {
+		if (map == null || map.isEmpty()) {
+			return false;
+		}
+		if (!strictMode) {
+			return true;
+		}
+		for (Object object : map.values()) {
+			if (object == null) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 判断字符串是否为空<br>
+	 * <strong>警告:与其他方法不同的是,空字符串""也会被判定为空。这一行为与对数组的判断类似,但并不完全相同。</strong>
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */
@@ -221,12 +348,33 @@ public class EmptyUtil {
 	}
 
 	/**
-	 * 判断对象是否不为空
+	 * 判断字符串是否不为空<br>
+	 * <strong>警告:与其他方法不同的是,空字符串""也会被判定为空。这一行为与对数组的判断类似,但并不完全相同。</strong>
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */
 	public static boolean no(String string) {
 		return string != null && string.length() != 0;
+	}
+
+	/**
+	 * 判断字符串是否为空<br>
+	 * <strong>警告:与其他方法不同的是,空字符串""也会被判定为空。这一行为与对数组的判断类似,但并不完全相同。</strong>
+	 * @author Frodez
+	 * @date 2019-02-17
+	 */
+	public static boolean yes(CharSequence charSequence) {
+		return charSequence == null || charSequence.length() == 0;
+	}
+
+	/**
+	 * 判断字符串是否不为空<br>
+	 * <strong>警告:与其他方法不同的是,空字符串""也会被判定为空。这一行为与对数组的判断类似,但并不完全相同。</strong>
+	 * @author Frodez
+	 * @date 2019-02-17
+	 */
+	public static boolean no(CharSequence charSequence) {
+		return charSequence != null && charSequence.length() != 0;
 	}
 
 }
