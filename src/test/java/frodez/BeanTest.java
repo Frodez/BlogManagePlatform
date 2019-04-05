@@ -1,149 +1,32 @@
 package frodez;
 
-import java.lang.management.CompilationMXBean;
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
-import java.lang.management.RuntimeMXBean;
+import frodez.dao.model.user.Role;
+import frodez.util.reflect.BeanUtil;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import lombok.Data;
 
 public class BeanTest {
 
-	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		CompilationMXBean compilationMXBean = ManagementFactory.getCompilationMXBean();
-		OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
-		RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
-		List<String> arguments = runtimeMXBean.getInputArguments();
-		Map<String, String> map = runtimeMXBean.getSystemProperties();
-		System.out.println(arguments);
-		System.out.println(map);
-		System.out.println(map.get("CompactStrings"));
-		new String();
-		//		SpringApplication.run(BlogManagePlatformApplication.class, args);
-		//		Date date = new Date();
-		//		BeanOne one = new BeanOne();
-		//		one.setDate(date);
-		//		Result result = Result.success(one);
-		//		System.out.println(JSONUtil.string(result));
-		//		System.out.println(JSONUtil.string(one));
-		//		int quantity = 1000 * 10000;
-		//		for (int time = 0; time < 5; ++time) {
-		//			long start = System.currentTimeMillis();
-		//			long duration = 0;
-		//			for (int i = 0; i < quantity; ++i) {
-		//				JSONUtil.string(result);
-		//			}
-		//			duration = System.currentTimeMillis() - start;
-		//			System.out.println("v1:" + time);
-		//			System.out.println(duration);
-		//			System.out.println("------------------------------");
-		//			ObjectWriter writer = JSONUtil.mapper().writerFor(Result.class);
-		//			start = System.currentTimeMillis();
-		//			for (int i = 0; i < quantity; ++i) {
-		//				try {
-		//					writer.writeValueAsString(result);
-		//				} catch (JsonProcessingException e) {
-		//					// TODO Auto-generated catch block
-		//					e.printStackTrace();
-		//				}
-		//				//JSONUtil.listV2(string, Integer.class);
-		//			}
-		//			duration = System.currentTimeMillis() - start;
-		//			System.out.println("v2:" + time);
-		//			System.out.println(duration);
-		//			System.out.println("------------------------------");
-		//		}
-		//		BeanUtil.getProperties(Role.class);
-		//		System.out.println(BeanUtil.isClear(new Role()));
-		//		System.out.println(BeanUtil.isClear(BeanUtil.clearInstance(Role.class)));
-		//		long start = System.currentTimeMillis();
-		//		for (int i = 0; i < 10000 * 10000; ++i) {
-		//			//BeanUtil.isClear(new Role());
-		//			BeanUtil.clear(new Role());
-		//		}
-		//		System.out.println(System.currentTimeMillis() - start);
-		//		PageQuery page = new PageQuery(1, 2);
-		//		String json = JSONUtil.string(page);
-		//		System.out.println(json);
-		//		page = JSONUtil.as(json, PageQuery.class);
-		//		json = JSONUtil.string(page);
-		//		System.out.println(json);
-		//		Date date = new Date();
-		//		BeanOne one = new BeanOne();
-		//		one.setDate(date);
-		//		Result result = Result.success(one);
-		//		System.out.println(result);
-		//		one.setId(666L);
-		//		System.out.println(result);
-		//		Result result2 = JSONUtil.as(
-		//			"{\"message\":\"成功\",\"code\":1000,\"data\":{\"id\":667,\"number\":null,\"name\":null,\"message\":null,\"isOk\":null,\"type\":null,\"date\":1551535504226}}",
-		//			Result.class);
-		//		System.out.println(result2);
-		//		long start = System.currentTimeMillis();
-		//		for (int i = 0; i < 100000000; ++i) {
-		//			Result.success().toString();
-		//		}
-		//		System.out.println(System.currentTimeMillis() - start);
-		//		long start = System.currentTimeMillis();
-		//		for (int i = 0; i < 100000000; ++i) {
-		//			Map<String, Object> map = BeanUtil.asMap(one);
-		//		}
-		//		System.out.println(System.currentTimeMillis() - start);
-		//		Map<String, Object> map = BeanUtil.asMap(one);
-		//		map.put("name", "Frodez");
-		//		BeanOne one2 = new BeanOne();
-		//		BeanUtil.asBean(map, one2);
-		//		long start = System.currentTimeMillis();
-		//		for(int i = 0; i < 100000000; ++i) {
-		//			if((i & 0b11) == 0) {
-		//				BeanTwo two = new BeanTwo();
-		//				//BeanUtils.copyProperties(one, two);
-		//				BeanUtil.copy(one, two);
-		//			}
-		//			if((i & 0b11) == 1) {
-		//				BeanThree three = new BeanThree();
-		//				//BeanUtils.copyProperties(one, three);
-		//				BeanUtil.copy(one, three);
-		//			}
-		//			if((i & 0b11) == 2) {
-		//				BeanFour four = new BeanFour();
-		//				//BeanUtils.copyProperties(one, four);
-		//				BeanUtil.copy(one, four);
-		//			}
-		//			if((i & 0b11) == 3) {
-		//				BeanFive five = new BeanFive();
-		//				//BeanUtils.copyProperties(one, five);
-		//				BeanUtil.copy(one, five);
-		//			}
-		//		}
-		//		System.out.println(System.currentTimeMillis() - start);
-		//		start = System.currentTimeMillis();
-		//		for(int i = 0; i < 100000000; ++i) {
-		//			if((i & 0b11) == 0) {
-		//				BeanTwo two = new BeanTwo();
-		//				BeanUtils.copyProperties(one, two);
-		//				//BeanUtil.copy(one, two);
-		//			}
-		//			if((i & 0b11) == 1) {
-		//				BeanThree three = new BeanThree();
-		//				BeanUtils.copyProperties(one, three);
-		//				//BeanUtil.copy(one, three);
-		//			}
-		//			if((i & 0b11) == 2) {
-		//				BeanFour four = new BeanFour();
-		//				BeanUtils.copyProperties(one, four);
-		//				//BeanUtil.copy(one, four);
-		//			}
-		//			if((i & 0b11) == 3) {
-		//				BeanFive five = new BeanFive();
-		//				BeanUtils.copyProperties(one, five);
-		//				//BeanUtil.copy(one, five);
-		//			}
-		//		}
-		//		System.out.println(System.currentTimeMillis() - start);
+		Role role = new Role();
+		role.setCreateTime(new Date());
+		role.setDescription("test123");
+		role.setId(123L);
+		role.setLevel((byte) 1);
+		role.setName("wqwq");
+		int total = 10000 * 10000;
+		long start = System.currentTimeMillis();
+		for (int i = 0; i < total; ++i) {
+			BeanUtil.cover(role, new Role());
+		}
+		long duration = System.currentTimeMillis() - start;
+		System.out.println(duration);
+		start = System.currentTimeMillis();
+		for (int i = 0; i < total; ++i) {
+			BeanUtil.initialize(role, Role.class);
+		}
+		duration = System.currentTimeMillis() - start;
+		System.out.println(duration);
 	}
 
 	@Data

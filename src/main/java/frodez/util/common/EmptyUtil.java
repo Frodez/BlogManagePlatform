@@ -339,27 +339,7 @@ public class EmptyUtil {
 
 	/**
 	 * 判断字符串是否为空<br>
-	 * <strong>警告:与其他方法不同的是,空字符串""也会被判定为空。这一行为与对数组的判断类似,但并不完全相同。</strong>
-	 * @author Frodez
-	 * @date 2019-02-17
-	 */
-	public static boolean yes(String string) {
-		return string == null || string.length() == 0;
-	}
-
-	/**
-	 * 判断字符串是否不为空<br>
-	 * <strong>警告:与其他方法不同的是,空字符串""也会被判定为空。这一行为与对数组的判断类似,但并不完全相同。</strong>
-	 * @author Frodez
-	 * @date 2019-02-17
-	 */
-	public static boolean no(String string) {
-		return string != null && string.length() != 0;
-	}
-
-	/**
-	 * 判断字符串是否为空<br>
-	 * <strong>警告:与其他方法不同的是,空字符串""也会被判定为空。这一行为与对数组的判断类似,但并不完全相同。</strong>
+	 * <strong>警告:与其他方法不同的是,长度为0的空字符串也会被判定为空。这一行为与对数组的判断类似,但并不完全相同。</strong>
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */
@@ -369,7 +349,7 @@ public class EmptyUtil {
 
 	/**
 	 * 判断字符串是否不为空<br>
-	 * <strong>警告:与其他方法不同的是,空字符串""也会被判定为空。这一行为与对数组的判断类似,但并不完全相同。</strong>
+	 * <strong>警告:与其他方法不同的是,长度为0的空字符串也会被判定为空。这一行为与对数组的判断类似,但并不完全相同。</strong>
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */

@@ -433,8 +433,7 @@ public class AuthorityService implements IAuthorityService {
 			if (param.getName() != null && checkRoleName(param.getName())) {
 				return Result.fail("角色不能重名!");
 			}
-			BeanUtil.cover(param, role);
-			roleMapper.updateByPrimaryKeySelective(role);
+			roleMapper.updateByPrimaryKeySelective(BeanUtil.initialize(param, Role.class));
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[addRole]", e);
@@ -515,8 +514,7 @@ public class AuthorityService implements IAuthorityService {
 			if (param.getName() != null && checkPermissionName(param.getName())) {
 				return Result.fail("权限不能重名!");
 			}
-			BeanUtil.cover(param, permission);
-			permissionMapper.updateByPrimaryKeySelective(permission);
+			permissionMapper.updateByPrimaryKeySelective(BeanUtil.initialize(param, Permission.class));
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[addPermission]", e);

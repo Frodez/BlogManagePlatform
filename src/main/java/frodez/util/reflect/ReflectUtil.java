@@ -53,6 +53,10 @@ public class ReflectUtil {
 		if (pair == null) {
 			FastClass fastClass = FastClass.create(klass);
 			FastMethod[] methods = new FastMethod[fastClass.getMaxIndex() + 1];
+			int index = fastClass.getIndex(method, params);
+			if (index < 0) {
+				throw new NoSuchElementException();
+			}
 			FastMethod fastMethod = fastClass.getMethod(method, params);
 			methods[fastMethod.getIndex()] = fastMethod;
 			pair = new Pair<>();

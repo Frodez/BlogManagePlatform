@@ -262,8 +262,7 @@ public class BaseTaskService {
 			if (taskMapper.selectCount(null) >= properties.getMaxSize()) {
 				return Result.fail("已达可用任务最大数量!");
 			}
-			Task task = new Task();
-			BeanUtil.copy(param, task);
+			Task task = BeanUtil.initialize(param, Task.class);
 			task.setCreateTime(new Date());
 			task.setStatus(param.getStartNow());
 			taskMapper.insertUseGeneratedKeys(task);
