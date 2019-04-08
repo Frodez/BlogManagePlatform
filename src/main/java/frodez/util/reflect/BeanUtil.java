@@ -64,7 +64,7 @@ public class BeanUtil {
 	/**
 	 * 清空目标bean的所有属性,然后copy原对象属性.<br>
 	 * 建议对数据库update时使用本方法，insert时使用copy方法。<br>
-	 * 在使用本方法和使用BeanUtil.cover(Object, Object)方法的意义相同时,建议使用本方法,速度更快。<br>
+	 * 在使用本方法和使用BeanUtil.initialize(Object, Class)方法的意义相同时,建议使用initialize方法,速度更快。<br>
 	 * 注意:请不要这样使用本方法:<br>
 	 *
 	 * <pre>
