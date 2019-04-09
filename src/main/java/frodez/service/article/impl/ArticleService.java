@@ -11,6 +11,8 @@ import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
 import frodez.util.constant.common.DeleteEnum;
 import frodez.util.constant.setting.DefStr;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,7 @@ public class ArticleService implements IArticleService {
 	private ArticleMapper articleMapper;
 
 	@Override
-	public Result getDetail(Long articleId) {
+	public Result getDetail(@Valid @NotNull Long articleId) {
 		try {
 			Article article = articleMapper.selectByPrimaryKey(articleId);
 			if (article == null) {

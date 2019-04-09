@@ -20,8 +20,8 @@ public class ValidationUtil {
 	/**
 	 * 快速失败(出现第一个错误即返回)
 	 */
-	private static final Validator VAL = Validation.byProvider(HibernateValidator.class).configure().failFast(true)
-		.buildValidatorFactory().getValidator();
+	private static final Validator VAL = Validation.byProvider(HibernateValidator.class).configure()
+		.allowOverridingMethodAlterParameterConstraint(true).failFast(true).buildValidatorFactory().getValidator();
 
 	/**
 	 * 对方法参数进行验证,如果验证通过,返回null<br>
