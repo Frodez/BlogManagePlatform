@@ -5,6 +5,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -20,9 +21,7 @@ public class ContextUtil implements ApplicationContextAware {
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		context = applicationContext;
-		if (context == null) {
-			throw new RuntimeException("获取spring上下文环境失败!");
-		}
+		Assert.notNull(context, "context must not be null");
 	}
 
 	/**

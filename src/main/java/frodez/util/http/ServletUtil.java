@@ -64,7 +64,7 @@ public class ServletUtil {
 	public static void writeJson(HttpServletResponse response, Result result) {
 		Assert.notNull(result, "result must not be null");
 		if (response.isCommitted()) {
-			return;
+			throw new RuntimeException("this response has been committed!");
 		}
 		response.setStatus(result.httpStatus().value());
 		response.setCharacterEncoding(DefCharset.UTF_8);
@@ -90,7 +90,7 @@ public class ServletUtil {
 	 */
 	public static void writeJson(HttpServletResponse response, @Nullable HttpStatus status, String json) {
 		if (response.isCommitted()) {
-			return;
+			throw new RuntimeException("this response has been committed!");
 		}
 		if (status != null) {
 			response.setStatus(status.value());
@@ -118,7 +118,7 @@ public class ServletUtil {
 	 */
 	public static void writePlainText(HttpServletResponse response, @Nullable HttpStatus status, String text) {
 		if (response.isCommitted()) {
-			return;
+			throw new RuntimeException("this response has been committed!");
 		}
 		if (status != null) {
 			response.setStatus(status.value());

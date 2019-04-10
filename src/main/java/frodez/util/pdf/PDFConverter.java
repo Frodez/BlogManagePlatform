@@ -41,7 +41,7 @@ public class PDFConverter {
 		FontProperties properties = ContextUtil.get(FontProperties.class);
 		try {
 			for (Entry<String, String> entry : properties.getAlias().entrySet()) {
-				fontCache.put(entry.getKey(), FontProgramFactory.createFont(FileUtil.readByte(ResourceUtils.getFile(
+				fontCache.put(entry.getKey(), FontProgramFactory.createFont(FileUtil.readBytes(ResourceUtils.getFile(
 					properties.getPath().concat(entry.getValue()))), false));
 			}
 		} catch (IOException e) {

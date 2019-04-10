@@ -22,7 +22,7 @@ import lombok.experimental.UtilityClass;
 public class FileUtil {
 
 	/**
-	 * 读取文件数据到字符串
+	 * 读取文件数据到字符串,默认UTF-8
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
@@ -40,7 +40,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 读取文件数据到字符串
+	 * 读取文件数据到字符串,默认UTF-8
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
@@ -58,7 +58,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 读取文件数据到字符串List
+	 * 读取文件数据到字符串List,默认UTF-8
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
@@ -76,7 +76,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 读取文件数据到字符串List
+	 * 读取文件数据到字符串List,默认UTF-8
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
@@ -94,7 +94,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 向文件写入字符串,默认覆盖原文件
+	 * 以UTF-8格式向文件写入字符串,默认覆盖原文件
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
@@ -103,7 +103,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 向文件写入字符串,需指定是否覆盖:true为不覆盖,false为覆盖
+	 * 以UTF-8格式向文件写入字符串,需指定是否覆盖:true为不覆盖,false为覆盖
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
@@ -116,7 +116,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 向文件写入字符串,默认覆盖原文件
+	 * 以UTF-8格式向文件写入字符串,默认覆盖原文件
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
@@ -125,7 +125,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 向文件写入字符串,需指定是否覆盖:true为不覆盖,false为覆盖
+	 * 以UTF-8格式向文件写入字符串,需指定是否覆盖:true为不覆盖,false为覆盖
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
@@ -139,7 +139,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 向文件写入字符串,默认覆盖原文件,需指定Charset
+	 * 以UTF-8格式向文件写入字符串,默认覆盖原文件,需指定Charset
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
@@ -148,7 +148,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 向文件写入字符串,需指定Charset,需指定是否覆盖:true为不覆盖,false为覆盖
+	 * 以UTF-8格式向文件写入字符串,需指定Charset,需指定是否覆盖:true为不覆盖,false为覆盖
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
@@ -185,20 +185,11 @@ public class FileUtil {
 	}
 
 	/**
-	 * 读取文件数据到字符串
+	 * 读取文件数据到byte数组
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static byte[] readByte(File file) throws IOException {
-		return readByte(file, DefCharset.UTF_8_CHARSET);
-	}
-
-	/**
-	 * 读取文件数据到字符串,需指定Charset
-	 * @author Frodez
-	 * @date 2019-03-09
-	 */
-	public static byte[] readByte(File file, Charset charset) throws IOException {
+	public static byte[] readBytes(File file) throws IOException {
 		return Files.asByteSource(file).read();
 	}
 
@@ -207,7 +198,7 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static byte[] readByte(String uri) throws IOException, URISyntaxException {
+	public static byte[] readBytes(String uri) throws IOException, URISyntaxException {
 		return Files.asByteSource(new File(new URI(uri))).read();
 	}
 
@@ -216,8 +207,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeByte(byte[] content, File file) throws IOException, URISyntaxException {
-		writeByte(content, file, false);
+	public static void writeBytes(byte[] content, File file) throws IOException, URISyntaxException {
+		writeBytes(content, file, false);
 	}
 
 	/**
@@ -225,7 +216,7 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeByte(byte[] content, File file, boolean isAppend) throws IOException, URISyntaxException {
+	public static void writeBytes(byte[] content, File file, boolean isAppend) throws IOException, URISyntaxException {
 		if (isAppend) {
 			Files.asByteSink(file, FileWriteMode.APPEND).write(content);
 		} else {
@@ -238,8 +229,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeByte(byte[] content, String uri) throws IOException, URISyntaxException {
-		writeByte(content, uri, false);
+	public static void writeBytes(byte[] content, String uri) throws IOException, URISyntaxException {
+		writeBytes(content, uri, false);
 	}
 
 	/**
@@ -247,7 +238,7 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeByte(byte[] content, String uri, boolean isAppend) throws IOException, URISyntaxException {
+	public static void writeBytes(byte[] content, String uri, boolean isAppend) throws IOException, URISyntaxException {
 		if (isAppend) {
 			Files.asByteSink(new File(new URI(uri)), FileWriteMode.APPEND).write(content);
 		} else {

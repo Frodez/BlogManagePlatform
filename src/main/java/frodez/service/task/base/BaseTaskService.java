@@ -14,6 +14,7 @@ import frodez.util.constant.setting.DefStr;
 import frodez.util.constant.task.StatusEnum;
 import frodez.util.error.ErrorCode;
 import frodez.util.error.exception.ServiceException;
+import frodez.util.json.JSONUtil;
 import frodez.util.reflect.BeanUtil;
 import frodez.util.spring.ContextUtil;
 import java.util.Date;
@@ -72,6 +73,7 @@ public class BaseTaskService {
 	@PostConstruct
 	private void init() {
 		try {
+			scheduler.setWaitForTasksToCompleteOnShutdown(true);
 			taskServiceInfos = ContextUtil.gets(ITask.class).entrySet().stream().map((entry) -> {
 				AvailableTaskInfo info = new AvailableTaskInfo();
 				info.setName(entry.getKey());
@@ -108,6 +110,7 @@ public class BaseTaskService {
 				if (runnable != null && trigger != null) {
 					taskMap.put(task.getId(), scheduler.schedule(runnable, trigger));
 					taskInfoMap.put(task.getId(), task);
+					log.info("第{}号任务启动,任务详情:{}", task.getId(), JSONUtil.string(task));
 				}
 			});
 		} catch (Exception e) {
@@ -262,7 +265,8 @@ public class BaseTaskService {
 			if (taskMapper.selectCount(null) >= properties.getMaxSize()) {
 				return Result.fail("已达可用任务最大数量!");
 			}
-			Task task = BeanUtil.initialize(param, Task.class);
+			Task task = new Task();
+			BeanUtil.copy(param, task);
 			task.setCreateTime(new Date());
 			task.setStatus(param.getStartNow());
 			taskMapper.insertUseGeneratedKeys(task);
