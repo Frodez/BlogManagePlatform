@@ -1,5 +1,6 @@
 package frodez.config.aop.log;
 
+import frodez.config.aop.log.annotation.DurationLog;
 import frodez.util.aop.AspectUtil;
 import frodez.util.json.JSONUtil;
 import java.lang.reflect.Parameter;
@@ -62,7 +63,7 @@ public class LogAOP {
 	 * @date 2018-12-21
 	 */
 	@Around("@annotation(frodez.config.aop.log.annotation.MethodLog)")
-	public Object process(ProceedingJoinPoint point) throws Throwable {
+	public Object log(ProceedingJoinPoint point) throws Throwable {
 		Parameter[] parameters = AspectUtil.params(point);
 		String fullName = AspectUtil.fullMethodName(point);
 		Object[] args = point.getArgs();
@@ -73,6 +74,25 @@ public class LogAOP {
 		log.info("{} 请求参数:{}", fullName, JSONUtil.string(paramMap));
 		Object result = point.proceed();
 		log.info("{} 返回值:{}", fullName, JSONUtil.string(result));
+		return result;
+	}
+
+	/**
+	 * 打印方法耗时到日志
+	 * @param JoinPoint AOP切点
+	 * @author Frodez
+	 * @throws Throwable
+	 * @date 2018-12-21
+	 */
+	@Around("@annotation(frodez.config.aop.log.annotation.DurationLog)")
+	public Object countDuration(ProceedingJoinPoint point) throws Throwable {
+		long count = System.currentTimeMillis();
+		DurationLog durationLog = AspectUtil.annotation(point, DurationLog.class);
+		Object result = point.proceed();
+		count = count - System.currentTimeMillis();
+		if (count > durationLog.threshold()) {
+			log.warn("{}方法耗时{}毫秒,触发超时警告!", AspectUtil.fullMethodName(point), durationLog.threshold());
+		}
 		return result;
 	}
 

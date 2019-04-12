@@ -22,10 +22,18 @@ import javax.validation.ConstraintValidatorContext;
 @Constraint(validatedBy = Mobile.Validator.class)
 public @interface Mobile {
 
-	// 错误信息
+	/**
+	 * 错误信息,默认为"手机号格式错误!"
+	 * @author Frodez
+	 * @date 2019-04-13
+	 */
 	String message() default "手机号格式错误!";
 
-	// 是否可为空
+	/**
+	 * 是否允许null,默认为false不允许
+	 * @author Frodez
+	 * @date 2019-04-13
+	 */
 	boolean nullable() default false;
 
 	/**

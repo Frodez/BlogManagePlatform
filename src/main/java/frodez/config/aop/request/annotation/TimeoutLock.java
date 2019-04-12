@@ -16,7 +16,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TimeoutLock {
 
-	// 过期时间,大于等于0,单位毫秒,默认值500
+	/**
+	 * 过期时间,大于等于0,单位毫秒,默认值500 <strong>如果设置了小于等于0的值,会在启动时抛出异常。</strong>
+	 * @author Frodez
+	 * @date 2019-04-13
+	 */
 	long value() default 500;
 
 }

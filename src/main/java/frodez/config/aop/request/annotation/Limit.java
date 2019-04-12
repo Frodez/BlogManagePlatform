@@ -16,10 +16,18 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Limit {
 
-	// 每秒每token限制请求数,默认值100.0
+	/**
+	 * 每秒每token限制请求数,默认值100.0
+	 * @author Frodez
+	 * @date 2019-04-13
+	 */
 	double value() default 100.0;
 
-	// 超时时间,默认值1000毫秒
+	/**
+	 * 超时时间,默认值3000毫秒
+	 * @author Frodez
+	 * @date 2019-04-13
+	 */
 	long timeout() default 3000;
 
 }
