@@ -31,6 +31,11 @@ public class ReflectUtil {
 		}
 	}
 
+	/**
+	 * 获取FastClass,类型会被缓存
+	 * @author Frodez
+	 * @date 2019-04-12
+	 */
 	public static FastClass getFastClass(Class<?> klass) {
 		Assert.notNull(klass, "klass must not be null");
 		Pair<FastClass, FastMethod[]> pair = CGLIB_CACHE.get(klass);
@@ -46,6 +51,11 @@ public class ReflectUtil {
 		return pair.getKey();
 	}
 
+	/**
+	 * 获取FastMethod,方法会被缓存
+	 * @author Frodez
+	 * @date 2019-04-12
+	 */
 	public static FastMethod getFastMethod(Class<?> klass, String method, Class<?>... params) {
 		Assert.notNull(klass, "klass must not be null");
 		Assert.notNull(method, "method must not be null");
@@ -119,7 +129,7 @@ public class ReflectUtil {
 		} else if (valueClass == long.class || valueClass == Long.class) {
 			return castLongValue(parameterClass, (Long) value);
 		}
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("只能用于byte, short, int, long以及对应装箱类,以及void类型!");
 	}
 
 	private static Object castByteValue(Class<?> parameterClass, Byte value) {

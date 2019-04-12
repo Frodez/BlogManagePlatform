@@ -8,7 +8,7 @@
  */
 package frodez.util.io;
 
-import frodez.util.error.exception.BufferOverflowException;
+import java.io.IOException;
 
 /**
  * 环形输入输出缓冲<br>
@@ -397,13 +397,13 @@ public class CircularObjectBuffer<ElementType> {
 	 * blocking writes, this method will block until all the data has been written rather than throw a
 	 * BufferOverflowException.
 	 * @param buf Array of Objects to be written
-	 * @throws BufferOverflowException if buffer does not allow blocking writes and the buffer is full. If the exception
-	 *         is thrown, no data will have been written since the buffer was set to be non-blocking.
+	 * @throws IOException if buffer does not allow blocking writes and the buffer is full. If the exception is thrown,
+	 *         no data will have been written since the buffer was set to be non-blocking.
 	 * @throws IllegalStateException if done() has been called.
 	 * @throws InterruptedException if the write is interrupted.
 	 * @since ostermillerutils 1.00.00
 	 */
-	public void write(ElementType[] buf) throws BufferOverflowException, IllegalStateException, InterruptedException {
+	public void write(ElementType[] buf) throws IOException, IllegalStateException, InterruptedException {
 		write(buf, 0, buf.length);
 	}
 
@@ -414,13 +414,13 @@ public class CircularObjectBuffer<ElementType> {
 	 * @param buf Array of Objects
 	 * @param off Offset from which to start writing Objects
 	 * @param len - Number of Objects to write
-	 * @throws BufferOverflowException if buffer does not allow blocking writes and the buffer is full. If the exception
-	 *         is thrown, no data will have been written since the buffer was set to be non-blocking.
+	 * @throws IOException if buffer does not allow blocking writes and the buffer is full. If the exception is thrown,
+	 *         no data will have been written since the buffer was set to be non-blocking.
 	 * @throws IllegalStateException if done() has been called.
 	 * @throws InterruptedException if the write is interrupted.
 	 * @since ostermillerutils 1.00.00
 	 */
-	public void write(ElementType[] buf, int off, int len) throws BufferOverflowException, IllegalStateException,
+	public void write(ElementType[] buf, int off, int len) throws IOException, IllegalStateException,
 		InterruptedException {
 		while (len > 0) {
 			synchronized (CircularObjectBuffer.this) {
@@ -434,7 +434,7 @@ public class CircularObjectBuffer<ElementType> {
 					spaceLeft = spaceLeft();
 				}
 				if (!blockingWrite && spaceLeft < len) {
-					throw new BufferOverflowException("CircularObjectBuffer is full; cannot write " + len + " Objects");
+					throw new IOException("CircularObjectBuffer is full; cannot write " + len + " Objects");
 				}
 				int realLen = Math.min(len, spaceLeft);
 				int firstLen = Math.min(realLen, buffer.length - writePosition);
@@ -465,13 +465,13 @@ public class CircularObjectBuffer<ElementType> {
 	 * Add a single Object to this buffer. This method should be called by the producer. If the buffer allows blocking
 	 * writes, this method will block until all the data has been written rather than throw an IOException.
 	 * @param o Object to be written.
-	 * @throws BufferOverflowException if buffer does not allow blocking writes and the buffer is full. If the exception
-	 *         is thrown, no data will have been written since the buffer was set to be non-blocking.
+	 * @throws IOException if buffer does not allow blocking writes and the buffer is full. If the exception is thrown,
+	 *         no data will have been written since the buffer was set to be non-blocking.
 	 * @throws IllegalStateException if done() has been called.
 	 * @throws InterruptedException if the write is interrupted.
 	 * @since ostermillerutils 1.00.00
 	 */
-	public void write(ElementType o) throws BufferOverflowException, IllegalStateException, InterruptedException {
+	public void write(ElementType o) throws IOException, IllegalStateException, InterruptedException {
 		boolean written = false;
 		while (!written) {
 			synchronized (CircularObjectBuffer.this) {
@@ -485,7 +485,7 @@ public class CircularObjectBuffer<ElementType> {
 					spaceLeft = spaceLeft();
 				}
 				if (!blockingWrite && spaceLeft < 1) {
-					throw new BufferOverflowException("CircularObjectBuffer is full; cannot write 1 Object");
+					throw new IOException("CircularObjectBuffer is full; cannot write 1 Object");
 				}
 				if (spaceLeft > 0) {
 					buffer[writePosition] = o;

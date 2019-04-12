@@ -2,6 +2,7 @@ package frodez.util.renderer.reverter;
 
 import frodez.util.io.FileUtil;
 import frodez.util.renderer.RenderUtil;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,24 +27,28 @@ public class CSSReverter implements Reverter {
 	@Override
 	public String revert(String html) {
 		Assert.notNull(html, "html must not be null");
-		Document document = Jsoup.parse(html);
-		Elements elements = document.select("link[href]");
-		Elements htmlElement = document.select("html");
-		elements.forEach((iter) -> {
-			try {
+		try {
+			Document document = Jsoup.parse(html);
+			Elements links = document.select("link[href]");
+			Elements htmlElement = document.select("html");
+			links.forEach((iter) -> {
 				String path = iter.attr("href");
 				if (!path.endsWith(".css")) {
 					return;
 				}
-				htmlElement.prepend("<style type=\"text/css\">" + FileUtil.readString(ResourceUtils.getFile(RenderUtil
-					.getLoaderPath().concat(path))) + "</style>");
-			} catch (Exception e) {
-				log.error("[revert]", e);
-				return;
-			}
-		});
-		elements.remove();
-		return document.html();
+				try {
+					htmlElement.prepend("<style type=\"text/css\">" + FileUtil.readString(ResourceUtils.getFile(
+						RenderUtil.getLoaderPath().concat(path))) + "</style>");
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			});
+			links.remove();
+			return document.html();
+		} catch (Exception e) {
+			log.error("[CSSReverter]", e);
+			return html;
+		}
 	}
 
 }

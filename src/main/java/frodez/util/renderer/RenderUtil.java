@@ -60,6 +60,11 @@ public class RenderUtil {
 		return html;
 	}
 
+	/**
+	 * 获取freemarker的执行引擎
+	 * @author Frodez
+	 * @date 2019-04-12
+	 */
 	public static Configuration configuration() {
 		return configuration;
 	}
@@ -84,6 +89,7 @@ public class RenderUtil {
 
 	/**
 	 * 渲染页面,并转变为String
+	 * @param params freemark页面可能需要的参数
 	 * @author Frodez
 	 * @date 2019-03-21
 	 */
