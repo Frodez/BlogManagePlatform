@@ -1,5 +1,6 @@
 package frodez.util.reflect;
 
+import frodez.util.common.StrUtil;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -32,7 +33,7 @@ public class BeanUtil {
 	private static final Object[] NULL_PARAM = new Object[] { null };
 
 	private static BeanCopier getCopier(Object source, Object target) {
-		return COPIER_CACHE.computeIfAbsent(source.getClass().getName().concat(target.getClass().getName()).toString(),
+		return COPIER_CACHE.computeIfAbsent(StrUtil.concat(source.getClass().getName(), target.getClass().getName()),
 			i -> BeanCopier.create(source.getClass(), target.getClass(), false));
 	}
 
@@ -177,8 +178,7 @@ public class BeanUtil {
 		for (Field field : klass.getDeclaredFields()) {
 			try {
 				if (Modifier.PRIVATE == field.getModifiers() && field.trySetAccessible() && field.get(bean) != null) {
-					String propertyName = "set".concat(new StringBuilder().append(Character.toUpperCase(field.getName()
-						.charAt(0))).append(field.getName().substring(1)).toString());
+					String propertyName = StrUtil.concat("set", StrUtil.upperFirst(field.getName()));
 					for (Method method : klass.getMethods()) {
 						if (method.getName().equals(propertyName) && method.getReturnType() == void.class && method
 							.getParameterCount() == 1 && Modifier.PUBLIC == method.getModifiers()) {

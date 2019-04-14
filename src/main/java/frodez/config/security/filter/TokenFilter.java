@@ -24,7 +24,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * @date 2018-11-21
  */
 @Component
-public class JwtTokenFilter extends OncePerRequestFilter {
+public class TokenFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)

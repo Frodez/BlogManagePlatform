@@ -1,6 +1,5 @@
-package frodez.config.security.login;
+package frodez.config.security.util;
 
-import frodez.config.security.util.TokenUtil;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.vm.facade.TokenCache;
 import frodez.service.user.facade.IAuthorityService;

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * @date 2018-11-27
  */
 @Component
-public class Authentication implements AuthenticationEntryPoint {
+public class AuthDenied implements AuthenticationEntryPoint {
 
 	/**
 	 * 如果捕获到的是 AuthenticationException,那么将会使用其对应的AuthenticationEntryPoint的 commence()处理.<br>

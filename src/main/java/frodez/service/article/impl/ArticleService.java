@@ -1,7 +1,7 @@
 package frodez.service.article.impl;
 
 import com.google.common.collect.Lists;
-import frodez.config.security.login.UserUtil;
+import frodez.config.security.util.UserUtil;
 import frodez.dao.mapper.article.ArticleMapper;
 import frodez.dao.model.article.Article;
 import frodez.dao.result.article.ArticleInfo;

@@ -10,6 +10,7 @@ import frodez.dao.param.task.AddTask;
 import frodez.dao.result.task.AvailableTaskInfo;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
+import frodez.util.common.StrUtil;
 import frodez.util.constant.setting.DefStr;
 import frodez.util.constant.task.StatusEnum;
 import frodez.util.error.ErrorCode;
@@ -149,7 +150,7 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	private Runnable getRunnable(String className) throws ClassNotFoundException {
-		return (Runnable) ContextUtil.get(Class.forName(properties.getPrefix().concat(DefStr.POINT_SEPERATOR).concat(
+		return (Runnable) ContextUtil.get(Class.forName(StrUtil.concat(properties.getPrefix(), DefStr.POINT_SEPERATOR,
 			className)));
 	}
 

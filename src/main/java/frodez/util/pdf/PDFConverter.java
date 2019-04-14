@@ -9,6 +9,7 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import frodez.config.font.FontProperties;
+import frodez.util.common.StrUtil;
 import frodez.util.io.FileUtil;
 import frodez.util.spring.ContextUtil;
 import java.io.ByteArrayOutputStream;
@@ -42,7 +43,7 @@ public class PDFConverter {
 		try {
 			for (Entry<String, String> entry : properties.getAlias().entrySet()) {
 				fontCache.put(entry.getKey(), FontProgramFactory.createFont(FileUtil.readBytes(ResourceUtils.getFile(
-					properties.getPath().concat(entry.getValue()))), false));
+					StrUtil.concat(properties.getPath(), entry.getValue()))), false));
 			}
 		} catch (IOException e) {
 			log.error("[init]", e);

@@ -1,5 +1,6 @@
 package frodez.util.renderer.reverter;
 
+import frodez.util.common.StrUtil;
 import frodez.util.io.FileUtil;
 import frodez.util.renderer.RenderUtil;
 import java.io.IOException;
@@ -37,8 +38,8 @@ public class CSSReverter implements Reverter {
 					return;
 				}
 				try {
-					htmlElement.prepend("<style type=\"text/css\">" + FileUtil.readString(ResourceUtils.getFile(
-						RenderUtil.getLoaderPath().concat(path))) + "</style>");
+					htmlElement.prepend("<style type=\"text/css\">" + FileUtil.readString(ResourceUtils.getFile(StrUtil
+						.concat(RenderUtil.getLoaderPath(), path))) + "</style>");
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}

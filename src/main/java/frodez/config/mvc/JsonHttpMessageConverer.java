@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import frodez.util.beans.result.Result;
+import frodez.util.common.StrUtil;
 import frodez.util.constant.setting.DefCharset;
 import frodez.util.json.JSONUtil;
 import java.io.IOException;
@@ -55,7 +56,7 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 		boolean hasContextClass = contextClass != null;
 		Boolean cacheResult;
 		if (hasContextClass) {
-			cacheResult = contextDeserializeCache.get(type.getTypeName().concat(contextClass.getName()));
+			cacheResult = contextDeserializeCache.get(StrUtil.concat(type.getTypeName(), contextClass.getName()));
 		} else {
 			cacheResult = noContextDeserializeCache.get(type);
 		}
@@ -68,7 +69,7 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 		cacheResult = JSONUtil.mapper().canDeserialize(javaType, causeRef);
 		logWarningIfNecessary(javaType, causeRef.get());
 		if (hasContextClass) {
-			contextDeserializeCache.put(type.getTypeName().concat(contextClass.getName()), cacheResult);
+			contextDeserializeCache.put(StrUtil.concat(type.getTypeName(), contextClass.getName()), cacheResult);
 		} else {
 			noContextDeserializeCache.put(type, cacheResult);
 		}

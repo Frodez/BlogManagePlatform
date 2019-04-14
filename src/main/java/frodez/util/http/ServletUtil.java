@@ -57,7 +57,7 @@ public class ServletUtil {
 	}
 
 	/**
-	 * 向response直接写入json
+	 * 向response直接写入json,编码为UTF-8
 	 * @author Frodez
 	 * @date 2019-01-07
 	 */
@@ -84,7 +84,7 @@ public class ServletUtil {
 	}
 
 	/**
-	 * 向response直接写入json
+	 * 向response直接写入json,编码为UTF-8
 	 * @author Frodez
 	 * @date 2019-01-07
 	 */
@@ -112,7 +112,7 @@ public class ServletUtil {
 	}
 
 	/**
-	 * 向response写入text/plain类型数据
+	 * 向response写入text/plain类型数据,编码为UTF-8
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */
@@ -140,7 +140,7 @@ public class ServletUtil {
 	}
 
 	/**
-	 * 向response写入text/html类型数据
+	 * 向response写入text/html类型数据,编码为UTF-8
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */

@@ -2,6 +2,7 @@ package frodez.util.renderer;
 
 import freemarker.template.Configuration;
 import frodez.util.common.EmptyUtil;
+import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.renderer.reverter.Reverter;
 import frodez.util.spring.ContextUtil;
@@ -98,7 +99,7 @@ public class RenderUtil {
 		Assert.notNull(params, "params must not be null");
 		try {
 			StringWriter writer = new StringWriter();
-			configuration.getTemplate(templateName.concat(suffix)).process(params, writer);
+			configuration.getTemplate(StrUtil.concat(templateName, suffix)).process(params, writer);
 			return revert(writer.toString(), modes);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

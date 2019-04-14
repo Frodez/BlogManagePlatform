@@ -58,7 +58,7 @@ public class StrUtil {
 	 * @date 2019-04-01
 	 */
 	public static String concat(CharSequence... strings) {
-		return concat("", strings);
+		return concatWithDefault("", strings);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class StrUtil {
 	 * @author Frodez
 	 * @date 2019-04-01
 	 */
-	public static String concat(CharSequence defaultStr, CharSequence... strings) {
+	public static String concatWithDefault(CharSequence defaultStr, CharSequence... strings) {
 		if (defaultStr == null || EmptyUtil.yes(strings)) {
 			throw new IllegalArgumentException();
 		}
@@ -124,6 +124,32 @@ public class StrUtil {
 			}
 		}
 		return builder.toString();
+	}
+
+	/**
+	 * 首字母大写
+	 * @author Frodez
+	 * @date 2019-04-15
+	 */
+	public static String upperFirst(String string) {
+		if (EmptyUtil.yes(string)) {
+			throw new IllegalArgumentException();
+		}
+		return new StringBuilder(string.length()).append(Character.toUpperCase(string.charAt(0))).append(string
+			.substring(1)).toString();
+	}
+
+	/**
+	 * 首字母小写
+	 * @author Frodez
+	 * @date 2019-04-15
+	 */
+	public static String lowerFirst(String string) {
+		if (EmptyUtil.yes(string)) {
+			throw new IllegalArgumentException();
+		}
+		return new StringBuilder(string.length()).append(Character.toLowerCase(string.charAt(0))).append(string
+			.substring(1)).toString();
 	}
 
 }
