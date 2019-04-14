@@ -51,7 +51,9 @@ public class StrUtil {
 	}
 
 	/**
-	 * 批量拼接字符串,对null会当作空字符串处理。
+	 * 批量拼接字符串,对null会当作空字符串处理。<br>
+	 * 经测试,在绝大多数场景下相对jdk的实现更快,在最坏情况下也与其相当。
+	 * @see java.lang.String#concat(String)
 	 * @author Frodez
 	 * @date 2019-04-01
 	 */
@@ -60,13 +62,19 @@ public class StrUtil {
 	}
 
 	/**
-	 * 批量拼接字符串,将null处理为默认字符串。默认字符串可以为空字符串,但不能为null。
+	 * 批量拼接字符串,将null处理为默认字符串。默认字符串可以为空字符串,但不能为null。<br>
+	 * 经测试,在绝大多数场景下相对jdk的实现更快,在最坏情况下也与其相当。
+	 * @param defaultStr 为null时的默认字符串
+	 * @see java.lang.String#concat(String)
 	 * @author Frodez
 	 * @date 2019-04-01
 	 */
 	public static String concat(CharSequence defaultStr, CharSequence... strings) {
-		if (defaultStr == null || EmptyUtil.yes(false, strings)) {
+		if (defaultStr == null || EmptyUtil.yes(strings)) {
 			throw new IllegalArgumentException();
+		}
+		if (strings.length == 1) {
+			return new String(strings[0].toString());
 		}
 		int size = 0;
 		for (CharSequence string : strings) {
@@ -87,13 +95,19 @@ public class StrUtil {
 	 * 批量连接字符串,中间有分隔符,可自定义字符串为null时的替代字符串。<br>
 	 * 不需要自定义null的替代字符串时,建议使用String.join方法<br>
 	 * <strong>替代字符串可以为空字符串,但不能为null。但是分隔符不能为null或者空字符串!!!</strong>
+	 * @param defaultStr 为null的替代字符串
+	 * @param delimiter 分隔符
+	 * @param strings 需要连接的字符串
 	 * @see java.lang.String#join(CharSequence, CharSequence...)
 	 * @author Frodez
 	 * @date 2019-04-02
 	 */
 	public static String join(CharSequence defaultStr, CharSequence delimiter, CharSequence... strings) {
-		if (defaultStr == null || EmptyUtil.yes(delimiter) || EmptyUtil.yes(false, strings)) {
+		if (defaultStr == null || EmptyUtil.yes(delimiter) || EmptyUtil.yes(strings)) {
 			throw new IllegalArgumentException();
+		}
+		if (strings.length == 1) {
+			return new String(strings[0].toString());
 		}
 		int size = (strings.length - 1) * delimiter.length();
 		for (CharSequence string : strings) {

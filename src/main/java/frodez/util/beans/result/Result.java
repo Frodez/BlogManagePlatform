@@ -146,7 +146,9 @@ public final class Result implements Serializable {
 	}
 
 	/**
-	 * 返回分页查询类型结果(仅在成功时使用)
+	 * 返回分页查询类型结果(仅在成功时使用)<br>
+	 * result.data的类型为frodez.util.beans.result.PageData
+	 * @see frodez.util.beans.result.PageData
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */
@@ -156,7 +158,9 @@ public final class Result implements Serializable {
 	}
 
 	/**
-	 * 返回分页查询类型结果(仅在成功时使用)
+	 * 返回分页查询类型结果(仅在成功时使用)<br>
+	 * result.data的类型为frodez.util.beans.result.PageData
+	 * @see frodez.util.beans.result.PageData
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */
@@ -167,7 +171,9 @@ public final class Result implements Serializable {
 	}
 
 	/**
-	 * 返回分页查询类型结果(仅在成功时使用)
+	 * 返回分页查询类型结果(仅在成功时使用)<br>
+	 * result.data的类型为frodez.util.beans.result.PageData
+	 * @see frodez.util.beans.result.PageData
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */

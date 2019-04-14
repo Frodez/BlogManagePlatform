@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 /**
  * 日期工具类<br>
  * 包括了对符合默认格式的日期,时间和日期——时间的处理。
+ * @see frodez.util.constant.setting.DefTime
  * @author Frodez
  * @date 2019-02-17
  */
@@ -47,6 +48,7 @@ public class DateUtil {
 
 	/**
 	 * 格式化日期(yyyy-MM-dd格式)
+	 * @see frodez.util.constant.setting.DefTime#DATE_PATTERN
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */
@@ -57,6 +59,7 @@ public class DateUtil {
 
 	/**
 	 * 是正确的yyyy-MM-dd格式日期
+	 * @see frodez.util.constant.setting.DefTime#DATE_PATTERN
 	 * @author Frodez
 	 * @date 2019-03-01
 	 */
@@ -72,6 +75,7 @@ public class DateUtil {
 
 	/**
 	 * 格式化时间(HH:mm:ss格式)
+	 * @see frodez.util.constant.setting.DefTime#TIME_PATTERN
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */
@@ -82,6 +86,7 @@ public class DateUtil {
 
 	/**
 	 * 是正确的HH:mm:ss格式日期
+	 * @see frodez.util.constant.setting.DefTime#TIME_PATTERN
 	 * @author Frodez
 	 * @date 2019-03-01
 	 */
@@ -97,6 +102,7 @@ public class DateUtil {
 
 	/**
 	 * 格式化日期(yyyy-MM-dd HH:mm:ss格式)
+	 * @see frodez.util.constant.setting.DefTime#DATE_TIME_PATTERN
 	 * @author Frodez
 	 * @date 2019-02-17
 	 */
@@ -107,6 +113,7 @@ public class DateUtil {
 
 	/**
 	 * 是正确的yyyy-MM-dd HH:mm:ss格式日期
+	 * @see frodez.util.constant.setting.DefTime#DATE_TIME_PATTERN
 	 * @author Frodez
 	 * @date 2019-03-01
 	 */
