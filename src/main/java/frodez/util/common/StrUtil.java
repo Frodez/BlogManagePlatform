@@ -74,7 +74,7 @@ public class StrUtil {
 			throw new IllegalArgumentException();
 		}
 		if (strings.length == 1) {
-			return new String(strings[0].toString());
+			return strings[0] == null ? defaultStr.toString() : new String(strings[0].toString());
 		}
 		int size = 0;
 		for (CharSequence string : strings) {
@@ -107,7 +107,7 @@ public class StrUtil {
 			throw new IllegalArgumentException();
 		}
 		if (strings.length == 1) {
-			return new String(strings[0].toString());
+			return strings[0] == null ? defaultStr.toString() : new String(strings[0].toString());
 		}
 		int size = (strings.length - 1) * delimiter.length();
 		for (CharSequence string : strings) {
