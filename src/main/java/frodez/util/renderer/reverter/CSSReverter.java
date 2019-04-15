@@ -3,10 +3,10 @@ package frodez.util.renderer.reverter;
 import frodez.util.common.StrUtil;
 import frodez.util.io.FileUtil;
 import frodez.util.renderer.RenderUtil;
-import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.util.Assert;
 import org.springframework.util.ResourceUtils;
@@ -32,18 +32,14 @@ public class CSSReverter implements Reverter {
 			Document document = Jsoup.parse(html);
 			Elements links = document.select("link[href]");
 			Elements htmlElement = document.select("html");
-			links.forEach((iter) -> {
+			for (Element iter : links) {
 				String path = iter.attr("href");
 				if (!path.endsWith(".css")) {
-					return;
+					continue;
 				}
-				try {
-					htmlElement.prepend("<style type=\"text/css\">" + FileUtil.readString(ResourceUtils.getFile(StrUtil
-						.concat(RenderUtil.getLoaderPath(), path))) + "</style>");
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			});
+				htmlElement.prepend(StrUtil.concat("<style type=\"text/css\">", FileUtil.readString(ResourceUtils
+					.getFile(StrUtil.concat(RenderUtil.getLoaderPath(), path))), "</style>"));
+			}
 			links.remove();
 			return document.html();
 		} catch (Exception e) {

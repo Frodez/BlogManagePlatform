@@ -1,6 +1,7 @@
 package frodez.util.reflect;
 
 import frodez.util.beans.pair.Pair;
+import frodez.util.common.StrUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -95,7 +96,7 @@ public class ReflectUtil {
 	 * @date 2019-01-13
 	 */
 	public static String getFullMethodName(Method method) {
-		return method.getDeclaringClass().getName() + "." + method.getName();
+		return StrUtil.concat(method.getDeclaringClass().getName(), ".", method.getName());
 	}
 
 	/**
@@ -104,7 +105,7 @@ public class ReflectUtil {
 	 * @date 2019-01-13
 	 */
 	public static String getShortMethodName(Method method) {
-		return method.getDeclaringClass().getSimpleName() + "." + method.getName();
+		return StrUtil.concat(method.getDeclaringClass().getSimpleName(), ".", method.getName());
 	}
 
 	/**

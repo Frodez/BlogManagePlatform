@@ -31,6 +31,7 @@ import frodez.util.beans.pair.Pair;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
+import frodez.util.common.StrUtil;
 import frodez.util.constant.common.ModifyEnum;
 import frodez.util.constant.setting.PropertyKey;
 import frodez.util.constant.user.PermissionTypeEnum;
@@ -721,8 +722,8 @@ public class AuthorityService implements IAuthorityService {
 				}).map((iter) -> {
 					return ((RequestMappingHandlerMapping) iter).getHandlerMethods().entrySet();
 				}).flatMap(Collection::stream).forEach((entry) -> {
-					String requestUrl = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + entry.getKey()
-						.getPatternsCondition().getPatterns().stream().findFirst().get();
+					String requestUrl = StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), entry.getKey()
+						.getPatternsCondition().getPatterns().stream().findFirst().get());
 					if (!URLMatcher.needVerify(requestUrl)) {
 						return;
 					}

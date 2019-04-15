@@ -2,6 +2,7 @@ package frodez.util.http;
 
 import frodez.config.security.settings.SecurityProperties;
 import frodez.dao.mapper.user.PermissionMapper;
+import frodez.util.common.StrUtil;
 import frodez.util.constant.setting.PropertyKey;
 import frodez.util.spring.ContextUtil;
 import frodez.util.spring.PropertyUtil;
@@ -46,10 +47,11 @@ public class URLMatcher {
 		String basePath = PropertyUtil.get(PropertyKey.Web.BASE_PATH);
 		List<String> permitPaths = new ArrayList<>();
 		for (String path : ContextUtil.get(SecurityProperties.class).getAuth().getPermitAllPath()) {
-			permitUrls.add(basePath + path);
-			permitPaths.add(basePath + path);
+			String realPath = StrUtil.concat(basePath, path);
+			permitUrls.add(realPath);
+			permitPaths.add(realPath);
 		}
-		String errorPath = basePath + PropertyUtil.get(PropertyKey.Web.ERROR_PATH);
+		String errorPath = StrUtil.concat(basePath, PropertyUtil.get(PropertyKey.Web.ERROR_PATH));
 		permitUrls.add(errorPath);
 		BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false)
 			.values().stream().filter((iter) -> {
@@ -57,8 +59,8 @@ public class URLMatcher {
 			}).map((iter) -> {
 				return ((RequestMappingHandlerMapping) iter).getHandlerMethods().entrySet();
 			}).flatMap(Collection::stream).forEach((entry) -> {
-				String requestUrl = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + entry.getKey().getPatternsCondition()
-					.getPatterns().iterator().next();
+				String requestUrl = StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), entry.getKey()
+					.getPatternsCondition().getPatterns().iterator().next());
 				if (requestUrl.equals(errorPath)) {
 					return;
 				}
@@ -72,7 +74,7 @@ public class URLMatcher {
 		Assert.notNull(needVerifyUrls, "needVerifyUrls must not be null");
 		Assert.notNull(permitUrls, "permitUrls must not be null");
 		if (ContextUtil.get(PermissionMapper.class).selectAll().stream().filter((iter) -> {
-			return permitUrls.contains(PropertyUtil.get(PropertyKey.Web.BASE_PATH) + iter.getUrl());
+			return permitUrls.contains(StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), iter.getUrl()));
 		}).count() != 0) {
 			throw new RuntimeException("不能在免验证路径下配置权限!");
 		}

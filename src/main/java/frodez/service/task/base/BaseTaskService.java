@@ -234,7 +234,8 @@ public class BaseTaskService {
 					++alreadyCanceled;
 				}
 			}
-			return Result.success("共计" + total + "个任务正在执行,已取消" + alreadyCanceled + "个。");
+			return Result.success(StrUtil.concat("共计", Integer.valueOf(total).toString(), "个任务正在执行,已取消", Integer
+				.valueOf(alreadyCanceled).toString(), "个。"));
 		} catch (Exception e) {
 			log.error("[cancelAllTasks]", e);
 			return Result.errorService();

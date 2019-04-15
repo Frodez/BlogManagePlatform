@@ -106,8 +106,8 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 		// Do not log warning for serializer not found (note: different message wording on Jackson 2.9)
 		boolean debugLevel = cause instanceof JsonMappingException && cause.getMessage().startsWith("Cannot find");
 		if (debugLevel ? logger.isDebugEnabled() : logger.isWarnEnabled()) {
-			String msg = "Failed to evaluate Jackson " + (type instanceof JavaType ? "de" : "")
-				+ "serialization for type [" + type + "]";
+			String msg = StrUtil.concat("Failed to evaluate Jackson ", type instanceof JavaType ? "de" : "",
+				"serialization for type [", type.toString(), "]");
 			if (debugLevel) {
 				logger.debug(msg, cause);
 			} else if (logger.isDebugEnabled()) {
@@ -142,9 +142,11 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 				outputMessage.getBody().flush();
 			}
 		} catch (InvalidDefinitionException ex) {
-			throw new HttpMessageConversionException("Type definition error: " + ex.getType(), ex);
+			throw new HttpMessageConversionException(StrUtil.concat("Type definition error: ", ex.getType().toString()),
+				ex);
 		} catch (JsonProcessingException ex) {
-			throw new HttpMessageNotWritableException("Could not write JSON: " + ex.getOriginalMessage(), ex);
+			throw new HttpMessageNotWritableException(StrUtil.concat("Could not write JSON: ", ex.getOriginalMessage()),
+				ex);
 		}
 	}
 

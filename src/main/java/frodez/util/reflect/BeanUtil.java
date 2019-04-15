@@ -53,7 +53,6 @@ public class BeanUtil {
 	 * 在使用本方法和使用BeanUtil.cover(Object, Object)方法的意义相同时,建议使用本方法,速度更快。<br>
 	 * @see frodez.util.reflect.BeanUtil#cover(Object, Object)
 	 * @author Frodez
-	 * @param <T>
 	 * @date 2019-03-10
 	 */
 	public static <T> T initialize(Object source, Class<T> target) {
@@ -94,8 +93,7 @@ public class BeanUtil {
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> map(Object bean) {
 		Assert.notNull(bean, "bean must not be null");
-		Map<String, Object> map = new HashMap<>();
-		map.putAll(BeanMap.create(bean));
+		Map<String, Object> map = new HashMap<>(BeanMap.create(bean));
 		return map;
 	}
 
@@ -110,25 +108,6 @@ public class BeanUtil {
 			T bean = ReflectUtil.newInstance(klass);
 			BeanMap.create(bean).putAll(map);
 			return bean;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	/**
-	 * 判断bean的默认值是否已全部清空
-	 * @author Frodez
-	 * @date 2019-02-08
-	 */
-	public static boolean isClear(Object bean) {
-		Assert.notNull(bean, "bean must not be null");
-		try {
-			for (Field field : bean.getClass().getDeclaredFields()) {
-				if (Modifier.PRIVATE == field.getModifiers() && field.trySetAccessible() && field.get(bean) != null) {
-					return false;
-				}
-			}
-			return true;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

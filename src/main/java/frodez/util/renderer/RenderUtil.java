@@ -80,7 +80,8 @@ public class RenderUtil {
 	}
 
 	/**
-	 * 渲染页面,并转变为String
+	 * 渲染页面,并转变为String。可选择添加不同的渲染模式。<br>
+	 * 默认无任何需要参数。
 	 * @author Frodez
 	 * @date 2019-03-21
 	 */
@@ -89,7 +90,7 @@ public class RenderUtil {
 	}
 
 	/**
-	 * 渲染页面,并转变为String
+	 * 渲染页面,并转变为String。可选择添加不同的渲染模式。
 	 * @param params freemark页面可能需要的参数
 	 * @author Frodez
 	 * @date 2019-03-21
