@@ -5,6 +5,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -20,9 +21,7 @@ public class ContextUtil implements ApplicationContextAware {
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		context = applicationContext;
-		if (context == null) {
-			throw new RuntimeException("获取spring上下文环境失败!");
-		}
+		Assert.notNull(context, "context must not be null");
 	}
 
 	/**
@@ -50,7 +49,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @date 2018-12-21
 	 */
 	public static <T> T get(Class<T> klass) {
-		return context().getBean(klass);
+		return context.getBean(klass);
 	}
 
 	/**
@@ -61,7 +60,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @date 2018-12-21
 	 */
 	public static <T> Map<String, T> gets(Class<T> klass) {
-		return context().getBeansOfType(klass);
+		return context.getBeansOfType(klass);
 	}
 
 	/**
@@ -73,7 +72,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T get(String beanName, Class<T> klass) {
-		return (T) context().getBean(beanName);
+		return (T) context.getBean(beanName);
 	}
 
 }

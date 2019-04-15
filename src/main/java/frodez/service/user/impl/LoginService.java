@@ -1,7 +1,7 @@
 package frodez.service.user.impl;
 
 import frodez.config.aop.validation.annotation.Check;
-import frodez.config.security.util.TokenManager;
+import frodez.config.security.util.TokenUtil;
 import frodez.dao.param.user.DoLogin;
 import frodez.dao.param.user.DoRefresh;
 import frodez.dao.result.user.PermissionInfo;
@@ -69,7 +69,7 @@ public class LoginService implements ILoginService {
 			List<String> authorities = userInfo.getPermissionList().stream().map(PermissionInfo::getName).collect(
 				Collectors.toList());
 			//realToken
-			String token = TokenManager.generate(param.getUsername(), authorities);
+			String token = TokenUtil.generate(param.getUsername(), authorities);
 			tokenCache.save(token, userInfo);
 			SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword())));
@@ -89,7 +89,7 @@ public class LoginService implements ILoginService {
 				return result;
 			}
 			UserInfo userInfo = result.as(UserInfo.class);
-			UserDetails userDetails = TokenManager.verify(param.getOldToken(), false);
+			UserDetails userDetails = TokenUtil.verifyWithNoExpired(param.getOldToken());
 			//这里的userDetails.password已经加密了
 			if (!userDetails.getPassword().equals(userInfo.getPassword())) {
 				return Result.fail("用户名或密码错误!");
@@ -97,7 +97,7 @@ public class LoginService implements ILoginService {
 			List<String> authorities = userInfo.getPermissionList().stream().map(PermissionInfo::getName).collect(
 				Collectors.toList());
 			//realToken
-			String token = TokenManager.generate(param.getUsername(), authorities);
+			String token = TokenUtil.generate(param.getUsername(), authorities);
 			tokenCache.remove(param.getOldToken());
 			tokenCache.save(token, userInfo);
 			logoutHandler.logout(MVCUtil.request(), MVCUtil.response(), SecurityContextHolder.getContext()
@@ -115,7 +115,7 @@ public class LoginService implements ILoginService {
 	public Result logout() {
 		try {
 			HttpServletRequest request = MVCUtil.request();
-			String token = TokenManager.getRealToken(request);
+			String token = TokenUtil.getRealToken(request);
 			if (!tokenCache.existKey(token)) {
 				return Result.fail("用户已下线!");
 			}

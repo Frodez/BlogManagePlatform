@@ -8,12 +8,12 @@
  */
 package frodez.util.io;
 
-import frodez.util.error.exception.BufferOverflowException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * 环形输入输出缓冲<br>
  * 常用方式:<br>
  *
  * <pre>
@@ -447,7 +447,7 @@ public class CircularByteBuffer {
 					int available = CircularByteBuffer.this.available();
 					if (available > 0) {
 						int result = buffer[readPosition] & 0xff;
-						readPosition++;
+						++readPosition;
 						if (readPosition == buffer.length) {
 							readPosition = 0;
 						}
@@ -630,9 +630,9 @@ public class CircularByteBuffer {
 		 * Write an array of bytes. If the buffer allows blocking writes, this method will block until all the data has
 		 * been written rather than throw an IOException.
 		 * @param cbuf Array of bytes to be written
-		 * @throws BufferOverflowException if buffer does not allow blocking writes and the buffer is full. If the
-		 *         exception is thrown, no data will have been written since the buffer was set to be non-blocking.
-		 * @throws IOException if the stream is closed, or the write is interrupted.
+		 * @throws IOException if the stream is closed, or the write is interrupted.If buffer does not allow blocking
+		 *         writes and the buffer is full. If the exception is thrown, no data will have been written since the
+		 *         buffer was set to be non-blocking.
 		 * @since ostermillerutils 1.00.00
 		 */
 		@Override
@@ -646,9 +646,9 @@ public class CircularByteBuffer {
 		 * @param cbuf Array of bytes
 		 * @param off Offset from which to start writing bytes
 		 * @param len - Number of bytes to write
-		 * @throws BufferOverflowException if buffer does not allow blocking writes and the buffer is full. If the
-		 *         exception is thrown, no data will have been written since the buffer was set to be non-blocking.
-		 * @throws IOException if the stream is closed, or the write is interrupted.
+		 * @throws IOException if the stream is closed, or the write is interrupted.If buffer does not allow blocking
+		 *         writes and the buffer is full. If the exception is thrown, no data will have been written since the
+		 *         buffer was set to be non-blocking.
 		 * @since ostermillerutils 1.00.00
 		 */
 		@Override
@@ -667,7 +667,7 @@ public class CircularByteBuffer {
 						spaceLeft = spaceLeft();
 					}
 					if (!blockingWrite && spaceLeft < len) {
-						throw new BufferOverflowException("CircularByteBuffer is full; cannot write " + len + " bytes");
+						throw new IOException("CircularByteBuffer is full; cannot write " + len + " bytes");
 					}
 					int realLen = Math.min(len, spaceLeft);
 					int firstLen = Math.min(realLen, buffer.length - writePosition);
@@ -703,8 +703,8 @@ public class CircularByteBuffer {
 		 * the 24 high-order bits are ignored. If the buffer allows blocking writes, this method will block until all
 		 * the data has been written rather than throw an IOException.
 		 * @param c number of bytes to be written
-		 * @throws BufferOverflowException if buffer does not allow blocking writes and the buffer is full.
-		 * @throws IOException if the stream is closed, or the write is interrupted.
+		 * @throws IOException if the stream is closed, or the write is interrupted.If buffer does not allow blocking
+		 *         writes and the buffer is full.
 		 * @since ostermillerutils 1.00.00
 		 */
 		@Override
@@ -724,11 +724,11 @@ public class CircularByteBuffer {
 						spaceLeft = spaceLeft();
 					}
 					if (!blockingWrite && spaceLeft < 1) {
-						throw new BufferOverflowException("CircularByteBuffer is full; cannot write 1 byte");
+						throw new IOException("CircularByteBuffer is full; cannot write 1 byte");
 					}
 					if (spaceLeft > 0) {
 						buffer[writePosition] = (byte) (c & 0xff);
-						writePosition++;
+						++writePosition;
 						if (writePosition == buffer.length) {
 							writePosition = 0;
 						}

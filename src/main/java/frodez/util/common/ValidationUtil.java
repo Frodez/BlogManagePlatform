@@ -2,11 +2,10 @@ package frodez.util.common;
 
 import frodez.util.constant.setting.DefDesc;
 import java.lang.reflect.Method;
-import java.util.Iterator;
+import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.executable.ExecutableValidator;
 import lombok.experimental.UtilityClass;
 import org.hibernate.validator.HibernateValidator;
 
@@ -21,10 +20,8 @@ public class ValidationUtil {
 	/**
 	 * 快速失败(出现第一个错误即返回)
 	 */
-	private static final Validator VAL = Validation.byProvider(HibernateValidator.class).configure().failFast(true)
-		.buildValidatorFactory().getValidator();
-
-	private static final ExecutableValidator EXEC_VAL = VAL.forExecutables();
+	private static final Validator VAL = Validation.byProvider(HibernateValidator.class).configure()
+		.allowOverridingMethodAlterParameterConstraint(true).failFast(true).buildValidatorFactory().getValidator();
 
 	/**
 	 * 对方法参数进行验证,如果验证通过,返回null<br>
@@ -35,8 +32,8 @@ public class ValidationUtil {
 	 * @date 2019-01-12
 	 */
 	public static String validateParam(final Object instance, final Method method, final Object[] args) {
-		Iterator<ConstraintViolation<Object>> iterator = EXEC_VAL.validateParameters(instance, method, args).iterator();
-		return iterator.hasNext() ? iterator.next().getMessage() : null;
+		Set<ConstraintViolation<Object>> set = VAL.forExecutables().validateParameters(instance, method, args);
+		return set.isEmpty() ? null : set.iterator().next().getMessage();
 	}
 
 	/**
@@ -61,8 +58,8 @@ public class ValidationUtil {
 		if (object == null) {
 			return nullMessage;
 		}
-		Iterator<ConstraintViolation<Object>> iterator = VAL.validate(object).iterator();
-		return iterator.hasNext() ? iterator.next().getMessage() : null;
+		Set<ConstraintViolation<Object>> set = VAL.validate(object);
+		return set.isEmpty() ? null : set.iterator().next().getMessage();
 	}
 
 }

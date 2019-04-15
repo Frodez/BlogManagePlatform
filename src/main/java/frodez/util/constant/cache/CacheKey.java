@@ -11,6 +11,6 @@ import lombok.experimental.UtilityClass;
  * @date 2018-12-21
  */
 @UtilityClass
-public class CommonKey {
+public class CacheKey {
 
 }

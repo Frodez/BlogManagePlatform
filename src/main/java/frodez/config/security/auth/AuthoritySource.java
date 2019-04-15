@@ -82,9 +82,6 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 			allCache = permissions.stream().map((iter) -> {
 				return new SecurityConfig(iter.getName());
 			}).collect(Collectors.toList());
-			if (allCache == null) {
-				throw new RuntimeException("获取所有权限失败!");
-			}
 			urlCache = permissions.stream().collect(Collectors.toMap(Permission::getUrl, iter -> {
 				Collection<ConfigAttribute> list = new ArrayList<>();
 				list.add(new SecurityConfig(iter.getName()));

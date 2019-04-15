@@ -2,6 +2,7 @@ package frodez.util.renderer;
 
 import freemarker.template.Configuration;
 import frodez.util.common.EmptyUtil;
+import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.renderer.reverter.Reverter;
 import frodez.util.spring.ContextUtil;
@@ -12,10 +13,19 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerProperties;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-@Component
+/**
+ * 模板引擎渲染工具类<br>
+ * <strong>警告!!!如果要使用本类的方法,必须确保RenderUtil已经被初始化!</strong><br>
+ * <strong>方式:在使用本方法的类上加入@DependsOn("renderUtil")注解。</strong>
+ * @author Frodez
+ * @date 2019-03-27
+ */
+@Lazy
+@Component("renderUtil")
 public class RenderUtil {
 
 	private static Configuration configuration;
@@ -51,6 +61,11 @@ public class RenderUtil {
 		return html;
 	}
 
+	/**
+	 * 获取freemarker的执行引擎
+	 * @author Frodez
+	 * @date 2019-04-12
+	 */
 	public static Configuration configuration() {
 		return configuration;
 	}
@@ -65,7 +80,8 @@ public class RenderUtil {
 	}
 
 	/**
-	 * 渲染页面,并转变为String
+	 * 渲染页面,并转变为String。可选择添加不同的渲染模式。<br>
+	 * 默认无任何需要参数。
 	 * @author Frodez
 	 * @date 2019-03-21
 	 */
@@ -74,7 +90,8 @@ public class RenderUtil {
 	}
 
 	/**
-	 * 渲染页面,并转变为String
+	 * 渲染页面,并转变为String。可选择添加不同的渲染模式。
+	 * @param params freemark页面可能需要的参数
 	 * @author Frodez
 	 * @date 2019-03-21
 	 */
@@ -83,7 +100,7 @@ public class RenderUtil {
 		Assert.notNull(params, "params must not be null");
 		try {
 			StringWriter writer = new StringWriter();
-			configuration.getTemplate(templateName.concat(suffix)).process(params, writer);
+			configuration.getTemplate(StrUtil.concat(templateName, suffix)).process(params, writer);
 			return revert(writer.toString(), modes);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

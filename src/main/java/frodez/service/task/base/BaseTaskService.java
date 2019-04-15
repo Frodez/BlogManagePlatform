@@ -10,10 +10,12 @@ import frodez.dao.param.task.AddTask;
 import frodez.dao.result.task.AvailableTaskInfo;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
+import frodez.util.common.StrUtil;
 import frodez.util.constant.setting.DefStr;
 import frodez.util.constant.task.StatusEnum;
 import frodez.util.error.ErrorCode;
 import frodez.util.error.exception.ServiceException;
+import frodez.util.json.JSONUtil;
 import frodez.util.reflect.BeanUtil;
 import frodez.util.spring.ContextUtil;
 import java.util.Date;
@@ -72,6 +74,7 @@ public class BaseTaskService {
 	@PostConstruct
 	private void init() {
 		try {
+			scheduler.setWaitForTasksToCompleteOnShutdown(true);
 			taskServiceInfos = ContextUtil.gets(ITask.class).entrySet().stream().map((entry) -> {
 				AvailableTaskInfo info = new AvailableTaskInfo();
 				info.setName(entry.getKey());
@@ -108,6 +111,7 @@ public class BaseTaskService {
 				if (runnable != null && trigger != null) {
 					taskMap.put(task.getId(), scheduler.schedule(runnable, trigger));
 					taskInfoMap.put(task.getId(), task);
+					log.info("第{}号任务启动,任务详情:{}", task.getId(), JSONUtil.string(task));
 				}
 			});
 		} catch (Exception e) {
@@ -146,7 +150,7 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	private Runnable getRunnable(String className) throws ClassNotFoundException {
-		return (Runnable) ContextUtil.get(Class.forName(properties.getPrefix().concat(DefStr.POINT_SEPERATOR).concat(
+		return (Runnable) ContextUtil.get(Class.forName(StrUtil.concat(properties.getPrefix(), DefStr.POINT_SEPERATOR,
 			className)));
 	}
 
@@ -227,10 +231,11 @@ public class BaseTaskService {
 				if (entry.getValue().cancel(true)) {
 					taskMap.remove(entry.getKey());
 					taskInfoMap.remove(entry.getKey());
-					alreadyCanceled++;
+					++alreadyCanceled;
 				}
 			}
-			return Result.success("共计" + total + "个任务正在执行,已取消" + alreadyCanceled + "个。");
+			return Result.success(StrUtil.concat("共计", Integer.valueOf(total).toString(), "个任务正在执行,已取消", Integer
+				.valueOf(alreadyCanceled).toString(), "个。"));
 		} catch (Exception e) {
 			log.error("[cancelAllTasks]", e);
 			return Result.errorService();

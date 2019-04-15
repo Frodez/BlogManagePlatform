@@ -9,6 +9,7 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import frodez.config.font.FontProperties;
+import frodez.util.common.StrUtil;
 import frodez.util.io.FileUtil;
 import frodez.util.spring.ContextUtil;
 import java.io.ByteArrayOutputStream;
@@ -22,9 +23,16 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
-@Slf4j
+/**
+ * PDF生成工具类<br>
+ * <strong>警告!!!如果要使用本类的方法,必须确保PDFConverter已经被初始化!</strong><br>
+ * <strong>方式:在使用本方法的类上加入@DependsOn("PDFConverter")注解。</strong>
+ * @author Frodez
+ * @date 2019-03-27
+ */
 @Lazy
-@Component
+@Slf4j
+@Component("PDFConverter")
 public class PDFConverter {
 
 	private static Map<String, FontProgram> fontCache = new HashMap<>();
@@ -34,12 +42,21 @@ public class PDFConverter {
 		FontProperties properties = ContextUtil.get(FontProperties.class);
 		try {
 			for (Entry<String, String> entry : properties.getAlias().entrySet()) {
-				fontCache.put(entry.getKey(), FontProgramFactory.createFont(FileUtil.readByte(ResourceUtils.getFile(
-					properties.getPath().concat(entry.getValue()))), false));
+				fontCache.put(entry.getKey(), FontProgramFactory.createFont(FileUtil.readBytes(ResourceUtils.getFile(
+					StrUtil.concat(properties.getPath(), entry.getValue()))), false));
 			}
 		} catch (IOException e) {
 			log.error("[init]", e);
 		}
+	}
+
+	/**
+	 * 获取所有的字体<br>
+	 * @author Frodez
+	 * @date 2019-03-27
+	 */
+	public static Map<String, FontProgram> fonts() {
+		return fontCache;
 	}
 
 	/**

@@ -95,9 +95,8 @@ public class SwaggerConfig {
 			String message = String.join(" | ", entry.getValue().stream().map((iter) -> {
 				return iter.getDesc() + ",自定义状态码:" + iter.getVal();
 			}).collect(Collectors.toList()));
-			ResponseMessage responseMessage = new ResponseMessageBuilder().code(entry.getKey().value()).message(message)
-				.responseModel(new ModelRef("Result")).build();
-			list.add(responseMessage);
+			list.add(new ResponseMessageBuilder().code(entry.getKey().value()).message(message).responseModel(
+				new ModelRef(Result.class.getName())).build());
 		}
 		return list;
 	}

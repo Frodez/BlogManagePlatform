@@ -183,7 +183,7 @@ public class JDTUtil {
 			if (iterator.next() instanceof Modifier) {
 				break;
 			}
-			index++;
+			++index;
 		}
 		list.add(index, annotation);
 	}

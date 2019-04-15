@@ -8,12 +8,12 @@
  */
 package frodez.util.io;
 
-import frodez.util.error.exception.BufferOverflowException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 
 /**
+ * 环形输入输出缓冲<br>
  * 常用方式:<br>
  *
  * <pre>
@@ -430,7 +430,7 @@ public class CircularCharBuffer {
 					int available = available();
 					if (available > 0) {
 						int result = buffer[readPosition] & 0xffff;
-						readPosition++;
+						++readPosition;
 						if (readPosition == buffer.length) {
 							readPosition = 0;
 						}
@@ -629,9 +629,9 @@ public class CircularCharBuffer {
 		 * Write an array of characters. If the buffer allows blocking writes, this method will block until all the data
 		 * has been written rather than throw an IOException.
 		 * @param cbuf Array of characters to be written
-		 * @throws BufferOverflowException if buffer does not allow blocking writes and the buffer is full. If the
-		 *         exception is thrown, no data will have been written since the buffer was set to be non-blocking.
-		 * @throws IOException if the stream is closed, or the write is interrupted.
+		 * @throws IOException if the stream is closed, or the write is interrupted.If buffer does not allow blocking
+		 *         writes and the buffer is full. If the exception is thrown, no data will have been written since the
+		 *         buffer was set to be non-blocking.
 		 * @since ostermillerutils 1.00.00
 		 */
 		@Override
@@ -645,9 +645,9 @@ public class CircularCharBuffer {
 		 * @param cbuf Array of characters
 		 * @param off Offset from which to start writing characters
 		 * @param len - Number of characters to write
-		 * @throws BufferOverflowException if buffer does not allow blocking writes and the buffer is full. If the
-		 *         exception is thrown, no data will have been written since the buffer was set to be non-blocking.
-		 * @throws IOException if the stream is closed, or the write is interrupted.
+		 * @throws IOException if the stream is closed, or the write is interrupted.If buffer does not allow blocking
+		 *         writes and the buffer is full. If the exception is thrown, no data will have been written since the
+		 *         buffer was set to be non-blocking.
 		 * @since ostermillerutils 1.00.00
 		 */
 		@Override
@@ -666,8 +666,7 @@ public class CircularCharBuffer {
 						spaceLeft = spaceLeft();
 					}
 					if (!blockingWrite && spaceLeft < len) {
-						throw new BufferOverflowException("CircularCharBuffer is full; cannot write " + len
-							+ " characters");
+						throw new IOException("CircularCharBuffer is full; cannot write " + len + " characters");
 					}
 					int realLen = Math.min(len, spaceLeft);
 					int firstLen = Math.min(realLen, buffer.length - writePosition);
@@ -703,8 +702,8 @@ public class CircularCharBuffer {
 		 * integer value; the 16 high-order bits are ignored. If the buffer allows blocking writes, this method will
 		 * block until all the data has been written rather than throw an IOException.
 		 * @param c number of characters to be written
-		 * @throws BufferOverflowException if buffer does not allow blocking writes and the buffer is full.
-		 * @throws IOException if the stream is closed, or the write is interrupted.
+		 * @throws IOException if the stream is closed, or the write is interrupted.If buffer does not allow blocking
+		 *         writes and the buffer is full.
 		 * @since ostermillerutils 1.00.00
 		 */
 		@Override
@@ -724,11 +723,11 @@ public class CircularCharBuffer {
 						spaceLeft = spaceLeft();
 					}
 					if (!blockingWrite && spaceLeft < 1) {
-						throw new BufferOverflowException("CircularCharBuffer is full; cannot write 1 character");
+						throw new IOException("CircularCharBuffer is full; cannot write 1 character");
 					}
 					if (spaceLeft > 0) {
 						buffer[writePosition] = (char) (c & 0xffff);
-						writePosition++;
+						++writePosition;
 						if (writePosition == buffer.length) {
 							writePosition = 0;
 						}
@@ -749,9 +748,9 @@ public class CircularCharBuffer {
 		 * Write a string. If the buffer allows blocking writes, this method will block until all the data has been
 		 * written rather than throw an IOException.
 		 * @param str String to be written
-		 * @throws BufferOverflowException if buffer does not allow blocking writes and the buffer is full. If the
-		 *         exception is thrown, no data will have been written since the buffer was set to be non-blocking.
-		 * @throws IOException if the stream is closed, or the write is interrupted.
+		 * @throws IOException if the stream is closed, or the write is interrupted.If buffer does not allow blocking
+		 *         writes and the buffer is full. If the exception is thrown, no data will have been written since the
+		 *         buffer was set to be non-blocking.
 		 * @since ostermillerutils 1.00.00
 		 */
 		@Override
@@ -765,9 +764,9 @@ public class CircularCharBuffer {
 		 * @param str A String
 		 * @param off Offset from which to start writing characters
 		 * @param len Number of characters to write
-		 * @throws BufferOverflowException if buffer does not allow blocking writes and the buffer is full. If the
-		 *         exception is thrown, no data will have been written since the buffer was set to be non-blocking.
-		 * @throws IOException if the stream is closed, or the write is interrupted.
+		 * @throws IOException if the stream is closed, or the write is interrupted.If buffer does not allow blocking
+		 *         writes and the buffer is full. If the exception is thrown, no data will have been written since the
+		 *         buffer was set to be non-blocking.
 		 * @since ostermillerutils 1.00.00
 		 */
 		@Override
@@ -786,18 +785,17 @@ public class CircularCharBuffer {
 						spaceLeft = spaceLeft();
 					}
 					if (!blockingWrite && spaceLeft < len) {
-						throw new BufferOverflowException("CircularCharBuffer is full; cannot write " + len
-							+ " characters");
+						throw new IOException("CircularCharBuffer is full; cannot write " + len + " characters");
 					}
 					int realLen = Math.min(len, spaceLeft);
 					int firstLen = Math.min(realLen, buffer.length - writePosition);
 					int secondLen = Math.min(realLen - firstLen, buffer.length - markPosition - 1);
 					int written = firstLen + secondLen;
-					for (int i = 0; i < firstLen; i++) {
+					for (int i = 0; i < firstLen; ++i) {
 						buffer[writePosition + i] = str.charAt(off + i);
 					}
 					if (secondLen > 0) {
-						for (int i = 0; i < secondLen; i++) {
+						for (int i = 0; i < secondLen; ++i) {
 							buffer[i] = str.charAt(off + firstLen + i);
 						}
 						writePosition = secondLen;

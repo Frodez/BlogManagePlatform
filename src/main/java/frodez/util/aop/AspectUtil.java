@@ -1,5 +1,6 @@
 package frodez.util.aop;
 
+import frodez.util.common.StrUtil;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -44,7 +45,7 @@ public class AspectUtil {
 	 */
 	public static String fullMethodName(final JoinPoint point) {
 		Method method = methodSignature(point).getMethod();
-		return method.getDeclaringClass().getName() + "." + method.getName();
+		return StrUtil.concat(method.getDeclaringClass().getName(), ".", method.getName());
 	}
 
 	/**

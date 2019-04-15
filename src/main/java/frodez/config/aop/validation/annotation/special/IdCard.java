@@ -22,10 +22,18 @@ import javax.validation.ConstraintValidatorContext;
 @Constraint(validatedBy = IdCard.Validator.class)
 public @interface IdCard {
 
-	// 错误信息
+	/**
+	 * 错误信息,默认为"身份证号格式错误!"
+	 * @author Frodez
+	 * @date 2019-04-13
+	 */
 	String message() default "身份证号格式错误!";
 
-	// 是否可为空
+	/**
+	 * 是否允许null,默认为false不允许
+	 * @author Frodez
+	 * @date 2019-04-13
+	 */
 	boolean nullable() default false;
 
 	/**
@@ -38,7 +46,7 @@ public @interface IdCard {
 		/**
 		 * 验证用的格式
 		 */
-		private static Pattern pattern = Pattern.compile(DefRegex.IDCARD);
+		private static Pattern pattern = DefRegex.IDCARD;
 
 		/**
 		 * 接受空值,默认值为false true:当为空时,直接通过验证 false:当为空时,拒绝通过验证

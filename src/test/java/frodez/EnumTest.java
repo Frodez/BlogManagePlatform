@@ -10,11 +10,11 @@ public class EnumTest {
 	public static void main(String[] args) {
 		byte[] randoms = new byte[TIMES];
 		Random random = new Random();
-		for (int i = 0; i < TIMES; i++) {
+		for (int i = 0; i < TIMES; ++i) {
 			randoms[i] = (byte) random.nextInt(5);
 		}
 		long start = System.currentTimeMillis();
-		for (int i = 0; i < TIMES; i++) {
+		for (int i = 0; i < TIMES; ++i) {
 			PermissionTypeEnum.of(randoms[i]);
 		}
 		System.out.println(System.currentTimeMillis() - start);

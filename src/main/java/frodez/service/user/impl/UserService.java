@@ -1,7 +1,7 @@
 package frodez.service.user.impl;
 
 import frodez.config.aop.validation.annotation.Check;
-import frodez.config.security.login.UserUtil;
+import frodez.config.security.util.UserUtil;
 import frodez.dao.mapper.user.UserMapper;
 import frodez.dao.model.user.User;
 import frodez.dao.param.user.Doregister;

@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 验证参数AOP<br>
- * 使用方法:在方法上加入@check注解,然后在请求参数上使用hibernate validation api支持的方式配置验证.<br>
- * 如果方法是某个接口中方法的实现,请在接口中方法上加入@check注解和配置验证,而不是在实现中加入.<br>
- * 如果方法不是某个接口中方法的实现,则直接在方法上加入@check注解和配置验证.<br>
+ * 使用方法:在方法的实现上加入@check注解,然后在方法实现的请求参数上使用hibernate validation api支持的方式配置验证.<br>
  * @author Frodez
  * @date 2019-01-12
  */

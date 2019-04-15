@@ -68,9 +68,9 @@ public class SecurityProperties {
 		private String secret = "";
 
 		/**
-		 * jwt过期时间
+		 * jwt过期时间(小于等于0为不设置过期时间)
 		 */
-		private Long expiration = (long) -1;
+		private Long expiration = 0L;
 
 		/**
 		 * jwt签发者

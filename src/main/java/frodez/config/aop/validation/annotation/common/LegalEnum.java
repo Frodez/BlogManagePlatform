@@ -53,19 +53,39 @@ import javax.validation.Payload;
 @Constraint(validatedBy = LegalEnum.Validator.class)
 public @interface LegalEnum {
 
-	// 错误信息
+	/**
+	 * 错误信息,默认为"参数非法!"
+	 * @author Frodez
+	 * @date 2019-04-13
+	 */
 	String message() default "参数非法!";
 
-	// 枚举类
+	/**
+	 * 适用的枚举类
+	 * @author Frodez
+	 * @date 2019-04-13
+	 */
 	Class<? extends Enum<?>> type();
 
-	// 验证方法名
+	/**
+	 * 验证用方法名,默认为of。该方法必须只接受除自己外的一个方法参数，并且在适用的枚举类中存在且可用
+	 * @author Frodez
+	 * @date 2019-04-13
+	 */
 	String method() default "of";
 
-	// 验证方法参数类型
+	/**
+	 * 验证用方法参数的类型,默认为byte.class
+	 * @author Frodez
+	 * @date 2019-04-13
+	 */
 	Class<?> paramType() default byte.class;
 
-	// 是否可为空
+	/**
+	 * 是否允许null,默认为false不允许
+	 * @author Frodez
+	 * @date 2019-04-13
+	 */
 	boolean nullable() default false;
 
 	Class<?>[] groups() default {};

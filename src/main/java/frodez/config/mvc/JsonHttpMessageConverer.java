@@ -6,12 +6,12 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import frodez.util.beans.result.Result;
+import frodez.util.common.StrUtil;
 import frodez.util.constant.setting.DefCharset;
 import frodez.util.json.JSONUtil;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -38,11 +38,6 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 
 	private Map<Class<?>, Boolean> serializeCache = new ConcurrentHashMap<>();
 
-	public JsonHttpMessageConverer(MediaType supportedMediaType) {
-		setDefaultCharset(DefCharset.UTF_8_CHARSET);
-		setSupportedMediaTypes(Collections.singletonList(supportedMediaType));
-	}
-
 	public JsonHttpMessageConverer(MediaType... supportedMediaTypes) {
 		setDefaultCharset(DefCharset.UTF_8_CHARSET);
 		setSupportedMediaTypes(Arrays.asList(supportedMediaTypes));
@@ -61,7 +56,7 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 		boolean hasContextClass = contextClass != null;
 		Boolean cacheResult;
 		if (hasContextClass) {
-			cacheResult = contextDeserializeCache.get(type.getTypeName().concat(contextClass.getName()));
+			cacheResult = contextDeserializeCache.get(StrUtil.concat(type.getTypeName(), contextClass.getName()));
 		} else {
 			cacheResult = noContextDeserializeCache.get(type);
 		}
@@ -71,21 +66,14 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 		JavaType javaType = JSONUtil.mapper().getTypeFactory().constructType(GenericTypeResolver.resolveType(type,
 			contextClass));
 		AtomicReference<Throwable> causeRef = new AtomicReference<>();
-		if (JSONUtil.mapper().canDeserialize(javaType, causeRef)) {
-			if (hasContextClass) {
-				contextDeserializeCache.put(type.getTypeName().concat(contextClass.getName()), true);
-			} else {
-				noContextDeserializeCache.put(type, true);
-			}
-			return true;
-		}
+		cacheResult = JSONUtil.mapper().canDeserialize(javaType, causeRef);
 		logWarningIfNecessary(javaType, causeRef.get());
 		if (hasContextClass) {
-			contextDeserializeCache.put(type.getTypeName().concat(contextClass.getName()), false);
+			contextDeserializeCache.put(StrUtil.concat(type.getTypeName(), contextClass.getName()), cacheResult);
 		} else {
-			noContextDeserializeCache.put(type, false);
+			noContextDeserializeCache.put(type, cacheResult);
 		}
-		return false;
+		return cacheResult;
 	}
 
 	@Override
@@ -98,13 +86,10 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 			return cacheResult;
 		}
 		AtomicReference<Throwable> causeRef = new AtomicReference<>();
-		if (JSONUtil.mapper().canSerialize(clazz, causeRef)) {
-			serializeCache.put(clazz, true);
-			return true;
-		}
+		cacheResult = JSONUtil.mapper().canSerialize(clazz, causeRef);
 		logWarningIfNecessary(clazz, causeRef.get());
-		serializeCache.put(clazz, false);
-		return false;
+		serializeCache.put(clazz, cacheResult);
+		return cacheResult;
 	}
 
 	/**
@@ -121,8 +106,8 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 		// Do not log warning for serializer not found (note: different message wording on Jackson 2.9)
 		boolean debugLevel = cause instanceof JsonMappingException && cause.getMessage().startsWith("Cannot find");
 		if (debugLevel ? logger.isDebugEnabled() : logger.isWarnEnabled()) {
-			String msg = "Failed to evaluate Jackson " + (type instanceof JavaType ? "de" : "")
-				+ "serialization for type [" + type + "]";
+			String msg = StrUtil.concat("Failed to evaluate Jackson ", type instanceof JavaType ? "de" : "",
+				"serialization for type [", type.toString(), "]");
 			if (debugLevel) {
 				logger.debug(msg, cause);
 			} else if (logger.isDebugEnabled()) {
@@ -157,21 +142,12 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 				outputMessage.getBody().flush();
 			}
 		} catch (InvalidDefinitionException ex) {
-			throw new HttpMessageConversionException("Type definition error: " + ex.getType(), ex);
+			throw new HttpMessageConversionException(StrUtil.concat("Type definition error: ", ex.getType().toString()),
+				ex);
 		} catch (JsonProcessingException ex) {
-			throw new HttpMessageNotWritableException("Could not write JSON: " + ex.getOriginalMessage(), ex);
+			throw new HttpMessageNotWritableException(StrUtil.concat("Could not write JSON: ", ex.getOriginalMessage()),
+				ex);
 		}
-	}
-
-	@Override
-	@Nullable
-	protected MediaType getDefaultContentType(Object object) throws IOException {
-		return super.getDefaultContentType(object);
-	}
-
-	@Override
-	protected Long getContentLength(Object object, @Nullable MediaType contentType) throws IOException {
-		return super.getContentLength(object, contentType);
 	}
 
 }

@@ -1,8 +1,8 @@
 package frodez.config.security.settings;
 
 import frodez.config.security.error.AccessDenied;
-import frodez.config.security.error.Authentication;
-import frodez.config.security.filter.JwtTokenFilter;
+import frodez.config.security.error.AuthDenied;
+import frodez.config.security.filter.TokenFilter;
 import frodez.config.security.settings.SecurityProperties.Cors;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * 无验证访问控制
 	 */
 	@Autowired
-	private Authentication authentication;
+	private AuthDenied authentication;
 
 	/**
 	 * 无权限访问控制
@@ -69,7 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * jwt验证过滤器
 	 */
 	@Autowired
-	private JwtTokenFilter filter;
+	private TokenFilter filter;
 
 	/**
 	 * 主配置
@@ -141,6 +141,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return source;
 	}
 
+	/**
+	 * 设置登出处理器
+	 * @author Frodez
+	 * @date 2019-03-27
+	 */
 	@Bean
 	public SecurityContextLogoutHandler securityContextLogoutHandler() {
 		return new SecurityContextLogoutHandler();

@@ -31,6 +31,7 @@ import frodez.util.beans.pair.Pair;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
+import frodez.util.common.StrUtil;
 import frodez.util.constant.common.ModifyEnum;
 import frodez.util.constant.setting.PropertyKey;
 import frodez.util.constant.user.PermissionTypeEnum;
@@ -51,12 +52,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -98,8 +102,9 @@ public class AuthorityService implements IAuthorityService {
 	@Autowired
 	private AuthoritySource authoritySource;
 
+	@Check
 	@Override
-	public Result getUserInfo(Long userId) {
+	public Result getUserInfo(@NotNull Long userId) {
 		try {
 			UserInfo data = userIdCache.get(userId);
 			if (data != null) {
@@ -133,7 +138,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
-	public Result getUserInfo(String userName) {
+	public Result getUserInfo(@NotBlank String userName) {
 		try {
 			UserInfo data = nameCache.get(userName);
 			if (data != null) {
@@ -169,7 +174,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
-	public Result getUserInfos(QueryPage param) {
+	public Result getUserInfos(@Valid @NotNull QueryPage param) {
 		try {
 			Page<User> page = PageHelper.startPage(QueryPage.resonable(param)).doSelectPage(() -> {
 				userMapper.selectAll();
@@ -183,7 +188,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
-	public Result getUserInfosByIds(List<Long> userIds, boolean includeFobiddens) {
+	public Result getUserInfosByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens) {
 		try {
 			Example example = new Example(User.class);
 			example.createCriteria().andIn("id", userIds);
@@ -203,7 +208,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
-	public Result getUserInfosByNames(List<String> userNames, boolean includeFobiddens) {
+	public Result getUserInfosByNames(@NotEmpty List<String> userNames, boolean includeFobiddens) {
 		try {
 			Example example = new Example(User.class);
 			example.createCriteria().andIn("name", userNames);
@@ -223,7 +228,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
-	public Result refreshUserInfoByIds(List<Long> userIds, boolean includeFobiddens) {
+	public Result refreshUserInfoByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens) {
 		try {
 			Example example = new Example(User.class);
 			example.createCriteria().andIn("id", userIds);
@@ -244,7 +249,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
-	public Result refreshUserInfoByNames(List<String> userNames, boolean includeFobiddens) {
+	public Result refreshUserInfoByNames(@NotEmpty List<String> userNames, boolean includeFobiddens) {
 		try {
 			Example example = new Example(User.class);
 			example.createCriteria().andIn("name", userNames);
@@ -313,7 +318,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
-	public Result getPermission(Long permissionId) {
+	public Result getPermission(@NotNull Long permissionId) {
 		try {
 			Permission permission = permissionMapper.selectByPrimaryKey(permissionId);
 			if (permission == null) {
@@ -334,7 +339,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
-	public Result getPermissions(QueryPage param) {
+	public Result getPermissions(@Valid @NotNull QueryPage param) {
 		try {
 			return Result.page(PageHelper.startPage(QueryPage.resonable(param)).doSelectPage(() -> permissionMapper
 				.selectAll()));
@@ -346,7 +351,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
-	public Result getRole(Long roleId) {
+	public Result getRole(@NotNull Long roleId) {
 		try {
 			Role role = roleMapper.selectByPrimaryKey(roleId);
 			if (role == null) {
@@ -367,7 +372,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
-	public Result getRoles(QueryPage param) {
+	public Result getRoles(@Valid @NotNull QueryPage param) {
 		try {
 			return Result.page(PageHelper.startPage(QueryPage.resonable(param)).doSelectPage(() -> roleMapper
 				.selectAll()));
@@ -379,7 +384,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
-	public Result getRolePermissions(QueryRolePermission param) {
+	public Result getRolePermissions(@Valid @NotNull QueryRolePermission param) {
 		try {
 			return Result.page(PageHelper.startPage(QueryPage.resonable(param.getPage())).doSelectPage(
 				() -> rolePermissionMapper.getPermissions(param.getRoleId())));
@@ -392,7 +397,7 @@ public class AuthorityService implements IAuthorityService {
 	@Check
 	@Transactional
 	@Override
-	public Result addRole(AddRole param) {
+	public Result addRole(@Valid @NotNull AddRole param) {
 		try {
 			if (roleMapper.selectAll().stream().filter((iter) -> {
 				return iter.getName().equals(param.getName());
@@ -417,14 +422,14 @@ public class AuthorityService implements IAuthorityService {
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[addRole]", e);
-			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
+			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
 		}
 	}
 
 	@Check
 	@Transactional
 	@Override
-	public Result updateRole(UpdateRole param) {
+	public Result updateRole(@Valid @NotNull UpdateRole param) {
 		try {
 			Role role = roleMapper.selectByPrimaryKey(param.getId());
 			if (role == null) {
@@ -433,12 +438,11 @@ public class AuthorityService implements IAuthorityService {
 			if (param.getName() != null && checkRoleName(param.getName())) {
 				return Result.fail("角色不能重名!");
 			}
-			BeanUtil.cover(param, role);
-			roleMapper.updateByPrimaryKeySelective(role);
+			roleMapper.updateByPrimaryKeySelective(BeanUtil.initialize(param, Role.class));
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[addRole]", e);
-			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
+			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
 		}
 	}
 
@@ -467,7 +471,7 @@ public class AuthorityService implements IAuthorityService {
 	@Check
 	@Transactional
 	@Override
-	public Result addPermission(AddPermission param) {
+	public Result addPermission(@Valid @NotNull AddPermission param) {
 		try {
 			if (checkPermissionName(param.getName())) {
 				return Result.fail("权限不能重名!");
@@ -485,8 +489,7 @@ public class AuthorityService implements IAuthorityService {
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[addPermission]", e);
-			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			return Result.errorService();
+			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
 		} finally {
 			authorityManager.refresh();
 			authoritySource.refresh();
@@ -496,7 +499,7 @@ public class AuthorityService implements IAuthorityService {
 	@Check
 	@Transactional
 	@Override
-	public Result updatePermission(UpdatePermission param) {
+	public Result updatePermission(@Valid @NotNull UpdatePermission param) {
 		try {
 			if (param.getType() == null && param.getUrl() != null || param.getType() != null && param
 				.getUrl() == null) {
@@ -515,13 +518,11 @@ public class AuthorityService implements IAuthorityService {
 			if (param.getName() != null && checkPermissionName(param.getName())) {
 				return Result.fail("权限不能重名!");
 			}
-			BeanUtil.cover(param, permission);
-			permissionMapper.updateByPrimaryKeySelective(permission);
+			permissionMapper.updateByPrimaryKeySelective(BeanUtil.initialize(param, Permission.class));
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[addPermission]", e);
-			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			return Result.errorService();
+			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
 		} finally {
 			authorityManager.refresh();
 			authoritySource.refresh();
@@ -569,7 +570,7 @@ public class AuthorityService implements IAuthorityService {
 	@Check
 	@Transactional
 	@Override
-	public Result updateRolePermission(UpdateRolePermission param) {
+	public Result updateRolePermission(@Valid @NotNull UpdateRolePermission param) {
 		try {
 			if (ModifyEnum.UPDATE.getVal() != param.getOperationType() && EmptyUtil.yes(param.getPermissionIds())) {
 				return Result.errorRequest("不能对角色新增或者删除一个空的权限!");
@@ -648,8 +649,7 @@ public class AuthorityService implements IAuthorityService {
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[setRolePermission]", e);
-			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			return Result.errorService();
+			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
 		} finally {
 			authorityManager.refresh();
 			authoritySource.refresh();
@@ -659,7 +659,7 @@ public class AuthorityService implements IAuthorityService {
 	@Check
 	@Transactional
 	@Override
-	public Result removeRole(Long roleId) {
+	public Result removeRole(@NotNull Long roleId) {
 		try {
 			Role role = roleMapper.selectByPrimaryKey(roleId);
 			if (role == null) {
@@ -677,8 +677,7 @@ public class AuthorityService implements IAuthorityService {
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[removeRole]", e);
-			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			return Result.errorService();
+			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
 		} finally {
 			authorityManager.refresh();
 			authoritySource.refresh();
@@ -688,7 +687,7 @@ public class AuthorityService implements IAuthorityService {
 	@Check
 	@Transactional
 	@Override
-	public Result removePermission(Long permissionId) {
+	public Result removePermission(@NotNull Long permissionId) {
 		try {
 			Permission permission = permissionMapper.selectByPrimaryKey(permissionId);
 			if (permission == null) {
@@ -704,8 +703,7 @@ public class AuthorityService implements IAuthorityService {
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[removePermission]", e);
-			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			return Result.errorService();
+			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
 		} finally {
 			authorityManager.refresh();
 			authoritySource.refresh();
@@ -724,8 +722,8 @@ public class AuthorityService implements IAuthorityService {
 				}).map((iter) -> {
 					return ((RequestMappingHandlerMapping) iter).getHandlerMethods().entrySet();
 				}).flatMap(Collection::stream).forEach((entry) -> {
-					String requestUrl = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + entry.getKey()
-						.getPatternsCondition().getPatterns().stream().findFirst().get();
+					String requestUrl = StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), entry.getKey()
+						.getPatternsCondition().getPatterns().stream().findFirst().get());
 					if (!URLMatcher.needVerify(requestUrl)) {
 						return;
 					}
@@ -755,8 +753,7 @@ public class AuthorityService implements IAuthorityService {
 			return Result.success();
 		} catch (Exception e) {
 			log.error("[scanAndCreatePermissions]", e);
-			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			return Result.errorService();
+			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
 		} finally {
 			authorityManager.refresh();
 			authoritySource.refresh();

@@ -70,7 +70,7 @@ public class CustomXmlFormatter implements XmlFormatter {
 		}
 
 		public static void xmlIndent(StringBuilder sb, int indentLevel) {
-			for (int i = 0; i < indentLevel; i++) {
+			for (int i = 0; i < indentLevel; ++i) {
 				sb.append("    ");
 			}
 		}

@@ -11,6 +11,8 @@ public enum ErrorCode {
 
 	USER_SERVICE_ERROR("用户信息服务失败!"),
 
+	AUTHORITY_SERVICE_ERROR("权限信息服务失败!"),
+
 	TASK_SERVICE_ERROR("定时任务服务失败!");
 
 	private String description;

@@ -22,7 +22,7 @@ import org.springframework.util.Assert;
  */
 @Component
 @DependsOn("contextUtil")
-public class TokenManager {
+public class TokenUtil {
 
 	/**
 	 * 算法
@@ -35,6 +35,11 @@ public class TokenManager {
 	private static String issuer;
 
 	/**
+	 * 是否过期
+	 */
+	private static boolean expired = false;
+
+	/**
 	 * 过期时长(毫秒)
 	 */
 	private static Long expiration;
@@ -44,10 +49,19 @@ public class TokenManager {
 	 */
 	private static String claim;
 
+	/**
+	 * HttpHeader名称
+	 */
 	private static String header;
 
+	/**
+	 * token前缀
+	 */
 	private static String tokenPrefix;
 
+	/**
+	 * token前缀长度
+	 */
 	private static int tokenPrefixLength;
 
 	@PostConstruct
@@ -56,6 +70,7 @@ public class TokenManager {
 		algorithm = Algorithm.HMAC256(properties.getJwt().getSecret());
 		issuer = properties.getJwt().getIssuer();
 		expiration = properties.getJwt().getExpiration() * 1000;
+		expired = expiration > 0;
 		claim = properties.getJwt().getAuthorityClaim();
 		header = properties.getJwt().getHeader();
 		tokenPrefix = properties.getJwt().getTokenPrefix();
@@ -66,7 +81,6 @@ public class TokenManager {
 		Assert.notNull(claim, "claim must not be null");
 		Assert.notNull(header, "header must not be null");
 		Assert.notNull(tokenPrefix, "tokenPrefix must not be null");
-		Assert.notNull(tokenPrefixLength, "tokenPrefixLength must not be null");
 	}
 
 	/**
@@ -78,8 +92,14 @@ public class TokenManager {
 	public static String generate(UserDetails user) {
 		try {
 			long now = System.currentTimeMillis();
-			return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withExpiresAt(new Date(now + expiration))
-				.withSubject(user.getUsername()).withArrayClaim(claim, AuthorityUtil.get(user)).sign(algorithm);
+			if (expired) {
+				return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withExpiresAt(new Date(now
+					+ expiration)).withSubject(user.getUsername()).withArrayClaim(claim, AuthorityUtil.get(user)).sign(
+						algorithm);
+			} else {
+				return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withSubject(user.getUsername())
+					.withArrayClaim(claim, AuthorityUtil.get(user)).sign(algorithm);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -94,8 +114,14 @@ public class TokenManager {
 	public static String generate(String username, List<String> authorities) {
 		try {
 			long now = System.currentTimeMillis();
-			return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withExpiresAt(new Date(now + expiration))
-				.withSubject(username).withArrayClaim(claim, authorities.toArray(String[]::new)).sign(algorithm);
+			if (expired) {
+				return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withExpiresAt(new Date(now
+					+ expiration)).withSubject(username).withArrayClaim(claim, authorities.toArray(String[]::new)).sign(
+						algorithm);
+			} else {
+				return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withSubject(username).withArrayClaim(
+					claim, authorities.toArray(String[]::new)).sign(algorithm);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -105,10 +131,9 @@ public class TokenManager {
 	 * 验证token
 	 * @author Frodez
 	 * @param token
-	 * @param expired是否验证超时
 	 * @date 2018-11-21
 	 */
-	public static UserDetails verify(String token, boolean expired) {
+	public static UserDetails verify(String token) {
 		DecodedJWT jwt = null;
 		if (expired) {
 			//前面已经将exp置为合适的过期时间了,这里只需要判断其是否超过当前时间即可.
@@ -120,7 +145,19 @@ public class TokenManager {
 	}
 
 	/**
+	 * 验证token,且不考虑过期
+	 * @author Frodez
+	 * @param token
+	 * @date 2018-11-21
+	 */
+	public static UserDetails verifyWithNoExpired(String token) {
+		DecodedJWT jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
+		return new User(jwt.getSubject(), "N/A", AuthorityUtil.make(jwt.getClaim(claim).asArray(String.class)));
+	}
+
+	/**
 	 * 获取request中的token,如果为空或者前缀不符合设置,均返回null.
+	 * @see frodez.config.security.util.TokenUtil#getFullToken(HttpServletRequest)
 	 * @author Frodez
 	 * @date 2019-01-13
 	 */
@@ -133,7 +170,8 @@ public class TokenManager {
 	}
 
 	/**
-	 * 获取request中的token.
+	 * 获取request中的token,不做任何处理.
+	 * @see frodez.config.security.util.TokenUtil#getRealToken(HttpServletRequest)
 	 * @author Frodez
 	 * @date 2019-01-13
 	 */

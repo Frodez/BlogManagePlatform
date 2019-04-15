@@ -1,7 +1,7 @@
 package frodez.controller.user;
 
 import frodez.config.aop.request.annotation.RepeatLock;
-import frodez.config.security.login.UserUtil;
+import frodez.config.security.util.UserUtil;
 import frodez.dao.param.user.Doregister;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.IUserService;

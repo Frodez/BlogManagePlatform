@@ -22,15 +22,27 @@ import javax.validation.constraints.Pattern.Flag;
 @Constraint(validatedBy = LegalStr.Validator.class)
 public @interface LegalStr {
 
-	// 错误信息
+	/**
+	 * 错误信息,默认为"字符串格式错误!"
+	 * @author Frodez
+	 * @date 2019-04-13
+	 */
 	String message() default "字符串格式错误!";
 
-	// 正则表达式
+	/**
+	 * 使用的正则表达式
+	 * @author Frodez
+	 * @date 2019-04-13
+	 */
 	String regex();
 
 	Flag[] flags() default {};
 
-	// 是否可为空
+	/**
+	 * 是否允许null,默认为false不允许
+	 * @author Frodez
+	 * @date 2019-04-13
+	 */
 	boolean nullable() default false;
 
 	/**

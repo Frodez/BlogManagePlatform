@@ -56,18 +56,46 @@ public class PropertyUtil {
 		return Arrays.asList(env.getActiveProfiles());
 	}
 
+	/**
+	 * 当前环境是否为dev环境<br>
+	 * <strong>本实现不考虑同时启用多个环境的情况。</strong>
+	 * @see frodez.util.constant.setting.PropertyKey.Enviroment#DEV
+	 * @author Frodez
+	 * @date 2019-04-15
+	 */
 	public static boolean isDev() {
 		return env.getActiveProfiles()[0].equals(PropertyKey.Enviroment.DEV);
 	}
 
+	/**
+	 * 当前环境是否为test环境<br>
+	 * <strong>本实现不考虑同时启用多个环境的情况。</strong>
+	 * @see frodez.util.constant.setting.PropertyKey.Enviroment#TEST
+	 * @author Frodez
+	 * @date 2019-04-15
+	 */
 	public static boolean isTest() {
 		return env.getActiveProfiles()[0].equals(PropertyKey.Enviroment.TEST);
 	}
 
+	/**
+	 * 当前环境是否为release环境<br>
+	 * <strong>本实现不考虑同时启用多个环境的情况。</strong>
+	 * @see frodez.util.constant.setting.PropertyKey.Enviroment#RELEASE
+	 * @author Frodez
+	 * @date 2019-04-15
+	 */
 	public static boolean isRelease() {
 		return env.getActiveProfiles()[0].equals(PropertyKey.Enviroment.RELEASE);
 	}
 
+	/**
+	 * 当前环境是否为prod环境<br>
+	 * <strong>本实现不考虑同时启用多个环境的情况。</strong>
+	 * @see frodez.util.constant.setting.PropertyKey.Enviroment#PROD
+	 * @author Frodez
+	 * @date 2019-04-15
+	 */
 	public static boolean isProd() {
 		return env.getActiveProfiles()[0].equals(PropertyKey.Enviroment.PROD);
 	}

@@ -4,12 +4,12 @@ import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
 import frodez.util.constant.setting.DefCharset;
 import java.io.PrintWriter;
-import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
@@ -57,14 +57,14 @@ public class ServletUtil {
 	}
 
 	/**
-	 * 向response直接写入json
+	 * 向response直接写入json,编码为UTF-8
 	 * @author Frodez
 	 * @date 2019-01-07
 	 */
 	public static void writeJson(HttpServletResponse response, Result result) {
 		Assert.notNull(result, "result must not be null");
 		if (response.isCommitted()) {
-			return;
+			throw new RuntimeException("this response has been committed!");
 		}
 		response.setStatus(result.httpStatus().value());
 		response.setCharacterEncoding(DefCharset.UTF_8);
@@ -84,13 +84,13 @@ public class ServletUtil {
 	}
 
 	/**
-	 * 向response直接写入json
+	 * 向response直接写入json,编码为UTF-8
 	 * @author Frodez
 	 * @date 2019-01-07
 	 */
 	public static void writeJson(HttpServletResponse response, @Nullable HttpStatus status, String json) {
 		if (response.isCommitted()) {
-			return;
+			throw new RuntimeException("this response has been committed!");
 		}
 		if (status != null) {
 			response.setStatus(status.value());
@@ -112,13 +112,13 @@ public class ServletUtil {
 	}
 
 	/**
-	 * 向response写入text/plain类型数据
+	 * 向response写入text/plain类型数据,编码为UTF-8
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */
 	public static void writePlainText(HttpServletResponse response, @Nullable HttpStatus status, String text) {
 		if (response.isCommitted()) {
-			return;
+			throw new RuntimeException("this response has been committed!");
 		}
 		if (status != null) {
 			response.setStatus(status.value());
@@ -140,7 +140,7 @@ public class ServletUtil {
 	}
 
 	/**
-	 * 向response写入text/html类型数据
+	 * 向response写入text/html类型数据,编码为UTF-8
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */

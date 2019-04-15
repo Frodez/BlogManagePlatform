@@ -32,7 +32,7 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 		klass.addImportedType("io.swagger.annotations.ApiModelProperty");
 		for (IntrospectedColumn iter : table.getAllColumns()) {
 			if (iter.isNullable()) {
-				klass.addImportedType("javax.annotation.Nullable");
+				klass.addImportedType("org.springframework.lang.Nullable");
 				break;
 			}
 		}

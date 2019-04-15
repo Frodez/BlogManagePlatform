@@ -4,7 +4,6 @@ import frodez.config.security.settings.SecurityProperties;
 import frodez.util.common.EmptyUtil;
 import frodez.util.http.URLMatcher;
 import frodez.util.spring.ContextUtil;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,13 +29,13 @@ import org.springframework.util.Assert;
 @DependsOn("contextUtil")
 public class AuthorityManager implements AccessDecisionManager {
 
-	private Collection<ConfigAttribute> defaultDeniedRoles;
+	private ConfigAttribute defaultDeniedRole;
 
 	@PostConstruct
 	private void init() {
 		SecurityProperties properties = ContextUtil.get(SecurityProperties.class);
-		defaultDeniedRoles = Arrays.asList(new SecurityConfig(properties.getAuth().getDeniedRole()));
-		Assert.notNull(defaultDeniedRoles, "defaultDeniedRoles must not be null");
+		defaultDeniedRole = new SecurityConfig(properties.getAuth().getDeniedRole());
+		Assert.notNull(defaultDeniedRole, "defaultDeniedRole must not be null");
 	}
 
 	/**
@@ -46,7 +45,7 @@ public class AuthorityManager implements AccessDecisionManager {
 	 */
 	public void refresh() {
 		synchronized (this) {
-			defaultDeniedRoles = null;
+			defaultDeniedRole = null;
 			init();
 		}
 	}
@@ -72,7 +71,7 @@ public class AuthorityManager implements AccessDecisionManager {
 			throw new AccessDeniedException("无访问权限!");
 		}
 		// 当包含无访问权限时,直接驳回(此时只有无访问权限一个权限)
-		if (permissions.equals(defaultDeniedRoles)) {
+		if (permissions.contains(defaultDeniedRole)) {
 			throw new AccessDeniedException("无访问权限!");
 		}
 		List<String> auths = auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors
