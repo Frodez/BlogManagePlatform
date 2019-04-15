@@ -114,7 +114,10 @@ public class BeanUtil {
 	}
 
 	/**
-	 * 清空bean的默认值
+	 * 清空bean的默认值<br>
+	 * 如果只需要一个全新的无默认值的对象,建议使用BeanUtil.clearInstance方法,<br>
+	 * 原因是本方法会对所有字段执行其setter方法(无法确保只有存在默认值的字段拥有值),开销更大。<br>
+	 * @see BeanUtil#clearInstance(Class)
 	 * @author Frodez
 	 * @param <T>
 	 * @date 2019-02-08
@@ -174,7 +177,10 @@ public class BeanUtil {
 	}
 
 	/**
-	 * 获取无默认值的bean,推荐使用本方法,比新建一个对象然后使用BeanUtil.clear更快。
+	 * 获取无默认值的bean。<br>
+	 * 推荐使用本方法,比新建一个对象然后使用BeanUtil.clear更快,<br>
+	 * 原因是本方法只会执行存在默认值的字段的setter方法,方法执行的开销减小。<br>
+	 * @see BeanUtil#clear(Object)
 	 * @author Frodez
 	 * @param <T>
 	 * @date 2019-02-08

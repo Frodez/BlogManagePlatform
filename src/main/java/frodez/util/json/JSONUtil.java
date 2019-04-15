@@ -26,7 +26,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 /**
- * json工具类
+ * json工具类<br>
+ * 本工具类使用的ObjectMapper是jackson的springboot-starter所自动配置得到的,不会使得项目中引入两个不同的ObjectMapper。<br>
+ * 本工具类对html字符的转义做了专门处理。<br>
+ * 本工具类大量采用缓存,可较大程度上提高速度。<br>
  * @author Frodez
  * @date 2018-11-27
  */

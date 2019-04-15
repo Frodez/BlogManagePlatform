@@ -13,7 +13,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * HTTP工具类
+ * Servlet工具类
  * @author Frodez
  * @date 2018-12-21
  */

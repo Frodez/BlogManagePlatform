@@ -5,6 +5,11 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * 异常相关枚举
+ * @author Frodez
+ * @date 2019-04-15
+ */
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
