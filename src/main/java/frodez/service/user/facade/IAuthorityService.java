@@ -10,6 +10,7 @@ import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.constant.annotation.ServiceOnly;
 import java.util.List;
+import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * 权限信息服务
@@ -59,7 +60,7 @@ public interface IAuthorityService {
 	 * @date 2019-03-16
 	 */
 	@ServiceOnly
-	Result refreshUserInfoByIds(List<Long> userIds, boolean includeFobiddens);
+	ListenableFuture<Result> refreshUserInfoByIds(List<Long> userIds, boolean includeFobiddens);
 
 	/**
 	 * 根据用户名更新用户基本信息
@@ -67,7 +68,7 @@ public interface IAuthorityService {
 	 * @date 2019-03-16
 	 */
 	@ServiceOnly
-	Result refreshUserInfoByNames(List<String> userNames, boolean includeFobiddens);
+	ListenableFuture<Result> refreshUserInfoByNames(List<String> userNames, boolean includeFobiddens);
 
 	/**
 	 * 获取权限信息
@@ -123,41 +124,41 @@ public interface IAuthorityService {
 	 * @author Frodez
 	 * @date 2019-03-15
 	 */
-	Result addPermission(AddPermission param);
+	ListenableFuture<Result> addPermission(AddPermission param);
 
 	/**
 	 * 修改权限
 	 * @author Frodez
 	 * @date 2019-03-17
 	 */
-	Result updatePermission(UpdatePermission param);
+	ListenableFuture<Result> updatePermission(UpdatePermission param);
 
 	/**
 	 * 修改角色权限
 	 * @author Frodez
 	 * @date 2019-03-15
 	 */
-	Result updateRolePermission(UpdateRolePermission param);
+	ListenableFuture<Result> updateRolePermission(UpdateRolePermission param);
 
 	/**
 	 * 删除角色
 	 * @author Frodez
 	 * @date 2019-03-18
 	 */
-	Result removeRole(Long roleId);
+	ListenableFuture<Result> removeRole(Long roleId);
 
 	/**
 	 * 删除权限
 	 * @author Frodez
 	 * @date 2019-03-18
 	 */
-	Result removePermission(Long permissionId);
+	ListenableFuture<Result> removePermission(Long permissionId);
 
 	/**
 	 * 扫描系统中所有端点并添加权限
 	 * @author Frodez
 	 * @date 2019-03-18
 	 */
-	Result scanAndCreatePermissions();
+	ListenableFuture<Result> scanAndCreatePermissions();
 
 }

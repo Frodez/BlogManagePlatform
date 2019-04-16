@@ -59,8 +59,10 @@ import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -227,8 +229,9 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@Async
 	@Override
-	public Result refreshUserInfoByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens) {
+	public ListenableFuture<Result> refreshUserInfoByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens) {
 		try {
 			Example example = new Example(User.class);
 			example.createCriteria().andIn("id", userIds);
@@ -237,19 +240,20 @@ public class AuthorityService implements IAuthorityService {
 			}
 			List<User> users = userMapper.selectByExample(example);
 			if (users.size() != userIds.size()) {
-				return Result.fail("存在非法的用户ID!");
+				return Result.fail("存在非法的用户ID!").async();
 			}
 			refreshUserInfo(getUserInfos(users));
-			return Result.success();
+			return Result.success().async();
 		} catch (Exception e) {
 			log.error("[refreshUserInfoByIds]", e);
-			return Result.errorService();
+			return Result.errorService().async();
 		}
 	}
 
 	@Check
+	@Async
 	@Override
-	public Result refreshUserInfoByNames(@NotEmpty List<String> userNames, boolean includeFobiddens) {
+	public ListenableFuture<Result> refreshUserInfoByNames(@NotEmpty List<String> userNames, boolean includeFobiddens) {
 		try {
 			Example example = new Example(User.class);
 			example.createCriteria().andIn("name", userNames);
@@ -258,13 +262,13 @@ public class AuthorityService implements IAuthorityService {
 			}
 			List<User> users = userMapper.selectByExample(example);
 			if (users.size() != userNames.size()) {
-				return Result.fail("存在非法的用户名!");
+				return Result.fail("存在非法的用户名!").async();
 			}
 			refreshUserInfo(getUserInfos(users));
-			return Result.success();
+			return Result.success().async();
 		} catch (Exception e) {
 			log.error("[refreshUserInfoByNames]", e);
-			return Result.errorService();
+			return Result.errorService().async();
 		}
 	}
 
@@ -310,9 +314,12 @@ public class AuthorityService implements IAuthorityService {
 		stream.forEach((item) -> {
 			userIdCache.save(item.getId(), item);
 			nameCache.save(item.getName(), item);
-			tokenCache.save(tokenCache.getTokenByCondition((iter) -> {
+			String token = tokenCache.getTokenByCondition((iter) -> {
 				return iter.getId().equals(item.getId());
-			}), item);
+			});
+			if (token != null) {
+				tokenCache.save(token, item);
+			}
 		});
 	}
 
@@ -469,24 +476,25 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@Async
 	@Transactional
 	@Override
-	public Result addPermission(@Valid @NotNull AddPermission param) {
+	public ListenableFuture<Result> addPermission(@Valid @NotNull AddPermission param) {
 		try {
 			if (checkPermissionName(param.getName())) {
-				return Result.fail("权限不能重名!");
+				return Result.fail("权限不能重名!").async();
 			}
 			if (URLMatcher.isPermitAllPath(param.getUrl())) {
-				return Result.fail("免验证路径不能配备权限!");
+				return Result.fail("免验证路径不能配备权限!").async();
 			}
 			if (!checkPermissionUrl(PermissionTypeEnum.of(param.getType()), param.getUrl())) {
-				return Result.fail("系统不存在与此匹配的url!");
+				return Result.fail("系统不存在与此匹配的url!").async();
 			}
 			Permission permission = new Permission();
 			BeanUtil.copy(param, permission);
 			permission.setCreateTime(new Date());
 			permissionMapper.insert(permission);
-			return Result.success();
+			return Result.success().async();
 		} catch (Exception e) {
 			log.error("[addPermission]", e);
 			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
@@ -497,29 +505,30 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@Async
 	@Transactional
 	@Override
-	public Result updatePermission(@Valid @NotNull UpdatePermission param) {
+	public ListenableFuture<Result> updatePermission(@Valid @NotNull UpdatePermission param) {
 		try {
 			if (param.getType() == null && param.getUrl() != null || param.getType() != null && param
 				.getUrl() == null) {
-				return Result.errorRequest("类型和url必须同时存在!");
+				return Result.errorRequest("类型和url必须同时存在!").async();
 			}
 			if (param.getUrl() != null && URLMatcher.isPermitAllPath(param.getUrl())) {
-				return Result.fail("免验证路径不能配备权限!");
+				return Result.fail("免验证路径不能配备权限!").async();
 			}
 			if (!checkPermissionUrl(PermissionTypeEnum.of(param.getType()), param.getUrl())) {
-				return Result.fail("系统不存在与此匹配的url!");
+				return Result.fail("系统不存在与此匹配的url!").async();
 			}
 			Permission permission = permissionMapper.selectByPrimaryKey(param.getId());
 			if (permission == null) {
-				return Result.fail("找不到该权限!");
+				return Result.fail("找不到该权限!").async();
 			}
 			if (param.getName() != null && checkPermissionName(param.getName())) {
-				return Result.fail("权限不能重名!");
+				return Result.fail("权限不能重名!").async();
 			}
 			permissionMapper.updateByPrimaryKeySelective(BeanUtil.initialize(param, Permission.class));
-			return Result.success();
+			return Result.success().async();
 		} catch (Exception e) {
 			log.error("[addPermission]", e);
 			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
@@ -568,16 +577,17 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@Async
 	@Transactional
 	@Override
-	public Result updateRolePermission(@Valid @NotNull UpdateRolePermission param) {
+	public ListenableFuture<Result> updateRolePermission(@Valid @NotNull UpdateRolePermission param) {
 		try {
 			if (ModifyEnum.UPDATE.getVal() != param.getOperationType() && EmptyUtil.yes(param.getPermissionIds())) {
-				return Result.errorRequest("不能对角色新增或者删除一个空的权限!");
+				return Result.errorRequest("不能对角色新增或者删除一个空的权限!").async();
 			}
 			Role role = roleMapper.selectByPrimaryKey(param.getRoleId());
 			if (role == null) {
-				return Result.fail("找不到该角色!");
+				return Result.fail("找不到该角色!").async();
 			}
 			switch (ModifyEnum.of(param.getOperationType())) {
 				case INSERT : {
@@ -586,13 +596,13 @@ public class AuthorityService implements IAuthorityService {
 					List<Long> permissionIds = permissionMapper.selectByExample(example).stream().map(Permission::getId)
 						.collect(Collectors.toList());
 					if (permissionIds.size() != param.getPermissionIds().size()) {
-						return Result.fail("存在错误的权限!");
+						return Result.fail("存在错误的权限!").async();
 					}
 					example = new Example(RolePermission.class);
 					example.createCriteria().andIn("permissionId", param.getPermissionIds()).andEqualTo("roleId", param
 						.getRoleId());
 					if (rolePermissionMapper.selectCountByExample(example) != 0) {
-						return Result.fail("不能添加已拥有的权限!");
+						return Result.fail("不能添加已拥有的权限!").async();
 					}
 					Date date = new Date();
 					List<RolePermission> rolePermissions = param.getPermissionIds().stream().map((iter) -> {
@@ -610,7 +620,7 @@ public class AuthorityService implements IAuthorityService {
 					example.createCriteria().andIn("permissionId", param.getPermissionIds()).andEqualTo("roleId", param
 						.getRoleId());
 					if (rolePermissionMapper.selectCountByExample(example) != param.getPermissionIds().size()) {
-						return Result.fail("存在错误的权限!");
+						return Result.fail("存在错误的权限!").async();
 					}
 					rolePermissionMapper.deleteByExample(example);
 					break;
@@ -620,7 +630,7 @@ public class AuthorityService implements IAuthorityService {
 						Example example = new Example(Permission.class);
 						example.createCriteria().andIn("id", param.getPermissionIds());
 						if (permissionMapper.selectCountByExample(example) != param.getPermissionIds().size()) {
-							return Result.fail("存在错误的权限!");
+							return Result.fail("存在错误的权限!").async();
 						}
 					}
 					Example example = new Example(RolePermission.class);
@@ -646,7 +656,7 @@ public class AuthorityService implements IAuthorityService {
 			Example example = new Example(User.class);
 			example.createCriteria().andEqualTo("roleId", param.getRoleId());
 			refreshUserInfo(getUserInfos(userMapper.selectByExample(example)));
-			return Result.success();
+			return Result.success().async();
 		} catch (Exception e) {
 			log.error("[setRolePermission]", e);
 			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
@@ -657,24 +667,25 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@Async
 	@Transactional
 	@Override
-	public Result removeRole(@NotNull Long roleId) {
+	public ListenableFuture<Result> removeRole(@NotNull Long roleId) {
 		try {
 			Role role = roleMapper.selectByPrimaryKey(roleId);
 			if (role == null) {
-				return Result.fail("找不到该角色!");
+				return Result.fail("找不到该角色!").async();
 			}
 			Example example = new Example(User.class);
 			example.createCriteria().andEqualTo("roleId", roleId);
 			if (userMapper.selectCountByExample(example) != 0) {
-				return Result.fail("仍存在使用该角色的用户,请更改该用户角色后再删除!");
+				return Result.fail("仍存在使用该角色的用户,请更改该用户角色后再删除!").async();
 			}
 			roleMapper.deleteByPrimaryKey(roleId);
 			example = new Example(RolePermission.class);
 			example.createCriteria().andEqualTo("roleId", roleId);
 			rolePermissionMapper.deleteByExample(example);
-			return Result.success();
+			return Result.success().async();
 		} catch (Exception e) {
 			log.error("[removeRole]", e);
 			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
@@ -685,22 +696,23 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@Async
 	@Transactional
 	@Override
-	public Result removePermission(@NotNull Long permissionId) {
+	public ListenableFuture<Result> removePermission(@NotNull Long permissionId) {
 		try {
 			Permission permission = permissionMapper.selectByPrimaryKey(permissionId);
 			if (permission == null) {
-				return Result.fail("找不到该权限!");
+				return Result.fail("找不到该权限!").async();
 			}
 			Example example = new Example(RolePermission.class);
 			example.createCriteria().andEqualTo("permissionId", permissionId);
 			if (rolePermissionMapper.selectCountByExample(example) != 0) {
-				return Result.fail("仍存在使用该权限的角色,请更改该角色权限后再删除!");
+				return Result.fail("仍存在使用该权限的角色,请更改该角色权限后再删除!").async();
 			}
 			rolePermissionMapper.deleteByExample(example);
 			permissionMapper.deleteByPrimaryKey(permissionId);
-			return Result.success();
+			return Result.success().async();
 		} catch (Exception e) {
 			log.error("[removePermission]", e);
 			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
@@ -710,9 +722,10 @@ public class AuthorityService implements IAuthorityService {
 		}
 	}
 
+	@Async
 	@Transactional
 	@Override
-	public Result scanAndCreatePermissions() {
+	public ListenableFuture<Result> scanAndCreatePermissions() {
 		try {
 			List<Permission> permissionList = new ArrayList<>();
 			Date date = new Date();
@@ -750,7 +763,7 @@ public class AuthorityService implements IAuthorityService {
 					permissionList.add(permission);
 				});
 			permissionMapper.insertList(permissionList);
-			return Result.success();
+			return Result.success().async();
 		} catch (Exception e) {
 			log.error("[scanAndCreatePermissions]", e);
 			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);

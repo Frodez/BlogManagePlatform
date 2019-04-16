@@ -20,7 +20,9 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.util.Assert;
+import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * 通用返回参数<br>
@@ -432,6 +434,15 @@ public final class Result implements Serializable {
 	 */
 	public HttpStatus httpStatus() {
 		return ResultEnum.of(code).status;
+	}
+
+	/**
+	 * 使用异步包装
+	 * @author Frodez
+	 * @date 2019-04-16
+	 */
+	public ListenableFuture<Result> async() {
+		return new AsyncResult<>(this);
 	}
 
 	private void ableAndNotNull() {

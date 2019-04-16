@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,13 +47,15 @@ public class RoleController {
 	/**
 	 * 分页查询角色信息
 	 * @author Frodez
+	 * @throws InterruptedException
+	 * @throws ExecutionException
 	 * @date 2019-03-06
 	 */
 	@GetMapping("/page")
 	@ApiOperation(value = "分页查询角色信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Role.class) })
-	public Result getRoles(@RequestBody @ApiParam(value = DefDesc.Message.PAGE_QUERY,
-		required = true) QueryPage param) {
+	public Result getRoles(@RequestBody @ApiParam(value = DefDesc.Message.PAGE_QUERY, required = true) QueryPage param)
+		throws InterruptedException, ExecutionException {
 		return authorityService.getRoles(param);
 	}
 
@@ -60,13 +63,21 @@ public class RoleController {
 	@ApiOperation(value = "修改角色权限接口")
 	public Result updateRolePermission(@RequestBody @ApiParam(value = "修改角色权限请求参数",
 		required = true) UpdateRolePermission param) {
-		return authorityService.updateRolePermission(param);
+		try {
+			return authorityService.updateRolePermission(param).get();
+		} catch (Exception e) {
+			return Result.errorService();
+		}
 	}
 
 	@DeleteMapping
 	@ApiOperation(value = "删除角色接口")
 	public Result removeRole(@RequestParam("id") @ApiParam(value = "角色ID", required = true) Long id) {
-		return authorityService.removeRole(id);
+		try {
+			return authorityService.removeRole(id).get();
+		} catch (Exception e) {
+			return Result.errorService();
+		}
 	}
 
 	@PostMapping("/add")

@@ -63,19 +63,31 @@ public class PermissionController {
 	@DeleteMapping
 	@ApiOperation(value = "删除权限接口")
 	public Result removePermission(@RequestParam("id") @ApiParam(value = "权限ID", required = true) Long id) {
-		return authorityService.removePermission(id);
+		try {
+			return authorityService.removePermission(id).get();
+		} catch (Exception e) {
+			return Result.errorService();
+		}
 	}
 
 	@PostMapping("/add")
 	@ApiOperation(value = "添加新权限接口")
 	public Result addPermission(@RequestBody @ApiParam(value = "新增权限请求参数", required = true) AddPermission param) {
-		return authorityService.addPermission(param);
+		try {
+			return authorityService.addPermission(param).get();
+		} catch (Exception e) {
+			return Result.errorService();
+		}
 	}
 
 	@PostMapping("/update")
 	@ApiOperation(value = "修改权限接口")
 	public Result updatePermission(@RequestBody @ApiParam(value = "修改权限请求参数", required = true) UpdatePermission param) {
-		return authorityService.updatePermission(param);
+		try {
+			return authorityService.updatePermission(param).get();
+		} catch (Exception e) {
+			return Result.errorService();
+		}
 	}
 
 }
