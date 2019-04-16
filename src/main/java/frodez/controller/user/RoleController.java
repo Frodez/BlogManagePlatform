@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.concurrent.ExecutionException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frodez
  * @date 2018-12-01
  */
+@Slf4j
 @RestController
 @RequestMapping("/role")
 @Api(tags = "用户角色信息控制器")
@@ -54,8 +56,8 @@ public class RoleController {
 	@GetMapping("/page")
 	@ApiOperation(value = "分页查询角色信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Role.class) })
-	public Result getRoles(@RequestBody @ApiParam(value = DefDesc.Message.PAGE_QUERY, required = true) QueryPage param)
-		throws InterruptedException, ExecutionException {
+	public Result getRoles(@RequestBody @ApiParam(value = DefDesc.Message.PAGE_QUERY,
+		required = true) QueryPage param) {
 		return authorityService.getRoles(param);
 	}
 
@@ -66,6 +68,7 @@ public class RoleController {
 		try {
 			return authorityService.updateRolePermission(param).get();
 		} catch (Exception e) {
+			log.error("[updateRolePermission]", e);
 			return Result.errorService();
 		}
 	}
@@ -76,6 +79,7 @@ public class RoleController {
 		try {
 			return authorityService.removeRole(id).get();
 		} catch (Exception e) {
+			log.error("[removeRole]", e);
 			return Result.errorService();
 		}
 	}

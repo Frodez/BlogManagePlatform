@@ -18,6 +18,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "font")
 public class FontProperties {
 
+	/**
+	 * 字体存放路径
+	 */
 	private String path = "";
 
 	/**

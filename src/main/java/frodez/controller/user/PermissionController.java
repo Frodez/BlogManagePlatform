@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frodez
  * @date 2018-12-01
  */
+@Slf4j
 @RestController
 @RequestMapping("/permission")
 @Api(tags = "用户权限信息控制器")
@@ -66,6 +68,7 @@ public class PermissionController {
 		try {
 			return authorityService.removePermission(id).get();
 		} catch (Exception e) {
+			log.error("[removePermission]", e);
 			return Result.errorService();
 		}
 	}
@@ -76,6 +79,7 @@ public class PermissionController {
 		try {
 			return authorityService.addPermission(param).get();
 		} catch (Exception e) {
+			log.error("[addPermission]", e);
 			return Result.errorService();
 		}
 	}
@@ -86,6 +90,7 @@ public class PermissionController {
 		try {
 			return authorityService.updatePermission(param).get();
 		} catch (Exception e) {
+			log.error("[updatePermission]", e);
 			return Result.errorService();
 		}
 	}
