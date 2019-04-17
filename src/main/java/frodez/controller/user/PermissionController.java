@@ -15,7 +15,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frodez
  * @date 2018-12-01
  */
-@Slf4j
 @RestController
 @RequestMapping("/permission")
 @Api(tags = "用户权限信息控制器")
@@ -65,34 +63,19 @@ public class PermissionController {
 	@DeleteMapping
 	@ApiOperation(value = "删除权限接口")
 	public Result removePermission(@RequestParam("id") @ApiParam(value = "权限ID", required = true) Long id) {
-		try {
-			return authorityService.removePermission(id).get();
-		} catch (Exception e) {
-			log.error("[removePermission]", e);
-			return Result.errorService();
-		}
+		return authorityService.removePermission(id);
 	}
 
 	@PostMapping("/add")
 	@ApiOperation(value = "添加新权限接口")
 	public Result addPermission(@RequestBody @ApiParam(value = "新增权限请求参数", required = true) AddPermission param) {
-		try {
-			return authorityService.addPermission(param).get();
-		} catch (Exception e) {
-			log.error("[addPermission]", e);
-			return Result.errorService();
-		}
+		return authorityService.addPermission(param);
 	}
 
 	@PostMapping("/update")
 	@ApiOperation(value = "修改权限接口")
 	public Result updatePermission(@RequestBody @ApiParam(value = "修改权限请求参数", required = true) UpdatePermission param) {
-		try {
-			return authorityService.updatePermission(param).get();
-		} catch (Exception e) {
-			log.error("[updatePermission]", e);
-			return Result.errorService();
-		}
+		return authorityService.updatePermission(param);
 	}
 
 }

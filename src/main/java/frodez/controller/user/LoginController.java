@@ -74,8 +74,8 @@ public class LoginController {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	@GetMapping("/userInfo")
-	public Result getUserInfo(@RequestParam("userName") String userName) {
+	@GetMapping("/test")
+	public Result test(@RequestParam("userName") String userName) {
 		return authorityService.getUserInfo(userName);
 	}
 
