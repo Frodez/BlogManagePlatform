@@ -26,7 +26,7 @@ import org.springframework.util.Assert;
  */
 @Lazy
 @Component("renderUtil")
-public class RenderUtil {
+public class FreemarkerRender {
 
 	private static Configuration configuration;
 
