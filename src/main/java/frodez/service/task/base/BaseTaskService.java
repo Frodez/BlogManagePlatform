@@ -74,7 +74,6 @@ public class BaseTaskService {
 	@PostConstruct
 	private void init() {
 		try {
-			scheduler.setWaitForTasksToCompleteOnShutdown(true);
 			taskServiceInfos = ContextUtil.gets(ITask.class).entrySet().stream().map((entry) -> {
 				AvailableTaskInfo info = new AvailableTaskInfo();
 				info.setName(entry.getKey());

@@ -13,7 +13,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerProperties;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -24,8 +23,7 @@ import org.springframework.util.Assert;
  * @author Frodez
  * @date 2019-03-27
  */
-@Lazy
-@Component("renderUtil")
+@Component
 public class FreemarkerRender {
 
 	private static Configuration configuration;
