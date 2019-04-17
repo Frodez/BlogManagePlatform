@@ -8,8 +8,8 @@ public class StringTest {
 
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		int testTimes = 1000000;
-		int arrayLength = 15;
+		int testTimes = 1000000000;
+		int arrayLength = 1;
 		int testRounds = 3;
 		String[] arr = new String[arrayLength];
 		for (int i = 0; i < arrayLength; i++) {
