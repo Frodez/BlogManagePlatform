@@ -437,6 +437,15 @@ public final class Result implements Serializable {
 	}
 
 	/**
+	 * 获取对应的状态枚举
+	 * @author Frodez
+	 * @date 2019-04-17
+	 */
+	public ResultEnum resultEnum() {
+		return ResultEnum.of(code);
+	}
+
+	/**
 	 * 使用异步包装
 	 * @author Frodez
 	 * @date 2019-04-16
@@ -461,7 +470,7 @@ public final class Result implements Serializable {
 	 */
 	@Getter
 	@AllArgsConstructor
-	public enum ResultEnum implements Serializable {
+	public enum ResultEnum {
 
 		/**
 		 * 操作成功,与预期相符

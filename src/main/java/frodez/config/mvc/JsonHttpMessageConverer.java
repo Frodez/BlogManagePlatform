@@ -10,6 +10,7 @@ import frodez.util.common.StrUtil;
 import frodez.util.constant.setting.DefCharset;
 import frodez.util.json.JSONUtil;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Map;
@@ -134,12 +135,14 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 	protected void writeInternal(Object object, @Nullable Type type, HttpOutputMessage outputMessage)
 		throws IOException, HttpMessageNotWritableException {
 		try {
-			if (object instanceof Result) {
-				outputMessage.getBody().write(object.toString().getBytes());
-				outputMessage.getBody().flush();
+			OutputStream outputStream = outputMessage.getBody();
+			if (object.getClass() == Result.class) {
+				//对通用Result采用特殊的优化过的方式
+				outputStream.write(object.toString().getBytes());
+				outputStream.flush();
 			} else {
-				outputMessage.getBody().write(JSONUtil.string(object).getBytes());
-				outputMessage.getBody().flush();
+				outputStream.write(JSONUtil.string(object).getBytes());
+				outputStream.flush();
 			}
 		} catch (InvalidDefinitionException ex) {
 			throw new HttpMessageConversionException(StrUtil.concat("Type definition error: ", ex.getType().toString()),

@@ -35,6 +35,9 @@ public class AsyncConfig {
 		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 		executor.initialize();
 		log.info("async executor is running now!");
+		log.info("async config:{}corePoolSize, {}maxPoolSize, {}queueCapacity, {}keepAliveSeconds, {}threadNamePrefix",
+			corePoolSize, maxPoolSize, queueCapacity, properties.getKeepAliveSeconds(), properties
+				.getThreadNamePrefix());
 		return executor;
 	}
 

@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import javax.validation.constraints.Positive;
 
 /**
  * 控制重复请求注解(带过期时间),只用于controller中的端点
@@ -21,6 +22,7 @@ public @interface TimeoutLock {
 	 * @author Frodez
 	 * @date 2019-04-13
 	 */
+	@Positive
 	long value() default 500;
 
 }
