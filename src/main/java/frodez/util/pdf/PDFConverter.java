@@ -20,19 +20,20 @@ import java.util.Map.Entry;
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
+import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * PDF生成工具类<br>
- * <strong>警告!!!如果要使用本类的方法,必须确保PDFConverter已经被初始化!</strong><br>
- * <strong>方式:在使用本方法的类上加入@DependsOn("PDFConverter")注解。</strong>
  * @author Frodez
  * @date 2019-03-27
  */
 @Lazy
 @Slf4j
-@Component("PDFConverter")
+@Component
 public class PDFConverter {
 
 	private static Map<String, FontProgram> fontCache = new HashMap<>();
@@ -64,7 +65,8 @@ public class PDFConverter {
 	 * @author Frodez
 	 * @date 2019-03-21
 	 */
-	public static ByteArrayOutputStream convert(String html) throws IOException {
+	@Async
+	public ListenableFuture<ByteArrayOutputStream> convert(String html) throws IOException {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		ConverterProperties properties = new ConverterProperties();
 		DefaultFontProvider defaultFontProvider = new DefaultFontProvider(false, false, false);
@@ -75,7 +77,7 @@ public class PDFConverter {
 		PdfDocument pdf = new PdfDocument(new PdfWriter(stream));
 		Document document = HtmlConverter.convertToDocument(html, pdf, properties);
 		document.close();
-		return stream;
+		return new AsyncResult<>(stream);
 	}
 
 }

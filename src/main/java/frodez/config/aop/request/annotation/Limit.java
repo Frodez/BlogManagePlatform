@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import javax.validation.constraints.Positive;
 
 /**
  * 请求限流注解,只用于controller中的端点
@@ -21,6 +22,7 @@ public @interface Limit {
 	 * @author Frodez
 	 * @date 2019-04-13
 	 */
+	@Positive
 	double value() default 100.0;
 
 	/**
@@ -28,6 +30,7 @@ public @interface Limit {
 	 * @author Frodez
 	 * @date 2019-04-13
 	 */
+	@Positive
 	long timeout() default 3000;
 
 }

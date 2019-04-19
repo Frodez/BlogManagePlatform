@@ -59,6 +59,7 @@ import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -227,6 +228,7 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@Async
 	@Override
 	public Result refreshUserInfoByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens) {
 		try {
@@ -248,6 +250,7 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@Async
 	@Override
 	public Result refreshUserInfoByNames(@NotEmpty List<String> userNames, boolean includeFobiddens) {
 		try {
@@ -310,9 +313,12 @@ public class AuthorityService implements IAuthorityService {
 		stream.forEach((item) -> {
 			userIdCache.save(item.getId(), item);
 			nameCache.save(item.getName(), item);
-			tokenCache.save(tokenCache.getTokenByCondition((iter) -> {
+			String token = tokenCache.getTokenByCondition((iter) -> {
 				return iter.getId().equals(item.getId());
-			}), item);
+			});
+			if (token != null) {
+				tokenCache.save(token, item);
+			}
 		});
 	}
 
@@ -469,6 +475,7 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@Async
 	@Transactional
 	@Override
 	public Result addPermission(@Valid @NotNull AddPermission param) {
@@ -497,6 +504,7 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@Async
 	@Transactional
 	@Override
 	public Result updatePermission(@Valid @NotNull UpdatePermission param) {
@@ -568,6 +576,7 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@Async
 	@Transactional
 	@Override
 	public Result updateRolePermission(@Valid @NotNull UpdateRolePermission param) {
@@ -657,6 +666,7 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@Async
 	@Transactional
 	@Override
 	public Result removeRole(@NotNull Long roleId) {
@@ -685,6 +695,7 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@Async
 	@Transactional
 	@Override
 	public Result removePermission(@NotNull Long permissionId) {
@@ -710,6 +721,7 @@ public class AuthorityService implements IAuthorityService {
 		}
 	}
 
+	@Async
 	@Transactional
 	@Override
 	public Result scanAndCreatePermissions() {

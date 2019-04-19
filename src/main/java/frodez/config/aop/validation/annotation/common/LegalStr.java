@@ -36,6 +36,13 @@ public @interface LegalStr {
 	 */
 	String regex();
 
+	/**
+	 * 正则表达式的模式
+	 * @see java.util.regex.Pattern
+	 * @see javax.validation.constraints.Pattern.Flag
+	 * @author Frodez
+	 * @date 2019-04-18
+	 */
 	Flag[] flags() default {};
 
 	/**
@@ -57,6 +64,9 @@ public @interface LegalStr {
 		 */
 		private String regex;
 
+		/**
+		 * 正则表达式的模式
+		 */
 		private int flag;
 
 		/**

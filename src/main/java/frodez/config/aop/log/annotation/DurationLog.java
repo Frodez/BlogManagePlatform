@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import javax.validation.constraints.Positive;
 
 /**
  * 方法耗时监控注解
@@ -21,6 +22,7 @@ public @interface DurationLog {
 	 * @author Frodez
 	 * @date 2019-04-13
 	 */
+	@Positive
 	long threshold() default 3000;
 
 }

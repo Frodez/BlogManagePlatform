@@ -20,7 +20,9 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.util.Assert;
+import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * 通用返回参数<br>
@@ -434,6 +436,24 @@ public final class Result implements Serializable {
 		return ResultEnum.of(code).status;
 	}
 
+	/**
+	 * 获取对应的状态枚举
+	 * @author Frodez
+	 * @date 2019-04-17
+	 */
+	public ResultEnum resultEnum() {
+		return ResultEnum.of(code);
+	}
+
+	/**
+	 * 使用异步包装
+	 * @author Frodez
+	 * @date 2019-04-16
+	 */
+	public ListenableFuture<Result> async() {
+		return new AsyncResult<>(this);
+	}
+
 	private void ableAndNotNull() {
 		if (code != ResultEnum.SUCCESS.val) {
 			throw new UnsupportedOperationException(message);
@@ -450,7 +470,7 @@ public final class Result implements Serializable {
 	 */
 	@Getter
 	@AllArgsConstructor
-	public enum ResultEnum implements Serializable {
+	public enum ResultEnum {
 
 		/**
 		 * 操作成功,与预期相符

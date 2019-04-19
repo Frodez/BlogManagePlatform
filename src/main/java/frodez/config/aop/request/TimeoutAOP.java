@@ -49,9 +49,6 @@ public class TimeoutAOP {
 	public Object process(ProceedingJoinPoint point) throws Throwable {
 		HttpServletRequest request = MVCUtil.request();
 		TimeoutLock timeoutLock = AspectUtil.annotation(point, TimeoutLock.class);
-		if (timeoutLock.value() < 0) {
-			throw new IllegalArgumentException("the timeout can't be negative!");
-		}
 		String key = KeyGenerator.servletKey(AspectUtil.fullMethodName(point), request);
 		if (checker.check(key)) {
 			log.info("重复请求:IP地址{}", ServletUtil.getAddr(request));

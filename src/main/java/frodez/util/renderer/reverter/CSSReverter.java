@@ -2,7 +2,7 @@ package frodez.util.renderer.reverter;
 
 import frodez.util.common.StrUtil;
 import frodez.util.io.FileUtil;
-import frodez.util.renderer.RenderUtil;
+import frodez.util.renderer.FreemarkerRender;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -38,7 +38,7 @@ public class CSSReverter implements Reverter {
 					continue;
 				}
 				htmlElement.prepend(StrUtil.concat("<style type=\"text/css\">", FileUtil.readString(ResourceUtils
-					.getFile(StrUtil.concat(RenderUtil.getLoaderPath(), path))), "</style>"));
+					.getFile(StrUtil.concat(FreemarkerRender.getLoaderPath(), path))), "</style>"));
 			}
 			links.remove();
 			return document.html();
