@@ -26,17 +26,54 @@ import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * 通用返回参数<br>
+ * 使用方法:<br>
+ * 1.返回数据
+ *
+ * <pre>
+ * Result.success();//返回成功状态,但不具有数据
+ * Result.success(SomeObject());//返回成功状态,具有数据
+ * Result.success(Arrays.asList(SomeObject(), SomeObject(), SomeObject()));//返回成功状态,具有数据,数据使用容器包装
+ * Result.fail();//返回失败状态,不具有详细信息
+ * Result.fail("...");//返回失败状态,具有详细信息
+ * Result.page(new Page());//返回成功状态,数据为分页查询得到的数据
+ * </pre>
+ *
+ * 2.获取数据
+ *
+ * <pre>
+ * 只有Result的状态为success时才允许获取数据,否则抛出异常。如果检查到数据为null,也会抛出异常。
+ * 如果Result的数据类型为SomeObject,那么可以使用Result.as(Class<T>):
+ * result = Result.success(SomeObject());
+ * result.as(SomeObject.class);
+ * 如果Result的数据类型为SomeObject的List,可使用Result.list(Class<T>):
+ * result = Result.success(Arrays.asList(SomeObject(), SomeObject(), SomeObject()));
+ * result.list(SomeObject.class);
+ * Set和Map的获取方式同上。
+ * </pre>
+ *
+ * 3.检查Result状态
+ *
+ * <pre>
+ * 只有success状态才是正常状态,其他状态为非正常状态。需要判断状态时,可用Result.unable()方法检查:
+ * result = Result.success(SomeObject());
+ * result.unable();
+ * </pre>
+ *
+ * 4.其他方法
+ *
+ * <pre>
+ * toString方法被重写,使用jackson输出json,对常用的默认状态(无数据,默认信息的状态)进行了优化;
+ * 涉及异步时,可使用async(),用Future包装;
+ * 数据类型不确定时,可使用dataType()获得数据类型;
+ * httpStatus()和resultEnum()用于获取Result的http状态码和自定义状态码。
+ * </pre>
+ *
  * @author Frodez
  * @date 2018-11-13
  */
 @EqualsAndHashCode
 @ApiModel(description = DefDesc.Message.RESULT)
 public final class Result implements Serializable {
-
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 默认json,只有默认类型实例才存在
@@ -138,7 +175,8 @@ public final class Result implements Serializable {
 	}
 
 	/**
-	 * 返回成功结果(有数据)
+	 * 返回成功结果(有数据)<br>
+	 * <strong>成功状态的默认信息不可更改,此处的参数只是数据,不是信息!!!</strong>
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */
@@ -168,6 +206,10 @@ public final class Result implements Serializable {
 	 */
 	public static <T> Result page(Page<T> page) {
 		Assert.notNull(page, "page must not be null");
+		Assert.notNull(page.getPageNum(), "page.getPageNum() must not be null");
+		Assert.notNull(page.getPageSize(), "page.getPageSize() must not be null");
+		Assert.notNull(page.getTotal(), "page.getTotal() must not be null");
+		Assert.notNull(page.getResult(), "page.getResult() must not be null");
 		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(),
 			page.getResult()));
 	}
@@ -181,6 +223,10 @@ public final class Result implements Serializable {
 	 */
 	public static <T> Result page(PageInfo<T> page) {
 		Assert.notNull(page, "page must not be null");
+		Assert.notNull(page.getPageNum(), "page.getPageNum() must not be null");
+		Assert.notNull(page.getPageSize(), "page.getPageSize() must not be null");
+		Assert.notNull(page.getTotal(), "page.getTotal() must not be null");
+		Assert.notNull(page.getList(), "page.getList() must not be null");
 		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(),
 			page.getList()));
 	}
@@ -336,7 +382,7 @@ public final class Result implements Serializable {
 	 * @date 2018-11-13
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> PageData<T> page(Class<T> klass) throws ClassCastException, ParseException {
+	public <T> PageData<T> pageData(Class<T> klass) throws ClassCastException, ParseException {
 		Assert.notNull(klass, "klass must not be null");
 		ableAndNotNull();
 		return (PageData<T>) data;
@@ -542,5 +588,7 @@ public final class Result implements Serializable {
 		}
 
 	}
+
+	private static final long serialVersionUID = 1L;
 
 }

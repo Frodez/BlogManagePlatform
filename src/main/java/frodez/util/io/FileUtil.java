@@ -1,5 +1,6 @@
 package frodez.util.io;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.FileWriteMode;
 import com.google.common.io.Files;
 import frodez.util.constant.setting.DefCharset;
@@ -9,8 +10,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -58,39 +57,44 @@ public class FileUtil {
 	}
 
 	/**
-	 * 读取文件数据到字符串List,默认UTF-8
+	 * 读取文件数据到字符串List,默认UTF-8<br>
+	 * <strong>该字符串不可变,如需可变,需要将其转化为可变List。</strong>
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static List<String> readStrings(File file) throws IOException, URISyntaxException {
+	public static ImmutableList<String> readStrings(File file) throws IOException, URISyntaxException {
 		return readStrings(file, DefCharset.UTF_8_CHARSET);
 	}
 
 	/**
-	 * 读取文件数据到字符串List,需指定Charset
+	 * 读取文件数据到字符串List,需指定Charset<br>
+	 * <strong>该字符串不可变,如需可变,需要将其转化为可变List。</strong>
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static List<String> readStrings(File file, Charset charset) throws IOException, URISyntaxException {
-		return new ArrayList<>(Files.asCharSource(file, charset).readLines());
+	public static ImmutableList<String> readStrings(File file, Charset charset) throws IOException, URISyntaxException {
+		return Files.asCharSource(file, charset).readLines();
 	}
 
 	/**
-	 * 读取文件数据到字符串List,默认UTF-8
+	 * 读取文件数据到字符串List,默认UTF-8<br>
+	 * <strong>该字符串不可变,如需可变,需要将其转化为可变List。</strong>
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static List<String> readStrings(String uri) throws IOException, URISyntaxException {
+	public static ImmutableList<String> readStrings(String uri) throws IOException, URISyntaxException {
 		return readStrings(uri, DefCharset.UTF_8_CHARSET);
 	}
 
 	/**
-	 * 读取文件数据到字符串List,需指定Charset
+	 * 读取文件数据到字符串List,需指定Charset<br>
+	 * <strong>该字符串不可变,如需可变,需要将其转化为可变List。</strong>
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static List<String> readStrings(String uri, Charset charset) throws IOException, URISyntaxException {
-		return new ArrayList<>(Files.asCharSource(new File(new URI(uri)), charset).readLines());
+	public static ImmutableList<String> readStrings(String uri, Charset charset) throws IOException,
+		URISyntaxException {
+		return Files.asCharSource(new File(new URI(uri)), charset).readLines();
 	}
 
 	/**

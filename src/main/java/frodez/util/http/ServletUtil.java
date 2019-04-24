@@ -3,10 +3,13 @@ package frodez.util.http;
 import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
 import frodez.util.constant.setting.DefCharset;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
@@ -17,8 +20,23 @@ import org.springframework.util.Assert;
  * @author Frodez
  * @date 2018-12-21
  */
+@Slf4j
 @UtilityClass
 public class ServletUtil {
+
+	/**
+	 * 判断地址是否可ping通
+	 * @author Frodez
+	 * @date 2019-04-19
+	 */
+	public static boolean ping(String ip, int timeout) {
+		try {
+			return InetAddress.getByName(ip).isReachable(timeout);
+		} catch (IOException e) {
+			log.error("[ping]", e);
+			return false;
+		}
+	}
 
 	/**
 	 * 获取真实地址
