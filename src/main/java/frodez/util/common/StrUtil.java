@@ -184,7 +184,8 @@ public class StrUtil {
 		}
 		String[] tokens = string.split(delimiter);
 		if (tokens.length <= 1) {
-			return lowerFirst(string);
+			return new StringBuilder(string.length()).append(Character.toLowerCase(string.charAt(0))).append(string
+				.substring(1)).toString();
 		}
 		char[] upperStarters = new char[tokens.length - 1];
 		for (int i = 1; i < tokens.length; i++) {
@@ -192,7 +193,8 @@ public class StrUtil {
 			tokens[i] = tokens[i].substring(1);
 		}
 		StringBuilder builder = new StringBuilder(string.length());
-		builder.append(lowerFirst(tokens[0]));
+		builder.append(Character.toLowerCase(tokens[0].charAt(0)));
+		builder.append(tokens[0].substring(1));
 		for (int i = 1; i < tokens.length; i++) {
 			builder.append(upperStarters[i]).append(tokens[i]);
 		}
