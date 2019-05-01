@@ -7,7 +7,7 @@ import lombok.Getter;
 
 /**
  * 修改操作类型枚举
- * @see OperationEnum
+ * @see OperateEnum
  * @author Frodez
  * @date 2019-03-17
  */

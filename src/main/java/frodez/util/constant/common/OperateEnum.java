@@ -13,7 +13,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum OperationEnum {
+public enum OperateEnum {
 
 	/**
 	 * 新增
@@ -36,16 +36,16 @@ public enum OperationEnum {
 
 	private String desc;
 
-	private static final Map<Byte, OperationEnum> enumMap;
+	private static final Map<Byte, OperateEnum> enumMap;
 
 	static {
 		enumMap = new HashMap<>();
-		for (OperationEnum iter : OperationEnum.values()) {
+		for (OperateEnum iter : OperateEnum.values()) {
 			enumMap.put(iter.val, iter);
 		}
 	}
 
-	public static OperationEnum of(byte value) {
+	public static OperateEnum of(byte value) {
 		return enumMap.get(value);
 	}
 
