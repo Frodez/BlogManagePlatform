@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 import javax.validation.constraints.Positive;
 
 /**
- * 请求限流注解,只用于controller中的端点
+ * 请求限流注解
  * @author Frodez
  * @date 2018-12-21
  */

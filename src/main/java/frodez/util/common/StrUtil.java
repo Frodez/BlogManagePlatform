@@ -83,16 +83,13 @@ public class StrUtil {
 			return strings[0] == null ? defaultStr : strings[0];
 		}
 		int size = 0;
+		int defaultStrLength = defaultStr.length();
 		for (String string : strings) {
-			size = size + (string == null ? defaultStr.length() : string.length());
+			size = size + (string == null ? defaultStrLength : string.length());
 		}
 		StringBuilder builder = new StringBuilder(size);
 		for (String string : strings) {
-			if (string == null) {
-				builder.append(defaultStr);
-			} else {
-				builder.append(string);
-			}
+			builder.append(string == null ? defaultStr : string);
 		}
 		return builder.toString();
 	}
@@ -120,18 +117,14 @@ public class StrUtil {
 			return strings[0] == null ? defaultStr : strings[0];
 		}
 		int size = (strings.length - 1) * delimiter.length();
+		int defaultStrLength = defaultStr.length();
 		for (String string : strings) {
-			size = size + (string == null ? defaultStr.length() : string.length());
+			size = size + (string == null ? defaultStrLength : string.length());
 		}
 		StringBuilder builder = new StringBuilder(size);
 		builder.append(strings[0]);
 		for (int i = 1; i < strings.length; i++) {
-			builder.append(delimiter);
-			if (strings[i] == null) {
-				builder.append(defaultStr);
-			} else {
-				builder.append(strings[i]);
-			}
+			builder.append(delimiter).append(strings[i] == null ? defaultStr : strings[i]);
 		}
 		return builder.toString();
 	}
