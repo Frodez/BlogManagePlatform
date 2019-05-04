@@ -37,7 +37,7 @@ public class TokenFilter extends OncePerRequestFilter {
 				try {
 					user = TokenUtil.verify(authToken);
 				} catch (JWTVerificationException e) {
-					if (e instanceof TokenExpiredException) {
+					if (e.getClass() == TokenExpiredException.class) {
 						//如果token超时失效,这里不删除token,而是告诉客户端token失效,让客户端重新登陆.
 						ServletUtil.writeJson(response, Result.expired());
 					}

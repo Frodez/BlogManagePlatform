@@ -127,8 +127,10 @@ public class BeanUtil {
 	public static void clear(Object bean) {
 		Assert.notNull(bean, "bean must not be null");
 		try {
-			for (FastMethod method : getSetters(bean.getClass())) {
-				method.invoke(bean, NULL_PARAM);
+			FastMethod[] methods = getSetters(bean.getClass());
+			int length = methods.length;
+			for (int i = 0; i < length; i++) {
+				methods[i].invoke(bean, NULL_PARAM);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -155,7 +157,8 @@ public class BeanUtil {
 					list.add(fastClass.getMethod(method));
 				}
 			}
-			methods = (FastMethod[]) list.toArray();
+			methods = new FastMethod[list.size()];
+			methods = list.toArray(methods);
 			setterCache.put(klass, methods);
 		}
 		return methods;
@@ -187,7 +190,8 @@ public class BeanUtil {
 			} catch (IllegalArgumentException | IllegalAccessException | SecurityException e) {
 				throw new RuntimeException(e);
 			}
-			methods = (FastMethod[]) list.toArray();
+			methods = new FastMethod[list.size()];
+			methods = list.toArray(methods);
 			notNullFieldSetterCache.put(klass, methods);
 		}
 		return methods;
@@ -205,8 +209,10 @@ public class BeanUtil {
 	public static <T> T clearInstance(Class<T> klass) {
 		T bean = ReflectUtil.newInstance(klass);
 		try {
-			for (FastMethod method : getDefaultNotNullSetters(bean)) {
-				method.invoke(bean, NULL_PARAM);
+			FastMethod[] methods = getDefaultNotNullSetters(bean);
+			int length = methods.length;
+			for (int i = 0; i < length; i++) {
+				methods[i].invoke(bean, NULL_PARAM);
 			}
 			return bean;
 		} catch (Exception e) {

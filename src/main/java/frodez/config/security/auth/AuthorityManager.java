@@ -5,7 +5,7 @@ import frodez.util.common.EmptyUtil;
 import frodez.util.http.URLMatcher;
 import frodez.util.spring.ContextUtil;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.DependsOn;
@@ -74,8 +74,8 @@ public class AuthorityManager implements AccessDecisionManager {
 		if (permissions.contains(defaultDeniedRole)) {
 			throw new AccessDeniedException("无访问权限!");
 		}
-		List<String> auths = auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors
-			.toList());
+		Set<String> auths = auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors
+			.toSet());
 		for (ConfigAttribute permission : permissions) {
 			if (auths.contains(permission.getAttribute())) {
 				return;
