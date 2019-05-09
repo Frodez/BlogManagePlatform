@@ -83,6 +83,7 @@ import org.springframework.boot.autoconfigure.webservices.client.WebServiceTempl
 import org.springframework.boot.autoconfigure.websocket.reactive.WebSocketReactiveAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketMessagingAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServletAutoConfiguration;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.jms.annotation.EnableJms;
 import tk.mybatis.spring.annotation.MapperScan;
 
@@ -92,6 +93,7 @@ import tk.mybatis.spring.annotation.MapperScan;
  * @date 2019-01-07
  */
 @EnableJms
+@ServletComponentScan
 @MapperScan(basePackages = { "frodez.dao.mapper" })
 @SpringBootApplication(exclude = { ArtemisAutoConfiguration.class, BatchAutoConfiguration.class,
 	CacheAutoConfiguration.class, CassandraAutoConfiguration.class, CassandraDataAutoConfiguration.class,
