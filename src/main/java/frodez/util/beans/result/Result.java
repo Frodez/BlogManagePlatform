@@ -62,7 +62,7 @@ import org.springframework.util.concurrent.ListenableFuture;
  * 4.其他方法
  *
  * <pre>
- * toString方法被重写,使用jackson输出json,对常用的默认状态(无数据,默认信息的状态)进行了优化;
+ * json()方法使用jackson输出json,对常用的默认状态(无数据,默认信息的状态)进行了优化;
  * 涉及异步时,可使用async(),用Future包装;
  * 数据类型不确定时,可使用dataType()获得数据类型;
  * httpStatus()和resultEnum()用于获取Result的http状态码和自定义状态码。
@@ -151,18 +151,14 @@ public final class Result implements Serializable {
 	/**
 	 * 获取result的json字符串
 	 * @author Frodez
+	 * @throws JsonProcessingException
 	 * @date 2018-11-27
 	 */
-	@Override
-	public String toString() {
+	public String json() throws JsonProcessingException {
 		if (json != null) {
 			return json;
 		}
-		try {
-			return writer.writeValueAsString(this);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
+		return writer.writeValueAsString(this);
 	}
 
 	/**

@@ -90,6 +90,9 @@ public class DecimalUtil {
 	 * @date 2019-01-28
 	 */
 	public static BigDecimal add(boolean normalized, BigDecimal first, BigDecimal... args) {
+		if (EmptyUtil.yes(args)) {
+			throw new IllegalArgumentException();
+		}
 		BigDecimal result = first;
 		for (int i = 0; i < args.length; ++i) {
 			result = result.add(args[i]);
@@ -118,6 +121,9 @@ public class DecimalUtil {
 	 * @date 2019-01-28
 	 */
 	public static BigDecimal subtract(boolean normalized, BigDecimal first, BigDecimal... args) {
+		if (EmptyUtil.yes(args)) {
+			throw new IllegalArgumentException();
+		}
 		BigDecimal result = first;
 		for (int i = 0; i < args.length; ++i) {
 			result = result.subtract(args[i]);
@@ -146,6 +152,9 @@ public class DecimalUtil {
 	 * @date 2019-01-28
 	 */
 	public static BigDecimal multiply(boolean normalized, BigDecimal first, BigDecimal... args) {
+		if (EmptyUtil.yes(args)) {
+			throw new IllegalArgumentException();
+		}
 		BigDecimal result = first;
 		for (int i = 0; i < args.length; ++i) {
 			result = result.multiply(args[i]);
@@ -174,7 +183,11 @@ public class DecimalUtil {
 	 * @date 2019-01-28
 	 */
 	public static BigDecimal divide(boolean normalized, BigDecimal first, BigDecimal... args) {
+		if (EmptyUtil.yes(args)) {
+			throw new IllegalArgumentException();
+		}
 		BigDecimal result = first;
+		//按照每次计算精度减1的标准得出内部精度
 		int precision = args.length + DefDecimal.PRECISION;
 		for (int i = 0; i < args.length; ++i) {
 			result = result.divide(args[i], precision, DefDecimal.ROUND_MODE);

@@ -58,6 +58,9 @@ public class RegexUtil {
 	 * @date 2019-03-05
 	 */
 	public static int transfer(Flag... flags) {
+		if (EmptyUtil.yes(flags)) {
+			throw new IllegalArgumentException();
+		}
 		int flag = 0;
 		for (Flag item : flags) {
 			flag = flag | item.getValue();

@@ -31,7 +31,7 @@ import org.springframework.lang.Nullable;
  * @author Frodez
  * @date 2019-03-14
  */
-public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter<Object> {
+public class JsonConverer extends AbstractGenericHttpMessageConverter<Object> {
 
 	private Map<String, Boolean> contextDeserializeCache = new ConcurrentHashMap<>();
 
@@ -39,7 +39,7 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 
 	private Map<Class<?>, Boolean> serializeCache = new ConcurrentHashMap<>();
 
-	public JsonHttpMessageConverer(MediaType... supportedMediaTypes) {
+	public JsonConverer(MediaType... supportedMediaTypes) {
 		setDefaultCharset(DefCharset.UTF_8_CHARSET);
 		setSupportedMediaTypes(Arrays.asList(supportedMediaTypes));
 	}
@@ -138,7 +138,7 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 			OutputStream outputStream = outputMessage.getBody();
 			if (object.getClass() == Result.class) {
 				//对通用Result采用特殊的优化过的方式
-				outputStream.write(object.toString().getBytes());
+				outputStream.write(((Result) object).json().getBytes());
 				outputStream.flush();
 			} else {
 				outputStream.write(JSONUtil.string(object).getBytes());

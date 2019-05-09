@@ -90,7 +90,7 @@ public class ServletUtil {
 		PrintWriter out = null;
 		try {
 			out = response.getWriter();
-			out.append(result.toString());
+			out.append(result.json());
 			out.flush();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -106,7 +106,7 @@ public class ServletUtil {
 	 * @author Frodez
 	 * @date 2019-01-07
 	 */
-	public static void writeJson(HttpServletResponse response, @Nullable HttpStatus status, String json) {
+	public static void writeJson(HttpServletResponse response, String json, @Nullable HttpStatus status) {
 		if (response.isCommitted()) {
 			throw new RuntimeException("this response has been committed!");
 		}
@@ -134,7 +134,7 @@ public class ServletUtil {
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */
-	public static void writePlainText(HttpServletResponse response, @Nullable HttpStatus status, String text) {
+	public static void writePlainText(HttpServletResponse response, String text, @Nullable HttpStatus status) {
 		if (response.isCommitted()) {
 			throw new RuntimeException("this response has been committed!");
 		}
@@ -162,15 +162,15 @@ public class ServletUtil {
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */
-	public static void writeHtml(HttpServletResponse response, @Nullable HttpStatus status, String html) {
+	public static void writeHtml(HttpServletResponse response, String html, @Nullable HttpStatus status) {
 		if (response.isCommitted()) {
 			return;
 		}
 		if (status != null) {
 			response.setStatus(status.value());
 		}
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html; charset=utf-8");
+		response.setCharacterEncoding(DefCharset.UTF_8);
+		response.setContentType(MediaType.TEXT_HTML_VALUE);
 		PrintWriter out = null;
 		try {
 			out = response.getWriter();

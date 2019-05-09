@@ -15,18 +15,21 @@ public class BeanTest {
 		role.setLevel((byte) 1);
 		role.setName("wqwq");
 		int total = 10000 * 10000;
-		long start = System.currentTimeMillis();
-		for (int i = 0; i < total; ++i) {
-			BeanUtil.cover(role, new Role());
+		int times = 5;
+		for (int i = 1; i <= times; ++i) {
+			long start = System.currentTimeMillis();
+			for (int j = 0; j < total; ++j) {
+				BeanUtil.cover(role, new Role());
+			}
+			long duration = System.currentTimeMillis() - start;
+			System.out.println(duration);
+			start = System.currentTimeMillis();
+			for (int j = 0; j < total; ++j) {
+				BeanUtil.initialize(role, Role.class);
+			}
+			duration = System.currentTimeMillis() - start;
+			System.out.println(duration);
 		}
-		long duration = System.currentTimeMillis() - start;
-		System.out.println(duration);
-		start = System.currentTimeMillis();
-		for (int i = 0; i < total; ++i) {
-			BeanUtil.initialize(role, Role.class);
-		}
-		duration = System.currentTimeMillis() - start;
-		System.out.println(duration);
 	}
 
 	@Data
