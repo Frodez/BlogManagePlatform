@@ -1,12 +1,15 @@
 package frodez.util.renderer;
 
 import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 import frodez.util.common.EmptyUtil;
 import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.renderer.reverter.Reverter;
 import frodez.util.spring.ContextUtil;
+import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +40,7 @@ public class FreemarkerRender {
 	private static Map<RenderMode, Reverter> reverterMap = new EnumMap<>(RenderMode.class);
 
 	@PostConstruct
-	private void init() {
+	private void init() throws InvocationTargetException {
 		configuration = ContextUtil.get(Configuration.class);
 		FreeMarkerProperties properties = ContextUtil.get(FreeMarkerProperties.class);
 		loaderPath = properties.getTemplateLoaderPath()[0];
@@ -100,7 +103,7 @@ public class FreemarkerRender {
 			StringWriter writer = new StringWriter();
 			configuration.getTemplate(StrUtil.concat(templateName, suffix)).process(params, writer);
 			return revert(writer.toString(), modes);
-		} catch (Exception e) {
+		} catch (TemplateException | IOException e) {
 			throw new RuntimeException(e);
 		}
 	}

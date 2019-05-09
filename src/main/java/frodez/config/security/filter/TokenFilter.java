@@ -1,6 +1,5 @@
 package frodez.config.security.filter;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import frodez.config.security.util.TokenUtil;
 import frodez.util.beans.result.Result;
@@ -36,11 +35,9 @@ public class TokenFilter extends OncePerRequestFilter {
 				UserDetails user = null;
 				try {
 					user = TokenUtil.verify(authToken);
-				} catch (JWTVerificationException e) {
-					if (e.getClass() == TokenExpiredException.class) {
-						//如果token超时失效,这里不删除token,而是告诉客户端token失效,让客户端重新登陆.
-						ServletUtil.writeJson(response, Result.expired());
-					}
+				} catch (TokenExpiredException e) {
+					//如果token超时失效,这里不删除token,而是告诉客户端token失效,让客户端重新登陆.
+					ServletUtil.writeJson(response, Result.expired());
 				}
 				if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user,
