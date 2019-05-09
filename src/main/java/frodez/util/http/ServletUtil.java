@@ -30,10 +30,21 @@ public class ServletUtil {
 	 * @date 2019-04-19
 	 */
 	public static boolean ping(String ip, int timeout) {
+		return ping(ip, timeout, true);
+	}
+
+	/**
+	 * 判断地址是否可ping通
+	 * @author Frodez
+	 * @date 2019-04-19
+	 */
+	public static boolean ping(String ip, int timeout, boolean needLog) {
 		try {
 			return InetAddress.getByName(ip).isReachable(timeout);
 		} catch (IOException e) {
-			log.error("[ping]", e);
+			if (needLog) {
+				log.error("[ping]", e);
+			}
 			return false;
 		}
 	}
@@ -92,7 +103,7 @@ public class ServletUtil {
 			out = response.getWriter();
 			out.append(result.json());
 			out.flush();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {
 			if (out != null) {
@@ -120,7 +131,7 @@ public class ServletUtil {
 			out = response.getWriter();
 			out.append(json);
 			out.flush();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {
 			if (out != null) {
@@ -148,7 +159,7 @@ public class ServletUtil {
 			out = response.getWriter();
 			out.append(text);
 			out.flush();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {
 			if (out != null) {
@@ -176,7 +187,7 @@ public class ServletUtil {
 			out = response.getWriter();
 			out.append(html);
 			out.flush();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {
 			if (out != null) {

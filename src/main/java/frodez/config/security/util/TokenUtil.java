@@ -90,18 +90,13 @@ public class TokenUtil {
 	 * @date 2018-11-21
 	 */
 	public static String generate(UserDetails user) {
-		try {
-			long now = System.currentTimeMillis();
-			if (expired) {
-				return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withExpiresAt(new Date(now
-					+ expiration)).withSubject(user.getUsername()).withArrayClaim(claim, AuthorityUtil.get(user)).sign(
-						algorithm);
-			} else {
-				return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withSubject(user.getUsername())
-					.withArrayClaim(claim, AuthorityUtil.get(user)).sign(algorithm);
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		long now = System.currentTimeMillis();
+		if (expired) {
+			return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withExpiresAt(new Date(now + expiration))
+				.withSubject(user.getUsername()).withArrayClaim(claim, AuthorityUtil.get(user)).sign(algorithm);
+		} else {
+			return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withSubject(user.getUsername())
+				.withArrayClaim(claim, AuthorityUtil.get(user)).sign(algorithm);
 		}
 	}
 
@@ -112,18 +107,13 @@ public class TokenUtil {
 	 * @date 2018-11-21
 	 */
 	public static String generate(String username, List<String> authorities) {
-		try {
-			long now = System.currentTimeMillis();
-			if (expired) {
-				return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withExpiresAt(new Date(now
-					+ expiration)).withSubject(username).withArrayClaim(claim, authorities.toArray(String[]::new)).sign(
-						algorithm);
-			} else {
-				return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withSubject(username).withArrayClaim(
-					claim, authorities.toArray(String[]::new)).sign(algorithm);
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		long now = System.currentTimeMillis();
+		if (expired) {
+			return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withExpiresAt(new Date(now + expiration))
+				.withSubject(username).withArrayClaim(claim, authorities.toArray(String[]::new)).sign(algorithm);
+		} else {
+			return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withSubject(username).withArrayClaim(
+				claim, authorities.toArray(String[]::new)).sign(algorithm);
 		}
 	}
 

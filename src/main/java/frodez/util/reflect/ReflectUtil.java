@@ -24,12 +24,8 @@ public class ReflectUtil {
 	private static final Map<Class<?>, Pair<FastClass, FastMethod[]>> CGLIB_CACHE = new ConcurrentHashMap<>();
 
 	@SuppressWarnings("unchecked")
-	public <T> T newInstance(Class<T> klass) {
-		try {
-			return (T) getFastClass(klass).newInstance();
-		} catch (InvocationTargetException e) {
-			throw new RuntimeException();
-		}
+	public <T> T newInstance(Class<T> klass) throws InvocationTargetException {
+		return (T) getFastClass(klass).newInstance();
 	}
 
 	/**

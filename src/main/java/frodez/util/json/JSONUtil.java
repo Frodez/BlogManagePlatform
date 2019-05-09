@@ -1,5 +1,6 @@
 package frodez.util.json;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.SerializableString;
 import com.fasterxml.jackson.core.io.CharacterEscapes;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import frodez.util.common.EmptyUtil;
 import frodez.util.common.StrUtil;
 import frodez.util.spring.ContextUtil;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -129,7 +131,7 @@ public class JSONUtil {
 		try {
 			return writerCache.computeIfAbsent(object.getClass(), (o) -> OBJECT_MAPPER.writerFor(object.getClass()))
 				.writeValueAsString(object);
-		} catch (Exception e) {
+		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -146,7 +148,7 @@ public class JSONUtil {
 		Assert.notNull(stream, "stream must not be null");
 		try {
 			return DEFAULT_MAP_READER.readValue(stream);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -163,7 +165,7 @@ public class JSONUtil {
 		Assert.notNull(json, "json must not be null");
 		try {
 			return DEFAULT_MAP_READER.readValue(json);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -184,7 +186,7 @@ public class JSONUtil {
 			return multiClassReaderCache.computeIfAbsent(StrUtil.concat(DEFAULT_MAP_CLASS_NAME, k.getName(), v
 				.getName()), (i) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(
 					DEFAULT_MAP_CLASS, k, v))).readValue(stream);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -205,7 +207,7 @@ public class JSONUtil {
 			return multiClassReaderCache.computeIfAbsent(StrUtil.concat(DEFAULT_MAP_CLASS_NAME, k.getName(), v
 				.getName()), (i) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(
 					DEFAULT_MAP_CLASS, k, v))).readValue(json);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -224,7 +226,7 @@ public class JSONUtil {
 			return multiClassReaderCache.computeIfAbsent(StrUtil.concat(DEFAULT_LIST_CLASS_NAME, klass.getName()), (
 				i) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(DEFAULT_LIST_CLASS,
 					klass))).readValue(stream);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -243,7 +245,7 @@ public class JSONUtil {
 			return multiClassReaderCache.computeIfAbsent(StrUtil.concat(DEFAULT_LIST_CLASS_NAME, klass.getName()), (
 				i) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(DEFAULT_LIST_CLASS,
 					klass))).readValue(json);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -262,7 +264,7 @@ public class JSONUtil {
 			return multiClassReaderCache.computeIfAbsent(StrUtil.concat(DEFAULT_SET_CLASS_NAME, klass.getName()), (
 				i) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(DEFAULT_SET_CLASS,
 					klass))).readValue(stream);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -281,7 +283,7 @@ public class JSONUtil {
 			return multiClassReaderCache.computeIfAbsent(StrUtil.concat(DEFAULT_SET_CLASS_NAME, klass.getName()), (
 				i) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(DEFAULT_SET_CLASS,
 					klass))).readValue(json);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -299,7 +301,7 @@ public class JSONUtil {
 		try {
 			return singleClassReaderCache.computeIfAbsent(klass, (k) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER
 				.getTypeFactory().constructType(klass))).readValue(stream);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -317,7 +319,7 @@ public class JSONUtil {
 		try {
 			return singleClassReaderCache.computeIfAbsent(klass, (k) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER
 				.getTypeFactory().constructType(klass))).readValue(json);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -335,7 +337,7 @@ public class JSONUtil {
 		try {
 			return singleTypeReaderCache.computeIfAbsent(type, (k) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER
 				.getTypeFactory().constructType(type))).readValue(stream);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -353,7 +355,7 @@ public class JSONUtil {
 		try {
 			return singleTypeReaderCache.computeIfAbsent(type, (k) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER
 				.getTypeFactory().constructType(type))).readValue(json);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -381,7 +383,7 @@ public class JSONUtil {
 					OBJECT_MAPPER.getTypeFactory().constructParametricType(parametrized, genericClasses))).readValue(
 						stream);
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -409,7 +411,7 @@ public class JSONUtil {
 					OBJECT_MAPPER.getTypeFactory().constructParametricType(parametrized, genericClasses))).readValue(
 						json);
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -437,7 +439,7 @@ public class JSONUtil {
 					OBJECT_MAPPER.getTypeFactory().constructParametricType(parametrized, genericClasses))).readValue(
 						json);
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -465,7 +467,7 @@ public class JSONUtil {
 					OBJECT_MAPPER.getTypeFactory().constructParametricType(parametrized, genericClasses))).readValue(
 						stream);
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}

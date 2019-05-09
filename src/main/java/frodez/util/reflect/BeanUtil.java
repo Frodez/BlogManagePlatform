@@ -2,6 +2,7 @@ package frodez.util.reflect;
 
 import frodez.util.common.StrUtil;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -110,7 +111,7 @@ public class BeanUtil {
 			T bean = ReflectUtil.newInstance(klass);
 			BeanMap.create(bean).putAll(map);
 			return bean;
-		} catch (Exception e) {
+		} catch (InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -132,7 +133,7 @@ public class BeanUtil {
 			for (int i = 0; i < length; i++) {
 				methods[i].invoke(bean, NULL_PARAM);
 			}
-		} catch (Exception e) {
+		} catch (InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -164,7 +165,8 @@ public class BeanUtil {
 		return methods;
 	}
 
-	private static FastMethod[] getDefaultNotNullSetters(Object bean) {
+	private static FastMethod[] getDefaultNotNullSetters(Object bean) throws IllegalArgumentException,
+		IllegalAccessException {
 		Class<?> klass = bean.getClass();
 		FastMethod[] methods = notNullFieldSetterCache.get(klass);
 		if (methods == null) {
@@ -176,19 +178,15 @@ public class BeanUtil {
 					setters.add(method);
 				}
 			}
-			try {
-				for (Field field : klass.getDeclaredFields()) {
-					if (isPrivateAndNotNullField(field, bean)) {
-						for (Method method : setters) {
-							if (method.getName().endsWith(StrUtil.upperFirst(field.getName()))) {
-								list.add(fastClass.getMethod(method));
-								break;
-							}
+			for (Field field : klass.getDeclaredFields()) {
+				if (isPrivateAndNotNullField(field, bean)) {
+					for (Method method : setters) {
+						if (method.getName().endsWith(StrUtil.upperFirst(field.getName()))) {
+							list.add(fastClass.getMethod(method));
+							break;
 						}
 					}
 				}
-			} catch (IllegalArgumentException | IllegalAccessException | SecurityException e) {
-				throw new RuntimeException(e);
 			}
 			methods = new FastMethod[list.size()];
 			methods = list.toArray(methods);
@@ -207,15 +205,15 @@ public class BeanUtil {
 	 * @date 2019-02-08
 	 */
 	public static <T> T clearInstance(Class<T> klass) {
-		T bean = ReflectUtil.newInstance(klass);
 		try {
+			T bean = ReflectUtil.newInstance(klass);
 			FastMethod[] methods = getDefaultNotNullSetters(bean);
 			int length = methods.length;
 			for (int i = 0; i < length; i++) {
 				methods[i].invoke(bean, NULL_PARAM);
 			}
 			return bean;
-		} catch (Exception e) {
+		} catch (InvocationTargetException | IllegalArgumentException | IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
 	}
