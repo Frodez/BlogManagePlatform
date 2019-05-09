@@ -138,7 +138,7 @@ public class JsonHttpMessageConverer extends AbstractGenericHttpMessageConverter
 			OutputStream outputStream = outputMessage.getBody();
 			if (object.getClass() == Result.class) {
 				//对通用Result采用特殊的优化过的方式
-				outputStream.write(object.toString().getBytes());
+				outputStream.write(((Result) object).json().getBytes());
 				outputStream.flush();
 			} else {
 				outputStream.write(JSONUtil.string(object).getBytes());

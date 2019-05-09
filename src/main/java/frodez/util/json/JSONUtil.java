@@ -99,6 +99,7 @@ public class JSONUtil {
 			public int[] getEscapeCodesForAscii() {
 				return asciiEscapes;
 			}
+
 		});
 		Assert.notNull(OBJECT_MAPPER, "OBJECT_MAPPER must not be null");
 		Assert.notNull(DEFAULT_MAP_READER, "DEFAULT_MAP_READER must not be null");

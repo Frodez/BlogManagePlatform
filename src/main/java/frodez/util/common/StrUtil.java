@@ -55,7 +55,8 @@ public class StrUtil {
 	 * 在极端的情况下,会直接返回原字符串(例如只有一个字符串传入且该字符串不为null)。这种情况可以极大地加快速度。<br>
 	 * 当然,如果只有一个字符串且该字符串为null,则会直接返回默认字符串,同样可以极大地加快速度。<br>
 	 * 另外由于String类型是inmutable的,故只要不涉及对其内存地址的操作,则不会出现bug。<br>
-	 * 经测试,在绝大多数场景下相对jdk的实现更快(平均40%左右),在最坏情况下也与其相当。
+	 * 经测试,在绝大多数场景下相对jdk的实现更快(平均50%左右或更多),在最坏情况下也与其相当。<br>
+	 * 与StringBuilder的非优化使用方式相比,性能也略快,从10%-50%不等。当拼接的字符串长度较长,或者字符串数组长度较长时,性能优势更大。
 	 * @see java.lang.String#concat(String)
 	 * @author Frodez
 	 * @date 2019-04-01
@@ -69,14 +70,15 @@ public class StrUtil {
 	 * 在极端的情况下,会直接返回原字符串(例如只有一个字符串传入且该字符串不为null)。这种情况可以极大地加快速度。<br>
 	 * 当然,如果只有一个字符串且该字符串为null,则会直接返回默认字符串,同样可以极大地加快速度。<br>
 	 * 另外由于String类型是inmutable的,故只要不涉及对其内存地址的操作,则不会出现bug。<br>
-	 * 经测试,在绝大多数场景下相对jdk的实现更快(平均40%左右),在最坏情况下也与其相当。
+	 * 经测试,在绝大多数场景下相对jdk的实现更快(平均50%左右或更多),在最坏情况下也与其相当。<br>
+	 * 与StringBuilder的非优化使用方式相比,性能也略快,从10%-50%不等。当拼接的字符串长度较长,或者字符串数组长度较长时,性能优势更大。
 	 * @param defaultStr 为null时的默认字符串
 	 * @see java.lang.String#concat(String)
 	 * @author Frodez
 	 * @date 2019-04-01
 	 */
 	public static String concatWithDefault(String defaultStr, String... strings) {
-		if (defaultStr == null || EmptyUtil.yes(strings)) {
+		if (EmptyUtil.yes(strings) || defaultStr == null) {
 			throw new IllegalArgumentException();
 		}
 		int stringsLength = strings.length;

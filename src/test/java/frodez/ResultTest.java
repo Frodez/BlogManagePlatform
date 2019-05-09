@@ -12,7 +12,7 @@ import org.springframework.boot.SpringApplication;
 
 public class ResultTest {
 
-	@SuppressWarnings({ "resource", "unused" })
+	@SuppressWarnings({ "unused" })
 	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {
 		SpringApplication.run(BlogManagePlatformApplication.class, args);
 		Role role = new Role();

@@ -6,6 +6,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.InvocationTargetException;
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -145,7 +146,7 @@ public @interface LegalEnum {
 			try {
 				return ReflectUtil.getFastMethod(klass, method, paramType).invoke(null, new Object[] { ReflectUtil
 					.primitiveAdapt(value, paramType) }) != null;
-			} catch (Exception e) {
+			} catch (InvocationTargetException e) {
 				throw new RuntimeException(e);
 			}
 		}
