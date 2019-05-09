@@ -2,12 +2,9 @@ package frodez.util.json;
 
 import com.fasterxml.jackson.core.SerializableString;
 import com.fasterxml.jackson.core.io.CharacterEscapes;
-import com.fasterxml.jackson.core.io.SerializedString;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.google.common.escape.Escaper;
-import com.google.common.escape.Escapers;
 import frodez.util.common.EmptyUtil;
 import frodez.util.common.StrUtil;
 import frodez.util.spring.ContextUtil;
@@ -76,13 +73,10 @@ public class JSONUtil {
 
 			private static final long serialVersionUID = 1L;
 
-			private int[] asciiEscapes = CharacterEscapes.standardAsciiEscapesForJSON();
-
-			// Note: "&apos;" is not defined in HTML 4.01.
-			private Escaper escaper = Escapers.builder().addEscape('"', "&quot;").addEscape('\'', "&#39;").addEscape(
-				'&', "&amp;").addEscape('<', "&lt;").addEscape('>', "&gt;").build();
+			private int[] asciiEscapes;
 
 			{
+				asciiEscapes = CharacterEscapes.standardAsciiEscapesForJSON();
 				asciiEscapes['<'] = CharacterEscapes.ESCAPE_CUSTOM;
 				asciiEscapes['>'] = CharacterEscapes.ESCAPE_CUSTOM;
 				asciiEscapes['&'] = CharacterEscapes.ESCAPE_CUSTOM;
@@ -90,11 +84,21 @@ public class JSONUtil {
 				asciiEscapes['\''] = CharacterEscapes.ESCAPE_CUSTOM;
 			}
 
+			/**
+			 * 对于非ascii字符的转义,不需要处理
+			 * @author Frodez
+			 * @date 2019-05-09
+			 */
 			@Override
 			public SerializableString getEscapeSequence(int ch) {
-				return new SerializedString(escaper.escape(Character.toString(ch)));
+				return null;
 			}
 
+			/**
+			 * 对于ascii字符的转义
+			 * @author Frodez
+			 * @date 2019-05-09
+			 */
 			@Override
 			public int[] getEscapeCodesForAscii() {
 				return asciiEscapes;
