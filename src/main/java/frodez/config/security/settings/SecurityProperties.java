@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "security")
 public class SecurityProperties {
 
+	private Integer httpsPort = 8443;
+
 	/**
 	 * 跨域参数
 	 */

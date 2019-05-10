@@ -76,6 +76,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		List<String> permitAllPathList = properties.getAuth().getPermitAllPath();
+		//开启https
+		http.requiresChannel().anyRequest().requiresSecure();
 		http.cors().and().csrf().disable().exceptionHandling()
 			// 无权限时导向noAuthPoint
 			.authenticationEntryPoint(authentication).and().exceptionHandling().accessDeniedHandler(accessDenied).and()
