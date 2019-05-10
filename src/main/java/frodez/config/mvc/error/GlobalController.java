@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
 /***
  * 错误信息处理
@@ -68,6 +69,19 @@ public class GlobalController {
 	public void servletRequestBindingExceptionHandler(HttpServletResponse response, ServletRequestBindingException e) {
 		log.error("[servletRequestBindingExceptionHandler]{}", e.getMessage());
 		ServletUtil.writeJson(response, Result.errorRequest());
+	}
+
+	/**
+	 * 默认异常处理器
+	 * @param HttpServletResponse 响应
+	 * @param ServletRequestBindingException 异常
+	 * @author Frodez
+	 * @date 2018-12-21
+	 */
+	@ExceptionHandler(value = AsyncRequestTimeoutException.class)
+	public void asyncRequestTimeoutExceptionHandler(HttpServletResponse response, AsyncRequestTimeoutException e) {
+		log.error("[asyncRequestTimeoutExceptionHandler]{}");
+		ServletUtil.writeJson(response, Result.busy());
 	}
 
 }
