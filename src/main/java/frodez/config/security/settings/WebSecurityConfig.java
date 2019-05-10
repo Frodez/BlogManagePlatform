@@ -13,7 +13,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -88,13 +87,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated()
 			// 在密码验证过滤器前执行jwt过滤器
 			.and().addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).headers().cacheControl(); // 禁止缓存
-	}
-
-	/**
-	 * 静态资源忽略配置
-	 */
-	@Override
-	public void configure(WebSecurity web) throws Exception {
 	}
 
 	/**

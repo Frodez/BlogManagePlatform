@@ -1,11 +1,12 @@
-package frodez.config.async;
+package frodez.config.mvc.async;
 
 import frodez.util.spring.ContextUtil;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -19,8 +20,11 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 public class AsyncConfig {
 
-	@Bean
-	public Executor getAsyncExecutor() {
+	@Autowired
+	@Getter
+	private AsyncProperties properties;
+
+	public AsyncTaskExecutor getAsyncExecutor() {
 		AsyncProperties properties = ContextUtil.get(AsyncProperties.class);
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		int availableProcessors = Runtime.getRuntime().availableProcessors();
@@ -34,8 +38,9 @@ public class AsyncConfig {
 		executor.setThreadNamePrefix(properties.getThreadNamePrefix());
 		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 		executor.initialize();
-		log.info("async executor is running now!");
-		log.info("async config:{}corePoolSize, {}maxPoolSize, {}queueCapacity, {}keepAliveSeconds, {}threadNamePrefix",
+		log.info("async executor is already now!");
+		log.info(
+			"async config:corePoolSize-{}, maxPoolSize-{}, queueCapacity-{}, keepAliveSeconds-{}, threadNamePrefix-{}",
 			corePoolSize, maxPoolSize, queueCapacity, properties.getKeepAliveSeconds(), properties
 				.getThreadNamePrefix());
 		return executor;

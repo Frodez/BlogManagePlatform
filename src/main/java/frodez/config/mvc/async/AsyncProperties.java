@@ -1,4 +1,4 @@
-package frodez.config.async;
+package frodez.config.mvc.async;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -35,6 +35,11 @@ public class AsyncProperties {
 	 * 线程最长活跃时间,单位为秒
 	 */
 	private int keepAliveSeconds = 60;
+
+	/**
+	 * 超时时间,单位为毫秒
+	 */
+	private long timeout = 30000;
 
 	/**
 	 * 线程名前缀

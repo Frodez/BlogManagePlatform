@@ -1,4 +1,4 @@
-package frodez.config.mvc;
+package frodez.config.mvc.converter;
 
 import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
