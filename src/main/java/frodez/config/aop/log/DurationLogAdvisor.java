@@ -30,9 +30,6 @@ public class DurationLogAdvisor implements PointcutAdvisor {
 	 */
 	private Map<String, Long> thresholdCache = new ConcurrentHashMap<>();
 
-	/**
-	 * ms和ns之间的倍数
-	 */
 	private long times = 1000 * 1000;
 
 	/**
@@ -54,7 +51,7 @@ public class DurationLogAdvisor implements PointcutAdvisor {
 			long threshold = thresholdCache.get(name);
 			long count = System.nanoTime();
 			Object result = invocation.proceed();
-			count = count - System.nanoTime();
+			count = System.nanoTime() - count;
 			if (count > threshold) {
 				log.warn("{}方法耗时{}毫秒,触发超时警告!", name, count / times);
 			}
@@ -101,6 +98,9 @@ public class DurationLogAdvisor implements PointcutAdvisor {
 						if (annotation == null) {
 							return false;
 						}
+						if (annotation.threshold() <= 0) {
+							throw new IllegalArgumentException("阈值必须大于0!");
+						}
 						thresholdCache.put(ReflectUtil.getFullMethodName(method), annotation.threshold() * times);
 						return true;
 					}
@@ -115,6 +115,9 @@ public class DurationLogAdvisor implements PointcutAdvisor {
 						DurationLog annotation = method.getAnnotation(DurationLog.class);
 						if (annotation == null) {
 							return false;
+						}
+						if (annotation.threshold() <= 0) {
+							throw new IllegalArgumentException("阈值必须大于0!");
 						}
 						thresholdCache.put(ReflectUtil.getFullMethodName(method), annotation.threshold() * times);
 						return true;
