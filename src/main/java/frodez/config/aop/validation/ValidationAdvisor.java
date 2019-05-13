@@ -23,8 +23,18 @@ import org.springframework.stereotype.Component;
 @Order(Integer.MAX_VALUE)
 public class ValidationAdvisor implements PointcutAdvisor {
 
+	/**
+	 * AOP切点
+	 * @author Frodez
+	 * @date 2019-05-10
+	 */
 	@Override
 	public Advice getAdvice() {
+		/**
+		 * 对参数进行验证
+		 * @author Frodez
+		 * @date 2019-05-10
+		 */
 		return (MethodInterceptor) invocation -> {
 			String msg = ValidationUtil.validateParam(invocation.getThis(), invocation.getMethod(), invocation
 				.getArguments());
