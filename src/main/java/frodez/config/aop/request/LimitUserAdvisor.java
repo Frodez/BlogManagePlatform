@@ -2,6 +2,7 @@ package frodez.config.aop.request;
 
 import com.google.common.util.concurrent.RateLimiter;
 import frodez.config.aop.request.annotation.Limit;
+import frodez.util.beans.pair.Pair;
 import frodez.util.beans.result.Result;
 import frodez.util.constant.setting.DefTime;
 import frodez.util.reflect.ReflectUtil;
@@ -27,12 +28,7 @@ public class LimitUserAdvisor implements PointcutAdvisor {
 	/**
 	 * 限流器
 	 */
-	private Map<String, RateLimiter> limitCache = new ConcurrentHashMap<>();
-
-	/**
-	 * 注解配置缓存
-	 */
-	private Map<String, Long> timeoutCache = new ConcurrentHashMap<>();
+	private Map<String, Pair<RateLimiter, Long>> limitCache = new ConcurrentHashMap<>();
 
 	/**
 	 * AOP切点
@@ -48,8 +44,8 @@ public class LimitUserAdvisor implements PointcutAdvisor {
 		 * @date 2018-12-21
 		 */
 		return (MethodInterceptor) invocation -> {
-			String name = ReflectUtil.getFullMethodName(invocation.getMethod());
-			if (!limitCache.get(name).tryAcquire(timeoutCache.get(name), DefTime.UNIT)) {
+			Pair<RateLimiter, Long> pair = limitCache.get(ReflectUtil.getFullMethodName(invocation.getMethod()));
+			if (!pair.getKey().tryAcquire(pair.getValue(), DefTime.UNIT)) {
 				return Result.busy();
 			}
 			return invocation.proceed();
@@ -105,8 +101,9 @@ public class LimitUserAdvisor implements PointcutAdvisor {
 						if (method.getReturnType() != Result.class) {
 							throw new IllegalArgumentException("本方法的返回值类型必须为" + Result.class.getName());
 						}
-						limitCache.put(ReflectUtil.getFullMethodName(method), RateLimiter.create(annotation.value()));
-						timeoutCache.put(ReflectUtil.getFullMethodName(method), annotation.timeout());
+						Pair<RateLimiter, Long> pair = new Pair<>(RateLimiter.create(annotation.value()), annotation
+							.timeout());
+						limitCache.put(ReflectUtil.getFullMethodName(method), pair);
 						return true;
 					}
 
@@ -131,8 +128,9 @@ public class LimitUserAdvisor implements PointcutAdvisor {
 						if (method.getReturnType() != Result.class) {
 							throw new IllegalArgumentException("本方法的返回值类型必须为" + Result.class.getName());
 						}
-						limitCache.put(ReflectUtil.getFullMethodName(method), RateLimiter.create(annotation.value()));
-						timeoutCache.put(ReflectUtil.getFullMethodName(method), annotation.timeout());
+						Pair<RateLimiter, Long> pair = new Pair<>(RateLimiter.create(annotation.value()), annotation
+							.timeout());
+						limitCache.put(ReflectUtil.getFullMethodName(method), pair);
 						return true;
 					}
 

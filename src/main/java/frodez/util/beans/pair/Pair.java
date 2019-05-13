@@ -1,7 +1,12 @@
 package frodez.util.beans.pair;
 
 import java.io.Serializable;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 通用键值对<br>
@@ -9,7 +14,12 @@ import lombok.Data;
  * @author Frodez
  * @date 2019-03-27
  */
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class Pair<K, V> implements Serializable {
 
 	/**
