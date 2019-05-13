@@ -1,4 +1,4 @@
-package frodez.config.mvc;
+package frodez.config.mvc.status;
 
 import frodez.util.beans.result.Result;
 import org.springframework.core.MethodParameter;
@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
  * @date 2019-02-02
  */
 @ControllerAdvice
-public class StatusCodeProcessor implements ResponseBodyAdvice<Result> {
+public class HttpStatusResolver implements ResponseBodyAdvice<Result> {
 
 	/**
 	 * 设置适用范围
