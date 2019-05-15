@@ -1,5 +1,6 @@
 package frodez.util.http;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
 import frodez.util.constant.setting.DefCharset;
@@ -88,12 +89,15 @@ public class ServletUtil {
 	/**
 	 * 向response直接写入json,编码为UTF-8
 	 * @author Frodez
+	 * @throws IOException
 	 * @date 2019-01-07
 	 */
-	public static void writeJson(HttpServletResponse response, Result result) {
+	public static void writeJson(HttpServletResponse response, Result result) throws IOException,
+		JsonProcessingException {
 		Assert.notNull(result, "result must not be null");
 		if (response.isCommitted()) {
-			throw new RuntimeException("this response has been committed!");
+			log.warn("this response has been committed!");
+			return;
 		}
 		response.setStatus(result.httpStatus().value());
 		response.setCharacterEncoding(DefCharset.UTF_8);
@@ -103,8 +107,6 @@ public class ServletUtil {
 			out = response.getWriter();
 			out.append(result.json());
 			out.flush();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
 		} finally {
 			if (out != null) {
 				out.close();
@@ -115,11 +117,14 @@ public class ServletUtil {
 	/**
 	 * 向response直接写入json,编码为UTF-8
 	 * @author Frodez
+	 * @throws IOException
 	 * @date 2019-01-07
 	 */
-	public static void writeJson(HttpServletResponse response, String json, @Nullable HttpStatus status) {
+	public static void writeJson(HttpServletResponse response, String json, @Nullable HttpStatus status)
+		throws IOException {
 		if (response.isCommitted()) {
-			throw new RuntimeException("this response has been committed!");
+			log.warn("this response has been committed!");
+			return;
 		}
 		if (status != null) {
 			response.setStatus(status.value());
@@ -131,8 +136,6 @@ public class ServletUtil {
 			out = response.getWriter();
 			out.append(json);
 			out.flush();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
 		} finally {
 			if (out != null) {
 				out.close();
@@ -143,11 +146,14 @@ public class ServletUtil {
 	/**
 	 * 向response写入text/plain类型数据,编码为UTF-8
 	 * @author Frodez
+	 * @throws IOException
 	 * @date 2019-01-15
 	 */
-	public static void writePlainText(HttpServletResponse response, String text, @Nullable HttpStatus status) {
+	public static void writePlainText(HttpServletResponse response, String text, @Nullable HttpStatus status)
+		throws IOException {
 		if (response.isCommitted()) {
-			throw new RuntimeException("this response has been committed!");
+			log.warn("this response has been committed!");
+			return;
 		}
 		if (status != null) {
 			response.setStatus(status.value());
@@ -159,8 +165,6 @@ public class ServletUtil {
 			out = response.getWriter();
 			out.append(text);
 			out.flush();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
 		} finally {
 			if (out != null) {
 				out.close();
@@ -171,10 +175,13 @@ public class ServletUtil {
 	/**
 	 * 向response写入text/html类型数据,编码为UTF-8
 	 * @author Frodez
+	 * @throws IOException
 	 * @date 2019-01-15
 	 */
-	public static void writeHtml(HttpServletResponse response, String html, @Nullable HttpStatus status) {
+	public static void writeHtml(HttpServletResponse response, String html, @Nullable HttpStatus status)
+		throws IOException {
 		if (response.isCommitted()) {
+			log.warn("this response has been committed!");
 			return;
 		}
 		if (status != null) {
@@ -187,8 +194,6 @@ public class ServletUtil {
 			out = response.getWriter();
 			out.append(html);
 			out.flush();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
 		} finally {
 			if (out != null) {
 				out.close();

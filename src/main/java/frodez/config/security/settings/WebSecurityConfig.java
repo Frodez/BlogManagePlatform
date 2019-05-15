@@ -6,7 +6,7 @@ import frodez.config.security.filter.TokenFilter;
 import frodez.config.security.settings.SecurityProperties.Cors;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -34,11 +34,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	/**
-	 * 基础路径
-	 */
-	@Value("${server.servlet.context-path}/**")
-	private String basePath;
+	@Autowired
+	private ServerProperties serverProperties;
 
 	/**
 	 * 无验证访问控制
@@ -77,7 +74,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		List<String> permitAllPathList = properties.getAuth().getPermitAllPath();
 		//开启https
-		http.requiresChannel().anyRequest().requiresSecure();
+		if (serverProperties.getSsl().isEnabled()) {
+			http.requiresChannel().anyRequest().requiresSecure();
+		}
 		http.cors().and().csrf().disable().exceptionHandling()
 			// 无权限时导向noAuthPoint
 			.authenticationEntryPoint(authentication).and().exceptionHandling().accessDeniedHandler(accessDenied).and()

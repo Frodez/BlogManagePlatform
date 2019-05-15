@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @date 2019-01-13
  */
 @Controller
-@RequestMapping("${server.error.path:${error.path:/error}}")
+@RequestMapping
 public class FinalController extends AbstractErrorController {
 
 	private final ErrorProperties errorProperties;
@@ -35,7 +35,7 @@ public class FinalController extends AbstractErrorController {
 		return errorProperties.getPath();
 	}
 
-	@RequestMapping
+	@RequestMapping("${server.error.path:${error.path:/error}}")
 	public void error(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR
 			.getReasonPhrase());
