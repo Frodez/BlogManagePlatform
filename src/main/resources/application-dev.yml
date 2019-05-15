@@ -1,5 +1,8 @@
 server:
-  ssl:    key-store: classpath:others/frodez.p12
+  http2:
+    enabled: true
+  ssl:
+    enabled: false    key-store: classpath:others/frodez.p12
     key-store-password: 123456
     key-store-type: PKCS12
     key-alias: frodez
@@ -8,8 +11,6 @@ server:
   port: 9090 #请注意服务器上是否配备了防火墙策略,该端口是否开放
   servlet:
     context-path: /api
-  http2:
-    enabled: true
     
 spring:
   datasource:
