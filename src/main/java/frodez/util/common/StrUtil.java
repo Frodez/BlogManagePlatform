@@ -40,7 +40,7 @@ public class StrUtil {
 	public static String get(String defaultStr, @Nullable Object object) {
 		if (object == null) {
 			if (defaultStr == null) {
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("defaultStr is null!");
 			}
 			return defaultStr;
 		}
@@ -51,9 +51,10 @@ public class StrUtil {
 	}
 
 	/**
-	 * 批量拼接字符串,对null会当作空字符串处理。<br>
+	 * 批量拼接字符串。<br>
 	 * 在极端的情况下,会直接返回原字符串(例如只有一个字符串传入且该字符串不为null)。这种情况可以极大地加快速度。<br>
-	 * 当然,如果只有一个字符串且该字符串为null,则会直接返回默认字符串,同样可以极大地加快速度。<br>
+	 * 当然,如果只有一个字符串且该字符串为null,则会抛出异常。<br>
+	 * 注意:<strong>当输入的字符串数组中某处为null时，会抛出异常.</strong><br>
 	 * 另外由于String类型是inmutable的,故只要不涉及对其内存地址的操作,则不会出现bug。<br>
 	 * 经测试,在绝大多数场景下相对jdk的实现更快(平均50%左右或更多),在最坏情况下也与其相当。<br>
 	 * 与StringBuilder的非优化使用方式相比,性能也略快,从10%-50%不等。当拼接的字符串长度较长,或者字符串数组长度较长时,性能优势更大。
@@ -62,37 +63,24 @@ public class StrUtil {
 	 * @date 2019-04-01
 	 */
 	public static String concat(String... strings) {
-		return concatWithDefault("", strings);
-	}
-
-	/**
-	 * 批量拼接字符串,将null处理为默认字符串。默认字符串可以为空字符串,但不能为null。<br>
-	 * 在极端的情况下,会直接返回原字符串(例如只有一个字符串传入且该字符串不为null)。这种情况可以极大地加快速度。<br>
-	 * 当然,如果只有一个字符串且该字符串为null,则会直接返回默认字符串,同样可以极大地加快速度。<br>
-	 * 另外由于String类型是inmutable的,故只要不涉及对其内存地址的操作,则不会出现bug。<br>
-	 * 经测试,在绝大多数场景下相对jdk的实现更快(平均50%左右或更多),在最坏情况下也与其相当。<br>
-	 * 与StringBuilder的非优化使用方式相比,性能也略快,从10%-50%不等。当拼接的字符串长度较长,或者字符串数组长度较长时,性能优势更大。
-	 * @param defaultStr 为null时的默认字符串
-	 * @see java.lang.String#concat(String)
-	 * @author Frodez
-	 * @date 2019-04-01
-	 */
-	public static String concatWithDefault(String defaultStr, String... strings) {
-		if (EmptyUtil.yes(strings) || defaultStr == null) {
-			throw new IllegalArgumentException();
+		if (EmptyUtil.yes(strings)) {
+			throw new IllegalArgumentException("when strings are empty, the defaultStr can't be null either.");
 		}
 		int stringsLength = strings.length;
 		if (stringsLength == 1) {
-			return strings[0] == null ? defaultStr : strings[0];
+			if (strings[0] == null) {
+				throw new IllegalArgumentException("the first string of the string array is null.");
+			}
+			return strings[0];
 		}
 		int size = 0;
-		int defaultStrLength = defaultStr.length();
 		for (int i = 0; i < stringsLength; i++) {
-			size = size + (strings[i] == null ? defaultStrLength : strings[i].length());
+			//如果字符串数组某处为null,会自动抛出异常
+			size = size + strings[i].length();
 		}
 		StringBuilder builder = new StringBuilder(size);
 		for (int i = 0; i < stringsLength; i++) {
-			builder.append(strings[i] == null ? defaultStr : strings[i]);
+			builder.append(strings[i]);
 		}
 		return builder.toString();
 	}
@@ -104,7 +92,7 @@ public class StrUtil {
 	 */
 	public static String upperFirst(String string) {
 		if (EmptyUtil.yes(string)) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("it isn't suitable for empty string.");
 		}
 		return new StringBuilder(string.length()).append(Character.toUpperCase(string.charAt(0))).append(string
 			.substring(1)).toString();
@@ -117,7 +105,7 @@ public class StrUtil {
 	 */
 	public static String lowerFirst(String string) {
 		if (EmptyUtil.yes(string)) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("it isn't suitable for empty string.");
 		}
 		return new StringBuilder(string.length()).append(Character.toLowerCase(string.charAt(0))).append(string
 			.substring(1)).toString();
@@ -140,8 +128,8 @@ public class StrUtil {
 	 * @date 2019-04-17
 	 */
 	public static String toCamelCase(String delimiter, String string) {
-		if (string == null || EmptyUtil.yes(delimiter)) {
-			throw new IllegalArgumentException();
+		if (string == null || delimiter == null) {
+			throw new IllegalArgumentException("when string is null, delimiter can't be null either.");
 		}
 		String[] tokens = string.split(delimiter);
 		int tokensLength = tokens.length;

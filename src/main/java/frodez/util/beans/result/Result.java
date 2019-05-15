@@ -285,6 +285,16 @@ public final class Result implements Serializable {
 	}
 
 	/**
+	 * 返回服务器错误结果(有信息)
+	 * @author Frodez
+	 * @date 2019-01-15
+	 */
+	public static Result errorService(Throwable message) {
+		Assert.notNull(message, "message must not be null");
+		return new Result(message.getMessage(), ResultEnum.ERROR_SERVICE);
+	}
+
+	/**
 	 * 返回未登录结果
 	 * @author Frodez
 	 * @date 2019-03-02
