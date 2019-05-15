@@ -4,7 +4,6 @@ import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
 import frodez.config.mvc.async.AsyncConfig;
 import frodez.config.mvc.converter.JsonConverer;
-import frodez.config.mvc.converter.StringEscapeConverter;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +11,6 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 import org.springframework.web.context.request.async.TimeoutCallableProcessingInterceptor;
 import org.springframework.web.context.request.async.TimeoutDeferredResultProcessingInterceptor;
@@ -38,12 +36,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	 */
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		//清除掉原本的AbstractJackson2HttpMessageConverter和StringHttpMessageConverter。
+		//清除掉原本的AbstractJackson2HttpMessageConverter。
 		converters.removeIf((iter) -> {
-			return iter instanceof AbstractJackson2HttpMessageConverter || iter instanceof StringHttpMessageConverter;
+			return iter instanceof AbstractJackson2HttpMessageConverter;
 		});
 		converters.add(0, new JsonConverer(MediaType.APPLICATION_JSON_UTF8));
-		converters.add(1, new StringEscapeConverter());
 	}
 
 	/**
