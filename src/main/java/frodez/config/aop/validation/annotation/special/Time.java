@@ -1,7 +1,6 @@
 package frodez.config.aop.validation.annotation.special;
 
 import frodez.util.common.DateUtil;
-import frodez.util.constant.setting.DefDesc;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -36,7 +35,7 @@ public @interface Time {
 	 * @author Frodez
 	 * @date 2019-04-13
 	 */
-	String message() default DefDesc.Warn.ILLEGAL_PARAM_WARN;
+	String message() default "{frodez.config.aop.validation.annotation.special.Time.message}";
 
 	Class<?>[] groups() default {};
 
@@ -55,7 +54,7 @@ public @interface Time {
 		 * @date 2018-12-17
 		 */
 		@Override
-		public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
+		public boolean isValid(String value, ConstraintValidatorContext context) {
 			if (value == null) {
 				return true;
 			}

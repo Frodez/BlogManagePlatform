@@ -1,4 +1,4 @@
-package frodez.util.constant.annotation;
+package frodez.util.constant.annotation.decoration;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

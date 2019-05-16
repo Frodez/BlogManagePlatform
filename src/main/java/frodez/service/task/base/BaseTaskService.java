@@ -352,8 +352,7 @@ public class BaseTaskService {
 	 */
 	@Check
 	@Transactional
-	public Result changeStatus(@NotNull Long id, @LegalEnum(message = "是否立刻启动不能为空!",
-		type = StatusEnum.class) Byte status) {
+	public Result changeStatus(@NotNull Long id, @LegalEnum(type = StatusEnum.class) Byte status) {
 		try {
 			Task task = taskMapper.selectByPrimaryKey(id);
 			if (task == null) {

@@ -28,7 +28,7 @@ public class UpdateRole implements Serializable {
 	/**
 	 * 角色ID
 	 */
-	@NotNull(message = "角色ID不能为空!")
+	@NotNull
 	@ApiModelProperty(value = "角色ID", required = true)
 	private Long id;
 
@@ -42,8 +42,8 @@ public class UpdateRole implements Serializable {
 	/**
 	 * 角色等级 0-9 0最高,9最低
 	 */
-	@Min(value = 0, message = "角色等级最小值为0！")
-	@Max(value = 9, message = "角色等级最大值为9！")
+	@Min(0)
+	@Max(9)
 	@ApiModelProperty(value = "角色等级 0-9 0最高,9最低")
 	private Byte level;
 

@@ -93,14 +93,27 @@ public class QueryPage implements IPage, Serializable {
 	private boolean permitOutSize = false;
 
 	/**
-	 * 是否允许超额单页容量,用于参数校验<br>
+	 * 允许超额单页容量,用于参数校验<br>
 	 * 仅限于内部调用使用,请不要作为外部参数暴露,以防恶意攻击! <br>
 	 * @see frodez.util.constant.setting.DefPage#MAX_PAGE_SIZE
 	 * @author Frodez
 	 * @date 2019-05-16
 	 */
-	public void setPermitOutSize(boolean permitOutSize) {
-		this.permitOutSize = permitOutSize;
+	public QueryPage ableOutSize() {
+		this.permitOutSize = true;
+		return this;
+	}
+
+	/**
+	 * 允许超额单页容量,用于参数校验<br>
+	 * 仅限于内部调用使用,请不要作为外部参数暴露,以防恶意攻击! <br>
+	 * @see frodez.util.constant.setting.DefPage#MAX_PAGE_SIZE
+	 * @author Frodez
+	 * @date 2019-05-16
+	 */
+	public QueryPage disableOutSize() {
+		this.permitOutSize = false;
+		return this;
 	}
 
 	/**

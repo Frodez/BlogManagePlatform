@@ -26,7 +26,7 @@ public class QueryRolePermission implements Serializable {
 	/**
 	 * 角色ID
 	 */
-	@NotNull(message = "角色ID不能为空!")
+	@NotNull
 	@ApiModelProperty(value = "角色ID", required = true)
 	private Long roleId;
 

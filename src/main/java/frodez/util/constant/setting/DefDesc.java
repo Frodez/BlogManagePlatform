@@ -23,11 +23,6 @@ public class DefDesc {
 		 */
 		public static final String NULL_WARN = "不能为空";
 
-		/**
-		 * 非法参数的默认返回值
-		 */
-		public static final String ILLEGAL_PARAM_WARN = "参数错误";
-
 	}
 
 	/**

@@ -10,7 +10,6 @@ import lombok.Getter;
  * @author Frodez
  * @date 2019-04-15
  */
-@Getter
 @AllArgsConstructor
 public enum ErrorCode {
 
@@ -20,6 +19,7 @@ public enum ErrorCode {
 
 	TASK_SERVICE_ERROR("定时任务服务失败!");
 
+	@Getter
 	private String description;
 
 	private static final Map<String, ErrorCode> enumMap;

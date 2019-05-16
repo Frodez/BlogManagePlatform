@@ -1,6 +1,7 @@
 package frodez.config.aop.validation.annotation.special;
 
 import frodez.util.beans.param.QueryPage;
+import frodez.util.common.ValidationUtil;
 import frodez.util.constant.setting.DefPage;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -23,7 +24,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = ValidQueryPage.Validator.class)
 public @interface ValidQueryPage {
 
-	String message() default "页码数必须大于0;单页容量必须大于0且小于规定最大值";
+	String message() default "";
 
 	Class<?>[] groups() default {};
 
@@ -37,14 +38,17 @@ public @interface ValidQueryPage {
 				return true;
 			}
 			if (page.getPageNum() <= 0) {
+				ValidationUtil.changeMessage(context, "pageNum必须是正数.");
 				return false;
 			}
 			if (page.isPermitOutSize()) {
 				if (page.getPageSize() <= 0) {
+					ValidationUtil.changeMessage(context, "pageSize必须是正数.");
 					return false;
 				}
 			} else {
 				if (page.getPageSize() <= 0 || page.getPageSize() > DefPage.MAX_PAGE_SIZE) {
+					ValidationUtil.changeMessage(context, "pageSize必须是正数且不大于" + DefPage.MAX_PAGE_SIZE + ".");
 					return false;
 				}
 			}

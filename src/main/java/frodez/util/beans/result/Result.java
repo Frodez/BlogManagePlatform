@@ -544,7 +544,6 @@ public final class Result implements Serializable {
 	 * @author Frodez
 	 * @date 2018-11-13
 	 */
-	@Getter
 	@AllArgsConstructor
 	public enum ResultEnum {
 
@@ -592,16 +591,19 @@ public final class Result implements Serializable {
 		/**
 		 * 自定义状态码
 		 */
+		@Getter
 		private int val;
 
 		/**
 		 * http状态码
 		 */
+		@Getter
 		private HttpStatus status;
 
 		/**
 		 * 描述
 		 */
+		@Getter
 		private String desc;
 
 		private static final Map<Integer, ResultEnum> enumMap;

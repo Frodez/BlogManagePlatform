@@ -28,15 +28,15 @@ public class UpdatePermission implements Serializable {
 	/**
 	 * 权限ID
 	 */
-	@NotNull(message = "权限ID不能为空!")
+	@NotNull
 	@ApiModelProperty(value = "权限ID", required = true)
 	private Long id;
 
 	/**
 	 * 类型 0:ALL 1:GET 2:POST 3:DELETE 4:PUT
 	 */
-	@NotNull(message = "类型不能为空!")
-	@LegalEnum(message = "类型错误!", type = PermissionTypeEnum.class)
+	@NotNull
+	@LegalEnum(type = PermissionTypeEnum.class)
 	@ApiModelProperty(value = "类型 0:ALL 1:GET 2:POST 3:DELETE 4:PUT")
 	private Byte type;
 

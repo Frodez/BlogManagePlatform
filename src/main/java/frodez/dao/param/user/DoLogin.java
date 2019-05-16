@@ -23,16 +23,16 @@ public class DoLogin implements Serializable {
 	/**
 	 * 用户名
 	 */
-	@NotBlank(message = "用户名不能为空!")
-	@Length(message = "用户名长度不能小于3位且不能大于25位!", min = 3, max = 25)
+	@NotBlank
+	@Length(min = 3, max = 25)
 	@ApiModelProperty(value = "用户名", required = true)
 	private String username;
 
 	/**
 	 * 密码
 	 */
-	@NotBlank(message = "密码不能为空!")
-	@Length(message = "密码长度不能小于8位且不能大于30位!", min = 8, max = 30)
+	@NotBlank
+	@Length(min = 8, max = 30)
 	@ApiModelProperty(value = "密码", required = true)
 	private String password;
 

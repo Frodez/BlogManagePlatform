@@ -1,8 +1,6 @@
 package frodez.util.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.SerializableString;
-import com.fasterxml.jackson.core.io.CharacterEscapes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -62,51 +60,11 @@ public class JSONUtil {
 
 	private static Map<Class<?>, ObjectWriter> writerCache = new ConcurrentHashMap<>();
 
-	/**
-	 * 增加危险字符的转义处理.由于统一使用json返回,因此可以视为所有的返回值中的危险字符均已处理.<br>
-	 * 另外,由于mybatis中采取预编译的方式注入参数(使用#{}标识符而非${}),sql注入的风险也基本解除.<br>
-	 */
 	@PostConstruct
 	private void init() {
 		OBJECT_MAPPER = ContextUtil.get(ObjectMapper.class);
 		DEFAULT_MAP_READER = OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(
 			DEFAULT_MAP_CLASS, String.class, Object.class));
-		OBJECT_MAPPER.getFactory().setCharacterEscapes(new CharacterEscapes() {
-
-			private static final long serialVersionUID = 1L;
-
-			private int[] asciiEscapes;
-
-			{
-				asciiEscapes = CharacterEscapes.standardAsciiEscapesForJSON();
-				asciiEscapes['<'] = CharacterEscapes.ESCAPE_CUSTOM;
-				asciiEscapes['>'] = CharacterEscapes.ESCAPE_CUSTOM;
-				asciiEscapes['&'] = CharacterEscapes.ESCAPE_CUSTOM;
-				asciiEscapes['"'] = CharacterEscapes.ESCAPE_CUSTOM;
-				asciiEscapes['\''] = CharacterEscapes.ESCAPE_CUSTOM;
-			}
-
-			/**
-			 * 对于非ascii字符的转义,不需要处理
-			 * @author Frodez
-			 * @date 2019-05-09
-			 */
-			@Override
-			public SerializableString getEscapeSequence(int ch) {
-				return null;
-			}
-
-			/**
-			 * 对于ascii字符的转义
-			 * @author Frodez
-			 * @date 2019-05-09
-			 */
-			@Override
-			public int[] getEscapeCodesForAscii() {
-				return asciiEscapes;
-			}
-
-		});
 		Assert.notNull(OBJECT_MAPPER, "OBJECT_MAPPER must not be null");
 		Assert.notNull(DEFAULT_MAP_READER, "DEFAULT_MAP_READER must not be null");
 	}

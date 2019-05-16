@@ -27,7 +27,7 @@ public @interface Mobile {
 	 * @author Frodez
 	 * @date 2019-04-13
 	 */
-	String message() default "手机号格式错误!";
+	String message() default "{frodez.config.aop.validation.annotation.special.Mobile.message}";
 
 	/**
 	 * 格式验证器
@@ -47,7 +47,7 @@ public @interface Mobile {
 		 * @date 2018-12-17
 		 */
 		@Override
-		public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
+		public boolean isValid(String value, ConstraintValidatorContext context) {
 			if (value == null) {
 				return true;
 			}

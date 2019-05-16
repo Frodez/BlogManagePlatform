@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import javax.validation.Payload;
 import javax.validation.constraints.Pattern.Flag;
 
 /**
@@ -19,15 +20,15 @@ import javax.validation.constraints.Pattern.Flag;
 @Documented
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = LegalStr.Validator.class)
-public @interface LegalStr {
+@Constraint(validatedBy = Match.Validator.class)
+public @interface Match {
 
 	/**
-	 * 错误信息,默认为"字符串格式错误!"
+	 * 错误信息
 	 * @author Frodez
 	 * @date 2019-04-13
 	 */
-	String message() default "字符串格式错误!";
+	String message() default "{frodez.config.aop.validation.annotation.common.Match.message}";
 
 	/**
 	 * 使用的正则表达式
@@ -45,12 +46,16 @@ public @interface LegalStr {
 	 */
 	Flag[] flags() default {};
 
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
+
 	/**
 	 * 格式验证器
 	 * @author Frodez
 	 * @date 2018-12-17
 	 */
-	class Validator implements ConstraintValidator<LegalStr, String> {
+	class Validator implements ConstraintValidator<Match, String> {
 
 		/**
 		 * 验证用的格式
@@ -68,7 +73,7 @@ public @interface LegalStr {
 		 * @date 2018-12-17
 		 */
 		@Override
-		public void initialize(LegalStr enumValue) {
+		public void initialize(Match enumValue) {
 			regex = enumValue.regex();
 			flag = RegexUtil.transfer(enumValue.flags());
 		}
@@ -81,7 +86,6 @@ public @interface LegalStr {
 		@Override
 		public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
 			if (value == null) {
-				//对于非空检查的情况,请继续使用@NotNull注解
 				return true;
 			}
 			return RegexUtil.match(regex, value, flag);
