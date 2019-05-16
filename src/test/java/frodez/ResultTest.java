@@ -8,13 +8,18 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.springframework.boot.SpringApplication;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ResultTest {
 
+	@Test
 	@SuppressWarnings({ "unused" })
-	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {
-		SpringApplication.run(BlogManagePlatformApplication.class, args);
+	public void test() throws FileNotFoundException, IOException, ClassNotFoundException {
 		Role role = new Role();
 		role.setCreateTime(new Date());
 		role.setDescription("test123");

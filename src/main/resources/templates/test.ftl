@@ -7,5 +7,8 @@
 </head>
 <body>
 	<h1>123456789</h1>
+	<p>
+		<span style="font-size:12px;">testSpan</span>
+	</p>
 </body>
 </html>
