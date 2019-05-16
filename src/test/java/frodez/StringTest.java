@@ -5,11 +5,18 @@ import frodez.util.common.StrUtil;
 import java.math.BigDecimal;
 import java.util.Random;
 import java.util.UUID;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class StringTest {
 
+	@Test
 	@SuppressWarnings("unused")
-	public static void main(String[] args) {
+	public void test() {
 		int testTimes = 500 * 10000;
 		int except = 5;
 		int testRounds = except + 1000;

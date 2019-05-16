@@ -27,7 +27,7 @@ public class RegexUtil {
 	 * @date 2019-03-05
 	 */
 	public static boolean match(String regex, String input) {
-		return CACHE.computeIfAbsent(regex, i -> Pattern.compile(i)).matcher(input).matches();
+		return CACHE.computeIfAbsent(regex, i -> Pattern.compile(regex)).matcher(input).matches();
 	}
 
 	/**
@@ -37,10 +37,10 @@ public class RegexUtil {
 	 */
 	public static boolean match(String regex, String input, int flag) {
 		if (flag == 0) {
-			return CACHE.computeIfAbsent(regex, i -> Pattern.compile(i)).matcher(input).matches();
+			return match(regex, input);
 		}
 		return CACHE.computeIfAbsent(StrUtil.concat(regex, DefStr.SEPERATOR, Integer.toString(flag)), i -> Pattern
-			.compile(i)).matcher(input).matches();
+			.compile(regex, flag)).matcher(input).matches();
 	}
 
 	/**

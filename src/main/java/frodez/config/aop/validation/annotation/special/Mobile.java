@@ -27,14 +27,7 @@ public @interface Mobile {
 	 * @author Frodez
 	 * @date 2019-04-13
 	 */
-	String message() default "手机号格式错误!";
-
-	/**
-	 * 是否允许null,默认为false不允许
-	 * @author Frodez
-	 * @date 2019-04-13
-	 */
-	boolean nullable() default false;
+	String message() default "{frodez.config.aop.validation.annotation.special.Mobile.message}";
 
 	/**
 	 * 格式验证器
@@ -49,29 +42,14 @@ public @interface Mobile {
 		private static Pattern pattern = DefRegex.MOBILE;
 
 		/**
-		 * 接受空值,默认值为false true:当为空时,直接通过验证 false:当为空时,拒绝通过验证
-		 */
-		private boolean nullable;
-
-		/**
-		 * 根据注解信息初始化验证器
-		 * @author Frodez
-		 * @date 2018-12-17
-		 */
-		@Override
-		public void initialize(Mobile enumValue) {
-			nullable = enumValue.nullable();
-		}
-
-		/**
 		 * 验证
 		 * @author Frodez
 		 * @date 2018-12-17
 		 */
 		@Override
-		public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
+		public boolean isValid(String value, ConstraintValidatorContext context) {
 			if (value == null) {
-				return nullable;
+				return true;
 			}
 			return pattern.matcher(value).matches();
 		}

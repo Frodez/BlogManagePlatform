@@ -1,61 +1,55 @@
 package frodez;
 
-import frodez.util.common.DateUtil;
-import java.util.List;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import frodez.config.aop.validation.annotation.special.DateTime;
+import frodez.dao.param.user.AddPermission;
+import frodez.dao.param.user.QueryRolePermission;
+import frodez.service.user.facade.IAuthorityService;
+import frodez.util.beans.param.QueryPage;
+import frodez.util.beans.result.Result;
+import frodez.util.common.ValidationUtil;
+import java.lang.reflect.InvocationTargetException;
 import lombok.Data;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ValidationTest {
 
-	public static void main(String[] args) {
-		//		Random random = new Random();
-		//		byte[] array = new byte[100];
-		//		random.nextBytes(array);
-		//		for (byte iter : array) {
-		//			System.out.println(iter);
-		//		}
-		System.out.println(DateUtil.dateTime("2019-02-17 18:22:34"));
-		//		Result result = ResultUtil.page(10, new ArrayList<String>());
-		//		String json = JSONUtil.toJSONString(result);
-		//		System.out.println(json);
-		//		Map<String, Object> map = JSONUtil.toMap(json);
-		//		System.out.println(map.toString());
-		//		System.out.println(JSONUtil.toJSONString(map));
-		//		ValidTest item = new ValidTest();
-		//		List<SubValidTest> tests = new ArrayList<>();
-		//		SubValidTest sub1 = new SubValidTest();
-		//		sub1.setSubTest("11");
-		//		SubValidTest sub2 = new SubValidTest();
-		//		sub2.setSubTest("22");
-		//		SubValidTest sub3 = new SubValidTest();
-		//		sub3.setSubTest(" ");
-		//		SubValidTest sub4 = new SubValidTest();
-		//		tests.add(sub1);
-		//		tests.add(sub2);
-		//		tests.add(sub3);
-		//		tests.add(sub4);
-		//		item.setTests(tests);
-		//		System.out.println(ValidationUtil.validate(item));
+	@Autowired
+	private IAuthorityService authorityService;
+
+	@Test
+	public void test() throws JsonProcessingException, InvocationTargetException {
+		QueryRolePermission param = new QueryRolePermission();
+		param.setRoleId(1L);
+		QueryPage page = new QueryPage(1, 3000);
+		param.setPage(page);
+		Result result = authorityService.getRolePermissions(param);
+		System.out.println(result.json());
+		result = authorityService.getUserInfo("");
+		System.out.println(result.json());
+		AddPermission addPermission = new AddPermission();
+		addPermission.setName("2222");
+		addPermission.setUrl("33333");
+		addPermission.setDescription("3333333");
+		addPermission.setType((byte) -1);
+		result = authorityService.addPermission(addPermission);
+		System.out.println(result.json());
+		ValidationBean bean = new ValidationBean();
+		bean.setDate("1999-01-12 11:22:33");
+		System.out.println(ValidationUtil.validate(bean));
 	}
 
 	@Data
-	public static class ValidTest {
+	public static class ValidationBean {
 
-		@Valid
-		@NotEmpty(message = "列表不能为空!")
-		public List<SubValidTest> tests;
-
-	}
-
-	@Data
-	public static class SubValidTest {
-
-		@NotNull(message = "subTest can't be null!")
-		@NotBlank(message = "subTest can't be blank!")
-		private String subTest;
+		@DateTime
+		private String date;
 
 	}
 

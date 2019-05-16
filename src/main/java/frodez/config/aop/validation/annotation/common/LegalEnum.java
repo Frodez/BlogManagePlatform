@@ -1,5 +1,7 @@
 package frodez.config.aop.validation.annotation.common;
 
+import frodez.util.common.StrUtil;
+import frodez.util.common.ValidationUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -14,26 +16,54 @@ import javax.validation.Payload;
 
 /**
  * 枚举类型验证注解 <br>
+ * <strong>对于非空检查的情况,请继续使用@NotNull注解</strong><br>
  * <strong>要求:验证的枚举类必须实现一个方法,这个方法在当参数符合要求时,返回对应的枚举,否则返回null.</strong> <br>
+ * <strong>建议:枚举类上增加@EnumCheckable注解,以增强可读性</strong> <br>
  * 例子:<br>
  * <span>@ValidEnum(message = "状态非法!", type = UserStatusEnum.class, method = "of", nullable = true)</span><br>
  * private Byte status;<br>
  * 以下为注解参数说明:<br>
- * <strong> message: String类型,代表验证失败时的返回信息,默认值为"参数非法!"<br>
+ * <strong> message: String类型,代表验证失败时的返回信息<br>
  * type: Class类型,代表对应的枚举类.<br>
  * method: String类型,代表验证用的方法,默认值为of.<br>
  * paramType: Class类型,代表验证用方法的参数类型,默认值为byte.class<br>
- * nullable: boolean类型,代表对空值的处理方式,默认值为false.为true时空值可以通过验证,为false时空值不可以通过验证.<br>
  * </strong> 以下是枚举类代码.<br>
  *
  * <pre>
- * 	<span>@Getter</span>
+ * 	<span>@EnumCheckable</span>
  * 	<span>@AllArgsConstructor</span>
  * 	public enum UserStatusEnum {
  * 		FORBIDDEN((byte) 0, "禁用"),
  * 		NORMAL((byte) 1, "正常");
- * 		private byte value;
- * 		private String description;
+ * 		<span>@Getter</span>
+ *		private byte val;
+ *		<span>@Getter</span>
+ *		private String desc;
+ *		<span>@Getter</span>
+ *		private static List vals;
+ *		<span>@Getter</span>
+ *		private static List descs;
+ *		<span>@Getter</span>
+ *		private static String introduction;
+ * 		private static final Map<Byte, UserStatusEnum> enumMap;
+ * 		static {
+ *			vals = Collections.unmodifiableList(Arrays.asList(UserStatusEnum.values()).stream()
+ *				.map(UserStatusEnum::getVal).collect(Collectors.toList()));
+ *			descs = Collections.unmodifiableList(Arrays.asList(UserStatusEnum.values()).stream()
+ *				.map(UserStatusEnum::getDesc).collect(Collectors.toList()));
+ *			StringBuilder builder = new StringBuilder();
+ *			for (int i = 0; i < vals.size(); i++) {
+ *				builder.append(vals.get(i).toString());
+ *				if (i != vals.size() - 1) {
+ *					builder.append(",");
+ *				}
+ *			}
+ *			introduction = builder.toString();
+ *			enumMap = new HashMap<>();
+ *			for (UserStatusEnum iter : UserStatusEnum.values()) {
+ *				enumMap.put(iter.val, iter);
+ *			}
+ *		}
  * 		public UserStatusEnum of(byte value) {
  * 			for(UserStatusEnum iter : UserStatusEnum.values()) {
  * 				if(iter.value == value) {
@@ -54,12 +84,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = LegalEnum.Validator.class)
 public @interface LegalEnum {
 
-	/**
-	 * 错误信息,默认为"参数非法!"
-	 * @author Frodez
-	 * @date 2019-04-13
-	 */
-	String message() default "参数非法!";
+	String message() default "{frodez.config.aop.validation.annotation.common.LegalEnum.message}";
 
 	/**
 	 * 适用的枚举类
@@ -76,18 +101,19 @@ public @interface LegalEnum {
 	String method() default "of";
 
 	/**
-	 * 验证用方法参数的类型,默认为byte.class
+	 * 获取枚举所有值的方法名,默认为getIntroduction。
+	 * @author Frodez
+	 * @date 2019-05-17
+	 */
+	String introductionMethod() default "getIntroduction";
+
+	/**
+	 * 验证用方法参数的类型,默认为byte.class<br>
+	 * <strong>装箱类类型和原类型不能混用!</strong><br>
 	 * @author Frodez
 	 * @date 2019-04-13
 	 */
 	Class<?> paramType() default byte.class;
-
-	/**
-	 * 是否允许null,默认为false不允许
-	 * @author Frodez
-	 * @date 2019-04-13
-	 */
-	boolean nullable() default false;
 
 	Class<?>[] groups() default {};
 
@@ -100,6 +126,8 @@ public @interface LegalEnum {
 	 */
 	class Validator implements ConstraintValidator<LegalEnum, Object> {
 
+		private static final Object[] NULLPARAM_OBJECTS = new Object[] { null };
+
 		/**
 		 * 枚举类
 		 */
@@ -111,14 +139,14 @@ public @interface LegalEnum {
 		private String method;
 
 		/**
+		 * 获取枚举所有值的方法名,默认为getIntroduction。
+		 */
+		private String introductionMethod;
+
+		/**
 		 * 验证方法参数类型,默认值为byte.class
 		 */
 		private Class<?> paramType;
-
-		/**
-		 * 接受空值,默认值为false true:当为空时,直接通过验证 false:当为空时,拒绝通过验证
-		 */
-		private boolean nullable;
 
 		/**
 		 * 根据注解信息初始化验证器
@@ -129,8 +157,8 @@ public @interface LegalEnum {
 		public void initialize(LegalEnum enumValue) {
 			method = enumValue.method();
 			klass = enumValue.type();
-			nullable = enumValue.nullable();
 			paramType = enumValue.paramType();
+			introductionMethod = enumValue.introductionMethod();
 		}
 
 		/**
@@ -139,13 +167,20 @@ public @interface LegalEnum {
 		 * @date 2018-12-17
 		 */
 		@Override
-		public boolean isValid(Object value, ConstraintValidatorContext constraintValidatorContext) {
+		public boolean isValid(Object value, ConstraintValidatorContext context) {
 			if (value == null) {
-				return nullable;
+				//对于非空检查的情况,请继续使用@NotNull注解
+				return true;
 			}
 			try {
-				return ReflectUtil.getFastMethod(klass, method, paramType).invoke(null, new Object[] { ReflectUtil
-					.primitiveAdapt(value, paramType) }) != null;
+				if (ReflectUtil.getFastMethod(klass, method, paramType).invoke(null, new Object[] { ReflectUtil
+					.primitiveAdapt(value, paramType) }) != null) {
+					return true;
+				} else {
+					ValidationUtil.changeMessage(context, StrUtil.concat("${validatedValue}不符合要求,有效值为", ReflectUtil
+						.getFastMethod(klass, introductionMethod).invoke(null, NULLPARAM_OBJECTS).toString()));
+					return false;
+				}
 			} catch (InvocationTargetException e) {
 				throw new RuntimeException(e);
 			}

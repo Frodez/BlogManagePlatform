@@ -14,6 +14,8 @@ import frodez.util.spring.MVCUtil;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -53,7 +55,7 @@ public class LoginService implements ILoginService {
 
 	@Check
 	@Override
-	public Result login(DoLogin param) {
+	public Result login(@Valid @NotNull DoLogin param) {
 		try {
 			Result result = authorityService.getUserInfo(param.getUsername());
 			if (result.unable()) {
@@ -82,7 +84,7 @@ public class LoginService implements ILoginService {
 
 	@Check
 	@Override
-	public Result refresh(DoRefresh param) {
+	public Result refresh(@Valid @NotNull DoRefresh param) {
 		try {
 			Result result = authorityService.getUserInfo(param.getUsername());
 			if (result.unable()) {

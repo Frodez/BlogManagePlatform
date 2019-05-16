@@ -35,14 +35,7 @@ public @interface DateTime {
 	 * @author Frodez
 	 * @date 2019-04-13
 	 */
-	String message() default "参数非法!";
-
-	/**
-	 * 是否允许null,默认为false不允许
-	 * @author Frodez
-	 * @date 2019-04-13
-	 */
-	boolean nullable() default false;
+	String message() default "{frodez.config.aop.validation.annotation.special.DateTime.message}";
 
 	Class<?>[] groups() default {};
 
@@ -56,29 +49,14 @@ public @interface DateTime {
 	class Validator implements ConstraintValidator<DateTime, String> {
 
 		/**
-		 * 接受空值,默认值为false true:当为空时,直接通过验证 false:当为空时,拒绝通过验证
-		 */
-		private boolean nullable;
-
-		/**
-		 * 根据注解信息初始化验证器
-		 * @author Frodez
-		 * @date 2018-12-17
-		 */
-		@Override
-		public void initialize(DateTime enumValue) {
-			nullable = enumValue.nullable();
-		}
-
-		/**
 		 * 验证
 		 * @author Frodez
 		 * @date 2018-12-17
 		 */
 		@Override
-		public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
+		public boolean isValid(String value, ConstraintValidatorContext context) {
 			if (value == null) {
-				return nullable;
+				return true;
 			}
 			return DateUtil.isDateTime(value);
 		}

@@ -30,17 +30,17 @@ public class AddRole implements Serializable {
 	/**
 	 * 角色名称
 	 */
-	@Length(max = 255)
-	@NotBlank(message = "角色名称不能为空！")
+	@NotBlank
+	@Length(min = 3, max = 255)
 	@ApiModelProperty(value = "角色名称", required = true)
 	private String name;
 
 	/**
 	 * 角色等级 0-9 0最高,9最低
 	 */
-	@NotNull(message = "角色等级不能为空！")
 	@Min(0)
 	@Max(9)
+	@NotNull
 	@ApiModelProperty(value = "角色等级 0-9 0最高,9最低", required = true)
 	private Byte level;
 

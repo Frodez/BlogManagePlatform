@@ -105,92 +105,124 @@ public class ReflectUtil {
 	}
 
 	/**
+	 * 将两个数转换为指定的类型然后进行比较<br>
+	 * 涉及类型:byte, short, int, long以及对应装箱类
+	 * @author Frodez
+	 * @date 2019-05-17
+	 */
+	public static int compareTo(Object first, Object second, Class<?> klass) {
+		Assert.notNull(first, "first must not be null");
+		Assert.notNull(second, "second must not be null");
+		Assert.notNull(klass, "klass must not be null");
+		if (klass == Byte.class) {
+			return Byte.compare(primitiveAdapt(first, Byte.class), primitiveAdapt(second, Byte.class));
+		} else if (klass == Short.class) {
+			return Short.compare(primitiveAdapt(first, Short.class), primitiveAdapt(second, Short.class));
+		} else if (klass == Integer.class) {
+			return Integer.compare(primitiveAdapt(first, Integer.class), primitiveAdapt(second, Integer.class));
+		} else if (klass == Long.class) {
+			return Long.compare(primitiveAdapt(first, Long.class), primitiveAdapt(second, Long.class));
+		} else if (klass == Double.class) {
+			return Double.compare(primitiveAdapt(first, Double.class), primitiveAdapt(second, Double.class));
+		} else if (klass == Float.class) {
+			return Float.compare(primitiveAdapt(first, Float.class), primitiveAdapt(second, Float.class));
+		} else {
+			throw new UnsupportedOperationException("只能用于byte, short, int, long以及对应装箱类!");
+		}
+	}
+
+	/**
 	 * 基本数据类型适配<br>
 	 * value可为空<br>
 	 * 涉及类型:byte, short, int, long以及对应装箱类,还有void
 	 * @author Frodez
+	 * @param <T>
 	 * @date 2018-12-17
 	 */
-	public static Object primitiveAdapt(@Nullable Object value, Class<?> parameterClass) {
+	public static <T> T primitiveAdapt(@Nullable Object value, Class<T> parameterClass) {
 		Assert.notNull(parameterClass, "parameterClass must not be null");
 		if (value == null) {
 			return null;
 		}
 		Class<?> valueClass = value.getClass();
-		if (valueClass == byte.class || valueClass == Byte.class) {
+		if (valueClass == Byte.class) {
 			return castByteValue(parameterClass, (Byte) value);
-		} else if (valueClass == short.class || valueClass == Short.class) {
+		} else if (valueClass == Short.class) {
 			return castShortValue(parameterClass, (Short) value);
-		} else if (valueClass == int.class || valueClass == Integer.class) {
+		} else if (valueClass == Integer.class) {
 			return castIntValue(parameterClass, (Integer) value);
-		} else if (valueClass == long.class || valueClass == Long.class) {
+		} else if (valueClass == Long.class) {
 			return castLongValue(parameterClass, (Long) value);
 		}
-		throw new IllegalArgumentException("只能用于byte, short, int, long以及对应装箱类,以及void类型!");
+		throw new UnsupportedOperationException("只能用于byte, short, int, long以及对应装箱类,以及void类型!");
 	}
 
-	private static Object castByteValue(Class<?> parameterClass, Byte value) {
-		if (parameterClass == byte.class || parameterClass == Byte.class) {
-			return value;
+	@SuppressWarnings("unchecked")
+	private static <T> T castByteValue(Class<T> parameterClass, Byte value) {
+		if (parameterClass == Byte.class || parameterClass == byte.class) {
+			return (T) value;
 		}
-		if (parameterClass == short.class || parameterClass == Short.class) {
-			return value.shortValue();
+		if (parameterClass == Short.class || parameterClass == short.class) {
+			return (T) Short.valueOf(value.shortValue());
 		}
-		if (parameterClass == int.class || parameterClass == Integer.class) {
-			return value.intValue();
+		if (parameterClass == Integer.class || parameterClass == int.class) {
+			return (T) Integer.valueOf(value.intValue());
 		}
-		if (parameterClass == long.class || parameterClass == Long.class) {
-			return value.longValue();
+		if (parameterClass == Long.class || parameterClass == long.class) {
+			return (T) Long.valueOf(value.longValue());
 		}
-		return value;
+		return (T) value;
 	}
 
-	private static Object castShortValue(Class<?> parameterClass, Short value) {
-		if (parameterClass == byte.class || parameterClass == Byte.class) {
-			return value.byteValue();
+	@SuppressWarnings("unchecked")
+	private static <T> T castShortValue(Class<T> parameterClass, Short value) {
+		if (parameterClass == Byte.class || parameterClass == byte.class) {
+			return (T) Byte.valueOf(value.byteValue());
 		}
-		if (parameterClass == short.class || parameterClass == Short.class) {
-			return value;
+		if (parameterClass == Short.class || parameterClass == short.class) {
+			return (T) value;
 		}
-		if (parameterClass == int.class || parameterClass == Integer.class) {
-			return value.intValue();
+		if (parameterClass == Integer.class || parameterClass == int.class) {
+			return (T) Integer.valueOf(value.intValue());
 		}
-		if (parameterClass == long.class || parameterClass == Long.class) {
-			return value.longValue();
+		if (parameterClass == Long.class || parameterClass == long.class) {
+			return (T) Long.valueOf(value.longValue());
 		}
-		return value;
+		return (T) value;
 	}
 
-	private static Object castIntValue(Class<?> parameterClass, Integer value) {
-		if (parameterClass == byte.class || parameterClass == Byte.class) {
-			return value.byteValue();
+	@SuppressWarnings("unchecked")
+	private static <T> T castIntValue(Class<T> parameterClass, Integer value) {
+		if (parameterClass == Byte.class || parameterClass == byte.class) {
+			return (T) Byte.valueOf(value.byteValue());
 		}
-		if (parameterClass == short.class || parameterClass == Short.class) {
-			return value.shortValue();
+		if (parameterClass == Short.class || parameterClass == short.class) {
+			return (T) Short.valueOf(value.shortValue());
 		}
-		if (parameterClass == int.class || parameterClass == Integer.class) {
-			return value;
+		if (parameterClass == Integer.class || parameterClass == int.class) {
+			return (T) value;
 		}
-		if (parameterClass == long.class || parameterClass == Long.class) {
-			return value.longValue();
+		if (parameterClass == Long.class || parameterClass == long.class) {
+			return (T) Long.valueOf(value.longValue());
 		}
-		return value;
+		return (T) value;
 	}
 
-	private static Object castLongValue(Class<?> parameterClass, Long value) {
-		if (parameterClass == byte.class || parameterClass == Byte.class) {
-			return value.byteValue();
+	@SuppressWarnings("unchecked")
+	private static <T> T castLongValue(Class<T> parameterClass, Long value) {
+		if (parameterClass == Byte.class || parameterClass == byte.class) {
+			return (T) Byte.valueOf(value.byteValue());
 		}
-		if (parameterClass == short.class || parameterClass == Short.class) {
-			return value.shortValue();
+		if (parameterClass == Short.class || parameterClass == short.class) {
+			return (T) Short.valueOf(value.shortValue());
 		}
-		if (parameterClass == int.class || parameterClass == Integer.class) {
-			return value.intValue();
+		if (parameterClass == Integer.class || parameterClass == int.class) {
+			return (T) Integer.valueOf(value.intValue());
 		}
-		if (parameterClass == long.class || parameterClass == Long.class) {
-			return value;
+		if (parameterClass == Long.class || parameterClass == long.class) {
+			return (T) value;
 		}
-		return value;
+		return (T) value;
 	}
 
 }

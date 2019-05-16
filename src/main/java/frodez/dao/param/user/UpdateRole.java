@@ -1,5 +1,7 @@
 package frodez.dao.param.user;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -7,8 +9,6 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 修改角色请求参数
@@ -28,7 +28,7 @@ public class UpdateRole implements Serializable {
 	/**
 	 * 角色ID
 	 */
-	@NotNull(message = "角色ID不能为空!")
+	@NotNull
 	@ApiModelProperty(value = "角色ID", required = true)
 	private Long id;
 

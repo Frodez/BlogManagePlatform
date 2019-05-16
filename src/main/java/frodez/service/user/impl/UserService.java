@@ -13,6 +13,8 @@ import frodez.util.constant.user.UserStatusEnum;
 import frodez.util.error.ErrorCode;
 import frodez.util.error.exception.ServiceException;
 import java.util.Date;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,7 +42,7 @@ public class UserService implements IUserService {
 	@Check
 	@Transactional
 	@Override
-	public Result register(Doregister param) {
+	public Result register(@Valid @NotNull Doregister param) {
 		try {
 			User user = new User();
 			user.setCreateTime(new Date());

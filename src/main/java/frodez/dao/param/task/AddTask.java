@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -28,7 +29,7 @@ public class AddTask implements Serializable {
 	/**
 	 * 目标
 	 */
-	@NotBlank(message = "目标不能为空!")
+	@NotBlank
 	@Length(max = 255)
 	@ApiModelProperty(value = "目标", required = true)
 	private String target;
@@ -36,7 +37,7 @@ public class AddTask implements Serializable {
 	/**
 	 * 任务描述
 	 */
-	@NotBlank(message = "任务描述不能为空!")
+	@NotBlank
 	@Length(max = 65535)
 	@ApiModelProperty(value = "任务描述", required = true)
 	private String description;
@@ -44,7 +45,7 @@ public class AddTask implements Serializable {
 	/**
 	 * cron表达式
 	 */
-	@NotBlank(message = "cron表达式不能为空!")
+	@NotBlank
 	@Length(max = 31)
 	@ApiModelProperty(value = "cron表达式", required = true)
 	private String cronExp;
@@ -52,7 +53,8 @@ public class AddTask implements Serializable {
 	/**
 	 * 是否立刻启动 1:立刻启动 2:暂不启动
 	 */
-	@LegalEnum(message = "是否立刻启动不能为空!", type = StatusEnum.class)
+	@NotNull
+	@LegalEnum(type = StatusEnum.class)
 	@ApiModelProperty(value = "是否立刻启动 1:立刻启动 2:暂不启动", required = true)
 	private Byte startNow;
 
