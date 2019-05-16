@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -52,7 +53,8 @@ public class AddTask implements Serializable {
 	/**
 	 * 是否立刻启动 1:立刻启动 2:暂不启动
 	 */
-	@LegalEnum(message = "是否立刻启动不能为空!", type = StatusEnum.class)
+	@NotNull(message = "是否立刻启动不能为空!")
+	@LegalEnum(message = "是否立刻启动参数错误!", type = StatusEnum.class)
 	@ApiModelProperty(value = "是否立刻启动 1:立刻启动 2:暂不启动", required = true)
 	private Byte startNow;
 

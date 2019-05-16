@@ -1,5 +1,7 @@
 package frodez.dao.param.user;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -7,8 +9,6 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 修改角色请求参数
@@ -42,8 +42,8 @@ public class UpdateRole implements Serializable {
 	/**
 	 * 角色等级 0-9 0最高,9最低
 	 */
-	@Min(0)
-	@Max(9)
+	@Min(value = 0, message = "角色等级最小值为0！")
+	@Max(value = 9, message = "角色等级最大值为9！")
 	@ApiModelProperty(value = "角色等级 0-9 0最高,9最低")
 	private Byte level;
 

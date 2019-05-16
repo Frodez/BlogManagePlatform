@@ -2,13 +2,13 @@ package frodez.dao.param.user;
 
 import frodez.config.aop.validation.annotation.common.LegalEnum;
 import frodez.util.constant.user.PermissionTypeEnum;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 修改权限请求参数
@@ -35,6 +35,7 @@ public class UpdatePermission implements Serializable {
 	/**
 	 * 类型 0:ALL 1:GET 2:POST 3:DELETE 4:PUT
 	 */
+	@NotNull(message = "类型不能为空!")
 	@LegalEnum(message = "类型错误!", type = PermissionTypeEnum.class)
 	@ApiModelProperty(value = "类型 0:ALL 1:GET 2:POST 3:DELETE 4:PUT")
 	private Byte type;

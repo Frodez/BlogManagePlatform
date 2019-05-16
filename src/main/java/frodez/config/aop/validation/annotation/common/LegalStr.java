@@ -46,13 +46,6 @@ public @interface LegalStr {
 	Flag[] flags() default {};
 
 	/**
-	 * 是否允许null,默认为false不允许
-	 * @author Frodez
-	 * @date 2019-04-13
-	 */
-	boolean nullable() default false;
-
-	/**
 	 * 格式验证器
 	 * @author Frodez
 	 * @date 2018-12-17
@@ -70,11 +63,6 @@ public @interface LegalStr {
 		private int flag;
 
 		/**
-		 * 接受空值,默认值为false true:当为空时,直接通过验证 false:当为空时,拒绝通过验证
-		 */
-		private boolean nullable;
-
-		/**
 		 * 根据注解信息初始化验证器
 		 * @author Frodez
 		 * @date 2018-12-17
@@ -83,7 +71,6 @@ public @interface LegalStr {
 		public void initialize(LegalStr enumValue) {
 			regex = enumValue.regex();
 			flag = RegexUtil.transfer(enumValue.flags());
-			nullable = enumValue.nullable();
 		}
 
 		/**
@@ -94,7 +81,8 @@ public @interface LegalStr {
 		@Override
 		public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
 			if (value == null) {
-				return nullable;
+				//对于非空检查的情况,请继续使用@NotNull注解
+				return true;
 			}
 			return RegexUtil.match(regex, value, flag);
 		}

@@ -1,5 +1,6 @@
 package frodez.config.aop.validation.annotation.common;
 
+import frodez.util.constant.setting.DefDesc;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -14,16 +15,16 @@ import javax.validation.Payload;
 
 /**
  * 枚举类型验证注解 <br>
+ * <strong>对于非空检查的情况,请继续使用@NotNull注解</strong><br>
  * <strong>要求:验证的枚举类必须实现一个方法,这个方法在当参数符合要求时,返回对应的枚举,否则返回null.</strong> <br>
  * 例子:<br>
  * <span>@ValidEnum(message = "状态非法!", type = UserStatusEnum.class, method = "of", nullable = true)</span><br>
  * private Byte status;<br>
  * 以下为注解参数说明:<br>
- * <strong> message: String类型,代表验证失败时的返回信息,默认值为"参数非法!"<br>
+ * <strong> message: String类型,代表验证失败时的返回信息<br>
  * type: Class类型,代表对应的枚举类.<br>
  * method: String类型,代表验证用的方法,默认值为of.<br>
  * paramType: Class类型,代表验证用方法的参数类型,默认值为byte.class<br>
- * nullable: boolean类型,代表对空值的处理方式,默认值为false.为true时空值可以通过验证,为false时空值不可以通过验证.<br>
  * </strong> 以下是枚举类代码.<br>
  *
  * <pre>
@@ -55,11 +56,11 @@ import javax.validation.Payload;
 public @interface LegalEnum {
 
 	/**
-	 * 错误信息,默认为"参数非法!"
+	 * 错误信息
 	 * @author Frodez
 	 * @date 2019-04-13
 	 */
-	String message() default "参数非法!";
+	String message() default DefDesc.Warn.ILLEGAL_PARAM_WARN;
 
 	/**
 	 * 适用的枚举类
@@ -81,13 +82,6 @@ public @interface LegalEnum {
 	 * @date 2019-04-13
 	 */
 	Class<?> paramType() default byte.class;
-
-	/**
-	 * 是否允许null,默认为false不允许
-	 * @author Frodez
-	 * @date 2019-04-13
-	 */
-	boolean nullable() default false;
 
 	Class<?>[] groups() default {};
 
@@ -116,11 +110,6 @@ public @interface LegalEnum {
 		private Class<?> paramType;
 
 		/**
-		 * 接受空值,默认值为false true:当为空时,直接通过验证 false:当为空时,拒绝通过验证
-		 */
-		private boolean nullable;
-
-		/**
 		 * 根据注解信息初始化验证器
 		 * @author Frodez
 		 * @date 2018-12-17
@@ -129,7 +118,6 @@ public @interface LegalEnum {
 		public void initialize(LegalEnum enumValue) {
 			method = enumValue.method();
 			klass = enumValue.type();
-			nullable = enumValue.nullable();
 			paramType = enumValue.paramType();
 		}
 
@@ -141,7 +129,8 @@ public @interface LegalEnum {
 		@Override
 		public boolean isValid(Object value, ConstraintValidatorContext constraintValidatorContext) {
 			if (value == null) {
-				return nullable;
+				//对于非空检查的情况,请继续使用@NotNull注解
+				return true;
 			}
 			try {
 				return ReflectUtil.getFastMethod(klass, method, paramType).invoke(null, new Object[] { ReflectUtil

@@ -212,6 +212,20 @@ public final class Result implements Serializable {
 
 	/**
 	 * 返回分页查询类型结果(仅在成功时使用)<br>
+	 * 在可能会对数据进行二次处理,导致类型变化时使用.<br>
+	 * result.data的类型为frodez.util.beans.result.PageData
+	 * @see frodez.util.beans.result.PageData
+	 * @author Frodez
+	 * @date 2019-01-15
+	 */
+	public static <T> Result page(@SuppressWarnings("rawtypes") Page page, Collection<T> data) {
+		Assert.notNull(page, "page must not be null");
+		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(),
+			data));
+	}
+
+	/**
+	 * 返回分页查询类型结果(仅在成功时使用)<br>
 	 * result.data的类型为frodez.util.beans.result.PageData
 	 * @see frodez.util.beans.result.PageData
 	 * @author Frodez
@@ -219,12 +233,22 @@ public final class Result implements Serializable {
 	 */
 	public static <T> Result page(PageInfo<T> page) {
 		Assert.notNull(page, "page must not be null");
-		Assert.notNull(page.getPageNum(), "page.getPageNum() must not be null");
-		Assert.notNull(page.getPageSize(), "page.getPageSize() must not be null");
-		Assert.notNull(page.getTotal(), "page.getTotal() must not be null");
-		Assert.notNull(page.getList(), "page.getList() must not be null");
 		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(),
 			page.getList()));
+	}
+
+	/**
+	 * 返回分页查询类型结果(仅在成功时使用)<br>
+	 * 在可能会对数据进行二次处理,导致类型变化时使用.<br>
+	 * result.data的类型为frodez.util.beans.result.PageData
+	 * @see frodez.util.beans.result.PageData
+	 * @author Frodez
+	 * @date 2019-01-15
+	 */
+	public static <T> Result page(@SuppressWarnings("rawtypes") PageInfo page, Collection<T> data) {
+		Assert.notNull(page, "page must not be null");
+		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(),
+			data));
 	}
 
 	/**
@@ -252,7 +276,7 @@ public final class Result implements Serializable {
 	 * @date 2019-02-02
 	 */
 	public static Result errorRequest() {
-		return DEFAULT_RESULT_CACHE.get(ResultEnum.ERROR_REQUEST);
+		return DEFAULT_RESULT_CACHE.get(ResultEnum.ERROR_PARAMETER);
 	}
 
 	/**
@@ -262,7 +286,7 @@ public final class Result implements Serializable {
 	 */
 	public static Result errorRequest(String message) {
 		Assert.notNull(message, "message must not be null");
-		return new Result(message, ResultEnum.ERROR_REQUEST);
+		return new Result(message, ResultEnum.ERROR_PARAMETER);
 	}
 
 	/**
@@ -535,7 +559,7 @@ public final class Result implements Serializable {
 		/**
 		 * 请求参数错误
 		 */
-		ERROR_REQUEST(1002, HttpStatus.BAD_REQUEST, "请求参数错误"),
+		ERROR_PARAMETER(1002, HttpStatus.BAD_REQUEST, "请求参数错误"),
 		/**
 		 * 服务器错误
 		 */

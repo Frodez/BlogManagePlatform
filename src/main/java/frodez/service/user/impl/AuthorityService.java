@@ -180,7 +180,7 @@ public class AuthorityService implements IAuthorityService {
 			Page<User> page = PageHelper.startPage(QueryPage.resonable(param)).doSelectPage(() -> {
 				userMapper.selectAll();
 			});
-			return Result.page(page.getPageNum(), page.getPageSize(), page.getTotal(), getUserInfos(page.getResult()));
+			return Result.page(page, getUserInfos(page.getResult()));
 		} catch (Exception e) {
 			log.error("[getUserInfos]", e);
 			return Result.errorService();

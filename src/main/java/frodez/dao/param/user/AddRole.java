@@ -39,8 +39,8 @@ public class AddRole implements Serializable {
 	 * 角色等级 0-9 0最高,9最低
 	 */
 	@NotNull(message = "角色等级不能为空！")
-	@Min(0)
-	@Max(9)
+	@Min(value = 0, message = "角色等级最小值为0！")
+	@Max(value = 9, message = "角色等级最大值为9！")
 	@ApiModelProperty(value = "角色等级 0-9 0最高,9最低", required = true)
 	private Byte level;
 

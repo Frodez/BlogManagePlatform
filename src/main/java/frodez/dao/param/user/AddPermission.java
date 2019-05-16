@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -36,6 +37,7 @@ public class AddPermission implements Serializable {
 	/**
 	 * 类型 0:ALL 1:GET 2:POST 3:DELETE 4:PUT(不能为空,默认值:0)
 	 */
+	@NotNull(message = "类型不能为空!")
 	@LegalEnum(message = "类型错误!", type = PermissionTypeEnum.class)
 	@ApiModelProperty(value = "类型 0:ALL 1:GET 2:POST 3:DELETE 4:PUT(不能为空,默认值:0)", required = true)
 	private Byte type;
