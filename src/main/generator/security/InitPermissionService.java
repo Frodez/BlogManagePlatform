@@ -34,18 +34,26 @@ public class InitPermissionService {
 		PermissionMapper permissionMapper = ContextUtil.get(PermissionMapper.class);
 		List<Permission> permissionList = new ArrayList<>();
 		Date date = new Date();
+		//拿到mvc里定义的所有端点,然后自动生成权限
+		//这里是从spring上下文里拿出所有HandlerMapping
 		BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false)
 			.values().stream().filter((iter) -> {
+				//过滤出其中的RequestMappingHandlerMapping
 				return iter instanceof RequestMappingHandlerMapping;
 			}).map((iter) -> {
+				//取出所有的RequestMapping和对应的HandlerMethod,即@RequestMapping,@GetMapping,@PostMapping这些注解和它们所在的方法
 				return ((RequestMappingHandlerMapping) iter).getHandlerMethods().entrySet();
 			}).flatMap(Collection::stream).forEach((entry) -> {
+				//这里遍历map,map的类型是Entry<RequestMappingInfo, HandlerMethod>
 				String requestUrl = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + entry.getKey().getPatternsCondition()
 					.getPatterns().stream().findFirst().get();
+				//只有需要验证的url才有权限
 				if (!URLMatcher.needVerify(requestUrl)) {
 					return;
 				}
+				//把url的server.servlet.context-path以及它前面的部分去掉
 				requestUrl = requestUrl.substring(PropertyUtil.get(PropertyKey.Web.BASE_PATH).length());
+				//获得请求类型
 				String requestType = entry.getKey().getMethodsCondition().getMethods().stream().map(RequestMethod::name)
 					.findFirst().orElse(PermissionTypeEnum.ALL.name());
 				String permissionName = ReflectUtil.getShortMethodName(entry.getValue().getMethod());
