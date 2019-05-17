@@ -1,13 +1,13 @@
 package frodez.util.common;
 
-import frodez.util.constant.setting.DefDecimal;
+import frodez.constant.settings.DefDecimal;
 import java.math.BigDecimal;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.Assert;
 
 /**
  * Decimal工具类
- * @see frodez.util.constant.setting.DefDecimal
+ * @see frodez.constant.settings.DefDecimal
  * @author Frodez
  * @date 2019-03-27
  */
@@ -16,8 +16,8 @@ public class DecimalUtil {
 
 	/**
 	 * 标准化
-	 * @see frodez.util.constant.setting.DefDecimal#PRECISION
-	 * @see frodez.util.constant.setting.DefDecimal#ROUND_MODE
+	 * @see frodez.constant.settings.DefDecimal#PRECISION
+	 * @see frodez.constant.settings.DefDecimal#ROUND_MODE
 	 * @author Frodez
 	 * @date 2019-01-28
 	 */
@@ -28,8 +28,8 @@ public class DecimalUtil {
 
 	/**
 	 * 标准化
-	 * @see frodez.util.constant.setting.DefDecimal#PRECISION
-	 * @see frodez.util.constant.setting.DefDecimal#ROUND_MODE
+	 * @see frodez.constant.settings.DefDecimal#PRECISION
+	 * @see frodez.constant.settings.DefDecimal#ROUND_MODE
 	 * @author Frodez
 	 * @date 2019-01-28
 	 */
@@ -40,8 +40,8 @@ public class DecimalUtil {
 
 	/**
 	 * 标准化
-	 * @see frodez.util.constant.setting.DefDecimal#PRECISION
-	 * @see frodez.util.constant.setting.DefDecimal#ROUND_MODE
+	 * @see frodez.constant.settings.DefDecimal#PRECISION
+	 * @see frodez.constant.settings.DefDecimal#ROUND_MODE
 	 * @author Frodez
 	 * @date 2019-01-28
 	 */
@@ -52,8 +52,8 @@ public class DecimalUtil {
 
 	/**
 	 * 标准化
-	 * @see frodez.util.constant.setting.DefDecimal#PRECISION
-	 * @see frodez.util.constant.setting.DefDecimal#ROUND_MODE
+	 * @see frodez.constant.settings.DefDecimal#PRECISION
+	 * @see frodez.constant.settings.DefDecimal#ROUND_MODE
 	 * @author Frodez
 	 * @date 2019-01-28
 	 */
@@ -64,8 +64,8 @@ public class DecimalUtil {
 
 	/**
 	 * 标准化
-	 * @see frodez.util.constant.setting.DefDecimal#PRECISION
-	 * @see frodez.util.constant.setting.DefDecimal#ROUND_MODE
+	 * @see frodez.constant.settings.DefDecimal#PRECISION
+	 * @see frodez.constant.settings.DefDecimal#ROUND_MODE
 	 * @author Frodez
 	 * @date 2019-01-28
 	 */
@@ -114,8 +114,8 @@ public class DecimalUtil {
 
 	/**
 	 * 批量相减,第一个数为被减数
-	 * @see frodez.util.constant.setting.DefDecimal#PRECISION
-	 * @see frodez.util.constant.setting.DefDecimal#ROUND_MODE
+	 * @see frodez.constant.settings.DefDecimal#PRECISION
+	 * @see frodez.constant.settings.DefDecimal#ROUND_MODE
 	 * @param normalized 是否进行标准化, true为进行标准化,false为不进行标准化
 	 * @author Frodez
 	 * @date 2019-01-28
@@ -145,8 +145,8 @@ public class DecimalUtil {
 
 	/**
 	 * 批量相乘,第一个数为被乘数
-	 * @see frodez.util.constant.setting.DefDecimal#PRECISION
-	 * @see frodez.util.constant.setting.DefDecimal#ROUND_MODE
+	 * @see frodez.constant.settings.DefDecimal#PRECISION
+	 * @see frodez.constant.settings.DefDecimal#ROUND_MODE
 	 * @param normalized 是否进行标准化, true为进行标准化,false为不进行标准化
 	 * @author Frodez
 	 * @date 2019-01-28
@@ -176,8 +176,8 @@ public class DecimalUtil {
 
 	/**
 	 * 批量相除,第一个数为被除数
-	 * @see frodez.util.constant.setting.DefDecimal#PRECISION
-	 * @see frodez.util.constant.setting.DefDecimal#ROUND_MODE
+	 * @see frodez.constant.settings.DefDecimal#PRECISION
+	 * @see frodez.constant.settings.DefDecimal#ROUND_MODE
 	 * @param normalized 是否进行标准化, true为进行标准化,false为不进行标准化
 	 * @author Frodez
 	 * @date 2019-01-28

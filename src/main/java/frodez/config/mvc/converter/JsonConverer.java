@@ -5,10 +5,9 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
-import com.google.common.html.HtmlEscapers;
+import frodez.constant.settings.DefCharset;
 import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
-import frodez.util.constant.setting.DefCharset;
 import frodez.util.json.JSONUtil;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -140,7 +139,7 @@ public class JsonConverer extends AbstractGenericHttpMessageConverter<Object> {
 			//对通用Result采用特殊的优化过的方式
 			String string = object.getClass() == Result.class ? ((Result) object).json() : JSONUtil.string(object);
 			//在此进行html转义
-			string = HtmlEscapers.htmlEscaper().escape(string);
+			//string = HtmlEscapers.htmlEscaper().escape(string);
 			outputStream.write(string.getBytes());
 			outputStream.flush();
 		} catch (InvalidDefinitionException ex) {

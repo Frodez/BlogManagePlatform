@@ -3,7 +3,7 @@ package frodez.util.io;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.FileWriteMode;
 import com.google.common.io.Files;
-import frodez.util.constant.setting.DefCharset;
+import frodez.constant.settings.DefCharset;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

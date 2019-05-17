@@ -1,7 +1,7 @@
 package frodez.dao.param.task;
 
 import frodez.config.aop.validation.annotation.common.LegalEnum;
-import frodez.util.constant.task.StatusEnum;
+import frodez.constant.enums.task.StatusEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;

@@ -20,7 +20,7 @@ import javax.validation.Payload;
  * nullable: boolean类型,代表对空值的处理方式,默认值为false.为true时空值可以通过验证,为false时空值不可以通过验证.<br>
  * </strong>
  * @see frodez.util.common.DateUtil
- * @see frodez.util.constant.setting.DefTime#DATE_PATTERN
+ * @see frodez.constant.settings.DefTime#DATE_PATTERN
  * @author Frodez
  * @date 2019-03-01
  */

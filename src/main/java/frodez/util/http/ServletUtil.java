@@ -1,9 +1,9 @@
 package frodez.util.http;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import frodez.constant.settings.DefCharset;
 import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
-import frodez.util.constant.setting.DefCharset;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;

@@ -1,6 +1,6 @@
 package frodez.config.aop.validation.annotation.special;
 
-import frodez.util.constant.setting.DefRegex;
+import frodez.constant.settings.DefRegex;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

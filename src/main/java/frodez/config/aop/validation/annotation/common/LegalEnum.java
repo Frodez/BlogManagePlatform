@@ -18,15 +18,18 @@ import javax.validation.Payload;
  * 枚举类型验证注解 <br>
  * <strong>对于非空检查的情况,请继续使用@NotNull注解</strong><br>
  * <strong>要求:验证的枚举类必须实现一个方法,这个方法在当参数符合要求时,返回对应的枚举,否则返回null.</strong> <br>
+ * <strong>要求:验证的枚举类必须实现一个方法,这个方法在当参数不符合要求时,返回枚举所对应的所有值,以字符串形式返回.</strong> <br>
  * <strong>建议:枚举类上增加@EnumCheckable注解,以增强可读性</strong> <br>
  * 例子:<br>
- * <span>@ValidEnum(message = "状态非法!", type = UserStatusEnum.class, method = "of", nullable = true)</span><br>
+ * <span>@ValidEnum(message = "状态非法!", type = UserStatusEnum.class, method = "of", introductionMethod =
+ * "getIntroduction")</span><br>
  * private Byte status;<br>
  * 以下为注解参数说明:<br>
  * <strong> message: String类型,代表验证失败时的返回信息<br>
  * type: Class类型,代表对应的枚举类.<br>
  * method: String类型,代表验证用的方法,默认值为of.<br>
- * paramType: Class类型,代表验证用方法的参数类型,默认值为byte.class<br>
+ * introductionMethod: String类型,代表获取枚举所有值的方法,默认值为getIntroduction.<br>
+ * paramType: Class类型,代表验证用方法的参数类型,默认值为byte.class.注意,装箱类类型和原类型不能混用!<br>
  * </strong> 以下是枚举类代码.<br>
  *
  * <pre>

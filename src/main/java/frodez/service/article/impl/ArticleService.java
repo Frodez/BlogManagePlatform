@@ -2,6 +2,8 @@ package frodez.service.article.impl;
 
 import com.google.common.collect.Lists;
 import frodez.config.security.util.UserUtil;
+import frodez.constant.enums.common.DeleteEnum;
+import frodez.constant.settings.DefStr;
 import frodez.dao.mapper.article.ArticleMapper;
 import frodez.dao.model.article.Article;
 import frodez.dao.result.article.ArticleInfo;
@@ -9,8 +11,6 @@ import frodez.dao.result.user.UserInfo;
 import frodez.service.article.facade.IArticleService;
 import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
-import frodez.util.constant.common.DeleteEnum;
-import frodez.util.constant.setting.DefStr;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;

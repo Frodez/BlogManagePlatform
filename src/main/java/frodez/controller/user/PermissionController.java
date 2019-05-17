@@ -1,5 +1,6 @@
 package frodez.controller.user;
 
+import frodez.constant.settings.DefDesc;
 import frodez.dao.model.user.Permission;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.QueryRolePermission;
@@ -9,7 +10,6 @@ import frodez.dao.result.user.PermissionInfo;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
-import frodez.util.constant.setting.DefDesc;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
