@@ -12,7 +12,7 @@ import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
 import frodez.util.constant.setting.DefStr;
-import frodez.util.constant.task.StatusEnum;
+import frodez.util.enums.task.StatusEnum;
 import frodez.util.error.ErrorCode;
 import frodez.util.error.exception.ServiceException;
 import frodez.util.json.JSONUtil;

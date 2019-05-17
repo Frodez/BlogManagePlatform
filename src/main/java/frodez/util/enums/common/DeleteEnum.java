@@ -1,6 +1,6 @@
-package frodez.util.constant.common;
+package frodez.util.enums.common;
 
-import frodez.util.constant.annotation.decoration.EnumCheckable;
+import frodez.util.annotations.decoration.EnumCheckable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;

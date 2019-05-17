@@ -3,7 +3,7 @@ package frodez.config.security.auth;
 import frodez.config.security.settings.SecurityProperties;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.model.user.Permission;
-import frodez.util.constant.user.PermissionTypeEnum;
+import frodez.util.enums.user.PermissionTypeEnum;
 import frodez.util.spring.ContextUtil;
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -9,7 +9,7 @@ import frodez.dao.result.user.UserInfo;
 import frodez.service.user.facade.ILoginService;
 import frodez.service.user.facade.IUserService;
 import frodez.util.beans.result.Result;
-import frodez.util.constant.user.UserStatusEnum;
+import frodez.util.enums.user.UserStatusEnum;
 import frodez.util.error.ErrorCode;
 import frodez.util.error.exception.ServiceException;
 import java.util.Date;

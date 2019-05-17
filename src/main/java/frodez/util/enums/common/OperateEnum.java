@@ -1,6 +1,6 @@
-package frodez.util.constant.user;
+package frodez.util.enums.common;
 
-import frodez.util.constant.annotation.decoration.EnumCheckable;
+import frodez.util.annotations.decoration.EnumCheckable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,22 +11,31 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 用户状态枚举
+ * 操作类型枚举
+ * @see ModifyEnum
  * @author Frodez
- * @date 2018-11-14
+ * @date 2019-03-17
  */
 @EnumCheckable
 @AllArgsConstructor
-public enum UserStatusEnum {
+public enum OperateEnum {
 
 	/**
-	 * 0:禁用
+	 * 新增
 	 */
-	FORBIDDEN((byte) 0, "禁用"),
+	INSERT((byte) 1, "新增"),
 	/**
-	 * 1:正常
+	 * 删除
 	 */
-	NORMAL((byte) 1, "正常");
+	DELETE((byte) 2, "删除"),
+	/**
+	 * 修改
+	 */
+	UPDATE((byte) 3, "修改"),
+	/**
+	 * 查询
+	 */
+	SELECT((byte) 4, "查询");
 
 	/**
 	 * 值
@@ -58,13 +67,13 @@ public enum UserStatusEnum {
 	@Getter
 	private static String introduction;
 
-	private static final Map<Byte, UserStatusEnum> enumMap;
+	private static final Map<Byte, OperateEnum> enumMap;
 
 	static {
-		vals = Collections.unmodifiableList(Arrays.asList(UserStatusEnum.values()).stream().map(UserStatusEnum::getVal)
+		vals = Collections.unmodifiableList(Arrays.asList(OperateEnum.values()).stream().map(OperateEnum::getVal)
 			.collect(Collectors.toList()));
-		descs = Collections.unmodifiableList(Arrays.asList(UserStatusEnum.values()).stream().map(
-			UserStatusEnum::getDesc).collect(Collectors.toList()));
+		descs = Collections.unmodifiableList(Arrays.asList(OperateEnum.values()).stream().map(OperateEnum::getDesc)
+			.collect(Collectors.toList()));
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < vals.size(); i++) {
 			builder.append(vals.get(i).toString());
@@ -74,12 +83,17 @@ public enum UserStatusEnum {
 		}
 		introduction = builder.toString();
 		enumMap = new HashMap<>();
-		for (UserStatusEnum iter : UserStatusEnum.values()) {
+		for (OperateEnum iter : OperateEnum.values()) {
 			enumMap.put(iter.val, iter);
 		}
 	}
 
-	public static UserStatusEnum of(byte value) {
+	/**
+	 * 转化
+	 * @author Frodez
+	 * @date 2019-05-17
+	 */
+	public static OperateEnum of(byte value) {
 		return enumMap.get(value);
 	}
 

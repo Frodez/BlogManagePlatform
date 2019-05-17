@@ -1,6 +1,6 @@
-package frodez.util.constant.common;
+package frodez.util.enums.user;
 
-import frodez.util.constant.annotation.decoration.EnumCheckable;
+import frodez.util.annotations.decoration.EnumCheckable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,31 +11,34 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 操作类型枚举
- * @see ModifyEnum
+ * 权限类型枚举
  * @author Frodez
- * @date 2019-03-17
+ * @date 2018-12-04
  */
 @EnumCheckable
 @AllArgsConstructor
-public enum OperateEnum {
+public enum PermissionTypeEnum {
 
 	/**
-	 * 新增
+	 * 0:所有类型请求
 	 */
-	INSERT((byte) 1, "新增"),
+	ALL((byte) 0, "所有类型请求"),
 	/**
-	 * 删除
+	 * 1:GET类型请求
 	 */
-	DELETE((byte) 2, "删除"),
+	GET((byte) 1, "GET类型请求"),
 	/**
-	 * 修改
+	 * 2:POST类型请求
 	 */
-	UPDATE((byte) 3, "修改"),
+	POST((byte) 2, "POST类型请求"),
 	/**
-	 * 查询
+	 * 3:DELETE类型请求
 	 */
-	SELECT((byte) 4, "查询");
+	DELETE((byte) 3, "DELETE类型请求"),
+	/**
+	 * 4:PUT类型请求
+	 */
+	PUT((byte) 4, "PUT类型请求");
 
 	/**
 	 * 值
@@ -67,13 +70,13 @@ public enum OperateEnum {
 	@Getter
 	private static String introduction;
 
-	private static final Map<Byte, OperateEnum> enumMap;
+	private static final Map<Byte, PermissionTypeEnum> enumMap;
 
 	static {
-		vals = Collections.unmodifiableList(Arrays.asList(OperateEnum.values()).stream().map(OperateEnum::getVal)
-			.collect(Collectors.toList()));
-		descs = Collections.unmodifiableList(Arrays.asList(OperateEnum.values()).stream().map(OperateEnum::getDesc)
-			.collect(Collectors.toList()));
+		vals = Collections.unmodifiableList(Arrays.asList(PermissionTypeEnum.values()).stream().map(
+			PermissionTypeEnum::getVal).collect(Collectors.toList()));
+		descs = Collections.unmodifiableList(Arrays.asList(PermissionTypeEnum.values()).stream().map(
+			PermissionTypeEnum::getDesc).collect(Collectors.toList()));
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < vals.size(); i++) {
 			builder.append(vals.get(i).toString());
@@ -83,7 +86,7 @@ public enum OperateEnum {
 		}
 		introduction = builder.toString();
 		enumMap = new HashMap<>();
-		for (OperateEnum iter : OperateEnum.values()) {
+		for (PermissionTypeEnum iter : PermissionTypeEnum.values()) {
 			enumMap.put(iter.val, iter);
 		}
 	}
@@ -93,7 +96,7 @@ public enum OperateEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static OperateEnum of(byte value) {
+	public static PermissionTypeEnum of(byte value) {
 		return enumMap.get(value);
 	}
 
