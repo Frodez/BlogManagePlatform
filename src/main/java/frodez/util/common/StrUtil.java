@@ -40,7 +40,7 @@ public class StrUtil {
 	public static String get(String defaultStr, @Nullable Object object) {
 		if (object == null) {
 			if (defaultStr == null) {
-				throw new IllegalArgumentException("defaultStr is null!");
+				throw new IllegalArgumentException("while the object is null, defaultStr can't be null either!");
 			}
 			return defaultStr;
 		}
@@ -64,7 +64,7 @@ public class StrUtil {
 	 */
 	public static String concat(String... strings) {
 		if (EmptyUtil.yes(strings)) {
-			throw new IllegalArgumentException("when strings are empty, the defaultStr can't be null either.");
+			throw new IllegalArgumentException("it isn't suitable for empty string.");
 		}
 		int stringsLength = strings.length;
 		if (stringsLength == 1) {

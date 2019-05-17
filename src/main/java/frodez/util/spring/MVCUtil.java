@@ -50,12 +50,17 @@ public class MVCUtil {
 	public static Map<RequestMethod, List<RequestMappingInfo>> endPoints() {
 		Map<RequestMethod, List<RequestMappingInfo>> endPoints = new EnumMap<>(RequestMethod.class);
 		for (RequestMethod method : RequestMethod.values()) {
+			//从spring上下文里拿出所有HandlerMapping
+			//遍历每种RequestMethod,找出它们对应的端点放入EnumMap
 			endPoints.put(method, BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(),
 				HandlerMapping.class, true, false).values().stream().filter((iter) -> {
+					//过滤出其中的RequestMappingHandlerMapping
 					return iter instanceof RequestMappingHandlerMapping;
 				}).map((iter) -> {
+					//取出所有的RequestMapping和对应的HandlerMethod,即@RequestMapping,@GetMapping,@PostMapping这些注解和它们所在的方法
 					return ((RequestMappingHandlerMapping) iter).getHandlerMethods().keySet();
 				}).flatMap(Collection::stream).filter((iter) -> {
+					//判断这个RequestMappingInfo的http RequestMethod是否是这次遍历所要寻找的RequestMethod
 					return iter.getMethodsCondition().getMethods().contains(method);
 				}).collect(Collectors.toList()));
 		}
