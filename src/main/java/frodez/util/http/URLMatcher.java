@@ -1,9 +1,9 @@
 package frodez.util.http;
 
 import frodez.config.security.settings.SecurityProperties;
+import frodez.constant.settings.PropertyKey;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.util.common.StrUtil;
-import frodez.util.constant.setting.PropertyKey;
 import frodez.util.spring.ContextUtil;
 import frodez.util.spring.PropertyUtil;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package frodez.util.common;
 
-import frodez.util.constant.setting.DefDecimal;
+import frodez.constant.settings.DefDecimal;
 import java.math.BigDecimal;
 import lombok.experimental.UtilityClass;
 import org.springframework.lang.Nullable;
@@ -19,7 +19,7 @@ public class StrUtil {
 	 * 1.如果对象为null,则转换为空字符串。<br>
 	 * 2.如果对象为BigDecimal,则按规定的默认精度和转换方式转换为字符串。<br>
 	 * 3.如果对象不为BigDecimal,则调用其默认的toString方法转换为字符串。<br>
-	 * @see frodez.util.constant.setting.DefDecimal
+	 * @see frodez.constant.settings.DefDecimal
 	 * @author Frodez
 	 * @date 2019-04-01
 	 */
@@ -33,7 +33,7 @@ public class StrUtil {
 	 * 1.如果对象为null,则转换为defaultStr。如果defaultStr也为null,则抛出IllegalArgumentException。<br>
 	 * 2.如果对象为BigDecimal,则按规定的默认精度和转换方式转换为字符串。<br>
 	 * 3.如果对象不为BigDecimal,则调用其默认的toString方法转换为字符串。<br>
-	 * @see frodez.util.constant.setting.DefDecimal
+	 * @see frodez.constant.settings.DefDecimal
 	 * @author Frodez
 	 * @date 2019-04-01
 	 */

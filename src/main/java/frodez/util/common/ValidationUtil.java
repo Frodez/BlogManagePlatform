@@ -1,7 +1,7 @@
 package frodez.util.common;
 
-import frodez.util.constant.setting.DefDesc;
-import frodez.util.constant.setting.DefStr;
+import frodez.constant.settings.DefDesc;
+import frodez.constant.settings.DefStr;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;

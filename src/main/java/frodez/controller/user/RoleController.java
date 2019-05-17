@@ -1,5 +1,6 @@
 package frodez.controller.user;
 
+import frodez.constant.settings.DefDesc;
 import frodez.dao.model.user.Role;
 import frodez.dao.param.user.AddRole;
 import frodez.dao.param.user.UpdateRole;
@@ -8,7 +9,6 @@ import frodez.dao.result.user.RoleDetail;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
-import frodez.util.constant.setting.DefDesc;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

@@ -1,7 +1,7 @@
 package frodez.dao.param.user;
 
 import frodez.config.aop.validation.annotation.common.LegalEnum;
-import frodez.util.enums.user.PermissionTypeEnum;
+import frodez.constant.enums.user.PermissionTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;

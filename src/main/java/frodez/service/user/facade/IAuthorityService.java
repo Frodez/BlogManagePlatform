@@ -1,12 +1,12 @@
 package frodez.service.user.facade;
 
+import frodez.constant.annotations.decoration.ServiceOnly;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.AddRole;
 import frodez.dao.param.user.QueryRolePermission;
 import frodez.dao.param.user.UpdatePermission;
 import frodez.dao.param.user.UpdateRole;
 import frodez.dao.param.user.UpdateRolePermission;
-import frodez.util.annotations.decoration.ServiceOnly;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import java.util.List;

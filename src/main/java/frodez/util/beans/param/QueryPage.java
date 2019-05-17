@@ -3,8 +3,8 @@ package frodez.util.beans.param;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.pagehelper.IPage;
 import frodez.config.aop.validation.annotation.special.ValidQueryPage;
-import frodez.util.constant.setting.DefDesc;
-import frodez.util.constant.setting.DefPage;
+import frodez.constant.settings.DefDesc;
+import frodez.constant.settings.DefPage;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -86,7 +86,7 @@ public class QueryPage implements IPage, Serializable {
 
 	/**
 	 * 是否允许超额单页容量,内部参数,请不要暴露
-	 * @see frodez.util.constant.setting.DefPage#MAX_PAGE_SIZE
+	 * @see frodez.constant.settings.DefPage#MAX_PAGE_SIZE
 	 */
 	@Getter
 	@JsonIgnore
@@ -95,7 +95,7 @@ public class QueryPage implements IPage, Serializable {
 	/**
 	 * 允许超额单页容量,用于参数校验<br>
 	 * 仅限于内部调用使用,请不要作为外部参数暴露,以防恶意攻击! <br>
-	 * @see frodez.util.constant.setting.DefPage#MAX_PAGE_SIZE
+	 * @see frodez.constant.settings.DefPage#MAX_PAGE_SIZE
 	 * @author Frodez
 	 * @date 2019-05-16
 	 */
@@ -107,7 +107,7 @@ public class QueryPage implements IPage, Serializable {
 	/**
 	 * 允许超额单页容量,用于参数校验<br>
 	 * 仅限于内部调用使用,请不要作为外部参数暴露,以防恶意攻击! <br>
-	 * @see frodez.util.constant.setting.DefPage#MAX_PAGE_SIZE
+	 * @see frodez.constant.settings.DefPage#MAX_PAGE_SIZE
 	 * @author Frodez
 	 * @date 2019-05-16
 	 */

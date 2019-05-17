@@ -1,8 +1,8 @@
 package frodez.config.aop.request.checker.impl;
 
 import frodez.config.security.util.TokenUtil;
+import frodez.constant.settings.DefStr;
 import frodez.util.common.StrUtil;
-import frodez.util.constant.setting.DefStr;
 import frodez.util.http.ServletUtil;
 import frodez.util.http.URLMatcher;
 import javax.servlet.http.HttpServletRequest;

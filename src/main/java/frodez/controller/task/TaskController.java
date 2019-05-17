@@ -1,12 +1,12 @@
 package frodez.controller.task;
 
+import frodez.constant.settings.DefDesc;
 import frodez.dao.model.task.Task;
 import frodez.dao.param.task.AddTask;
 import frodez.dao.result.task.AvailableTaskInfo;
 import frodez.service.task.base.BaseTaskService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
-import frodez.util.constant.setting.DefDesc;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

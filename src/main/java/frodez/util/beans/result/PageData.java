@@ -1,6 +1,6 @@
 package frodez.util.beans.result;
 
-import frodez.util.constant.setting.DefDesc;
+import frodez.constant.settings.DefDesc;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;

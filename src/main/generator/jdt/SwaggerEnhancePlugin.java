@@ -1,7 +1,7 @@
 package jdt;
 
+import frodez.constant.settings.DefDesc;
 import frodez.util.beans.param.QueryPage;
-import frodez.util.constant.setting.DefDesc;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
