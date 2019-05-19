@@ -188,7 +188,7 @@ public class DecimalUtil {
 		}
 		BigDecimal result = first;
 		//按照每次计算精度减1的标准得出内部精度
-		int precision = args.length + DefDecimal.PRECISION;
+		int precision = args.length + (normalized ? DefDecimal.PRECISION : first.precision());
 		for (int i = 0; i < args.length; ++i) {
 			result = result.divide(args[i], precision, DefDecimal.ROUND_MODE);
 		}

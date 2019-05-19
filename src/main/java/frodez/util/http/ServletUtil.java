@@ -122,6 +122,7 @@ public class ServletUtil {
 	 */
 	public static void writeJson(HttpServletResponse response, String json, @Nullable HttpStatus status)
 		throws IOException {
+		Assert.notNull(json, "json must not be null");
 		if (response.isCommitted()) {
 			log.warn("this response has been committed!");
 			return;
@@ -151,6 +152,7 @@ public class ServletUtil {
 	 */
 	public static void writePlainText(HttpServletResponse response, String text, @Nullable HttpStatus status)
 		throws IOException {
+		Assert.notNull(text, "text must not be null");
 		if (response.isCommitted()) {
 			log.warn("this response has been committed!");
 			return;
@@ -180,6 +182,7 @@ public class ServletUtil {
 	 */
 	public static void writeHtml(HttpServletResponse response, String html, @Nullable HttpStatus status)
 		throws IOException {
+		Assert.notNull(html, "html must not be null");
 		if (response.isCommitted()) {
 			log.warn("this response has been committed!");
 			return;

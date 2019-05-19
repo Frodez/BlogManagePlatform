@@ -6,7 +6,7 @@ import frodez.constant.settings.PropertyKey;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.model.user.Permission;
 import frodez.util.common.EmptyUtil;
-import frodez.util.http.URLMatcher;
+import frodez.util.http.Matcher;
 import frodez.util.json.JSONUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.ContextUtil;
@@ -48,7 +48,7 @@ public class InitPermissionService {
 				String requestUrl = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + entry.getKey().getPatternsCondition()
 					.getPatterns().stream().findFirst().get();
 				//只有需要验证的url才有权限
-				if (!URLMatcher.needVerify(requestUrl)) {
+				if (!Matcher.needVerify(requestUrl)) {
 					return;
 				}
 				//把url的server.servlet.context-path以及它前面的部分去掉

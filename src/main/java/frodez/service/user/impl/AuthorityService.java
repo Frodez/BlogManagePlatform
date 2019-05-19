@@ -38,7 +38,7 @@ import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
 import frodez.util.common.StrUtil;
-import frodez.util.http.URLMatcher;
+import frodez.util.http.Matcher;
 import frodez.util.reflect.BeanUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.ContextUtil;
@@ -479,7 +479,7 @@ public class AuthorityService implements IAuthorityService {
 			if (checkPermissionName(param.getName())) {
 				return Result.fail("权限不能重名!");
 			}
-			if (URLMatcher.isPermitAllPath(param.getUrl())) {
+			if (Matcher.isPermitAllPath(param.getUrl())) {
 				return Result.fail("免验证路径不能配备权限!");
 			}
 			if (!checkPermissionUrl(PermissionTypeEnum.of(param.getType()), param.getUrl())) {
@@ -508,7 +508,7 @@ public class AuthorityService implements IAuthorityService {
 				.getUrl() == null) {
 				return Result.errorRequest("类型和url必须同时存在!");
 			}
-			if (param.getUrl() != null && URLMatcher.isPermitAllPath(param.getUrl())) {
+			if (param.getUrl() != null && Matcher.isPermitAllPath(param.getUrl())) {
 				return Result.fail("免验证路径不能配备权限!");
 			}
 			if (!checkPermissionUrl(PermissionTypeEnum.of(param.getType()), param.getUrl())) {
@@ -727,7 +727,7 @@ public class AuthorityService implements IAuthorityService {
 				}).flatMap(Collection::stream).forEach((entry) -> {
 					String requestUrl = StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), entry.getKey()
 						.getPatternsCondition().getPatterns().stream().findFirst().get());
-					if (!URLMatcher.needVerify(requestUrl)) {
+					if (!Matcher.needVerify(requestUrl)) {
 						return;
 					}
 					requestUrl = requestUrl.substring(PropertyUtil.get(PropertyKey.Web.BASE_PATH).length());

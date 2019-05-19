@@ -4,7 +4,7 @@ import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.vm.facade.TokenCache;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.result.Result;
-import frodez.util.http.URLMatcher;
+import frodez.util.http.Matcher;
 import frodez.util.spring.ContextUtil;
 import frodez.util.spring.MVCUtil;
 import javax.annotation.PostConstruct;
@@ -41,7 +41,7 @@ public class UserUtil {
 	 */
 	public static UserInfo get() {
 		HttpServletRequest request = MVCUtil.request();
-		if (!URLMatcher.needVerify(request.getRequestURI())) {
+		if (!Matcher.needVerify(request.getRequestURI())) {
 			throw new RuntimeException("不能在免验证URI中获取token信息!");
 		}
 		return tokenCache.get(TokenUtil.getRealToken(request));

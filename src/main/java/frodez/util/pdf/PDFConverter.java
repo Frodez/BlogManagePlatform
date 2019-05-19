@@ -13,7 +13,9 @@ import frodez.util.common.StrUtil;
 import frodez.util.io.FileUtil;
 import frodez.util.spring.ContextUtil;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -52,12 +54,23 @@ public class PDFConverter {
 	}
 
 	/**
+	 * 添加字体
+	 * @author Frodez
+	 * @date 2019-05-19
+	 */
+	public static void addFont(String alias, String fileName) throws FileNotFoundException, IOException {
+		FontProperties properties = ContextUtil.get(FontProperties.class);
+		fontCache.put(alias, FontProgramFactory.createFont(FileUtil.readBytes(ResourceUtils.getFile(StrUtil.concat(
+			properties.getPath(), fileName))), false));
+	}
+
+	/**
 	 * 获取所有的字体<br>
 	 * @author Frodez
 	 * @date 2019-03-27
 	 */
 	public static Map<String, FontProgram> fonts() {
-		return fontCache;
+		return Collections.unmodifiableMap(fontCache);
 	}
 
 	/**

@@ -6,10 +6,8 @@ import frodez.dao.mapper.user.PermissionMapper;
 import frodez.util.common.StrUtil;
 import frodez.util.spring.ContextUtil;
 import frodez.util.spring.PropertyUtil;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.BeanFactoryUtils;
@@ -21,68 +19,84 @@ import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /**
- * url匹配器<br>
- * 本匹配器只匹配系统中已存在的需验证url和免验证url。<br>
- * 如果需要额外的匹配功能,请使用PathMatcher。
+ * 路径匹配器<br>
+ * 本匹配器匹配需验证路径和免验证路径。<br>
  * @author Frodez
  * @date 2019-03-27
  */
 @Component
 @DependsOn(value = { "propertyUtil", "contextUtil" })
-public class URLMatcher {
+public class Matcher {
 
 	/**
-	 * 需验证url
+	 * 需验证路径
 	 */
-	private static Set<String> needVerifyUrls = new HashSet<>();
+	private static Set<String> needVerifyPaths = new HashSet<>();
 
 	/**
-	 * 免验证url
+	 * 免验证路径
 	 */
-	private static Set<String> permitUrls = new HashSet<>();
+	private static Set<String> permitPaths = new HashSet<>();
+
+	/**
+	 * 基础免验证路径
+	 */
+	private static Set<String> basePermitPaths = new HashSet<>();
+
+	/**
+	 * PatchMatcher
+	 */
+	private static PathMatcher matcher;
 
 	@PostConstruct
 	private void init() {
-		PathMatcher matcher = ContextUtil.get(PathMatcher.class);
+		matcher = ContextUtil.get(PathMatcher.class);
 		String basePath = PropertyUtil.get(PropertyKey.Web.BASE_PATH);
-		List<String> permitPaths = new ArrayList<>();
+		//预处理所有允许的路径,这里的路径还是antMatcher风格的路径
 		for (String path : ContextUtil.get(SecurityProperties.class).getAuth().getPermitAllPath()) {
 			String realPath = StrUtil.concat(basePath, path);
-			permitUrls.add(realPath);
+			//先加入到允许路径中
 			permitPaths.add(realPath);
+			basePermitPaths.add(realPath);
 		}
 		String errorPath = StrUtil.concat(basePath, PropertyUtil.get(PropertyKey.Web.ERROR_PATH));
-		permitUrls.add(errorPath);
+		//错误路径也加入到允许路径中
+		permitPaths.add(errorPath);
+		basePermitPaths.add(errorPath);
+		//找出所有端点的url
 		BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false)
 			.values().stream().filter((iter) -> {
 				return iter instanceof RequestMappingHandlerMapping;
 			}).map((iter) -> {
 				return ((RequestMappingHandlerMapping) iter).getHandlerMethods().entrySet();
 			}).flatMap(Collection::stream).forEach((entry) -> {
+				//获取该端点的url
 				String requestUrl = StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), entry.getKey()
 					.getPatternsCondition().getPatterns().iterator().next());
-				if (requestUrl.equals(errorPath)) {
-					return;
-				}
-				for (String path : permitPaths) {
+				//直接判断该url是否需要验证,如果与免验证路径匹配则加入不需要验证路径,否则加入需要验证路径中
+				for (String path : basePermitPaths) {
 					if (matcher.match(path, requestUrl)) {
+						permitPaths.add(requestUrl);
 						return;
 					}
 				}
-				needVerifyUrls.add(requestUrl);
+				needVerifyPaths.add(requestUrl);
 			});
-		Assert.notNull(needVerifyUrls, "needVerifyUrls must not be null");
-		Assert.notNull(permitUrls, "permitUrls must not be null");
+		Assert.notNull(matcher, "matcher must not be null");
+		Assert.notNull(needVerifyPaths, "needVerifyUrls must not be null");
+		Assert.notNull(permitPaths, "permitUrls must not be null");
+		Assert.notNull(basePermitPaths, "basePermitPaths must not be null");
+		//如果是release或者prod环境
 		if (ContextUtil.get(PermissionMapper.class).selectAll().stream().filter((iter) -> {
-			return permitUrls.contains(StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), iter.getUrl()));
-		}).count() != 0) {
-			throw new RuntimeException("不能在免验证路径下配置权限!");
+			return isPermitAllPath(StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), iter.getUrl()));
+		}).count() != 0 && (PropertyUtil.isRelease() || PropertyUtil.isProd())) {
+			throw new RuntimeException("处于release或者prod环境下时,不能在免验证路径下配置权限!");
 		}
 	}
 
 	/**
-	 * 判断uri是否需要验证<br>
-	 * uri获取方式:<br>
+	 * 判断路径是否需要验证<br>
+	 * 路径获取方式:<br>
 	 * <code>
 	 * HttpServletRequest request = ...;
 	 * String uri = request.getRequestURI();
@@ -92,12 +106,12 @@ public class URLMatcher {
 	 * @date 2019-01-06
 	 */
 	public static boolean needVerify(String uri) {
-		return needVerifyUrls.contains(uri);
+		return needVerifyPaths.contains(uri);
 	}
 
 	/**
-	 * 判断uri是否为免验证路径<br>
-	 * uri获取方式:<br>
+	 * 判断是否为免验证路径<br>
+	 * 路径获取方式:<br>
 	 * <code>
 	 * HttpServletRequest request = ...;
 	 * String uri = request.getRequestURI();
@@ -107,7 +121,17 @@ public class URLMatcher {
 	 * @date 2019-03-10
 	 */
 	public static boolean isPermitAllPath(String uri) {
-		return permitUrls.contains(uri);
+		//对于存在的路径,这里就可以直接判断
+		if (permitPaths.contains(uri)) {
+			return true;
+		}
+		//对于可能出现的错误路径,交由matcher判断
+		for (String path : basePermitPaths) {
+			if (matcher.match(path, uri)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
