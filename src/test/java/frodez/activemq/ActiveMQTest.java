@@ -1,4 +1,4 @@
-package frodez;
+package frodez.activemq;
 
 import javax.jms.Destination;
 import org.apache.activemq.command.ActiveMQQueue;

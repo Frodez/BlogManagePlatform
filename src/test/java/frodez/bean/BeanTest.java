@@ -1,4 +1,4 @@
-package frodez;
+package frodez.bean;
 
 import frodez.dao.model.user.Role;
 import frodez.util.reflect.BeanUtil;

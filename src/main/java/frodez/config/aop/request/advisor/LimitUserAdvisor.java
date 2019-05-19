@@ -1,4 +1,4 @@
-package frodez.config.aop.request;
+package frodez.config.aop.request.advisor;
 
 import com.google.common.util.concurrent.RateLimiter;
 import frodez.config.aop.request.annotation.Limit;
@@ -16,6 +16,7 @@ import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * 请求限流AOP
@@ -87,24 +88,8 @@ public class LimitUserAdvisor implements PointcutAdvisor {
 					 */
 					@Override
 					public boolean matches(Method method, Class<?> targetClass, Object... args) {
-						//这里可以进行运行前检查
-						Limit annotation = method.getAnnotation(Limit.class);
-						if (annotation == null) {
-							return false;
-						}
-						if (annotation.value() <= 0) {
-							throw new IllegalArgumentException("每秒每token限制请求数必须大于0!");
-						}
-						if (annotation.timeout() <= 0) {
-							throw new IllegalArgumentException("超时时间必须大于0!");
-						}
-						if (method.getReturnType() != Result.class) {
-							throw new IllegalArgumentException("本方法的返回值类型必须为" + Result.class.getName());
-						}
-						Pair<RateLimiter, Long> pair = new Pair<>(RateLimiter.create(annotation.value()), annotation
-							.timeout());
-						limitCache.put(ReflectUtil.getFullMethodName(method), pair);
-						return true;
+						//isRuntime()方法返回值为false时,不会进行运行时判断
+						return false;
 					}
 
 					/**
@@ -125,8 +110,14 @@ public class LimitUserAdvisor implements PointcutAdvisor {
 						if (annotation.timeout() <= 0) {
 							throw new IllegalArgumentException("超时时间必须大于0!");
 						}
-						if (method.getReturnType() != Result.class) {
-							throw new IllegalArgumentException("本方法的返回值类型必须为" + Result.class.getName());
+						Class<?> returnType = method.getReturnType();
+						if (returnType != Result.class) {
+							//async的Result放在另一处处理
+							if (method.getReturnType() == ListenableFuture.class) {
+								return false;
+							}
+							throw new IllegalArgumentException("本方法的返回值类型必须为" + ListenableFuture.class.getName() + "或者"
+								+ Result.class.getName());
 						}
 						Pair<RateLimiter, Long> pair = new Pair<>(RateLimiter.create(annotation.value()), annotation
 							.timeout());

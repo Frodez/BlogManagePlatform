@@ -1,4 +1,4 @@
-package frodez;
+package frodez.render;
 
 import frodez.util.io.FileUtil;
 import frodez.util.pdf.PDFConverter;

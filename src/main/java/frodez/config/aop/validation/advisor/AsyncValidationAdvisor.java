@@ -1,4 +1,4 @@
-package frodez.config.aop.validation;
+package frodez.config.aop.validation.advisor;
 
 import frodez.config.aop.validation.annotation.Check;
 import frodez.util.beans.result.Result;
@@ -12,6 +12,7 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * 验证参数AOP<br>
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Order(Integer.MAX_VALUE)
-public class ValidationAdvisor implements PointcutAdvisor {
+public class AsyncValidationAdvisor implements PointcutAdvisor {
 
 	/**
 	 * AOP切点
@@ -38,7 +39,7 @@ public class ValidationAdvisor implements PointcutAdvisor {
 		return (MethodInterceptor) invocation -> {
 			String msg = ValidationUtil.validateParam(invocation.getThis(), invocation.getMethod(), invocation
 				.getArguments());
-			return msg == null ? invocation.proceed() : Result.errorRequest(msg);
+			return msg == null ? invocation.proceed() : Result.errorRequest(msg).async();
 		};
 	}
 
@@ -77,17 +78,8 @@ public class ValidationAdvisor implements PointcutAdvisor {
 					 */
 					@Override
 					public boolean matches(Method method, Class<?> targetClass, Object... args) {
-						//这里可以进行运行前检查
-						if (method.getAnnotation(Check.class) == null) {
-							return false;
-						}
-						if (method.getParameterCount() == 0) {
-							throw new IllegalArgumentException("本注解不能在无参数的方法上使用!");
-						}
-						if (method.getReturnType() != Result.class) {
-							throw new IllegalArgumentException("本方法的返回值类型必须为" + Result.class.getName());
-						}
-						return true;
+						//isRuntime()方法返回值为false时,不会进行运行时判断
+						return false;
 					}
 
 					/**
@@ -104,8 +96,14 @@ public class ValidationAdvisor implements PointcutAdvisor {
 						if (method.getParameterCount() == 0) {
 							throw new IllegalArgumentException("本注解不能在无参数的方法上使用!");
 						}
-						if (method.getReturnType() != Result.class) {
-							throw new IllegalArgumentException("本方法的返回值类型必须为" + Result.class.getName());
+						Class<?> returnType = method.getReturnType();
+						if (returnType != ListenableFuture.class) {
+							//async的Result放在另一处处理
+							if (method.getReturnType() == Result.class) {
+								return false;
+							}
+							throw new IllegalArgumentException("本方法的返回值类型必须为" + ListenableFuture.class.getName() + "或者"
+								+ Result.class.getName());
 						}
 						return true;
 					}
