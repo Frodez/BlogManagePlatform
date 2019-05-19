@@ -1,10 +1,10 @@
 package frodez.config.security.filter;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import frodez.config.security.util.Matcher;
 import frodez.config.security.util.TokenUtil;
 import frodez.util.beans.result.Result;
 import frodez.util.http.ServletUtil;
-import frodez.util.http.URLMatcher;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -28,7 +28,7 @@ public class TokenFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 		throws ServletException, IOException {
-		if (URLMatcher.needVerify(request.getRequestURI())) {
+		if (Matcher.needVerify(request.getRequestURI())) {
 			String authToken = TokenUtil.getRealToken(request);
 			if (authToken != null) {
 				// 将携带的token还原成用户信息

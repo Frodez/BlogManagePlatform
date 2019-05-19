@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.auth.AuthorityManager;
 import frodez.config.security.auth.AuthoritySource;
+import frodez.config.security.util.Matcher;
 import frodez.constant.enums.common.ModifyEnum;
 import frodez.constant.enums.user.PermissionTypeEnum;
 import frodez.constant.enums.user.UserStatusEnum;
@@ -38,7 +39,6 @@ import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
 import frodez.util.common.StrUtil;
-import frodez.util.http.URLMatcher;
 import frodez.util.reflect.BeanUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.ContextUtil;
@@ -176,7 +176,7 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result getUserInfos(@Valid @NotNull QueryPage param) {
 		try {
-			Page<User> page = PageHelper.startPage(QueryPage.resonable(param)).doSelectPage(() -> {
+			Page<User> page = PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> {
 				userMapper.selectAll();
 			});
 			return Result.page(page, getUserInfos(page.getResult()));
@@ -344,7 +344,7 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result getPermissions(@Valid @NotNull QueryPage param) {
 		try {
-			return Result.page(PageHelper.startPage(QueryPage.resonable(param)).doSelectPage(() -> permissionMapper
+			return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> permissionMapper
 				.selectAll()));
 		} catch (Exception e) {
 			log.error("[getAllRoles]", e);
@@ -377,7 +377,7 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result getRoles(@Valid @NotNull QueryPage param) {
 		try {
-			return Result.page(PageHelper.startPage(QueryPage.resonable(param)).doSelectPage(() -> roleMapper
+			return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> roleMapper
 				.selectAll()));
 		} catch (Exception e) {
 			log.error("[getAllRoles]", e);
@@ -389,7 +389,7 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result getRolePermissions(@Valid @NotNull QueryRolePermission param) {
 		try {
-			return Result.page(PageHelper.startPage(QueryPage.resonable(param.getPage())).doSelectPage(
+			return Result.page(PageHelper.startPage(QueryPage.safe(param.getPage())).doSelectPage(
 				() -> rolePermissionMapper.getPermissions(param.getRoleId())));
 		} catch (Exception e) {
 			log.error("[getAllPermissions]", e);
@@ -479,7 +479,7 @@ public class AuthorityService implements IAuthorityService {
 			if (checkPermissionName(param.getName())) {
 				return Result.fail("权限不能重名!");
 			}
-			if (URLMatcher.isPermitAllPath(param.getUrl())) {
+			if (Matcher.isPermitAllPath(param.getUrl())) {
 				return Result.fail("免验证路径不能配备权限!");
 			}
 			if (!checkPermissionUrl(PermissionTypeEnum.of(param.getType()), param.getUrl())) {
@@ -508,7 +508,7 @@ public class AuthorityService implements IAuthorityService {
 				.getUrl() == null) {
 				return Result.errorRequest("类型和url必须同时存在!");
 			}
-			if (param.getUrl() != null && URLMatcher.isPermitAllPath(param.getUrl())) {
+			if (param.getUrl() != null && Matcher.isPermitAllPath(param.getUrl())) {
 				return Result.fail("免验证路径不能配备权限!");
 			}
 			if (!checkPermissionUrl(PermissionTypeEnum.of(param.getType()), param.getUrl())) {
@@ -727,7 +727,7 @@ public class AuthorityService implements IAuthorityService {
 				}).flatMap(Collection::stream).forEach((entry) -> {
 					String requestUrl = StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), entry.getKey()
 						.getPatternsCondition().getPatterns().stream().findFirst().get());
-					if (!URLMatcher.needVerify(requestUrl)) {
+					if (!Matcher.needVerify(requestUrl)) {
 						return;
 					}
 					requestUrl = requestUrl.substring(PropertyUtil.get(PropertyKey.Web.BASE_PATH).length());

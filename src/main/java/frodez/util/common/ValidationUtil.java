@@ -53,9 +53,10 @@ public class ValidationUtil {
 			return null;
 		}
 		ConstraintViolation<Object> firstError = set.iterator().next();
+		//获取错误定位
 		List<Node> nodes = StreamSupport.stream(firstError.getPropertyPath().spliterator(), false).filter((node) -> {
-			return node.getKind() == ElementKind.CONTAINER_ELEMENT || node.getKind() == ElementKind.CROSS_PARAMETER
-				|| node.getKind() == ElementKind.PARAMETER || node.getKind() == ElementKind.PROPERTY;
+			return node.getKind() == ElementKind.PROPERTY || node.getKind() == ElementKind.PARAMETER || node
+				.getKind() == ElementKind.CROSS_PARAMETER;
 		}).collect(Collectors.toList());
 		if (EmptyUtil.no(nodes)) {
 			//获取最后一个节点,这个节点才是需要透露的信息
@@ -93,8 +94,8 @@ public class ValidationUtil {
 		ConstraintViolation<Object> firstError = set.iterator().next();
 		//获取错误定位
 		List<Node> nodes = StreamSupport.stream(firstError.getPropertyPath().spliterator(), false).filter((node) -> {
-			return node.getKind() == ElementKind.CONTAINER_ELEMENT || node.getKind() == ElementKind.CROSS_PARAMETER
-				|| node.getKind() == ElementKind.PARAMETER || node.getKind() == ElementKind.PROPERTY;
+			return node.getKind() == ElementKind.PROPERTY || node.getKind() == ElementKind.PARAMETER || node
+				.getKind() == ElementKind.CROSS_PARAMETER;
 		}).collect(Collectors.toList());
 		if (EmptyUtil.no(nodes)) {
 			//获取最后一个节点,这个节点才是需要透露的信息

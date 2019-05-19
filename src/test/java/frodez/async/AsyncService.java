@@ -32,7 +32,7 @@ public class AsyncService {
 		} catch (InterruptedException e) {
 			Result.errorService().async();
 		}
-		return Result.page(PageHelper.startPage(QueryPage.resonable(param)).doSelectPage(() -> permissionMapper
+		return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> permissionMapper
 			.selectAll())).async();
 	}
 
@@ -47,7 +47,7 @@ public class AsyncService {
 		} catch (InterruptedException e) {
 			Result.errorService();
 		}
-		return Result.page(PageHelper.startPage(QueryPage.resonable(param)).doSelectPage(() -> permissionMapper
+		return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> permissionMapper
 			.selectAll()));
 	}
 

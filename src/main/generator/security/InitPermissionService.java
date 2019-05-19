@@ -1,12 +1,13 @@
 package security;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import frodez.BlogManagePlatformApplication;
+import frodez.config.security.util.Matcher;
 import frodez.constant.enums.user.PermissionTypeEnum;
 import frodez.constant.settings.PropertyKey;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.model.user.Permission;
 import frodez.util.common.EmptyUtil;
-import frodez.util.http.URLMatcher;
 import frodez.util.json.JSONUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.ContextUtil;
@@ -48,7 +49,7 @@ public class InitPermissionService {
 				String requestUrl = PropertyUtil.get(PropertyKey.Web.BASE_PATH) + entry.getKey().getPatternsCondition()
 					.getPatterns().stream().findFirst().get();
 				//只有需要验证的url才有权限
-				if (!URLMatcher.needVerify(requestUrl)) {
+				if (!Matcher.needVerify(requestUrl)) {
 					return;
 				}
 				//把url的server.servlet.context-path以及它前面的部分去掉
@@ -76,7 +77,10 @@ public class InitPermissionService {
 				permissionList.add(permission);
 			});
 		System.out.println("权限条目数量:" + permissionList.size());
-		System.out.println("权限详细信息:" + JSONUtil.string(permissionList));
+		try {
+			System.out.println("权限详细信息:" + JSONUtil.string(permissionList));
+		} catch (JsonProcessingException e) {
+		}
 		Example example = new Example(Permission.class);
 		permissionMapper.deleteByExample(example);
 		if (EmptyUtil.no(permissionList)) {

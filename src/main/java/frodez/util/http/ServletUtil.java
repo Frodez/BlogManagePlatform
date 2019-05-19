@@ -6,7 +6,6 @@ import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.experimental.UtilityClass;
@@ -24,31 +23,6 @@ import org.springframework.util.Assert;
 @Slf4j
 @UtilityClass
 public class ServletUtil {
-
-	/**
-	 * 判断地址是否可ping通
-	 * @author Frodez
-	 * @date 2019-04-19
-	 */
-	public static boolean ping(String ip, int timeout) {
-		return ping(ip, timeout, true);
-	}
-
-	/**
-	 * 判断地址是否可ping通
-	 * @author Frodez
-	 * @date 2019-04-19
-	 */
-	public static boolean ping(String ip, int timeout, boolean needLog) {
-		try {
-			return InetAddress.getByName(ip).isReachable(timeout);
-		} catch (IOException e) {
-			if (needLog) {
-				log.error("[ping]", e);
-			}
-			return false;
-		}
-	}
 
 	/**
 	 * 获取真实地址
@@ -122,6 +96,7 @@ public class ServletUtil {
 	 */
 	public static void writeJson(HttpServletResponse response, String json, @Nullable HttpStatus status)
 		throws IOException {
+		Assert.notNull(json, "json must not be null");
 		if (response.isCommitted()) {
 			log.warn("this response has been committed!");
 			return;
@@ -151,6 +126,7 @@ public class ServletUtil {
 	 */
 	public static void writePlainText(HttpServletResponse response, String text, @Nullable HttpStatus status)
 		throws IOException {
+		Assert.notNull(text, "text must not be null");
 		if (response.isCommitted()) {
 			log.warn("this response has been committed!");
 			return;
@@ -180,6 +156,7 @@ public class ServletUtil {
 	 */
 	public static void writeHtml(HttpServletResponse response, String html, @Nullable HttpStatus status)
 		throws IOException {
+		Assert.notNull(html, "html must not be null");
 		if (response.isCommitted()) {
 			log.warn("this response has been committed!");
 			return;
