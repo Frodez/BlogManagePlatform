@@ -1,9 +1,9 @@
 package frodez.result;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import frodez.dao.model.user.Role;
 import frodez.util.json.JSONUtil;
 import frodez.util.reflect.BeanUtil;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,7 +19,7 @@ public class ResultTest {
 
 	@Test
 	@SuppressWarnings("unused")
-	public void test() throws InterruptedException, ExecutionException, JsonProcessingException {
+	public void test() throws InterruptedException, ExecutionException, IOException {
 		Role role = new Role();
 		role.setCreateTime(new Date());
 		role.setDescription("test123");

@@ -99,7 +99,7 @@ public class Matcher {
 	 * @date 2019-05-19
 	 */
 	private static void checkCorrectPermissions(SecurityProperties securityProperties) {
-		if (securityProperties.getAuth().getCorrectPermissionEnviroments()) {
+		if (securityProperties.getAuth().getPermissionCheck()) {
 			List<Permission> incorrectPermissions = ContextUtil.get(PermissionMapper.class).selectAll().stream().filter(
 				(iter) -> {
 					return isPermitAllPath(StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), iter.getUrl()));

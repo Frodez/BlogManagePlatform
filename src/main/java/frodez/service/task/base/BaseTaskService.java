@@ -1,5 +1,6 @@
 package frodez.service.task.base;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.pagehelper.PageHelper;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.aop.validation.annotation.common.LegalEnum;
@@ -110,7 +111,10 @@ public class BaseTaskService {
 				if (runnable != null && trigger != null) {
 					taskMap.put(task.getId(), scheduler.schedule(runnable, trigger));
 					taskInfoMap.put(task.getId(), task);
-					log.info("第{}号任务启动,任务详情:{}", task.getId(), JSONUtil.string(task));
+					try {
+						log.info("第{}号任务启动,任务详情:{}", task.getId(), JSONUtil.string(task));
+					} catch (JsonProcessingException e) {
+					}
 				}
 			});
 		} catch (Exception e) {

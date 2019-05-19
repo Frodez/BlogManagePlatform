@@ -55,7 +55,7 @@ public class SecurityProperties {
 		/**
 		 * 需要检查权限正确性的环境,为false代表当前环境不检查
 		 */
-		private Boolean correctPermissionEnviroments = true;
+		private Boolean permissionCheck = true;
 
 	}
 
