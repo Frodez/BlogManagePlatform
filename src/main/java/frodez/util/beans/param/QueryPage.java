@@ -123,6 +123,7 @@ public class QueryPage implements IPage, Serializable {
 	 * @date 2019-03-10
 	 */
 	@Override
+	@JsonIgnore
 	public String getOrderBy() {
 		return null;
 	}

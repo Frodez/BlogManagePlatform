@@ -1,21 +1,19 @@
-package frodez.config.aop.log;
+package frodez.config.aop.log.advisor;
 
 import frodez.config.aop.log.annotation.ResultLog;
 import frodez.util.json.JSONUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.aop.Advice;
-import org.aopalliance.intercept.MethodInterceptor;
+import org.springframework.aop.AfterReturningAdvice;
 import org.springframework.aop.ClassFilter;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * 日志管理AOP切面
@@ -25,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @Order(Integer.MIN_VALUE)
-public class MethodLogAdvisor implements PointcutAdvisor {
+public class ResultLogAdvisor implements PointcutAdvisor {
 
 	/**
 	 * AOP切点
@@ -34,28 +32,14 @@ public class MethodLogAdvisor implements PointcutAdvisor {
 	 */
 	@Override
 	public Advice getAdvice() {
-		return (MethodInterceptor) invocation -> {
-			Method method = invocation.getMethod();
-			String name = ReflectUtil.getFullMethodName(method);
-			if (method.getParameterCount() != 0) {
-				Parameter[] parameters = method.getParameters();
-				Object[] args = invocation.getArguments();
-				Map<String, Object> paramMap = new HashMap<>(parameters.length);
-				for (int i = 0; i < parameters.length; ++i) {
-					paramMap.put(parameters[i].getName(), args[i]);
-				}
-				log.info("{} 请求参数:{}", name, JSONUtil.string(paramMap));
-			} else {
-				log.info("{} 本方法无入参", name);
-			}
-			Object result = invocation.proceed();
-			if (method.getReturnType() != Void.class) {
-				log.info("{} 返回值:{}", name, JSONUtil.string(result));
-			} else {
-				log.info("{} 本方法返回值类型为void", name);
-			}
-			return result;
-		};
+		/**
+		 * 打印返回值到日志
+		 * @param JoinPoint AOP切点
+		 * @author Frodez
+		 * @date 2019-01-12
+		 */
+		return (AfterReturningAdvice) (returnValue, method, args, target) -> log.info("{} 返回值:{}", ReflectUtil
+			.getFullMethodName(method), JSONUtil.string(returnValue));
 	}
 
 	/**
@@ -93,13 +77,8 @@ public class MethodLogAdvisor implements PointcutAdvisor {
 					 */
 					@Override
 					public boolean matches(Method method, Class<?> targetClass, Object... args) {
-						if (method.getAnnotation(ResultLog.class) == null) {
-							return false;
-						}
-						if (method.getReturnType() == Void.class && method.getParameterCount() == 0) {
-							throw new IllegalArgumentException("不能对void返回类型且无参数的方法使用本注解!");
-						}
-						return true;
+						//isRuntime()方法返回值为false时,不会进行运行时判断
+						return false;
 					}
 
 					/**
@@ -112,8 +91,12 @@ public class MethodLogAdvisor implements PointcutAdvisor {
 						if (method.getAnnotation(ResultLog.class) == null) {
 							return false;
 						}
-						if (method.getReturnType() == Void.class && method.getParameterCount() == 0) {
-							throw new IllegalArgumentException("不能对void返回类型且无参数的方法使用本注解!");
+						Class<?> returnType = method.getReturnType();
+						if (returnType == ListenableFuture.class) {
+							return false;
+						}
+						if (returnType == Void.class) {
+							throw new IllegalArgumentException("不能对void返回类型的方法使用本注解!");
 						}
 						return true;
 					}

@@ -1,4 +1,4 @@
-package frodez;
+package frodez.validation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import frodez.config.aop.validation.annotation.special.DateTime;

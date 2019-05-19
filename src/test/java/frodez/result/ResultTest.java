@@ -1,13 +1,13 @@
-package frodez;
+package frodez.result;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import frodez.dao.model.user.Role;
 import frodez.util.json.JSONUtil;
 import frodez.util.reflect.BeanUtil;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,8 +18,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class ResultTest {
 
 	@Test
-	@SuppressWarnings({ "unused" })
-	public void test() throws FileNotFoundException, IOException, ClassNotFoundException {
+	@SuppressWarnings("unused")
+	public void test() throws InterruptedException, ExecutionException, JsonProcessingException {
 		Role role = new Role();
 		role.setCreateTime(new Date());
 		role.setDescription("test123");

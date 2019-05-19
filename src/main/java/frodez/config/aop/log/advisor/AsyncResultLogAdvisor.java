@@ -1,19 +1,20 @@
-package frodez.config.aop.log;
+package frodez.config.aop.log.advisor;
 
-import frodez.config.aop.log.annotation.DurationLog;
+import frodez.config.aop.log.annotation.ResultLog;
+import frodez.util.beans.result.Result;
+import frodez.util.json.JSONUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.aop.Advice;
-import org.aopalliance.intercept.MethodInterceptor;
+import org.springframework.aop.AfterReturningAdvice;
 import org.springframework.aop.ClassFilter;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * 日志管理AOP切面
@@ -23,40 +24,24 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @Order(Integer.MIN_VALUE)
-public class DurationLogAdvisor implements PointcutAdvisor {
-
-	/**
-	 * 注解配置缓存
-	 */
-	private Map<String, Long> thresholdCache = new ConcurrentHashMap<>();
-
-	private long times = 1000 * 1000;
+public class AsyncResultLogAdvisor implements PointcutAdvisor {
 
 	/**
 	 * AOP切点
 	 * @author Frodez
 	 * @date 2019-05-10
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Advice getAdvice() {
 		/**
-		 * 检测出耗时过高的方法调用并在日志中告警
+		 * 打印返回值到日志
 		 * @param JoinPoint AOP切点
 		 * @author Frodez
-		 * @throws Throwable
-		 * @date 2018-12-21
+		 * @date 2019-01-12
 		 */
-		return (MethodInterceptor) invocation -> {
-			String name = ReflectUtil.getFullMethodName(invocation.getMethod());
-			long threshold = thresholdCache.get(name);
-			long count = System.nanoTime();
-			Object result = invocation.proceed();
-			count = System.nanoTime() - count;
-			if (count > threshold) {
-				log.warn("{}方法耗时{}毫秒,触发超时警告!", name, count / times);
-			}
-			return result;
-		};
+		return (AfterReturningAdvice) (returnValue, method, args, target) -> log.info("{} 返回值:{}", ReflectUtil
+			.getFullMethodName(method), JSONUtil.string(((ListenableFuture<Result>) returnValue).get()));
 	}
 
 	/**
@@ -94,15 +79,8 @@ public class DurationLogAdvisor implements PointcutAdvisor {
 					 */
 					@Override
 					public boolean matches(Method method, Class<?> targetClass, Object... args) {
-						DurationLog annotation = method.getAnnotation(DurationLog.class);
-						if (annotation == null) {
-							return false;
-						}
-						if (annotation.threshold() <= 0) {
-							throw new IllegalArgumentException("阈值必须大于0!");
-						}
-						thresholdCache.put(ReflectUtil.getFullMethodName(method), annotation.threshold() * times);
-						return true;
+						//isRuntime()方法返回值为false时,不会进行运行时判断
+						return false;
 					}
 
 					/**
@@ -112,14 +90,16 @@ public class DurationLogAdvisor implements PointcutAdvisor {
 					 */
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
-						DurationLog annotation = method.getAnnotation(DurationLog.class);
-						if (annotation == null) {
+						if (method.getAnnotation(ResultLog.class) == null) {
 							return false;
 						}
-						if (annotation.threshold() <= 0) {
-							throw new IllegalArgumentException("阈值必须大于0!");
+						Class<?> returnType = method.getReturnType();
+						if (returnType == Result.class) {
+							return false;
 						}
-						thresholdCache.put(ReflectUtil.getFullMethodName(method), annotation.threshold() * times);
+						if (returnType == Void.class) {
+							throw new IllegalArgumentException("不能对void返回类型的方法使用本注解!");
+						}
 						return true;
 					}
 
