@@ -172,7 +172,7 @@ public class BaseTaskService {
 	@Check
 	public Result getAvailableTasks(@Valid @NotNull QueryPage param) {
 		try {
-			param = QueryPage.resonable(param);
+			param = QueryPage.safe(param);
 			List<AvailableTaskInfo> infos = taskServiceInfos.stream().skip((param.getPageNum() - 1) * param
 				.getPageSize()).limit(param.getPageNum() * param.getPageSize()).collect(Collectors.toList());
 			return Result.page(param.getPageNum(), param.getPageSize(), infos.size(), infos);
@@ -190,7 +190,7 @@ public class BaseTaskService {
 	@Check
 	public Result getRunningTasksInfo(@Valid @NotNull QueryPage param) {
 		try {
-			param = QueryPage.resonable(param);
+			param = QueryPage.safe(param);
 			List<Task> tasks = taskInfoMap.values().stream().skip((param.getPageNum() - 1) * param.getPageSize()).limit(
 				param.getPageNum() * param.getPageSize()).collect(Collectors.toList());
 			return Result.page(param.getPageNum(), param.getPageSize(), tasks.size(), tasks);
@@ -208,7 +208,7 @@ public class BaseTaskService {
 	@Check
 	public Result getTasks(@Valid @NotNull QueryPage param) {
 		try {
-			return Result.page(PageHelper.startPage(QueryPage.resonable(param)).doSelectPage(() -> {
+			return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> {
 				taskMapper.selectAll();
 			}));
 		} catch (Exception e) {

@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.auth.AuthorityManager;
 import frodez.config.security.auth.AuthoritySource;
+import frodez.config.security.util.Matcher;
 import frodez.constant.enums.common.ModifyEnum;
 import frodez.constant.enums.user.PermissionTypeEnum;
 import frodez.constant.enums.user.UserStatusEnum;
@@ -38,7 +39,6 @@ import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
 import frodez.util.common.StrUtil;
-import frodez.util.http.Matcher;
 import frodez.util.reflect.BeanUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.ContextUtil;
@@ -176,7 +176,7 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result getUserInfos(@Valid @NotNull QueryPage param) {
 		try {
-			Page<User> page = PageHelper.startPage(QueryPage.resonable(param)).doSelectPage(() -> {
+			Page<User> page = PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> {
 				userMapper.selectAll();
 			});
 			return Result.page(page, getUserInfos(page.getResult()));
@@ -344,7 +344,7 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result getPermissions(@Valid @NotNull QueryPage param) {
 		try {
-			return Result.page(PageHelper.startPage(QueryPage.resonable(param)).doSelectPage(() -> permissionMapper
+			return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> permissionMapper
 				.selectAll()));
 		} catch (Exception e) {
 			log.error("[getAllRoles]", e);
@@ -377,7 +377,7 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result getRoles(@Valid @NotNull QueryPage param) {
 		try {
-			return Result.page(PageHelper.startPage(QueryPage.resonable(param)).doSelectPage(() -> roleMapper
+			return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> roleMapper
 				.selectAll()));
 		} catch (Exception e) {
 			log.error("[getAllRoles]", e);
@@ -389,7 +389,7 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result getRolePermissions(@Valid @NotNull QueryRolePermission param) {
 		try {
-			return Result.page(PageHelper.startPage(QueryPage.resonable(param.getPage())).doSelectPage(
+			return Result.page(PageHelper.startPage(QueryPage.safe(param.getPage())).doSelectPage(
 				() -> rolePermissionMapper.getPermissions(param.getRoleId())));
 		} catch (Exception e) {
 			log.error("[getAllPermissions]", e);

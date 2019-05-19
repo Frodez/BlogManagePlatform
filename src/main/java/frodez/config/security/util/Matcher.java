@@ -1,14 +1,17 @@
-package frodez.util.http;
+package frodez.config.security.util;
 
 import frodez.config.security.settings.SecurityProperties;
 import frodez.constant.settings.PropertyKey;
 import frodez.dao.mapper.user.PermissionMapper;
+import frodez.dao.model.user.Permission;
 import frodez.util.common.StrUtil;
 import frodez.util.spring.ContextUtil;
 import frodez.util.spring.PropertyUtil;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.annotation.DependsOn;
@@ -50,10 +53,11 @@ public class Matcher {
 
 	@PostConstruct
 	private void init() {
+		SecurityProperties securityProperties = ContextUtil.get(SecurityProperties.class);
 		matcher = ContextUtil.get(PathMatcher.class);
 		String basePath = PropertyUtil.get(PropertyKey.Web.BASE_PATH);
 		//预处理所有允许的路径,这里的路径还是antMatcher风格的路径
-		for (String path : ContextUtil.get(SecurityProperties.class).getAuth().getPermitAllPath()) {
+		for (String path : securityProperties.getAuth().getPermitAllPath()) {
 			String realPath = StrUtil.concat(basePath, path);
 			//先加入到允许路径中
 			permitPaths.add(realPath);
@@ -70,27 +74,48 @@ public class Matcher {
 			}).map((iter) -> {
 				return ((RequestMappingHandlerMapping) iter).getHandlerMethods().entrySet();
 			}).flatMap(Collection::stream).forEach((entry) -> {
-				//获取该端点的url
-				String requestUrl = StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), entry.getKey()
-					.getPatternsCondition().getPatterns().iterator().next());
-				//直接判断该url是否需要验证,如果与免验证路径匹配则加入不需要验证路径,否则加入需要验证路径中
+				//获取该端点的路径
+				String requestPath = StrUtil.concat(basePath, entry.getKey().getPatternsCondition().getPatterns()
+					.iterator().next());
+				//直接判断该路径是否需要验证,如果与免验证路径匹配则加入不需要验证路径,否则加入需要验证路径中
 				for (String path : basePermitPaths) {
-					if (matcher.match(path, requestUrl)) {
-						permitPaths.add(requestUrl);
+					if (matcher.match(path, requestPath)) {
+						permitPaths.add(requestPath);
 						return;
 					}
 				}
-				needVerifyPaths.add(requestUrl);
+				needVerifyPaths.add(requestPath);
 			});
 		Assert.notNull(matcher, "matcher must not be null");
-		Assert.notNull(needVerifyPaths, "needVerifyUrls must not be null");
-		Assert.notNull(permitPaths, "permitUrls must not be null");
+		Assert.notNull(needVerifyPaths, "needVerifyPaths must not be null");
+		Assert.notNull(permitPaths, "permitPaths must not be null");
 		Assert.notNull(basePermitPaths, "basePermitPaths must not be null");
-		//如果是release或者prod环境
-		if (ContextUtil.get(PermissionMapper.class).selectAll().stream().filter((iter) -> {
-			return isPermitAllPath(StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), iter.getUrl()));
-		}).count() != 0 && (PropertyUtil.isRelease() || PropertyUtil.isProd())) {
-			throw new RuntimeException("处于release或者prod环境下时,不能在免验证路径下配置权限!");
+		checkCorrectPermissions(securityProperties);
+	}
+
+	/**
+	 * 仅用于init()方法，在必要时检查权限正确性
+	 * @author Frodez
+	 * @date 2019-05-19
+	 */
+	private static void checkCorrectPermissions(SecurityProperties securityProperties) {
+		if (securityProperties.getAuth().getCorrectPermissionEnviroments()) {
+			List<Permission> incorrectPermissions = ContextUtil.get(PermissionMapper.class).selectAll().stream().filter(
+				(iter) -> {
+					return isPermitAllPath(StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), iter.getUrl()));
+				}).collect(Collectors.toList());
+			if (!incorrectPermissions.isEmpty()) {
+				StringBuilder builder = new StringBuilder();
+				for (int i = 0; i < incorrectPermissions.size() - 1; i++) {
+					Permission incorrect = incorrectPermissions.get(i);
+					builder.append("路径:").append(incorrect.getUrl()).append(", 名称:").append(incorrect.getName()).append(
+						", 描述: ").append(incorrect.getDescription()).append("\n");
+				}
+				Permission incorrect = incorrectPermissions.get(incorrectPermissions.size() - 1);
+				builder.append("路径:").append(incorrect.getUrl()).append(", 名称:").append(incorrect.getName()).append(
+					", 描述: ").append(incorrect.getDescription());
+				throw new RuntimeException("\n权限正确性检查发现存在错误权限!\n" + builder.toString());
+			}
 		}
 	}
 

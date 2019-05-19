@@ -4,7 +4,6 @@ import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.vm.facade.TokenCache;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.result.Result;
-import frodez.util.http.Matcher;
 import frodez.util.spring.ContextUtil;
 import frodez.util.spring.MVCUtil;
 import javax.annotation.PostConstruct;

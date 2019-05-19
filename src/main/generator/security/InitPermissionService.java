@@ -1,12 +1,12 @@
 package security;
 
 import frodez.BlogManagePlatformApplication;
+import frodez.config.security.util.Matcher;
 import frodez.constant.enums.user.PermissionTypeEnum;
 import frodez.constant.settings.PropertyKey;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.model.user.Permission;
 import frodez.util.common.EmptyUtil;
-import frodez.util.http.Matcher;
 import frodez.util.json.JSONUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.ContextUtil;

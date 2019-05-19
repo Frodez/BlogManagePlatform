@@ -1,8 +1,8 @@
 package frodez.config.security.auth;
 
 import frodez.config.security.settings.SecurityProperties;
+import frodez.config.security.util.Matcher;
 import frodez.util.common.EmptyUtil;
-import frodez.util.http.Matcher;
 import frodez.util.spring.ContextUtil;
 import java.util.Collection;
 import java.util.Set;

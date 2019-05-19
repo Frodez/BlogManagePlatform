@@ -58,16 +58,13 @@ public class QueryPage implements IPage, Serializable {
 	}
 
 	/**
-	 * 合理化请求参数,强制将null转化为默认参数<br>
+	 * 安全化请求参数,强制将null转化为默认参数<br>
 	 * <strong>强烈建议使用,避免可能的null所导致的sql变化<br>
 	 * @author Frodez
 	 * @date 2019-03-06
 	 */
-	public static QueryPage resonable(QueryPage page) {
-		if (page == null) {
-			return QueryPage.DEFAULT;
-		}
-		return page;
+	public static QueryPage safe(QueryPage page) {
+		return page == null ? QueryPage.DEFAULT : page;
 	}
 
 	/**
