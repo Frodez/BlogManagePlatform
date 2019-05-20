@@ -9,6 +9,7 @@ import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.common.ValidationUtil;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import lombok.Data;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,7 @@ public class ValidationTest {
 
 	@Test
 	public void test() throws JsonProcessingException, InvocationTargetException {
+		System.out.println(Arrays.asList(1, 3, 4));
 		QueryRolePermission param = new QueryRolePermission();
 		param.setRoleId(1L);
 		QueryPage page = new QueryPage(1, 3000);

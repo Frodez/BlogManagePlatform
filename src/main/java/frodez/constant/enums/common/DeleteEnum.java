@@ -52,12 +52,6 @@ public enum DeleteEnum {
 	@Getter
 	private static List<String> descs;
 
-	/**
-	 * 介绍
-	 */
-	@Getter
-	private static String introduction;
-
 	private static final Map<Byte, DeleteEnum> enumMap;
 
 	static {
@@ -65,14 +59,6 @@ public enum DeleteEnum {
 			Collectors.toList()));
 		descs = Collections.unmodifiableList(Arrays.asList(DeleteEnum.values()).stream().map(DeleteEnum::getDesc)
 			.collect(Collectors.toList()));
-		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < vals.size(); i++) {
-			builder.append(vals.get(i).toString());
-			if (i != vals.size() - 1) {
-				builder.append(",");
-			}
-		}
-		introduction = builder.toString();
 		enumMap = new HashMap<>();
 		for (DeleteEnum iter : DeleteEnum.values()) {
 			enumMap.put(iter.val, iter);

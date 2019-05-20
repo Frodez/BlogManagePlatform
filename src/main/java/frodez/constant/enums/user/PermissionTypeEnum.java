@@ -64,12 +64,6 @@ public enum PermissionTypeEnum {
 	@Getter
 	private static List<String> descs;
 
-	/**
-	 * 介绍
-	 */
-	@Getter
-	private static String introduction;
-
 	private static final Map<Byte, PermissionTypeEnum> enumMap;
 
 	static {
@@ -77,14 +71,6 @@ public enum PermissionTypeEnum {
 			PermissionTypeEnum::getVal).collect(Collectors.toList()));
 		descs = Collections.unmodifiableList(Arrays.asList(PermissionTypeEnum.values()).stream().map(
 			PermissionTypeEnum::getDesc).collect(Collectors.toList()));
-		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < vals.size(); i++) {
-			builder.append(vals.get(i).toString());
-			if (i != vals.size() - 1) {
-				builder.append(",");
-			}
-		}
-		introduction = builder.toString();
 		enumMap = new HashMap<>();
 		for (PermissionTypeEnum iter : PermissionTypeEnum.values()) {
 			enumMap.put(iter.val, iter);

@@ -57,12 +57,6 @@ public enum ModifyEnum {
 	@Getter
 	private static List<String> descs;
 
-	/**
-	 * 介绍
-	 */
-	@Getter
-	private static String introduction;
-
 	private static final Map<Byte, ModifyEnum> enumMap;
 
 	static {
@@ -70,14 +64,6 @@ public enum ModifyEnum {
 			Collectors.toList()));
 		descs = Collections.unmodifiableList(Arrays.asList(ModifyEnum.values()).stream().map(ModifyEnum::getDesc)
 			.collect(Collectors.toList()));
-		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < vals.size(); i++) {
-			builder.append(vals.get(i).toString());
-			if (i != vals.size() - 1) {
-				builder.append(",");
-			}
-		}
-		introduction = builder.toString();
 		enumMap = new HashMap<>();
 		for (ModifyEnum iter : ModifyEnum.values()) {
 			enumMap.put(iter.val, iter);

@@ -16,68 +16,18 @@ import javax.validation.Payload;
 
 /**
  * 枚举类型验证注解 <br>
- * <strong>对于非空检查的情况,请继续使用@NotNull注解</strong><br>
- * <strong>要求:验证的枚举类必须实现一个方法,这个方法在当参数符合要求时,返回对应的枚举,否则返回null.</strong> <br>
- * <strong>要求:验证的枚举类必须实现一个方法,这个方法在当参数不符合要求时,返回枚举所对应的所有值,以字符串形式返回.</strong> <br>
- * <strong>建议:枚举类上增加@EnumCheckable注解,以增强可读性</strong> <br>
- * 例子:<br>
- * <span>@ValidEnum(message = "状态非法!", type = UserStatusEnum.class, method = "of", introductionMethod =
- * "getIntroduction")</span><br>
+ * <strong>建议:枚举类上增加@EnumCheckable注解,以增强可读性</strong><br>
+ * <strong>枚举类示例代码请参见@EnumCheckable注解的javadoc.</strong><br>
+ * 注解使用范例:<br>
+ * <span>@ValidEnum(message = "状态非法!", type = UserStatusEnum.class, method = "of", valuesMethod = "getVals")</span><br>
  * private Byte status;<br>
  * 以下为注解参数说明:<br>
- * <strong> message: String类型,代表验证失败时的返回信息<br>
+ * message: String类型,代表验证失败时的返回信息<br>
  * type: Class类型,代表对应的枚举类.<br>
  * method: String类型,代表验证用的方法,默认值为of.<br>
- * introductionMethod: String类型,代表获取枚举所有值的方法,默认值为getIntroduction.<br>
- * paramType: Class类型,代表验证用方法的参数类型,默认值为byte.class.注意,装箱类类型和原类型不能混用!<br>
- * </strong> 以下是枚举类代码.<br>
- *
- * <pre>
- * 	<span>@EnumCheckable</span>
- * 	<span>@AllArgsConstructor</span>
- * 	public enum UserStatusEnum {
- * 		FORBIDDEN((byte) 0, "禁用"),
- * 		NORMAL((byte) 1, "正常");
- * 		<span>@Getter</span>
- *		private byte val;
- *		<span>@Getter</span>
- *		private String desc;
- *		<span>@Getter</span>
- *		private static List vals;
- *		<span>@Getter</span>
- *		private static List descs;
- *		<span>@Getter</span>
- *		private static String introduction;
- * 		private static final Map<Byte, UserStatusEnum> enumMap;
- * 		static {
- *			vals = Collections.unmodifiableList(Arrays.asList(UserStatusEnum.values()).stream()
- *				.map(UserStatusEnum::getVal).collect(Collectors.toList()));
- *			descs = Collections.unmodifiableList(Arrays.asList(UserStatusEnum.values()).stream()
- *				.map(UserStatusEnum::getDesc).collect(Collectors.toList()));
- *			StringBuilder builder = new StringBuilder();
- *			for (int i = 0; i < vals.size(); i++) {
- *				builder.append(vals.get(i).toString());
- *				if (i != vals.size() - 1) {
- *					builder.append(",");
- *				}
- *			}
- *			introduction = builder.toString();
- *			enumMap = new HashMap<>();
- *			for (UserStatusEnum iter : UserStatusEnum.values()) {
- *				enumMap.put(iter.val, iter);
- *			}
- *		}
- * 		public UserStatusEnum of(byte value) {
- * 			for(UserStatusEnum iter : UserStatusEnum.values()) {
- * 				if(iter.value == value) {
- * 					return iter;
- * 				}
- * 			}
- * 			return null;
- * 		}
- * 	}
- * </pre>
- *
+ * valuesMethod: String类型,代表获取枚举所有值的方法,默认值为getVals.<br>
+ * paramType: Class类型,代表验证用方法的参数类型,默认值为Byte.class.注意,装箱类类型和原类型不能混用!<br>
+ * @see frodez.constant.annotations.decoration.EnumCheckable
  * @author Frodez
  * @date 2018-12-03
  */
@@ -104,11 +54,11 @@ public @interface LegalEnum {
 	String method() default "of";
 
 	/**
-	 * 获取枚举所有值的方法名,默认为getIntroduction。
+	 * 获取枚举所有值的方法名,默认为getVals。
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	String introductionMethod() default "getIntroduction";
+	String valuesMethod() default "getVals";
 
 	/**
 	 * 验证用方法参数的类型,默认为Byte.class<br>
@@ -142,9 +92,9 @@ public @interface LegalEnum {
 		private String method;
 
 		/**
-		 * 获取枚举所有值的方法名,默认为getIntroduction。
+		 * 获取枚举所有值的方法名,默认为getVals。
 		 */
-		private String introductionMethod;
+		private String valuesMethod;
 
 		/**
 		 * 验证方法参数类型,默认值为Byte.class
@@ -161,7 +111,7 @@ public @interface LegalEnum {
 			method = enumValue.method();
 			klass = enumValue.type();
 			paramType = enumValue.paramType();
-			introductionMethod = enumValue.introductionMethod();
+			valuesMethod = enumValue.valuesMethod();
 		}
 
 		/**
@@ -181,7 +131,7 @@ public @interface LegalEnum {
 					return true;
 				} else {
 					ValidationUtil.changeMessage(context, StrUtil.concat("${validatedValue}不符合要求,有效值为", ReflectUtil
-						.getFastMethod(klass, introductionMethod).invoke(null, NULLPARAM_OBJECTS).toString()));
+						.getFastMethod(klass, valuesMethod).invoke(null, NULLPARAM_OBJECTS).toString()));
 					return false;
 				}
 			} catch (InvocationTargetException e) {
