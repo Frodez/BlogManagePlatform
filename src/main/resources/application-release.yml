@@ -2,7 +2,7 @@ server:
   http2:
     enabled: true
   ssl:
-    enabled: true
+    enabled: false
     key-store: classpath:others/frodez.p12
     key-store-password: 123456
     key-store-type: PKCS12

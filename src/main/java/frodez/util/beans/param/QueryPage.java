@@ -59,7 +59,8 @@ public class QueryPage implements IPage, Serializable {
 
 	/**
 	 * 安全化请求参数,强制将null转化为默认参数<br>
-	 * <strong>强烈建议使用,避免可能的null所导致的sql变化<br>
+	 * <strong>说明:有时候需要非强制传入QueryPage参数以达到不同参数不同行为的目标。<br>
+	 * 但PageHelper不能接受null作为Page参数，此时便可使用本方法。</strong><br>
 	 * @author Frodez
 	 * @date 2019-03-06
 	 */
