@@ -21,7 +21,7 @@ public class BeanTest {
 		role.setId(123L);
 		role.setLevel((byte) 1);
 		role.setName("wqwq");
-		int total = 10000 * 10000;
+		int total = 100 * 10000;
 		int times = 5;
 		for (int i = 1; i <= times; ++i) {
 			long start = System.currentTimeMillis();
