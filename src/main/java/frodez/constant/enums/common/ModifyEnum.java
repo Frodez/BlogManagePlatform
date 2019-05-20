@@ -37,7 +37,7 @@ public enum ModifyEnum {
 	 * 值
 	 */
 	@Getter
-	private byte val;
+	private Byte val;
 
 	/**
 	 * 描述
@@ -89,7 +89,7 @@ public enum ModifyEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static ModifyEnum of(byte value) {
+	public static ModifyEnum of(Byte value) {
 		return enumMap.get(value);
 	}
 

@@ -41,7 +41,7 @@ public enum OperateEnum {
 	 * 值
 	 */
 	@Getter
-	private byte val;
+	private Byte val;
 
 	/**
 	 * 描述
@@ -93,7 +93,7 @@ public enum OperateEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static OperateEnum of(byte value) {
+	public static OperateEnum of(Byte value) {
 		return enumMap.get(value);
 	}
 

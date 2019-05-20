@@ -32,7 +32,7 @@ public enum DeleteEnum {
 	 * 值
 	 */
 	@Getter
-	private byte val;
+	private Byte val;
 
 	/**
 	 * 描述
@@ -84,7 +84,7 @@ public enum DeleteEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static DeleteEnum of(byte value) {
+	public static DeleteEnum of(Byte value) {
 		return enumMap.get(value);
 	}
 

@@ -111,12 +111,12 @@ public @interface LegalEnum {
 	String introductionMethod() default "getIntroduction";
 
 	/**
-	 * 验证用方法参数的类型,默认为byte.class<br>
+	 * 验证用方法参数的类型,默认为Byte.class<br>
 	 * <strong>装箱类类型和原类型不能混用!</strong><br>
 	 * @author Frodez
 	 * @date 2019-04-13
 	 */
-	Class<?> paramType() default byte.class;
+	Class<?> paramType() default Byte.class;
 
 	Class<?>[] groups() default {};
 
@@ -147,7 +147,7 @@ public @interface LegalEnum {
 		private String introductionMethod;
 
 		/**
-		 * 验证方法参数类型,默认值为byte.class
+		 * 验证方法参数类型,默认值为Byte.class
 		 */
 		private Class<?> paramType;
 

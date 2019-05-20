@@ -32,7 +32,7 @@ public enum UserStatusEnum {
 	 * 值
 	 */
 	@Getter
-	private byte val;
+	private Byte val;
 
 	/**
 	 * 描述
@@ -79,7 +79,7 @@ public enum UserStatusEnum {
 		}
 	}
 
-	public static UserStatusEnum of(byte value) {
+	public static UserStatusEnum of(Byte value) {
 		return enumMap.get(value);
 	}
 
