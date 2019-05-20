@@ -87,7 +87,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = LegalEnum.Validator.class)
 public @interface LegalEnum {
 
-	String message() default "{frodez.config.aop.validation.annotation.common.LegalEnum.message}";
+	String message() default "";
 
 	/**
 	 * 适用的枚举类
