@@ -1,6 +1,7 @@
 package frodez.config.aop.log.advisor;
 
 import frodez.config.aop.log.annotation.DurationLog;
+import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -110,7 +111,8 @@ public class DurationLogAdvisor implements PointcutAdvisor {
 							return false;
 						}
 						if (annotation.threshold() <= 0) {
-							throw new IllegalArgumentException("阈值必须大于0!");
+							throw new IllegalArgumentException(StrUtil.concat("方法", ReflectUtil.getFullMethodName(
+								method), "的阈值必须大于0!"));
 						}
 						thresholdCache.put(ReflectUtil.getFullMethodName(method), annotation.threshold() * times);
 						return true;

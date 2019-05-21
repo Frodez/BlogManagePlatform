@@ -4,6 +4,7 @@ import frodez.config.aop.request.annotation.RepeatLock;
 import frodez.config.aop.request.checker.facade.ManualChecker;
 import frodez.config.aop.request.checker.impl.KeyGenerator;
 import frodez.util.beans.result.Result;
+import frodez.util.common.StrUtil;
 import frodez.util.http.ServletUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.MVCUtil;
@@ -128,8 +129,8 @@ public class AsyncRepeatAdvisor implements PointcutAdvisor {
 							if (method.getReturnType() == Result.class) {
 								return false;
 							}
-							throw new IllegalArgumentException("本方法的返回值类型必须为" + ListenableFuture.class.getName() + "或者"
-								+ Result.class.getName());
+							throw new IllegalArgumentException(StrUtil.concat("方法", ReflectUtil.getFullMethodName(
+								method), "的返回值类型必须为", ListenableFuture.class.getName(), "或者", Result.class.getName()));
 						}
 						return true;
 					}

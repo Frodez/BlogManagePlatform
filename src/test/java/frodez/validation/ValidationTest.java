@@ -2,8 +2,10 @@ package frodez.validation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import frodez.config.aop.validation.annotation.special.DateTime;
+import frodez.constant.enums.common.ModifyEnum;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.QueryRolePermission;
+import frodez.dao.param.user.UpdateRolePermission;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
@@ -25,8 +27,16 @@ public class ValidationTest {
 	private IAuthorityService authorityService;
 
 	@Test
-	public void test() throws JsonProcessingException, InvocationTargetException {
-		System.out.println(Arrays.asList(1, 3, 4));
+	public void test1() {
+		UpdateRolePermission bean = new UpdateRolePermission();
+		bean.setRoleId(1L);
+		bean.setOperationType(ModifyEnum.UPDATE.getVal());
+		bean.setPermissionIds(Arrays.asList(1L, -2L, 3L));
+		System.out.println(ValidationUtil.validate(bean));
+	}
+
+	@Test
+	public void test2() throws JsonProcessingException, InvocationTargetException {
 		QueryRolePermission param = new QueryRolePermission();
 		param.setRoleId(1L);
 		QueryPage page = new QueryPage(1, 3000);

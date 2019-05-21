@@ -130,11 +130,11 @@ public @interface LegalEnum {
 					.primitiveAdapt(value, paramType) }) != null) {
 					return true;
 				} else {
-					ValidationUtil.changeMessage(context, StrUtil.concat("${validatedValue}不符合要求,有效值为", ReflectUtil
+					ValidationUtil.changeMessage(context, StrUtil.concat(value.toString(), "不符合要求,有效值为", ReflectUtil
 						.getFastMethod(klass, valuesMethod).invoke(null, NULLPARAM_OBJECTS).toString()));
 					return false;
 				}
-			} catch (InvocationTargetException e) {
+			} catch (InvocationTargetException | NoSuchMethodException e) {
 				throw new RuntimeException(e);
 			}
 		}

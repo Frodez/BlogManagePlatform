@@ -5,6 +5,7 @@ import frodez.config.aop.request.annotation.Limit;
 import frodez.constant.settings.DefTime;
 import frodez.util.beans.pair.Pair;
 import frodez.util.beans.result.Result;
+import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -105,10 +106,12 @@ public class AsyncLimitUserAdvisor implements PointcutAdvisor {
 							return false;
 						}
 						if (annotation.value() <= 0) {
-							throw new IllegalArgumentException("每秒每token限制请求数必须大于0!");
+							throw new IllegalArgumentException(StrUtil.concat("方法", ReflectUtil.getFullMethodName(
+								method), "的每秒每token限制请求数必须大于0!"));
 						}
 						if (annotation.timeout() <= 0) {
-							throw new IllegalArgumentException("超时时间必须大于0!");
+							throw new IllegalArgumentException(StrUtil.concat("方法", ReflectUtil.getFullMethodName(
+								method), "的超时时间必须大于0!"));
 						}
 						Class<?> returnType = method.getReturnType();
 						if (returnType != ListenableFuture.class) {
@@ -116,8 +119,8 @@ public class AsyncLimitUserAdvisor implements PointcutAdvisor {
 							if (method.getReturnType() == Result.class) {
 								return false;
 							}
-							throw new IllegalArgumentException("本方法的返回值类型必须为" + ListenableFuture.class.getName() + "或者"
-								+ Result.class.getName());
+							throw new IllegalArgumentException(StrUtil.concat("方法", ReflectUtil.getFullMethodName(
+								method), "的返回值类型必须为", ListenableFuture.class.getName(), "或者", Result.class.getName()));
 						}
 						Pair<RateLimiter, Long> pair = new Pair<>(RateLimiter.create(annotation.value()), annotation
 							.timeout());

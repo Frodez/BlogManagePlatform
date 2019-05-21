@@ -15,7 +15,9 @@ import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
 
 /**
- * QueryPage校验
+ * QueryPage专用校验<br>
+ * <strong>警告:仅用于QueryPage!</strong>
+ * @see frodez.util.beans.param.QueryPage
  * @author Frodez
  * @date 2019-05-16
  */
@@ -33,6 +35,9 @@ public @interface ValidQueryPage {
 
 	class Validator implements ConstraintValidator<ValidQueryPage, QueryPage> {
 
+		/**
+		 * 缓存字符串,避免每次重复toString()带来额外开销
+		 */
 		private static String MAX_PAGE_SIZE = Integer.valueOf(DefPage.MAX_PAGE_SIZE).toString();
 
 		@Override

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.List;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,6 +44,7 @@ public class UpdateRolePermission implements Serializable {
 	/**
 	 * 权限ID
 	 */
+	@Valid
 	@ApiModelProperty(value = "权限ID")
 	private List<Long> permissionIds;
 

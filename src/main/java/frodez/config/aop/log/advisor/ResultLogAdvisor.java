@@ -1,6 +1,7 @@
 package frodez.config.aop.log.advisor;
 
 import frodez.config.aop.log.annotation.ResultLog;
+import frodez.util.common.StrUtil;
 import frodez.util.json.JSONUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
@@ -96,7 +97,8 @@ public class ResultLogAdvisor implements PointcutAdvisor {
 							return false;
 						}
 						if (returnType == Void.class) {
-							throw new IllegalArgumentException("不能对void返回类型的方法使用本注解!");
+							throw new IllegalArgumentException(StrUtil.concat("不能对void返回类型的方法", ReflectUtil
+								.getFullMethodName(method), "使用@", ResultLog.class.getName(), "注解!"));
 						}
 						return true;
 					}

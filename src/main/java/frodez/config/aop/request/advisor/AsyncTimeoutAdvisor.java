@@ -4,6 +4,7 @@ import frodez.config.aop.request.annotation.TimeoutLock;
 import frodez.config.aop.request.checker.facade.AutoChecker;
 import frodez.config.aop.request.checker.impl.KeyGenerator;
 import frodez.util.beans.result.Result;
+import frodez.util.common.StrUtil;
 import frodez.util.http.ServletUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.MVCUtil;
@@ -128,7 +129,8 @@ public class AsyncTimeoutAdvisor implements PointcutAdvisor {
 							return false;
 						}
 						if (annotation.value() <= 0) {
-							throw new IllegalArgumentException("过期时间必须大于0!");
+							throw new IllegalArgumentException(StrUtil.concat("方法", ReflectUtil.getFullMethodName(
+								method), "的过期时间必须大于0!"));
 						}
 						Class<?> returnType = method.getReturnType();
 						if (returnType != ListenableFuture.class) {
@@ -136,8 +138,8 @@ public class AsyncTimeoutAdvisor implements PointcutAdvisor {
 							if (method.getReturnType() == Result.class) {
 								return false;
 							}
-							throw new IllegalArgumentException("本方法的返回值类型必须为" + ListenableFuture.class.getName() + "或者"
-								+ Result.class.getName());
+							throw new IllegalArgumentException(StrUtil.concat("方法", ReflectUtil.getFullMethodName(
+								method), "的返回值类型必须为", ListenableFuture.class.getName(), "或者", Result.class.getName()));
 						}
 						timeoutCache.put(ReflectUtil.getFullMethodName(method), annotation.value());
 						return true;

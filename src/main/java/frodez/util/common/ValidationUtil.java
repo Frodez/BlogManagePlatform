@@ -10,11 +10,13 @@ import java.util.stream.StreamSupport;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.ElementKind;
+import javax.validation.MessageInterpolator;
 import javax.validation.Path.Node;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import lombok.experimental.UtilityClass;
 import org.hibernate.validator.HibernateValidator;
+import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
 
@@ -34,10 +36,16 @@ public class ValidationUtil {
 	/**
 	 * 快速失败(出现第一个错误即返回)
 	 */
-	private static final Validator VAL = Validation.byProvider(HibernateValidator.class).configure()
-		.messageInterpolator(new ResourceBundleMessageInterpolator(new PlatformResourceBundleLocator(
-			PROPERTIESADDRESS))).allowOverridingMethodAlterParameterConstraint(true).failFast(true)
-		.buildValidatorFactory().getValidator();
+	private static Validator VAL;
+
+	static {
+		HibernateValidatorConfiguration configuration = Validation.byProvider(HibernateValidator.class).configure();
+		configuration.allowOverridingMethodAlterParameterConstraint(true);
+		configuration.failFast(true);
+		MessageInterpolator interpolator = new ResourceBundleMessageInterpolator(new PlatformResourceBundleLocator(
+			PROPERTIESADDRESS));
+		VAL = configuration.messageInterpolator(interpolator).buildValidatorFactory().getValidator();
+	}
 
 	/**
 	 * 对方法参数进行验证,如果验证通过,返回null<br>
