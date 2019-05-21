@@ -41,7 +41,7 @@ public enum OperateEnum {
 	 * 值
 	 */
 	@Getter
-	private byte val;
+	private Byte val;
 
 	/**
 	 * 描述
@@ -61,12 +61,6 @@ public enum OperateEnum {
 	@Getter
 	private static List<String> descs;
 
-	/**
-	 * 介绍
-	 */
-	@Getter
-	private static String introduction;
-
 	private static final Map<Byte, OperateEnum> enumMap;
 
 	static {
@@ -74,14 +68,6 @@ public enum OperateEnum {
 			.collect(Collectors.toList()));
 		descs = Collections.unmodifiableList(Arrays.asList(OperateEnum.values()).stream().map(OperateEnum::getDesc)
 			.collect(Collectors.toList()));
-		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < vals.size(); i++) {
-			builder.append(vals.get(i).toString());
-			if (i != vals.size() - 1) {
-				builder.append(",");
-			}
-		}
-		introduction = builder.toString();
 		enumMap = new HashMap<>();
 		for (OperateEnum iter : OperateEnum.values()) {
 			enumMap.put(iter.val, iter);
@@ -93,7 +79,7 @@ public enum OperateEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static OperateEnum of(byte value) {
+	public static OperateEnum of(Byte value) {
 		return enumMap.get(value);
 	}
 

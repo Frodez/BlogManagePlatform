@@ -188,7 +188,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
-	public Result getUserInfosByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens) {
+	public Result getUserInfosByIds(@Valid @NotEmpty List<Long> userIds, boolean includeFobiddens) {
 		try {
 			Example example = new Example(User.class);
 			example.createCriteria().andIn("id", userIds);
@@ -208,7 +208,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
-	public Result getUserInfosByNames(@NotEmpty List<String> userNames, boolean includeFobiddens) {
+	public Result getUserInfosByNames(@Valid @NotEmpty List<String> userNames, boolean includeFobiddens) {
 		try {
 			Example example = new Example(User.class);
 			example.createCriteria().andIn("name", userNames);
@@ -228,7 +228,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
-	public Result refreshUserInfoByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens) {
+	public Result refreshUserInfoByIds(@Valid @NotEmpty List<Long> userIds, boolean includeFobiddens) {
 		try {
 			Example example = new Example(User.class);
 			example.createCriteria().andIn("id", userIds);
@@ -249,7 +249,7 @@ public class AuthorityService implements IAuthorityService {
 
 	@Check
 	@Override
-	public Result refreshUserInfoByNames(@NotEmpty List<String> userNames, boolean includeFobiddens) {
+	public Result refreshUserInfoByNames(@Valid @NotEmpty List<String> userNames, boolean includeFobiddens) {
 		try {
 			Example example = new Example(User.class);
 			example.createCriteria().andIn("name", userNames);
@@ -377,8 +377,7 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result getRoles(@Valid @NotNull QueryPage param) {
 		try {
-			return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> roleMapper
-				.selectAll()));
+			return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> roleMapper.selectAll()));
 		} catch (Exception e) {
 			log.error("[getAllRoles]", e);
 			return Result.errorService();

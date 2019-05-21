@@ -32,7 +32,7 @@ public enum StatusEnum {
 	 * 值
 	 */
 	@Getter
-	private byte val;
+	private Byte val;
 
 	/**
 	 * 描述
@@ -52,12 +52,6 @@ public enum StatusEnum {
 	@Getter
 	private static List<String> descs;
 
-	/**
-	 * 介绍
-	 */
-	@Getter
-	private static String introduction;
-
 	private static final Map<Byte, StatusEnum> enumMap;
 
 	static {
@@ -65,21 +59,13 @@ public enum StatusEnum {
 			Collectors.toList()));
 		descs = Collections.unmodifiableList(Arrays.asList(StatusEnum.values()).stream().map(StatusEnum::getDesc)
 			.collect(Collectors.toList()));
-		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < vals.size(); i++) {
-			builder.append(vals.get(i).toString());
-			if (i != vals.size() - 1) {
-				builder.append(",");
-			}
-		}
-		introduction = builder.toString();
 		enumMap = new HashMap<>();
 		for (StatusEnum iter : StatusEnum.values()) {
 			enumMap.put(iter.val, iter);
 		}
 	}
 
-	public static StatusEnum of(byte value) {
+	public static StatusEnum of(Byte value) {
 		return enumMap.get(value);
 	}
 

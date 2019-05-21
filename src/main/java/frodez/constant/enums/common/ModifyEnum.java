@@ -37,7 +37,7 @@ public enum ModifyEnum {
 	 * 值
 	 */
 	@Getter
-	private byte val;
+	private Byte val;
 
 	/**
 	 * 描述
@@ -57,12 +57,6 @@ public enum ModifyEnum {
 	@Getter
 	private static List<String> descs;
 
-	/**
-	 * 介绍
-	 */
-	@Getter
-	private static String introduction;
-
 	private static final Map<Byte, ModifyEnum> enumMap;
 
 	static {
@@ -70,14 +64,6 @@ public enum ModifyEnum {
 			Collectors.toList()));
 		descs = Collections.unmodifiableList(Arrays.asList(ModifyEnum.values()).stream().map(ModifyEnum::getDesc)
 			.collect(Collectors.toList()));
-		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < vals.size(); i++) {
-			builder.append(vals.get(i).toString());
-			if (i != vals.size() - 1) {
-				builder.append(",");
-			}
-		}
-		introduction = builder.toString();
 		enumMap = new HashMap<>();
 		for (ModifyEnum iter : ModifyEnum.values()) {
 			enumMap.put(iter.val, iter);
@@ -89,7 +75,7 @@ public enum ModifyEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static ModifyEnum of(byte value) {
+	public static ModifyEnum of(Byte value) {
 		return enumMap.get(value);
 	}
 
