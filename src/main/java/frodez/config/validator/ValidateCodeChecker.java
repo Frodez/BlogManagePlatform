@@ -1,15 +1,9 @@
 package frodez.config.validator;
 
-import frodez.util.common.StrUtil;
 import frodez.util.reflect.BeanUtil;
 import frodez.util.spring.ContextUtil;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Map;
-import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -35,6 +29,9 @@ import org.springframework.util.SystemPropertyUtils;
 @Component
 public class ValidateCodeChecker implements ApplicationListener<ApplicationStartedEvent> {
 
+	/**
+	 * class文件后缀
+	 */
 	private static final String CLASS_SUFFIX = "**/*.class";
 
 	@Override
@@ -67,49 +64,10 @@ public class ValidateCodeChecker implements ApplicationListener<ApplicationStart
 					Class<?> klass = ClassUtils.forName(className, null);
 					if (!BeanUtils.isSimpleProperty(klass)) {
 						for (Field field : BeanUtil.getSetterFields(klass)) {
-							checkField(field);
+							CodeChecker.checkField(field);
 						}
 					}
 				}
-			}
-		}
-	}
-
-	private void checkField(Field field) {
-		Class<?> type = field.getType();
-		if (Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)) {
-			checkCollectionOrMap(field, (ParameterizedType) field.getGenericType());
-			return;
-		}
-		assertComplexPropertyValid(field, field.getType());
-	}
-
-	private boolean isComplex(Class<?> type) {
-		return !BeanUtils.isSimpleProperty(type);
-	}
-
-	private void assertComplexPropertyValid(Field field, Class<?> type) {
-		if (isComplex(type) && field.getAnnotation(Valid.class) == null) {
-			throw new RuntimeException(StrUtil.concat(field.getDeclaringClass().getName(), ".", field.getName(),
-				"是复杂类型,需要加上@", Valid.class.getName(), "注解!"));
-		}
-	}
-
-	private void checkCollectionOrMap(Field field, ParameterizedType genericType) {
-		if (Map.class.isAssignableFrom((Class<?>) genericType.getRawType())) {
-			return;
-		}
-		Type[] actualTypes = genericType.getActualTypeArguments();
-		for (Type actualType : actualTypes) {
-			//如果是直接类型,直接判断
-			if (actualType instanceof Class) {
-				assertComplexPropertyValid(field, (Class<?>) actualType);
-				continue;
-			}
-			//如果是泛型类型
-			if (actualType instanceof ParameterizedType) {
-				checkCollectionOrMap(field, (ParameterizedType) actualType);
-				continue;
 			}
 		}
 	}
