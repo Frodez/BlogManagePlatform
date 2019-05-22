@@ -106,19 +106,6 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * 是否为基本类型<br>
-	 * 基本类型指primitiveClass以及其对应的装箱类
-	 * @author Frodez
-	 * @date 2019-05-21
-	 */
-	public static boolean isBaseClass(Class<?> klass) {
-		return klass != null && (klass == Boolean.class || klass == Byte.class || klass == Short.class
-			|| klass == Integer.class || klass == Long.class || klass == Float.class || klass == Double.class
-			|| klass == boolean.class || klass == byte.class || klass == short.class || klass == int.class
-			|| klass == long.class || klass == float.class || klass == double.class);
-	}
-
-	/**
 	 * 将两个数转换为指定的类型然后进行比较<br>
 	 * 涉及类型:byte, short, int, long以及对应装箱类
 	 * @author Frodez

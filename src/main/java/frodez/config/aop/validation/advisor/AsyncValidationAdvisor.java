@@ -7,6 +7,10 @@ import frodez.util.common.ValidationUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import javax.validation.Valid;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -115,6 +119,10 @@ public class AsyncValidationAdvisor implements PointcutAdvisor {
 						for (Parameter parameter : method.getParameters()) {
 							if (!BeanUtils.isSimpleProperty(parameter.getType()) && parameter.getAnnotation(
 								Valid.class) == null) {
+								List<Class<?>> interfaces = Arrays.asList(parameter.getType().getInterfaces());
+								if (interfaces.contains(Collection.class) || interfaces.contains(Map.class)) {
+									continue;
+								}
 								throw new IllegalArgumentException(StrUtil.concat("含有", "@", Check.class.getName(),
 									"注解方法", ReflectUtil.getFullMethodName(method), "的参数", parameter.getName(),
 									"必须使用@Valid注解!"));

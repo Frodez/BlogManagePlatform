@@ -2,16 +2,19 @@ package frodez.validation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import frodez.config.aop.validation.annotation.special.DateTime;
-import frodez.constant.enums.common.ModifyEnum;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.QueryRolePermission;
-import frodez.dao.param.user.UpdateRolePermission;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.common.ValidationUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
 import lombok.Data;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,14 +31,15 @@ public class ValidationTest {
 
 	@Test
 	public void test1() {
-		UpdateRolePermission bean = new UpdateRolePermission();
-		bean.setRoleId(1L);
-		bean.setOperationType(ModifyEnum.UPDATE.getVal());
-		bean.setPermissionIds(Arrays.asList(1L, -2L, 3L));
+		ValidationBean bean = new ValidationBean();
+		InnerBean innerBean = new InnerBean();
+		innerBean.setNumber(1);
+		innerBean.setList(Arrays.asList(2, 4, 5));
+		bean.setDate("1999-01-12 11:22:33");
+		bean.setBeans(Arrays.asList(innerBean, innerBean));
 		System.out.println(ValidationUtil.validate(bean));
 	}
 
-	@Test
 	public void test2() throws JsonProcessingException, InvocationTargetException {
 		QueryRolePermission param = new QueryRolePermission();
 		param.setRoleId(1L);
@@ -52,9 +56,6 @@ public class ValidationTest {
 		addPermission.setType((byte) -1);
 		result = authorityService.addPermission(addPermission);
 		System.out.println(result.json());
-		ValidationBean bean = new ValidationBean();
-		bean.setDate("1999-01-12 11:22:33");
-		System.out.println(ValidationUtil.validate(bean));
 	}
 
 	@Data
@@ -62,6 +63,23 @@ public class ValidationTest {
 
 		@DateTime
 		private String date;
+
+		@NotEmpty
+		private List<@Valid InnerBean> beans;
+
+	}
+
+	@Data
+	public static class InnerBean {
+
+		@Positive
+		private Integer number;
+
+		@NotBlank
+		private String string;
+
+		@NotEmpty
+		private List<Integer> list;
 
 	}
 
