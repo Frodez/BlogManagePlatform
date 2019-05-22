@@ -64,7 +64,7 @@ public class ValidateCodeChecker implements ApplicationListener<ApplicationStart
 					Class<?> klass = ClassUtils.forName(className, null);
 					if (!BeanUtils.isSimpleProperty(klass)) {
 						for (Field field : BeanUtil.getSetterFields(klass)) {
-							CodeChecker.checkField(field);
+							CodeCheckUtil.checkField(field);
 						}
 					}
 				}
