@@ -1,12 +1,16 @@
-package frodez.util.common;
+package frodez.config.validator;
 
 import frodez.constant.settings.DefDesc;
 import frodez.constant.settings.DefStr;
+import frodez.util.common.EmptyUtil;
+import frodez.util.common.StrUtil;
+import frodez.util.spring.ContextUtil;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import javax.annotation.PostConstruct;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.ElementKind;
@@ -14,37 +18,36 @@ import javax.validation.MessageInterpolator;
 import javax.validation.Path.Node;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import lombok.experimental.UtilityClass;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.stereotype.Component;
 
 /**
  * 对象验证工具类
  * @author Frodez
  * @date 2018-12-02
  */
-@UtilityClass
+@Component
+@DependsOn("contextUtil")
 public class ValidationUtil {
 
 	/**
-	 * hibernate-validator错误信息配置文件位置(classpath下)
+	 * 验证引擎
 	 */
-	private static final String PROPERTIESADDRESS = "others/validate-messages";
+	private static Validator engine;
 
-	/**
-	 * 快速失败(出现第一个错误即返回)
-	 */
-	private static Validator VAL;
-
-	static {
+	@PostConstruct
+	private void init() {
+		ValidatorProperties properties = ContextUtil.get(ValidatorProperties.class);
 		HibernateValidatorConfiguration configuration = Validation.byProvider(HibernateValidator.class).configure();
-		configuration.allowOverridingMethodAlterParameterConstraint(true);
-		configuration.failFast(true);
-		MessageInterpolator interpolator = new ResourceBundleMessageInterpolator(new PlatformResourceBundleLocator(
-			PROPERTIESADDRESS));
-		VAL = configuration.messageInterpolator(interpolator).buildValidatorFactory().getValidator();
+		PlatformResourceBundleLocator locator = new PlatformResourceBundleLocator(properties.getMessageConfigPath());
+		MessageInterpolator interpolator = new ResourceBundleMessageInterpolator(locator);
+		configuration.allowOverridingMethodAlterParameterConstraint(true);//允许覆写接口方法约束必须为true
+		configuration.failFast(true);//快速失败写死为true,能加快允许速度。如果想要修改为false,那么下面的验证方法的代码也要改变。
+		engine = configuration.messageInterpolator(interpolator).buildValidatorFactory().getValidator();
 	}
 
 	/**
@@ -56,10 +59,11 @@ public class ValidationUtil {
 	 * @date 2019-01-12
 	 */
 	public static String validateParam(final Object instance, final Method method, final Object[] args) {
-		Set<ConstraintViolation<Object>> set = VAL.forExecutables().validateParameters(instance, method, args);
+		Set<ConstraintViolation<Object>> set = engine.forExecutables().validateParameters(instance, method, args);
 		if (set.isEmpty()) {
 			return null;
 		}
+		//因为failFast写死为true,不考虑其他情况,为了提高效率,故此处直接取错误信息的第一条.
 		ConstraintViolation<Object> firstError = set.iterator().next();
 		//获取错误定位
 		List<Node> nodes = StreamSupport.stream(firstError.getPropertyPath().spliterator(), false).filter((node) -> {
@@ -95,10 +99,11 @@ public class ValidationUtil {
 		if (object == null) {
 			return nullMessage;
 		}
-		Set<ConstraintViolation<Object>> set = VAL.validate(object);
+		Set<ConstraintViolation<Object>> set = engine.validate(object);
 		if (set.isEmpty()) {
 			return null;
 		}
+		//因为failFast写死为true,不考虑其他情况,为了提高效率,故此处直接取错误信息的第一条.
 		ConstraintViolation<Object> firstError = set.iterator().next();
 		//获取错误定位
 		List<Node> nodes = StreamSupport.stream(firstError.getPropertyPath().spliterator(), false).filter((node) -> {

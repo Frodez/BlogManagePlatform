@@ -83,7 +83,8 @@ public class QueryPage implements IPage, Serializable {
 	private Integer pageSize;
 
 	/**
-	 * 是否允许超额单页容量,内部参数,请不要暴露
+	 * 是否允许超额单页容量,内部参数,请不要暴露<br>
+	 * 当设置为true时,不会检查单页容量上限。<br>
 	 * @see frodez.constant.settings.DefPage#MAX_PAGE_SIZE
 	 */
 	@Getter

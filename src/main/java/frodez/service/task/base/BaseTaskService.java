@@ -114,6 +114,7 @@ public class BaseTaskService {
 					try {
 						log.info("第{}号任务启动,任务详情:{}", task.getId(), JSONUtil.string(task));
 					} catch (JsonProcessingException e) {
+						return;
 					}
 				}
 			});

@@ -1,9 +1,9 @@
 package frodez.config.aop.validation.annotation.special;
 
+import frodez.config.validator.ValidationUtil;
 import frodez.constant.settings.DefPage;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.common.StrUtil;
-import frodez.util.common.ValidationUtil;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

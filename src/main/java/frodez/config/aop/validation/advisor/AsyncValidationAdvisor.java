@@ -1,20 +1,19 @@
 package frodez.config.aop.validation.advisor;
 
 import frodez.config.aop.validation.annotation.Check;
+import frodez.config.validator.CodeChecker;
+import frodez.config.validator.ValidationUtil;
 import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
-import frodez.util.common.ValidationUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import javax.validation.Valid;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.springframework.aop.ClassFilter;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -113,12 +112,7 @@ public class AsyncValidationAdvisor implements PointcutAdvisor {
 								"或者", Result.class.getName()));
 						}
 						for (Parameter parameter : method.getParameters()) {
-							if (!BeanUtils.isSimpleProperty(parameter.getType()) && parameter.getAnnotation(
-								Valid.class) == null) {
-								throw new IllegalArgumentException(StrUtil.concat("含有", "@", Check.class.getName(),
-									"注解方法", ReflectUtil.getFullMethodName(method), "的参数", parameter.getName(),
-									"必须使用@Valid注解!"));
-							}
+							CodeChecker.checkParameter(method, parameter);
 						}
 						return true;
 					}

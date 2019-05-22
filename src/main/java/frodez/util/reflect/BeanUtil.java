@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,9 +28,11 @@ public class BeanUtil {
 
 	private static final Map<String, BeanCopier> COPIER_CACHE = new ConcurrentHashMap<>();
 
-	private static final Map<Class<?>, FastMethod[]> setterCache = new ConcurrentHashMap<>();
+	private static final Map<Class<?>, List<Field>> FIELD_CACHE = new ConcurrentHashMap<>();
 
-	private static final Map<Class<?>, FastMethod[]> notNullFieldSetterCache = new ConcurrentHashMap<>();
+	private static final Map<Class<?>, List<FastMethod>> SETTER_CACHE = new ConcurrentHashMap<>();
+
+	private static final Map<Class<?>, List<FastMethod>> NOT_NULL_FIELD_SETTER_CACHE = new ConcurrentHashMap<>();
 
 	private static final Object[] NULL_PARAM = new Object[] { null };
 
@@ -128,10 +131,10 @@ public class BeanUtil {
 	public static void clear(Object bean) {
 		Assert.notNull(bean, "bean must not be null");
 		try {
-			FastMethod[] methods = getSetters(bean.getClass());
-			int length = methods.length;
+			List<FastMethod> methods = setters(bean.getClass());
+			int length = methods.size();
 			for (int i = 0; i < length; i++) {
-				methods[i].invoke(bean, NULL_PARAM);
+				methods.get(i).invoke(bean, NULL_PARAM);
 			}
 		} catch (InvocationTargetException e) {
 			throw new RuntimeException(e);
@@ -148,29 +151,79 @@ public class BeanUtil {
 		return Modifier.PRIVATE == field.getModifiers() && field.trySetAccessible() && field.get(bean) != null;
 	}
 
-	private static FastMethod[] getSetters(Class<?> klass) {
-		FastMethod[] methods = setterCache.get(klass);
+	/**
+	 * 获取setter对应的field
+	 * @author Frodez
+	 * @date 2019-05-22
+	 */
+	public static List<Field> getSetterFields(Class<?> klass) {
+		Assert.notNull(klass, "klass must not be null");
+		List<Field> fields = FIELD_CACHE.get(klass);
+		if (fields == null) {
+			fields = new ArrayList<>();
+			List<Method> setters = new ArrayList<>();
+			for (Method method : klass.getMethods()) {
+				if (isSetter(method)) {
+					setters.add(method);
+				}
+			}
+			for (Field field : klass.getDeclaredFields()) {
+				if (Modifier.PRIVATE == field.getModifiers()) {
+					for (Method method : setters) {
+						if (method.getName().endsWith(StrUtil.upperFirst(field.getName()))) {
+							fields.add(field);
+							break;
+						}
+					}
+				}
+			}
+			FIELD_CACHE.put(klass, fields);
+		}
+		return Collections.unmodifiableList(fields);
+	}
+
+	/**
+	 * 获取所有setters
+	 * @author Frodez
+	 * @date 2019-05-22
+	 */
+	public static List<FastMethod> getSetters(Class<?> klass) {
+		Assert.notNull(klass, "klass must not be null");
+		return Collections.unmodifiableList(setters(klass));
+	}
+
+	private static List<FastMethod> setters(Class<?> klass) {
+		List<FastMethod> methods = SETTER_CACHE.get(klass);
 		if (methods == null) {
-			List<FastMethod> list = new ArrayList<>();
+			methods = new ArrayList<>();
 			FastClass fastClass = FastClass.create(klass);
 			for (Method method : klass.getMethods()) {
 				if (isSetter(method)) {
-					list.add(fastClass.getMethod(method));
+					methods.add(fastClass.getMethod(method));
 				}
 			}
-			methods = new FastMethod[list.size()];
-			methods = list.toArray(methods);
-			setterCache.put(klass, methods);
+			SETTER_CACHE.put(klass, methods);
 		}
 		return methods;
 	}
 
-	private static FastMethod[] getDefaultNotNullSetters(Object bean) throws IllegalArgumentException,
+	/**
+	 * 获取所有非空的setters
+	 * @author Frodez
+	 * @date 2019-05-22
+	 */
+	public static List<FastMethod> getDefaultNotNullSetters(Class<?> klass) throws IllegalArgumentException,
+		IllegalAccessException, InvocationTargetException {
+		Assert.notNull(klass, "klass must not be null");
+		return Collections.unmodifiableList(defaultNotNullSetters(ReflectUtil.newInstance(klass)));
+	}
+
+	private static List<FastMethod> defaultNotNullSetters(Object bean) throws IllegalArgumentException,
 		IllegalAccessException {
 		Class<?> klass = bean.getClass();
-		FastMethod[] methods = notNullFieldSetterCache.get(klass);
+		List<FastMethod> methods = NOT_NULL_FIELD_SETTER_CACHE.get(klass);
 		if (methods == null) {
-			List<FastMethod> list = new ArrayList<>();
+			methods = new ArrayList<>();
 			FastClass fastClass = FastClass.create(klass);
 			List<Method> setters = new ArrayList<>();
 			for (Method method : klass.getMethods()) {
@@ -182,15 +235,13 @@ public class BeanUtil {
 				if (isPrivateAndNotNullField(field, bean)) {
 					for (Method method : setters) {
 						if (method.getName().endsWith(StrUtil.upperFirst(field.getName()))) {
-							list.add(fastClass.getMethod(method));
+							methods.add(fastClass.getMethod(method));
 							break;
 						}
 					}
 				}
 			}
-			methods = new FastMethod[list.size()];
-			methods = list.toArray(methods);
-			notNullFieldSetterCache.put(klass, methods);
+			NOT_NULL_FIELD_SETTER_CACHE.put(klass, methods);
 		}
 		return methods;
 	}
@@ -207,10 +258,10 @@ public class BeanUtil {
 	public static <T> T clearInstance(Class<T> klass) {
 		try {
 			T bean = ReflectUtil.newInstance(klass);
-			FastMethod[] methods = getDefaultNotNullSetters(bean);
-			int length = methods.length;
+			List<FastMethod> methods = defaultNotNullSetters(bean);
+			int length = methods.size();
 			for (int i = 0; i < length; i++) {
-				methods[i].invoke(bean, NULL_PARAM);
+				methods.get(i).invoke(bean, NULL_PARAM);
 			}
 			return bean;
 		} catch (InvocationTargetException | IllegalArgumentException | IllegalAccessException e) {
