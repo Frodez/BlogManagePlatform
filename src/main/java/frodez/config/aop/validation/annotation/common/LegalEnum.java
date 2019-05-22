@@ -1,7 +1,7 @@
 package frodez.config.aop.validation.annotation.common;
 
+import frodez.config.validator.ValidationUtil;
 import frodez.util.common.StrUtil;
-import frodez.util.common.ValidationUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

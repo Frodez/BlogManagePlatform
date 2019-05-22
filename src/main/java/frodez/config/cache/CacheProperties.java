@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@PropertySource(value = { "classpath:settings/${spring.profiles.active}/cache.properties" })
+@PropertySource(value = { "classpath:settings/global/cache.properties" })
 @ConfigurationProperties(prefix = "cache")
 public class CacheProperties {
 

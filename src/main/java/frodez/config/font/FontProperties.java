@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@PropertySource(value = { "classpath:settings/${spring.profiles.active}/font.properties" })
+@PropertySource(value = { "classpath:settings/global/font.properties" })
 @ConfigurationProperties(prefix = "font")
 public class FontProperties {
 

@@ -2,12 +2,12 @@ package frodez.validation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import frodez.config.aop.validation.annotation.special.DateTime;
+import frodez.config.validator.ValidationUtil;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.QueryRolePermission;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
-import frodez.util.common.ValidationUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
@@ -36,8 +36,8 @@ public class ValidationTest {
 		innerBean.setNumber(1);
 		innerBean.setList(Arrays.asList(2, 4, 5));
 		bean.setDate("1999-01-12 11:22:33");
-		bean.setBeans(Arrays.asList(innerBean, innerBean));
-		System.out.println(ValidationUtil.validate(bean));
+		bean.setBeans(Arrays.asList(Arrays.asList(innerBean, innerBean), Arrays.asList(innerBean, innerBean)));
+		System.out.println(ValidationUtil.validate(innerBean));
 	}
 
 	public void test2() throws JsonProcessingException, InvocationTargetException {
@@ -64,8 +64,9 @@ public class ValidationTest {
 		@DateTime
 		private String date;
 
+		@Valid
 		@NotEmpty
-		private List<@Valid InnerBean> beans;
+		private List<List<InnerBean>> beans;
 
 	}
 

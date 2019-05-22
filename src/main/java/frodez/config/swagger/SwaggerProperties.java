@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @Profile({ "dev", "test" })
-@PropertySource(value = { "classpath:settings/${spring.profiles.active}/swagger.properties" })
+@PropertySource(value = { "classpath:settings/global/swagger.properties" })
 @ConfigurationProperties(prefix = "swagger")
 public class SwaggerProperties {
 

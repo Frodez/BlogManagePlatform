@@ -1,15 +1,15 @@
 package frodez.config.aop.validation.advisor;
 
 import frodez.config.aop.validation.annotation.Check;
+import frodez.config.validator.ValidationUtil;
 import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
-import frodez.util.common.ValidationUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.Arrays;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 import org.aopalliance.aop.Advice;
@@ -117,18 +117,50 @@ public class ValidationAdvisor implements PointcutAdvisor {
 								"或者", Result.class.getName()));
 						}
 						for (Parameter parameter : method.getParameters()) {
-							if (!BeanUtils.isSimpleProperty(parameter.getType()) && parameter.getAnnotation(
-								Valid.class) == null) {
-								List<Class<?>> interfaces = Arrays.asList(parameter.getType().getInterfaces());
-								if (interfaces.contains(Collection.class) || interfaces.contains(Map.class)) {
-									continue;
-								}
-								throw new IllegalArgumentException(StrUtil.concat("含有", "@", Check.class.getName(),
-									"注解方法", ReflectUtil.getFullMethodName(method), "的参数", parameter.getName(),
-									"必须使用@Valid注解!"));
-							}
+							checkParameter(method, parameter);
 						}
 						return true;
+					}
+
+					private void checkParameter(Method method, Parameter parameter) {
+						Class<?> type = parameter.getType();
+						if (Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)) {
+							checkCollectionOrMap(method, parameter, (ParameterizedType) parameter
+								.getParameterizedType());
+							return;
+						}
+						assertComplexPropertyValid(method, parameter, parameter.getType());
+					}
+
+					private boolean isComplex(Class<?> type) {
+						return !BeanUtils.isSimpleProperty(type);
+					}
+
+					private void assertComplexPropertyValid(Method method, Parameter parameter, Class<?> type) {
+						if (isComplex(type) && parameter.getAnnotation(Valid.class) == null) {
+							throw new IllegalArgumentException(StrUtil.concat("含有", "@", Check.class.getName(), "注解方法",
+								ReflectUtil.getFullMethodName(method), "的参数", parameter.getName(), "必须使用@Valid注解!"));
+						}
+					}
+
+					private void checkCollectionOrMap(Method method, Parameter parameter,
+						ParameterizedType genericType) {
+						if (Map.class.isAssignableFrom((Class<?>) genericType.getRawType())) {
+							return;
+						}
+						Type[] actualTypes = genericType.getActualTypeArguments();
+						for (Type actualType : actualTypes) {
+							//如果是直接类型,直接判断
+							if (actualType instanceof Class) {
+								assertComplexPropertyValid(method, parameter, (Class<?>) actualType);
+								continue;
+							}
+							//如果是泛型类型
+							if (actualType instanceof ParameterizedType) {
+								checkCollectionOrMap(method, parameter, (ParameterizedType) actualType);
+								continue;
+							}
+						}
 					}
 
 					/**
