@@ -1,8 +1,9 @@
 package frodez.config.aop.validation.advisor;
 
 import frodez.config.aop.validation.annotation.Check;
-import frodez.config.validator.CodeChecker;
+import frodez.config.validator.CodeCheckUtil;
 import frodez.config.validator.ValidationUtil;
+import frodez.config.validator.ValidatorProperties;
 import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
@@ -14,9 +15,9 @@ import org.springframework.aop.ClassFilter;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * 验证参数AOP<br>
@@ -27,6 +28,9 @@ import org.springframework.util.concurrent.ListenableFuture;
 @Component
 @Order(Integer.MAX_VALUE)
 public class ValidationAdvisor implements PointcutAdvisor {
+
+	@Autowired
+	private ValidatorProperties properties;
 
 	/**
 	 * AOP切点
@@ -97,22 +101,18 @@ public class ValidationAdvisor implements PointcutAdvisor {
 						if (method.getAnnotation(Check.class) == null) {
 							return false;
 						}
+						if (!CodeCheckUtil.isResultAsReturn(method)) {
+							return false;
+						}
+						if (!properties.getCodeReview()) {
+							return true;
+						}
 						if (method.getParameterCount() == 0) {
 							throw new IllegalArgumentException(StrUtil.concat("@", Check.class.getName(), "注解不能在无参数的方法",
 								ReflectUtil.getFullMethodName(method), "上使用!"));
 						}
-						Class<?> returnType = method.getReturnType();
-						if (returnType != Result.class) {
-							//async的Result放在另一处处理
-							if (method.getReturnType() == ListenableFuture.class) {
-								return false;
-							}
-							throw new IllegalArgumentException(StrUtil.concat("含有", "@", Check.class.getName(), "注解方法",
-								ReflectUtil.getFullMethodName(method), "的返回值类型必须为", ListenableFuture.class.getName(),
-								"或者", Result.class.getName()));
-						}
 						for (Parameter parameter : method.getParameters()) {
-							CodeChecker.checkParameter(method, parameter);
+							CodeCheckUtil.checkParameter(method, parameter);
 						}
 						return true;
 					}

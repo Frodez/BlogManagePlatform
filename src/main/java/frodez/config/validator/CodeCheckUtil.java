@@ -1,6 +1,7 @@
 package frodez.config.validator;
 
 import frodez.config.aop.validation.annotation.Check;
+import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Field;
@@ -13,6 +14,7 @@ import java.util.Map;
 import javax.validation.Valid;
 import lombok.experimental.UtilityClass;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * 代码检查相关实现
@@ -20,7 +22,7 @@ import org.springframework.beans.BeanUtils;
  * @date 2019-05-22
  */
 @UtilityClass
-public class CodeChecker {
+public class CodeCheckUtil {
 
 	/**
 	 * 检查字段
@@ -59,6 +61,72 @@ public class CodeChecker {
 		return !BeanUtils.isSimpleProperty(type);
 	}
 
+	/**
+	 * 判断方法返回类型是否为ListenableFuture(泛型T为Result)
+	 * @see org.springframework.util.concurrent.ListenableFuture
+	 * @see frodez.util.beans.result.Result
+	 * @author Frodez
+	 * @date 2019-05-22
+	 */
+	public static boolean isAsyncResultAsReturn(Method method) {
+		Type type = method.getAnnotatedReturnType().getType();
+		if (!isAsyncResult(type)) {
+			//async的Result放在另一处处理
+			if (isResult(type)) {
+				return false;
+			}
+			throw new IllegalArgumentException(StrUtil.concat("含有", "@", Check.class.getName(), "注解的方法", ReflectUtil
+				.getFullMethodName(method), "的返回值类型必须为", ListenableFuture.class.getName(), "或者", Result.class
+					.getName()));
+		}
+		return true;
+	}
+
+	/**
+	 * 判断方法返回类型是否为Result
+	 * @see org.springframework.util.concurrent.ListenableFuture
+	 * @see frodez.util.beans.result.Result
+	 * @author Frodez
+	 * @date 2019-05-22
+	 */
+	public static boolean isResultAsReturn(Method method) {
+		Type type = method.getAnnotatedReturnType().getType();
+		if (!isResult(type)) {
+			//async的Result放在另一处处理
+			if (isAsyncResult(type)) {
+				return false;
+			}
+			throw new IllegalArgumentException(StrUtil.concat("含有", "@", Check.class.getName(), "注解的方法", ReflectUtil
+				.getFullMethodName(method), "的返回值类型必须为", ListenableFuture.class.getName(), "或者", Result.class
+					.getName()));
+		}
+		return true;
+	}
+
+	private static boolean isResult(Type type) {
+		if (type instanceof Class) {
+			return Result.class.isAssignableFrom((Class<?>) type);
+		}
+		return false;
+	}
+
+	private static boolean isAsyncResult(Type type) {
+		if (type instanceof ParameterizedType) {
+			if (ListenableFuture.class.isAssignableFrom((Class<?>) ((ParameterizedType) type).getRawType())) {
+				Type actualTypeArgument = ((ParameterizedType) type).getActualTypeArguments()[0];
+				if (actualTypeArgument instanceof Class && Result.class.isAssignableFrom((Class<
+					?>) actualTypeArgument)) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+
 	private static void assertComplexFieldValid(Field field, Class<?> type) {
 		if (isComplex(type) && field.getAnnotation(Valid.class) == null) {
 			throw new RuntimeException(StrUtil.concat(field.getDeclaringClass().getName(), ".", field.getName(),
@@ -87,8 +155,8 @@ public class CodeChecker {
 
 	private static void assertComplexParameterValid(Method method, Parameter parameter, Class<?> type) {
 		if (isComplex(type) && parameter.getAnnotation(Valid.class) == null) {
-			throw new IllegalArgumentException(StrUtil.concat("含有", "@", Check.class.getName(), "注解方法", ReflectUtil
-				.getFullMethodName(method), "的参数", parameter.getName(), "必须使用@Valid注解!"));
+			throw new IllegalArgumentException(StrUtil.concat("含有", "@", Check.class.getName(), "注解的方法", ReflectUtil
+				.getFullMethodName(method), "的参数", parameter.getName(), "必须使用@", Valid.class.getName(), "注解!"));
 		}
 	}
 
