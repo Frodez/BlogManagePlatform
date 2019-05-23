@@ -4,6 +4,12 @@
 [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
 # BlogManagePlatform  
 ## 这是一个springboot项目的脚手架,追求简洁高速可扩展。  
+
+## 项目要求:
+1. JDK11+
+2. Mysql8+
+
+## 功能实现:
 已完成了一些常用功能，包括:
 1. https和http2支持。
 2. 较简单的请求限流。
@@ -16,6 +22,7 @@
 9. 较全面的mybatis代码自动生成工具。
 10. swagger支持。
 11. 异常兜底处理。  
+12. 加载期代码检查。  
 
 **对可能有不同应用场景的功能，均保证了尽可能良好的扩展性，方便接入不同实现。**  
 
@@ -32,20 +39,5 @@
 
 **由于使用缓存的缘故，建议不要使用springboot热部署工具,否则可能带来一些奇怪的问题。** 
 
-## 部分性能测试
-
-测试环境:
-CPU Ryzen7 2700X 8C16T 3.7-4.3GHZ
-内存 2条16G DDR42400
-硬盘 EVO860 500G
-系统 Windows10 1809
-注意事项:Windows对tcp连接数量有限制,回收速度过慢的话会影响测试结果。一般来说必须修改默认配置。建议将tcp连接数设为最大值65535-1，将回收时间设到3s以内。
-
-测试结果:
-1.带缓存，极少量数据(content500B左右)的情况下，设置并发数200，缓存命中可达12000QPS.
-2.不带缓存，少量级数据(content2KB左右)的情况下，设置并发数200，可达4400QPS.
-3.设置并发数200，但只分配1C2T的CPU资源，性能大约1000QPS，对以上两种情况均适用。当CPU资源改为3C6T时，方能基本满足性能上限.
-4.对比测试，纯helloworld的springboot应用，QPS大约是17000.
-
-总结：
-考虑到相比helloworld已加入诸多功能，至少在同样功能的级别下，性能不会太低下。以后也会对相关功能尽可能进行优化。
+## 性能
+参见链接(https://github.com/Frodez/BlogManagePlatform/blob/master/src/main/resources/others/performance/introduction.md)
