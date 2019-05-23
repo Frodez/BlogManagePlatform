@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
-import frodez.constant.errors.exception.ParseException;
+import frodez.constant.errors.exception.ResultParseException;
 import frodez.constant.settings.DefDesc;
 import frodez.util.json.JSONUtil;
 import io.swagger.annotations.ApiModel;
@@ -399,7 +399,7 @@ public final class Result implements Serializable {
 	 * @date 2018-11-13
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T as(Class<T> klass) throws ClassCastException, ParseException {
+	public <T> T as(Class<T> klass) throws ClassCastException, ResultParseException {
 		Assert.notNull(klass, "klass must not be null");
 		ableAndNotNull();
 		return (T) data;
@@ -412,7 +412,7 @@ public final class Result implements Serializable {
 	 * @date 2018-11-13
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> PageData<T> pageData(Class<T> klass) throws ClassCastException, ParseException {
+	public <T> PageData<T> pageData(Class<T> klass) throws ClassCastException, ResultParseException {
 		Assert.notNull(klass, "klass must not be null");
 		ableAndNotNull();
 		return (PageData<T>) data;
@@ -425,7 +425,7 @@ public final class Result implements Serializable {
 	 * @date 2018-11-13
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> List<T> list(Class<T> klass) throws ClassCastException, ParseException {
+	public <T> List<T> list(Class<T> klass) throws ClassCastException, ResultParseException {
 		Assert.notNull(klass, "klass must not be null");
 		ableAndNotNull();
 		return (List<T>) data;
@@ -438,7 +438,7 @@ public final class Result implements Serializable {
 	 * @date 2018-11-13
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> Set<T> set(Class<T> klass) throws ClassCastException, ParseException {
+	public <T> Set<T> set(Class<T> klass) throws ClassCastException, ResultParseException {
 		Assert.notNull(klass, "klass must not be null");
 		ableAndNotNull();
 		return (Set<T>) data;
@@ -451,7 +451,7 @@ public final class Result implements Serializable {
 	 * @date 2018-11-13
 	 */
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> map() throws ClassCastException, ParseException {
+	public Map<String, Object> map() throws ClassCastException, ResultParseException {
 		ableAndNotNull();
 		return (Map<String, Object>) data;
 	}
@@ -463,7 +463,7 @@ public final class Result implements Serializable {
 	 * @date 2018-11-13
 	 */
 	@SuppressWarnings("unchecked")
-	public <K, V> Map<K, V> map(Class<K> keyClass, Class<V> valueClass) throws ClassCastException, ParseException {
+	public <K, V> Map<K, V> map(Class<K> keyClass, Class<V> valueClass) throws ClassCastException, ResultParseException {
 		Assert.notNull(keyClass, "keyClass must not be null");
 		Assert.notNull(valueClass, "valueClass must not be null");
 		ableAndNotNull();
@@ -535,7 +535,7 @@ public final class Result implements Serializable {
 			throw new UnsupportedOperationException(message);
 		}
 		if (data == null) {
-			throw new ParseException("数据为空!");
+			throw new ResultParseException("数据为空!");
 		}
 	}
 

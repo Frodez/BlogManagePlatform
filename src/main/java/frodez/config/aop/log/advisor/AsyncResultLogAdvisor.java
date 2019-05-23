@@ -95,7 +95,7 @@ public class AsyncResultLogAdvisor implements PointcutAdvisor {
 							return false;
 						}
 						Class<?> returnType = method.getReturnType();
-						if (returnType == Result.class) {
+						if (Result.class.isAssignableFrom(returnType)) {
 							return false;
 						}
 						if (returnType == Void.class) {

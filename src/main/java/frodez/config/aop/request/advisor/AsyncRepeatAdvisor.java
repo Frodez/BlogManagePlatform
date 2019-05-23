@@ -3,8 +3,8 @@ package frodez.config.aop.request.advisor;
 import frodez.config.aop.request.annotation.RepeatLock;
 import frodez.config.aop.request.checker.facade.ManualChecker;
 import frodez.config.aop.request.checker.impl.KeyGenerator;
+import frodez.config.aop.util.AOPUtil;
 import frodez.util.beans.result.Result;
-import frodez.util.common.StrUtil;
 import frodez.util.http.ServletUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.MVCUtil;
@@ -20,7 +20,6 @@ import org.springframework.aop.PointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * 控制重复请求AOP切面<br>
@@ -123,14 +122,8 @@ public class AsyncRepeatAdvisor implements PointcutAdvisor {
 						if (method.getAnnotation(RepeatLock.class) == null) {
 							return false;
 						}
-						Class<?> returnType = method.getReturnType();
-						if (returnType != ListenableFuture.class) {
-							//async的Result放在另一处处理
-							if (method.getReturnType() == Result.class) {
-								return false;
-							}
-							throw new IllegalArgumentException(StrUtil.concat("方法", ReflectUtil.getFullMethodName(
-								method), "的返回值类型必须为", ListenableFuture.class.getName(), "或者", Result.class.getName()));
+						if (!AOPUtil.isAsyncResultAsReturn(method)) {
+							return false;
 						}
 						return true;
 					}

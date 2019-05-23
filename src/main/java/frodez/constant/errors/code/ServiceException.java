@@ -1,6 +1,5 @@
-package frodez.constant.errors.exception;
+package frodez.constant.errors.code;
 
-import frodez.constant.errors.ErrorCode;
 import frodez.util.beans.result.Result;
 
 /**

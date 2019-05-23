@@ -1,4 +1,4 @@
-package frodez.constant.errors;
+package frodez.constant.errors.code;
 
 import java.util.HashMap;
 import java.util.Map;

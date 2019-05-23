@@ -5,15 +5,15 @@ package frodez.constant.errors.exception;
  * @author Frodez
  * @date 2019-01-21
  */
-public class ParseException extends RuntimeException {
+public class ResultParseException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public ParseException(String message) {
+	public ResultParseException(String message) {
 		super(message);
 	}
 
-	public ParseException() {
+	public ResultParseException() {
 		super();
 	}
 
