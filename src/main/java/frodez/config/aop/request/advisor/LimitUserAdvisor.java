@@ -2,6 +2,7 @@ package frodez.config.aop.request.advisor;
 
 import com.google.common.util.concurrent.RateLimiter;
 import frodez.config.aop.request.annotation.Limit;
+import frodez.config.aop.util.AOPUtil;
 import frodez.constant.settings.DefTime;
 import frodez.util.beans.pair.Pair;
 import frodez.util.beans.result.Result;
@@ -17,7 +18,6 @@ import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.stereotype.Component;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * 请求限流AOP
@@ -113,14 +113,8 @@ public class LimitUserAdvisor implements PointcutAdvisor {
 							throw new IllegalArgumentException(StrUtil.concat("方法", ReflectUtil.getFullMethodName(
 								method), "的超时时间必须大于0!"));
 						}
-						Class<?> returnType = method.getReturnType();
-						if (returnType != Result.class) {
-							//async的Result放在另一处处理
-							if (method.getReturnType() == ListenableFuture.class) {
-								return false;
-							}
-							throw new IllegalArgumentException(StrUtil.concat("方法", ReflectUtil.getFullMethodName(
-								method), "的返回值类型必须为", ListenableFuture.class.getName(), "或者", Result.class.getName()));
+						if (!AOPUtil.isResultAsReturn(method)) {
+							return false;
 						}
 						Pair<RateLimiter, Long> pair = new Pair<>(RateLimiter.create(annotation.value()), annotation
 							.timeout());

@@ -1,6 +1,8 @@
 package frodez.codecheck;
 
+import frodez.config.aop.util.AOPUtil;
 import frodez.config.validator.CodeCheckUtil;
+import frodez.constant.errors.exception.CodeCheckException;
 import frodez.util.beans.result.Result;
 import java.lang.reflect.Method;
 import lombok.Data;
@@ -19,17 +21,17 @@ public class CodeCheckTest {
 	public void test1() throws NoSuchMethodException, SecurityException {
 		Method resultMethod = CodeCheckTest.class.getMethod("resultMethod", new Class<?>[] {});
 		Method asyncResultMethod = CodeCheckTest.class.getMethod("asyncResultMethod", new Class<?>[] {});
-		Assert.assertTrue(CodeCheckUtil.isResultAsReturn(resultMethod));
-		Assert.assertTrue(CodeCheckUtil.isAsyncResultAsReturn(asyncResultMethod));
+		Assert.assertTrue(AOPUtil.isResultAsReturn(resultMethod));
+		Assert.assertTrue(AOPUtil.isAsyncResultAsReturn(asyncResultMethod));
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = CodeCheckException.class)
 	public void test2() throws NoSuchMethodException, SecurityException {
 		Method wrongMethod = CodeCheckTest.class.getMethod("wrongMethod", new Class<?>[] {});
-		CodeCheckUtil.isResultAsReturn(wrongMethod);
+		AOPUtil.isResultAsReturn(wrongMethod);
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = CodeCheckException.class)
 	public void test3() {
 		CodeCheckUtil.checkClass(TestBean.class);
 	}

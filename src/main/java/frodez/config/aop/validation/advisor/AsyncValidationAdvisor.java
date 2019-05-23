@@ -1,5 +1,6 @@
 package frodez.config.aop.validation.advisor;
 
+import frodez.config.aop.util.AOPUtil;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.validator.CodeCheckUtil;
 import frodez.config.validator.ValidationUtil;
@@ -101,7 +102,7 @@ public class AsyncValidationAdvisor implements PointcutAdvisor {
 						if (method.getAnnotation(Check.class) == null) {
 							return false;
 						}
-						if (!CodeCheckUtil.isAsyncResultAsReturn(method)) {
+						if (!AOPUtil.isAsyncResultAsReturn(method)) {
 							return false;
 						}
 						if (!properties.getCodeReview()) {

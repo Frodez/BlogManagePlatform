@@ -110,7 +110,7 @@ public class MethodLogAdvisor implements PointcutAdvisor {
 							return false;
 						}
 						Class<?> returnType = method.getReturnType();
-						if (returnType == ListenableFuture.class) {
+						if (ListenableFuture.class.isAssignableFrom(returnType)) {
 							return false;
 						}
 						if (returnType == Void.class && method.getParameterCount() == 0) {

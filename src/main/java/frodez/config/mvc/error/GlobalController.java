@@ -1,7 +1,7 @@
 package frodez.config.mvc.error;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import frodez.constant.errors.exception.ServiceException;
+import frodez.constant.errors.code.ServiceException;
 import frodez.util.beans.result.Result;
 import frodez.util.http.ServletUtil;
 import java.io.IOException;

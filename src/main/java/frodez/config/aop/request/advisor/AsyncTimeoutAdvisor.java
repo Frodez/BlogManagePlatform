@@ -3,6 +3,7 @@ package frodez.config.aop.request.advisor;
 import frodez.config.aop.request.annotation.TimeoutLock;
 import frodez.config.aop.request.checker.facade.AutoChecker;
 import frodez.config.aop.request.checker.impl.KeyGenerator;
+import frodez.config.aop.util.AOPUtil;
 import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
 import frodez.util.http.ServletUtil;
@@ -22,7 +23,6 @@ import org.springframework.aop.PointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * 控制重复请求AOP切面<br>
@@ -132,14 +132,8 @@ public class AsyncTimeoutAdvisor implements PointcutAdvisor {
 							throw new IllegalArgumentException(StrUtil.concat("方法", ReflectUtil.getFullMethodName(
 								method), "的过期时间必须大于0!"));
 						}
-						Class<?> returnType = method.getReturnType();
-						if (returnType != ListenableFuture.class) {
-							//async的Result放在另一处处理
-							if (method.getReturnType() == Result.class) {
-								return false;
-							}
-							throw new IllegalArgumentException(StrUtil.concat("方法", ReflectUtil.getFullMethodName(
-								method), "的返回值类型必须为", ListenableFuture.class.getName(), "或者", Result.class.getName()));
+						if (!AOPUtil.isAsyncResultAsReturn(method)) {
+							return false;
 						}
 						timeoutCache.put(ReflectUtil.getFullMethodName(method), annotation.value());
 						return true;
