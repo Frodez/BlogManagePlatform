@@ -30,10 +30,10 @@ import java.lang.annotation.Target;
  *		private static List descs;
  * 		private static final Map<Byte, UserStatusEnum> enumMap;
  * 		static {
- *			vals = Collections.unmodifiableList(Arrays.asList(UserStatusEnum.values()).stream()
- *				.map(UserStatusEnum::getVal).collect(Collectors.toList()));
- *			descs = Collections.unmodifiableList(Arrays.asList(UserStatusEnum.values()).stream()
- *				.map(UserStatusEnum::getDesc).collect(Collectors.toList()));
+ *			vals = Arrays.asList(UserStatusEnum.values()).stream().map(UserStatusEnum::getVal).collect(Collectors
+ *				.toUnmodifiableList());
+ *			descs = Arrays.asList(UserStatusEnum.values()).stream().map(UserStatusEnum::getDesc).collect(Collectors
+ *				.toUnmodifiableList());
  *			enumMap = new HashMap<>();
  *			for (UserStatusEnum iter : UserStatusEnum.values()) {
  *				enumMap.put(iter.val, iter);

@@ -2,7 +2,6 @@ package frodez.constant.enums.task;
 
 import frodez.constant.annotations.decoration.EnumCheckable;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,10 +54,10 @@ public enum StatusEnum {
 	private static final Map<Byte, StatusEnum> enumMap;
 
 	static {
-		vals = Collections.unmodifiableList(Arrays.asList(StatusEnum.values()).stream().map(StatusEnum::getVal).collect(
-			Collectors.toList()));
-		descs = Collections.unmodifiableList(Arrays.asList(StatusEnum.values()).stream().map(StatusEnum::getDesc)
-			.collect(Collectors.toList()));
+		vals = Arrays.asList(StatusEnum.values()).stream().map(StatusEnum::getVal).collect(Collectors
+			.toUnmodifiableList());
+		descs = Arrays.asList(StatusEnum.values()).stream().map(StatusEnum::getDesc).collect(Collectors
+			.toUnmodifiableList());
 		enumMap = new HashMap<>();
 		for (StatusEnum iter : StatusEnum.values()) {
 			enumMap.put(iter.val, iter);

@@ -7,7 +7,6 @@ import frodez.util.beans.result.Result;
 import frodez.util.spring.PropertyUtil;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +71,7 @@ public class SwaggerConfig {
 			swaggerProperties.getBasePackage())).paths(PathSelectors.any()).build().apiInfo(apiInfo()).pathMapping(
 				PropertyUtil.get(PropertyKey.Web.BASE_PATH)).directModelSubstitute(LocalDate.class, String.class)
 			.genericModelSubstitutes(ResponseEntity.class).additionalModels(new TypeResolver().resolve(Result.class))
-			.useDefaultResponseMessages(false).securitySchemes(Arrays.asList(apiKey())).securityContexts(Arrays.asList(
+			.useDefaultResponseMessages(false).securitySchemes(List.of(apiKey())).securityContexts(List.of(
 				securityContext())).enableUrlTemplating(false).globalResponseMessage(RequestMethod.GET,
 					responseMessageList).globalResponseMessage(RequestMethod.POST, responseMessageList)
 			.globalResponseMessage(RequestMethod.PUT, responseMessageList).globalResponseMessage(RequestMethod.DELETE,
@@ -149,7 +148,7 @@ public class SwaggerConfig {
 		AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
 		AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
 		authorizationScopes[0] = authorizationScope;
-		return Arrays.asList(new SecurityReference(securityProperties.getJwt().getTokenPrefix(), authorizationScopes));
+		return List.of(new SecurityReference(securityProperties.getJwt().getTokenPrefix(), authorizationScopes));
 	}
 
 }

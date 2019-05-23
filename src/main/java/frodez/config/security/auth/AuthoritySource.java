@@ -6,7 +6,6 @@ import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.model.user.Permission;
 import frodez.util.spring.ContextUtil;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -75,7 +74,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 */
 	@PostConstruct
 	private void init() {
-		defaultDeniedRoles = Arrays.asList(new SecurityConfig(ContextUtil.get(SecurityProperties.class).getAuth()
+		defaultDeniedRoles = List.of(new SecurityConfig(ContextUtil.get(SecurityProperties.class).getAuth()
 			.getDeniedRole()));
 		if (allCache == null) {
 			List<Permission> permissions = ContextUtil.get(PermissionMapper.class).selectAll();

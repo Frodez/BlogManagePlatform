@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@PropertySource(value = { "classpath:settings/global/validator.properties" })
+@PropertySource(value = { "classpath:settings/global/validator/validator.properties" })
 @ConfigurationProperties(prefix = "validator")
 public class ValidatorProperties {
 
