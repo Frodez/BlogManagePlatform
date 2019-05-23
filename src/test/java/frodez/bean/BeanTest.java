@@ -2,6 +2,7 @@ package frodez.bean;
 
 import frodez.dao.model.user.Role;
 import frodez.util.reflect.BeanUtil;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import lombok.Data;
 import org.junit.Test;
@@ -14,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class BeanTest {
 
 	@Test
-	public void test() {
+	public void test() throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
 		Role role = new Role();
 		role.setCreateTime(new Date());
 		role.setDescription("test123");

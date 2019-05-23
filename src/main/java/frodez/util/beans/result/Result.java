@@ -1,6 +1,7 @@
 package frodez.util.beans.result;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -76,9 +77,9 @@ import org.springframework.util.concurrent.ListenableFuture;
 public final class Result implements Serializable {
 
 	/**
-	 * 默认json,只有默认类型实例才存在
+	 * 默认json缓存(数组类型),只有默认类型实例才存在
 	 */
-	private transient String json;
+	private transient byte[] cacheBytes;
 
 	/**
 	 * 默认类型实例
@@ -90,17 +91,44 @@ public final class Result implements Serializable {
 	 */
 	private static transient ObjectWriter writer;
 
+	/**
+	 * jackson writer
+	 */
+	private static transient ObjectReader reader;
+
 	static {
 		writer = JSONUtil.mapper().writerFor(Result.class);
+		reader = JSONUtil.mapper().readerFor(Result.class);
 		for (ResultEnum item : ResultEnum.values()) {
 			Result result = new Result(item);
 			try {
-				result.json = writer.writeValueAsString(result);
+				result.cacheBytes = writer.writeValueAsBytes(result);
 			} catch (JsonProcessingException e) {
 				throw new RuntimeException(e);
 			}
 			DEFAULT_RESULT_CACHE.put(item, result);
 		}
+		Assert.notNull(writer, "writer must not be null");
+		Assert.notNull(reader, "reader must not be null");
+		Assert.notNull(DEFAULT_RESULT_CACHE, "DEFAULT_RESULT_CACHE must not be null");
+	}
+
+	/**
+	 * 获取ObjectWriter
+	 * @author Frodez
+	 * @date 2019-05-24
+	 */
+	public static ObjectWriter writer() {
+		return writer;
+	}
+
+	/**
+	 * 获取ObjectReader
+	 * @author Frodez
+	 * @date 2019-05-24
+	 */
+	public static ObjectReader reader() {
+		return reader;
 	}
 
 	/**
@@ -146,19 +174,6 @@ public final class Result implements Serializable {
 	 */
 	public Object getData() {
 		return data;
-	}
-
-	/**
-	 * 获取result的json字符串
-	 * @author Frodez
-	 * @throws JsonProcessingException
-	 * @date 2018-11-27
-	 */
-	public String json() throws JsonProcessingException {
-		if (json != null) {
-			return json;
-		}
-		return writer.writeValueAsString(this);
 	}
 
 	/**
@@ -463,7 +478,8 @@ public final class Result implements Serializable {
 	 * @date 2018-11-13
 	 */
 	@SuppressWarnings("unchecked")
-	public <K, V> Map<K, V> map(Class<K> keyClass, Class<V> valueClass) throws ClassCastException, ResultParseException {
+	public <K, V> Map<K, V> map(Class<K> keyClass, Class<V> valueClass) throws ClassCastException,
+		ResultParseException {
 		Assert.notNull(keyClass, "keyClass must not be null");
 		Assert.notNull(valueClass, "valueClass must not be null");
 		ableAndNotNull();
@@ -528,6 +544,35 @@ public final class Result implements Serializable {
 	 */
 	public ListenableFuture<Result> async() {
 		return new AsyncResult<>(this);
+	}
+
+	/**
+	 * 获取json字符串
+	 * @author Frodez
+	 * @date 2019-05-24
+	 */
+	public String json() throws JsonProcessingException {
+		return new String(jsonBytes());
+	}
+
+	/**
+	 * 获取json字符串(数组形式)
+	 * @author Frodez
+	 * @date 2019-05-24
+	 */
+	public byte[] jsonBytes() throws JsonProcessingException {
+		return cacheBytes != null ? cacheBytes : writer.writeValueAsBytes(this);
+	}
+
+	/**
+	 * 获取result的json字符串缓存(数组形式)<br>
+	 * 仅当为默认Result时使用.<br>
+	 * @author Frodez
+	 * @throws JsonProcessingException
+	 * @date 2018-11-27
+	 */
+	public byte[] cache() throws JsonProcessingException {
+		return cacheBytes;
 	}
 
 	private void ableAndNotNull() {

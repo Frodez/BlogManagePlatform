@@ -27,11 +27,11 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.lang.Nullable;
 
 /**
- * 自定义jacksonHttpMessageConverter
+ * 自定义jacksonHttpMessageConverter(仅用于非Result)
  * @author Frodez
  * @date 2019-03-14
  */
-public class JsonConverer extends AbstractGenericHttpMessageConverter<Object> {
+public class JsonConverter extends AbstractGenericHttpMessageConverter<Object> {
 
 	private Map<String, Boolean> contextDeserializeCache = new ConcurrentHashMap<>();
 
@@ -39,9 +39,9 @@ public class JsonConverer extends AbstractGenericHttpMessageConverter<Object> {
 
 	private Map<Class<?>, Boolean> serializeCache = new ConcurrentHashMap<>();
 
-	public JsonConverer(MediaType... supportedMediaTypes) {
+	public JsonConverter() {
 		setDefaultCharset(DefCharset.UTF_8_CHARSET);
-		setSupportedMediaTypes(Arrays.asList(supportedMediaTypes));
+		setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
 	}
 
 	@Override
@@ -52,6 +52,9 @@ public class JsonConverer extends AbstractGenericHttpMessageConverter<Object> {
 	@Override
 	public boolean canRead(Type type, @Nullable Class<?> contextClass, @Nullable MediaType mediaType) {
 		if (!canRead(mediaType)) {
+			return false;
+		}
+		if (type == Result.class) {
 			return false;
 		}
 		boolean hasContextClass = contextClass != null;
@@ -80,6 +83,9 @@ public class JsonConverer extends AbstractGenericHttpMessageConverter<Object> {
 	@Override
 	public boolean canWrite(Class<?> clazz, @Nullable MediaType mediaType) {
 		if (!canWrite(mediaType)) {
+			return false;
+		}
+		if (clazz == Result.class) {
 			return false;
 		}
 		Boolean cacheResult = serializeCache.get(clazz);
@@ -136,11 +142,7 @@ public class JsonConverer extends AbstractGenericHttpMessageConverter<Object> {
 		throws IOException, HttpMessageNotWritableException {
 		try {
 			OutputStream outputStream = outputMessage.getBody();
-			//对通用Result采用特殊的优化过的方式
-			String string = object.getClass() == Result.class ? ((Result) object).json() : JSONUtil.string(object);
-			//在此进行html转义
-			//string = HtmlEscapers.htmlEscaper().escape(string);
-			outputStream.write(string.getBytes());
+			JSONUtil.writer(object).writeValue(outputStream, object);
 			outputStream.flush();
 		} catch (InvalidDefinitionException ex) {
 			throw new HttpMessageConversionException(StrUtil.concat("Type definition error: ", ex.getType().toString()),

@@ -92,6 +92,18 @@ public class JSONUtil {
 	}
 
 	/**
+	 * 将对象转换成json字符串
+	 * @author Frodez
+	 * @param object 对象
+	 * @throws JsonProcessingException
+	 * @date 2018-12-02
+	 */
+	public static ObjectWriter writer(Object object) throws JsonProcessingException {
+		Assert.notNull(object, "object must not be null");
+		return writerCache.computeIfAbsent(object.getClass(), (o) -> OBJECT_MAPPER.writerFor(object.getClass()));
+	}
+
+	/**
 	 * 将InputStream的数据转换成Map
 	 * @author Frodez
 	 * @param <K>
@@ -338,7 +350,8 @@ public class JSONUtil {
 	 * @throws IOException
 	 * @date 2019-03-13
 	 */
-	public static Object object(String json, Class<?> parametrized, Class<?>... genericClasses) throws IOException {
+	public static Object object(String json, Class<?> parametrized, @Nullable Class<?>... genericClasses)
+		throws IOException {
 		Assert.notNull(json, "json must not be null");
 		Assert.notNull(parametrized, "parametrized must not be null");
 		if (EmptyUtil.yes(genericClasses)) {
@@ -362,7 +375,7 @@ public class JSONUtil {
 	 * @throws IOException
 	 * @date 2019-03-13
 	 */
-	public static Object object(InputStream stream, Class<?> parametrized, Class<?>... genericClasses)
+	public static Object object(InputStream stream, Class<?> parametrized, @Nullable Class<?>... genericClasses)
 		throws IOException {
 		Assert.notNull(stream, "stream must not be null");
 		Assert.notNull(parametrized, "parametrized must not be null");
@@ -377,6 +390,26 @@ public class JSONUtil {
 			return multiClassReaderCache.computeIfAbsent(builder.toString(), (i) -> OBJECT_MAPPER.readerFor(
 				OBJECT_MAPPER.getTypeFactory().constructParametricType(parametrized, genericClasses))).readValue(
 					stream);
+		}
+	}
+
+	/**
+	 * 获取Reader
+	 * @author Frodez
+	 * @date 2019-05-24
+	 */
+	public static ObjectReader reader(Class<?> parametrized, @Nullable Class<?>... genericClasses) throws IOException {
+		Assert.notNull(parametrized, "parametrized must not be null");
+		if (EmptyUtil.yes(genericClasses)) {
+			return singleClassReaderCache.computeIfAbsent(parametrized, (k) -> OBJECT_MAPPER.readerFor(OBJECT_MAPPER
+				.getTypeFactory().constructType(parametrized)));
+		} else {
+			StringBuilder builder = new StringBuilder(parametrized.getName());
+			for (Class<?> klass : genericClasses) {
+				builder.append(klass.getName());
+			}
+			return multiClassReaderCache.computeIfAbsent(builder.toString(), (i) -> OBJECT_MAPPER.readerFor(
+				OBJECT_MAPPER.getTypeFactory().constructParametricType(parametrized, genericClasses)));
 		}
 	}
 

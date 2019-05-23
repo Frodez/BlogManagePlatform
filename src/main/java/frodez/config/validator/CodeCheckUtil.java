@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Map;
 import javax.validation.Valid;
 import lombok.experimental.UtilityClass;
-import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -47,8 +46,9 @@ public class CodeCheckUtil {
 		Class<?> type = field.getType();
 		if (!Collection.class.isAssignableFrom(type) && !Map.class.isAssignableFrom(type)) {
 			assertComplexFieldValid(field, field.getType());
+		} else {
+			checkFieldCollectionOrMap(field, (ParameterizedType) field.getGenericType());
 		}
-		checkFieldCollectionOrMap(field, (ParameterizedType) field.getGenericType());
 	}
 
 	/**
@@ -62,22 +62,13 @@ public class CodeCheckUtil {
 		Class<?> type = parameter.getType();
 		if (!Collection.class.isAssignableFrom(type) && !Map.class.isAssignableFrom(type)) {
 			assertComplexParameterValid(method, parameter, parameter.getType());
+		} else {
+			checkParameterCollectionOrMap(method, parameter, (ParameterizedType) parameter.getParameterizedType());
 		}
-		checkParameterCollectionOrMap(method, parameter, (ParameterizedType) parameter.getParameterizedType());
-	}
-
-	/**
-	 * 判断是否为复杂对象
-	 * @author Frodez
-	 * @date 2019-05-22
-	 */
-	public static boolean isComplex(Class<?> type) {
-		Assert.notNull(type, "type must not be null");
-		return !BeanUtils.isSimpleProperty(type);
 	}
 
 	private static void assertComplexFieldValid(Field field, Class<?> type) {
-		if (isComplex(type) && field.getAnnotation(Valid.class) == null) {
+		if (BeanUtil.isComplex(type) && field.getAnnotation(Valid.class) == null) {
 			throw new CodeCheckException(StrUtil.concat(field.getDeclaringClass().getName(), ".", field.getName(),
 				"是复杂类型,需要加上@", Valid.class.getName(), "注解!"));
 		}
@@ -102,7 +93,7 @@ public class CodeCheckUtil {
 	}
 
 	private static void assertComplexParameterValid(Method method, Parameter parameter, Class<?> type) {
-		if (isComplex(type) && parameter.getAnnotation(Valid.class) == null) {
+		if (BeanUtil.isComplex(type) && parameter.getAnnotation(Valid.class) == null) {
 			throw new CodeCheckException(StrUtil.concat("含有", "@", Check.class.getName(), "注解的方法", ReflectUtil
 				.getFullMethodName(method), "的参数", parameter.getName(), "必须使用@", Valid.class.getName(), "注解!"));
 		}
