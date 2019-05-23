@@ -1,21 +1,11 @@
 package frodez.config.validator;
 
-import frodez.util.reflect.BeanUtil;
 import frodez.util.spring.ContextUtil;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
-import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.SystemPropertyUtils;
 
 /**
  * hibernate-validator代码检查器<br>
@@ -29,11 +19,6 @@ import org.springframework.util.SystemPropertyUtils;
 @Component
 public class ValidateCodeChecker implements ApplicationListener<ApplicationStartedEvent> {
 
-	/**
-	 * class文件后缀
-	 */
-	private static final String CLASS_SUFFIX = "**/*.class";
-
 	@Override
 	public void onApplicationEvent(ApplicationStartedEvent event) {
 		try {
@@ -46,28 +31,14 @@ public class ValidateCodeChecker implements ApplicationListener<ApplicationStart
 				log.info("[ValidateChecker]hibernate-validator代码校验已关闭");
 			}
 		} catch (IOException | ClassNotFoundException | LinkageError e) {
-			log.error("[ValidateChecker]", e);
+			log.error("[ValidateChecker]意外错误,程序终止", e);
 		}
 	}
 
 	private void check(ValidatorProperties properties) throws IOException, ClassNotFoundException, LinkageError {
-		ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
-		MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
 		for (String path : properties.getModelPath()) {
-			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + ClassUtils
-				.convertClassNameToResourcePath(SystemPropertyUtils.resolvePlaceholders(path)) + CLASS_SUFFIX;
-			Resource[] resources = resourcePatternResolver.getResources(packageSearchPath);
-			for (Resource resource : resources) {
-				if (resource.isReadable()) {
-					String className = metadataReaderFactory.getMetadataReader(resource).getClassMetadata()
-						.getClassName();
-					Class<?> klass = ClassUtils.forName(className, null);
-					if (!BeanUtils.isSimpleProperty(klass)) {
-						for (Field field : BeanUtil.getSetterFields(klass)) {
-							CodeCheckUtil.checkField(field);
-						}
-					}
-				}
+			for (Class<?> klass : ContextUtil.getClasses(path)) {
+				CodeCheckUtil.checkClass(klass);
 			}
 		}
 	}

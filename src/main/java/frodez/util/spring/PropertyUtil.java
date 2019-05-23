@@ -1,7 +1,6 @@
 package frodez.util.spring;
 
 import frodez.constant.settings.PropertyKey;
-import java.util.Arrays;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.DependsOn;
@@ -53,7 +52,7 @@ public class PropertyUtil {
 	 * @date 2019-01-06
 	 */
 	public static List<String> activeProfiles() {
-		return Arrays.asList(env.getActiveProfiles());
+		return List.of(env.getActiveProfiles());
 	}
 
 	/**

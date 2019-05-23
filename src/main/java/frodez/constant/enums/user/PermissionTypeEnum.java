@@ -2,7 +2,6 @@ package frodez.constant.enums.user;
 
 import frodez.constant.annotations.decoration.EnumCheckable;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,10 +66,10 @@ public enum PermissionTypeEnum {
 	private static final Map<Byte, PermissionTypeEnum> enumMap;
 
 	static {
-		vals = Collections.unmodifiableList(Arrays.asList(PermissionTypeEnum.values()).stream().map(
-			PermissionTypeEnum::getVal).collect(Collectors.toList()));
-		descs = Collections.unmodifiableList(Arrays.asList(PermissionTypeEnum.values()).stream().map(
-			PermissionTypeEnum::getDesc).collect(Collectors.toList()));
+		vals = Arrays.asList(PermissionTypeEnum.values()).stream().map(PermissionTypeEnum::getVal).collect(Collectors
+			.toUnmodifiableList());
+		descs = Arrays.asList(PermissionTypeEnum.values()).stream().map(PermissionTypeEnum::getDesc).collect(Collectors
+			.toUnmodifiableList());
 		enumMap = new HashMap<>();
 		for (PermissionTypeEnum iter : PermissionTypeEnum.values()) {
 			enumMap.put(iter.val, iter);

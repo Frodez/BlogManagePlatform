@@ -2,7 +2,6 @@ package frodez.constant.enums.common;
 
 import frodez.constant.annotations.decoration.EnumCheckable;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,10 +54,10 @@ public enum DeleteEnum {
 	private static final Map<Byte, DeleteEnum> enumMap;
 
 	static {
-		vals = Collections.unmodifiableList(Arrays.asList(DeleteEnum.values()).stream().map(DeleteEnum::getVal).collect(
-			Collectors.toList()));
-		descs = Collections.unmodifiableList(Arrays.asList(DeleteEnum.values()).stream().map(DeleteEnum::getDesc)
-			.collect(Collectors.toList()));
+		vals = Arrays.asList(DeleteEnum.values()).stream().map(DeleteEnum::getVal).collect(Collectors
+			.toUnmodifiableList());
+		descs = Arrays.asList(DeleteEnum.values()).stream().map(DeleteEnum::getDesc).collect(Collectors
+			.toUnmodifiableList());
 		enumMap = new HashMap<>();
 		for (DeleteEnum iter : DeleteEnum.values()) {
 			enumMap.put(iter.val, iter);

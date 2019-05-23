@@ -20,4 +20,9 @@ public class DefStr {
 	 */
 	public static final String POINT_SEPERATOR = ".";
 
+	/**
+	 * class文件后缀
+	 */
+	public static final String CLASS_SUFFIX = "**/*.class";
+
 }

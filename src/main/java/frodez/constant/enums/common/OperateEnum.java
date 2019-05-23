@@ -2,7 +2,6 @@ package frodez.constant.enums.common;
 
 import frodez.constant.annotations.decoration.EnumCheckable;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,10 +63,10 @@ public enum OperateEnum {
 	private static final Map<Byte, OperateEnum> enumMap;
 
 	static {
-		vals = Collections.unmodifiableList(Arrays.asList(OperateEnum.values()).stream().map(OperateEnum::getVal)
-			.collect(Collectors.toList()));
-		descs = Collections.unmodifiableList(Arrays.asList(OperateEnum.values()).stream().map(OperateEnum::getDesc)
-			.collect(Collectors.toList()));
+		vals = Arrays.asList(OperateEnum.values()).stream().map(OperateEnum::getVal).collect(Collectors
+			.toUnmodifiableList());
+		descs = Arrays.asList(OperateEnum.values()).stream().map(OperateEnum::getDesc).collect(Collectors
+			.toUnmodifiableList());
 		enumMap = new HashMap<>();
 		for (OperateEnum iter : OperateEnum.values()) {
 			enumMap.put(iter.val, iter);
