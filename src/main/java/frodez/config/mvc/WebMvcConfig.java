@@ -3,7 +3,8 @@ package frodez.config.mvc;
 import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
 import frodez.config.mvc.async.AsyncConfig;
-import frodez.config.mvc.converter.JsonConverer;
+import frodez.config.mvc.converter.JsonConverter;
+import frodez.config.mvc.converter.ResultConverter;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -40,7 +41,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		converters.removeIf((iter) -> {
 			return iter instanceof AbstractJackson2HttpMessageConverter;
 		});
-		converters.add(0, new JsonConverer(MediaType.APPLICATION_JSON_UTF8));
+		converters.add(0, new ResultConverter());
+		converters.add(1, new JsonConverter());
 	}
 
 	/**

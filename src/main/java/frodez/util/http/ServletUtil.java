@@ -6,6 +6,7 @@ import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.experimental.UtilityClass;
@@ -76,14 +77,13 @@ public class ServletUtil {
 		response.setStatus(result.httpStatus().value());
 		response.setCharacterEncoding(DefCharset.UTF_8);
 		response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-		PrintWriter out = null;
+		ServletOutputStream stream = null;
 		try {
-			out = response.getWriter();
-			out.append(result.json());
-			out.flush();
+			stream = response.getOutputStream();
+			stream.write(result.jsonBytes());
 		} finally {
-			if (out != null) {
-				out.close();
+			if (stream != null) {
+				stream.close();
 			}
 		}
 	}

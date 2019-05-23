@@ -22,8 +22,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<!-- 跳过测试 -->
-		<skipTests>true</skipTests>
 	</properties>
 
 	<dependencies>

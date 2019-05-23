@@ -3,6 +3,7 @@ package frodez.result;
 import frodez.dao.model.user.Role;
 import frodez.util.reflect.BeanUtil;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -16,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class ResultTest {
 
 	@Test
-	public void test() throws InterruptedException, ExecutionException, IOException {
+	public void test() throws InterruptedException, ExecutionException, IOException, InvocationTargetException {
 		Role role = new Role();
 		role.setCreateTime(new Date());
 		role.setDescription("test123");

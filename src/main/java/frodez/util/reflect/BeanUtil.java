@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.experimental.UtilityClass;
+import org.springframework.beans.BeanUtils;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.cglib.reflect.FastClass;
@@ -58,9 +59,13 @@ public class BeanUtil {
 	 * 在使用本方法和使用BeanUtil.cover(Object, Object)方法的意义相同时,建议使用本方法,速度更快。<br>
 	 * @see frodez.util.reflect.BeanUtil#cover(Object, Object)
 	 * @author Frodez
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
 	 * @date 2019-03-10
 	 */
-	public static <T> T initialize(Object source, Class<T> target) {
+	public static <T> T initialize(Object source, Class<T> target) throws InvocationTargetException,
+		IllegalArgumentException, IllegalAccessException {
 		T bean = clearInstance(target);
 		getCopier(source, bean).copy(source, bean, null);
 		return bean;
@@ -84,9 +89,10 @@ public class BeanUtil {
 	 * @see frodez.util.reflect.BeanUtil#copy(Object, Object)
 	 * @see frodez.util.reflect.BeanUtil#initialize(Object, Class)
 	 * @author Frodez
+	 * @throws InvocationTargetException
 	 * @date 2019-03-10
 	 */
-	public static void cover(Object source, Object target) {
+	public static void cover(Object source, Object target) throws InvocationTargetException {
 		clear(target);
 		getCopier(source, target).copy(source, target, null);
 	}
@@ -106,17 +112,14 @@ public class BeanUtil {
 	/**
 	 * map转bean
 	 * @author Frodez
+	 * @throws InvocationTargetException
 	 * @date 2019-02-08
 	 */
-	public static <T> T as(Map<String, Object> map, Class<T> klass) {
+	public static <T> T as(Map<String, Object> map, Class<T> klass) throws InvocationTargetException {
 		Assert.notNull(map, "map must not be null");
-		try {
-			T bean = ReflectUtil.newInstance(klass);
-			BeanMap.create(bean).putAll(map);
-			return bean;
-		} catch (InvocationTargetException e) {
-			throw new RuntimeException(e);
-		}
+		T bean = ReflectUtil.newInstance(klass);
+		BeanMap.create(bean).putAll(map);
+		return bean;
 	}
 
 	/**
@@ -126,18 +129,15 @@ public class BeanUtil {
 	 * @see BeanUtil#clearInstance(Class)
 	 * @author Frodez
 	 * @param <T>
+	 * @throws InvocationTargetException
 	 * @date 2019-02-08
 	 */
-	public static void clear(Object bean) {
+	public static void clear(Object bean) throws InvocationTargetException {
 		Assert.notNull(bean, "bean must not be null");
-		try {
-			List<FastMethod> methods = setters(bean.getClass());
-			int length = methods.size();
-			for (int i = 0; i < length; i++) {
-				methods.get(i).invoke(bean, NULL_PARAM);
-			}
-		} catch (InvocationTargetException e) {
-			throw new RuntimeException(e);
+		List<FastMethod> methods = setters(bean.getClass());
+		int length = methods.size();
+		for (int i = 0; i < length; i++) {
+			methods.get(i).invoke(bean, NULL_PARAM);
 		}
 	}
 
@@ -253,20 +253,30 @@ public class BeanUtil {
 	 * @see BeanUtil#clear(Object)
 	 * @author Frodez
 	 * @param <T>
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
 	 * @date 2019-02-08
 	 */
-	public static <T> T clearInstance(Class<T> klass) {
-		try {
-			T bean = ReflectUtil.newInstance(klass);
-			List<FastMethod> methods = defaultNotNullSetters(bean);
-			int length = methods.size();
-			for (int i = 0; i < length; i++) {
-				methods.get(i).invoke(bean, NULL_PARAM);
-			}
-			return bean;
-		} catch (InvocationTargetException | IllegalArgumentException | IllegalAccessException e) {
-			throw new RuntimeException(e);
+	public static <T> T clearInstance(Class<T> klass) throws InvocationTargetException, IllegalArgumentException,
+		IllegalAccessException {
+		T bean = ReflectUtil.newInstance(klass);
+		List<FastMethod> methods = defaultNotNullSetters(bean);
+		int length = methods.size();
+		for (int i = 0; i < length; i++) {
+			methods.get(i).invoke(bean, NULL_PARAM);
 		}
+		return bean;
+	}
+
+	/**
+	 * 判断是否为复杂对象
+	 * @author Frodez
+	 * @date 2019-05-22
+	 */
+	public static boolean isComplex(Class<?> type) {
+		Assert.notNull(type, "type must not be null");
+		return !BeanUtils.isSimpleProperty(type);
 	}
 
 }
