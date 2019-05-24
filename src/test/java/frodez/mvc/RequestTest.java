@@ -1,4 +1,4 @@
-package frodez.request;
+package frodez.mvc;
 
 import frodez.constant.settings.PropertyKey;
 import frodez.util.beans.result.Result;
