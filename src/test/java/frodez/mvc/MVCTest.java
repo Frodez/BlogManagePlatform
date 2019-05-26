@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(properties = { "spring.profiles.active=test" }, webEnvironment = WebEnvironment.DEFINED_PORT)
 @AutoConfigureWebTestClient
 public class MVCTest {
 
