@@ -2,14 +2,10 @@ package frodez.config.aop.validation.advisor;
 
 import frodez.config.aop.util.AOPUtil;
 import frodez.config.aop.validation.annotation.Check;
-import frodez.config.validator.CodeCheckUtil;
+import frodez.config.code.checker.CodeChecker;
 import frodez.config.validator.ValidationUtil;
-import frodez.config.validator.ValidatorProperties;
 import frodez.util.beans.result.Result;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.List;
-import javax.annotation.PostConstruct;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.springframework.aop.ClassFilter;
@@ -17,7 +13,7 @@ import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -31,23 +27,9 @@ import org.springframework.stereotype.Component;
 @Order(Integer.MAX_VALUE)
 public class ValidationAdvisor implements PointcutAdvisor {
 
-	@Value("spring.profiles.active")
-	private List<String> enviroments;
-
 	@Autowired
-	private ValidatorProperties properties;
-
-	private boolean needCheck;
-
-	/**
-	 * 初始化时机太早了(ApplicationContextAware尚未被触发),无法获取context,故不能直接使用PropertyUtil获取配置
-	 */
-	@PostConstruct
-	private void init() {
-		needCheck = enviroments.stream().anyMatch((env) -> {
-			return properties.getEnviroments().contains(env);
-		});
-	}
+	@Qualifier("hibernateValidatorCodeChecker")
+	private CodeChecker codeChecker;
 
 	/**
 	 * AOP切点
@@ -115,18 +97,10 @@ public class ValidationAdvisor implements PointcutAdvisor {
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
 						//这里可以进行运行前检查
-						if (method.getAnnotation(Check.class) == null) {
+						if (method.getAnnotation(Check.class) == null || !AOPUtil.isResultAsReturn(method)) {
 							return false;
 						}
-						if (!AOPUtil.isResultAsReturn(method)) {
-							return false;
-						}
-						if (!needCheck) {
-							return true;
-						}
-						for (Parameter parameter : method.getParameters()) {
-							CodeCheckUtil.checkParameter(method, parameter);
-						}
+						codeChecker.checkMethod(method);
 						return true;
 					}
 
