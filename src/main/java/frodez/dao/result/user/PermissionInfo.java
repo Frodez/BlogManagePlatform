@@ -11,7 +11,7 @@ import lombok.Data;
  * @date 2018-11-14
  */
 @Data
-@ApiModel(value = "权限信息返回数据")
+@ApiModel(description = "权限信息返回数据")
 public class PermissionInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;

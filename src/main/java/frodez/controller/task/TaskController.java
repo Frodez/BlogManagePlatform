@@ -1,6 +1,5 @@
 package frodez.controller.task;
 
-import frodez.constant.settings.DefDesc;
 import frodez.dao.model.task.Task;
 import frodez.dao.param.task.AddTask;
 import frodez.dao.result.task.AvailableTaskInfo;
@@ -37,30 +36,27 @@ public class TaskController {
 	@GetMapping("/availables")
 	@ApiOperation(value = "查询可用定时任务接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = AvailableTaskInfo.class) })
-	public Result getAvailableTasks(@RequestBody @ApiParam(value = DefDesc.Message.PAGE_QUERY,
-		required = true) QueryPage param) {
+	public Result getAvailableTasks(@RequestBody QueryPage param) {
 		return taskService.getAvailableTasks(param);
 	}
 
 	@GetMapping("/runnings")
 	@ApiOperation(value = "查询正在运行定时任务接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Task.class) })
-	public Result getRunningTaskInfo(@RequestBody @ApiParam(value = DefDesc.Message.PAGE_QUERY,
-		required = true) QueryPage param) {
+	public Result getRunningTaskInfo(@RequestBody QueryPage param) {
 		return taskService.getRunningTasksInfo(param);
 	}
 
 	@GetMapping("/saves")
 	@ApiOperation(value = "查询已保存定时任务接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Task.class) })
-	public Result getTasks(@RequestBody @ApiParam(value = DefDesc.Message.PAGE_QUERY,
-		required = true) QueryPage param) {
+	public Result getTasks(@RequestBody QueryPage param) {
 		return taskService.getTasks(param);
 	}
 
 	@PostMapping("/add")
 	@ApiOperation(value = "添加新定时任务接口")
-	public Result addTask(@RequestBody @ApiParam(value = "新增定时任务请求参数", required = true) AddTask param) {
+	public Result addTask(@RequestBody AddTask param) {
 		return taskService.addTask(param);
 	}
 

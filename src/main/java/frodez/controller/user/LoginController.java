@@ -8,7 +8,6 @@ import frodez.service.user.facade.ILoginService;
 import frodez.util.beans.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,7 +40,7 @@ public class LoginController {
 	@RepeatLock
 	@PostMapping("/auth")
 	@ApiOperation(value = "登录接口")
-	public Result auth(@RequestBody @ApiParam(value = "用户登录请求参数", required = true) DoLogin param) {
+	public Result auth(@RequestBody DoLogin param) {
 		return loginService.login(param);
 	}
 
@@ -53,7 +52,7 @@ public class LoginController {
 	@RepeatLock
 	@PostMapping("/refresh")
 	@ApiOperation(value = "重新登录接口")
-	public Result refresh(@RequestBody @ApiParam(value = "用户重新登录请求参数", required = true) DoRefresh param) {
+	public Result refresh(@RequestBody DoRefresh param) {
 		return loginService.refresh(param);
 	}
 

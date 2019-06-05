@@ -13,7 +13,7 @@ import lombok.Data;
  * @date 2019-03-19
  */
 @Data
-@ApiModel(value = "角色详细信息返回数据")
+@ApiModel(description = "角色详细信息返回数据")
 public class RoleDetail implements Serializable {
 
 	/**

@@ -75,7 +75,7 @@ public class UserController {
 	@RepeatLock
 	@PostMapping("/register")
 	@ApiOperation(value = "注册接口")
-	public Result register(@RequestBody @ApiParam(value = "用户注册请求参数", required = true) Doregister param) {
+	public Result register(@RequestBody Doregister param) {
 		return userService.register(param);
 	}
 

@@ -1,6 +1,5 @@
 package frodez.controller.user;
 
-import frodez.constant.settings.DefDesc;
 import frodez.dao.model.user.Permission;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.QueryRolePermission;
@@ -47,16 +46,14 @@ public class PermissionController {
 	@GetMapping("/page")
 	@ApiOperation(value = "分页查询权限信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Permission.class) })
-	public Result getPermissions(@RequestBody @ApiParam(value = DefDesc.Message.PAGE_QUERY,
-		required = true) QueryPage param) {
+	public Result getPermissions(@RequestBody QueryPage param) {
 		return authorityService.getPermissions(param);
 	}
 
 	@GetMapping("/byRoleId")
 	@ApiOperation(value = "根据角色ID获取权限信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = PermissionInfo.class) })
-	public Result getRolePermissions(@RequestBody @ApiParam(value = "权限信息获取请求参数",
-		required = true) QueryRolePermission param) {
+	public Result getRolePermissions(@RequestBody QueryRolePermission param) {
 		return authorityService.getRolePermissions(param);
 	}
 
@@ -68,13 +65,13 @@ public class PermissionController {
 
 	@PostMapping("/add")
 	@ApiOperation(value = "添加新权限接口")
-	public Result addPermission(@RequestBody @ApiParam(value = "新增权限请求参数", required = true) AddPermission param) {
+	public Result addPermission(@RequestBody AddPermission param) {
 		return authorityService.addPermission(param);
 	}
 
 	@PostMapping("/update")
 	@ApiOperation(value = "修改权限接口")
-	public Result updatePermission(@RequestBody @ApiParam(value = "修改权限请求参数", required = true) UpdatePermission param) {
+	public Result updatePermission(@RequestBody UpdatePermission param) {
 		return authorityService.updatePermission(param);
 	}
 
