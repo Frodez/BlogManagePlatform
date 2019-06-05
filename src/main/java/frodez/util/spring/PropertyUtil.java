@@ -1,6 +1,8 @@
 package frodez.util.spring;
 
 import frodez.constant.settings.PropertyKey;
+import frodez.util.common.EmptyUtil;
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.DependsOn;
@@ -22,10 +24,14 @@ public class PropertyUtil {
 	 */
 	private static Environment env;
 
+	private static List<String> activeEnvs;
+
 	@PostConstruct
 	private void init() {
 		env = ContextUtil.get(Environment.class);
+		activeEnvs = List.of(env.getActiveProfiles());
 		Assert.notNull(env, "env must not be null");
+		Assert.notNull(activeEnvs, "activeEnvs must not be null");
 	}
 
 	/**
@@ -52,7 +58,35 @@ public class PropertyUtil {
 	 * @date 2019-01-06
 	 */
 	public static List<String> activeProfiles() {
-		return List.of(env.getActiveProfiles());
+		return activeEnvs;
+	}
+
+	/**
+	 * 判断是否与激活的配置匹配
+	 * @author Frodez
+	 * @date 2019-06-05
+	 */
+	public static boolean matchEnvs(List<String> enviroments) {
+		if (EmptyUtil.yes(enviroments)) {
+			throw new IllegalArgumentException("需要匹配的环境不能为空!");
+		}
+		return enviroments.stream().anyMatch((env) -> {
+			return activeEnvs.contains(env);
+		});
+	}
+
+	/**
+	 * 判断是否与激活的配置匹配
+	 * @author Frodez
+	 * @date 2019-06-05
+	 */
+	public static boolean matchEnvs(String... enviroments) {
+		if (EmptyUtil.yes(enviroments)) {
+			throw new IllegalArgumentException("需要匹配的环境不能为空!");
+		}
+		return Arrays.stream(enviroments).anyMatch((env) -> {
+			return activeEnvs.contains(env);
+		});
 	}
 
 	/**

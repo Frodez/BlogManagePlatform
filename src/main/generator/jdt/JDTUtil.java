@@ -1,5 +1,6 @@
 package jdt;
 
+import frodez.util.common.EmptyUtil;
 import frodez.util.io.FileUtil;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -88,6 +89,10 @@ public class JDTUtil {
 		unit.imports().add(importDeclaration);
 	}
 
+	public static void addTypeAnnotation(CompilationUnit unit, Class<? extends Annotation> annotationClass) {
+		addTypeAnnotation(unit, annotationClass, null);
+	}
+
 	@SuppressWarnings("unchecked")
 	public static void addTypeAnnotation(CompilationUnit unit, Class<? extends Annotation> annotationClass, Map<String,
 		Object> properties) {
@@ -103,13 +108,18 @@ public class JDTUtil {
 		addImport(unit, annotationClass);
 	}
 
+	public static void addFieldAnnotation(CompilationUnit unit, FieldDeclaration field, Class<
+		? extends Annotation> annotationClass) {
+		addFieldAnnotation(unit, field, annotationClass, null);
+	}
+
 	@SuppressWarnings("unchecked")
 	public static void addFieldAnnotation(CompilationUnit unit, FieldDeclaration field, Class<
 		? extends Annotation> annotationClass, Map<String, Object> properties) {
 		if (unit == null || annotationClass == null) {
 			throw new IllegalArgumentException();
 		}
-		if (properties == null) {
+		if (EmptyUtil.yes(properties)) {
 			addMarkerAnnotation(unit, field.modifiers(), annotationClass.getSimpleName());
 		} else {
 			addNormalAnnotation(unit, field.modifiers(), annotationClass.getSimpleName(), properties);

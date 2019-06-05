@@ -41,7 +41,6 @@ import frodez.util.common.EmptyUtil;
 import frodez.util.common.StrUtil;
 import frodez.util.reflect.BeanUtil;
 import frodez.util.reflect.ReflectUtil;
-import frodez.util.spring.ContextUtil;
 import frodez.util.spring.MVCUtil;
 import frodez.util.spring.PropertyUtil;
 import java.util.ArrayList;
@@ -57,13 +56,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.HandlerMapping;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import tk.mybatis.mapper.entity.Example;
 
 /**
@@ -718,39 +714,36 @@ public class AuthorityService implements IAuthorityService {
 		try {
 			List<Permission> permissionList = new ArrayList<>();
 			Date date = new Date();
-			BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false)
-				.values().stream().filter((iter) -> {
-					return iter instanceof RequestMappingHandlerMapping;
-				}).map((iter) -> {
-					return ((RequestMappingHandlerMapping) iter).getHandlerMethods().entrySet();
-				}).flatMap(Collection::stream).forEach((entry) -> {
-					String requestUrl = StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), entry.getKey()
-						.getPatternsCondition().getPatterns().stream().findFirst().get());
-					if (!Matcher.needVerify(requestUrl)) {
-						return;
-					}
-					requestUrl = requestUrl.substring(PropertyUtil.get(PropertyKey.Web.BASE_PATH).length());
-					String requestType = entry.getKey().getMethodsCondition().getMethods().stream().map(
-						RequestMethod::name).findFirst().orElse(PermissionTypeEnum.ALL.name());
-					String permissionName = ReflectUtil.getShortMethodName(entry.getValue().getMethod());
-					Permission permission = new Permission();
-					permission.setCreateTime(date);
-					permission.setUrl(requestUrl);
-					permission.setName(permissionName);
-					permission.setDescription(permissionName);
-					if (requestType.equals("GET")) {
-						permission.setType(PermissionTypeEnum.GET.getVal());
-					} else if (requestType.equals("POST")) {
-						permission.setType(PermissionTypeEnum.POST.getVal());
-					} else if (requestType.equals("DELETE")) {
-						permission.setType(PermissionTypeEnum.DELETE.getVal());
-					} else if (requestType.equals("PUT")) {
-						permission.setType(PermissionTypeEnum.PUT.getVal());
-					} else {
-						permission.setType(PermissionTypeEnum.ALL.getVal());
-					}
-					permissionList.add(permission);
-				});
+			MVCUtil.requestMappingHandlerMappingStream().map((iter) -> {
+				return iter.getHandlerMethods().entrySet();
+			}).flatMap(Collection::stream).forEach((entry) -> {
+				String requestUrl = StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), entry.getKey()
+					.getPatternsCondition().getPatterns().stream().findFirst().get());
+				if (!Matcher.needVerify(requestUrl)) {
+					return;
+				}
+				requestUrl = requestUrl.substring(PropertyUtil.get(PropertyKey.Web.BASE_PATH).length());
+				String requestType = entry.getKey().getMethodsCondition().getMethods().stream().map(RequestMethod::name)
+					.findFirst().orElse(PermissionTypeEnum.ALL.name());
+				String permissionName = ReflectUtil.getShortMethodName(entry.getValue().getMethod());
+				Permission permission = new Permission();
+				permission.setCreateTime(date);
+				permission.setUrl(requestUrl);
+				permission.setName(permissionName);
+				permission.setDescription(permissionName);
+				if (requestType.equals("GET")) {
+					permission.setType(PermissionTypeEnum.GET.getVal());
+				} else if (requestType.equals("POST")) {
+					permission.setType(PermissionTypeEnum.POST.getVal());
+				} else if (requestType.equals("DELETE")) {
+					permission.setType(PermissionTypeEnum.DELETE.getVal());
+				} else if (requestType.equals("PUT")) {
+					permission.setType(PermissionTypeEnum.PUT.getVal());
+				} else {
+					permission.setType(PermissionTypeEnum.ALL.getVal());
+				}
+				permissionList.add(permission);
+			});
 			permissionMapper.insertList(permissionList);
 			return Result.success();
 		} catch (Exception e) {

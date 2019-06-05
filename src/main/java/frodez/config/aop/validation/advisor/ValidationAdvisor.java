@@ -2,14 +2,10 @@ package frodez.config.aop.validation.advisor;
 
 import frodez.config.aop.util.AOPUtil;
 import frodez.config.aop.validation.annotation.Check;
-import frodez.config.validator.CodeCheckUtil;
+import frodez.config.code.checker.CodeChecker;
 import frodez.config.validator.ValidationUtil;
-import frodez.config.validator.ValidatorProperties;
 import frodez.util.beans.result.Result;
-import frodez.util.common.StrUtil;
-import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.springframework.aop.ClassFilter;
@@ -17,6 +13,7 @@ import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +28,8 @@ import org.springframework.stereotype.Component;
 public class ValidationAdvisor implements PointcutAdvisor {
 
 	@Autowired
-	private ValidatorProperties properties;
+	@Qualifier("hibernateValidatorCodeChecker")
+	private CodeChecker codeChecker;
 
 	/**
 	 * AOP切点
@@ -99,22 +97,10 @@ public class ValidationAdvisor implements PointcutAdvisor {
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
 						//这里可以进行运行前检查
-						if (method.getAnnotation(Check.class) == null) {
+						if (method.getAnnotation(Check.class) == null || !AOPUtil.isResultAsReturn(method)) {
 							return false;
 						}
-						if (!AOPUtil.isResultAsReturn(method)) {
-							return false;
-						}
-						if (!properties.getCodeReview()) {
-							return true;
-						}
-						if (method.getParameterCount() == 0) {
-							throw new IllegalArgumentException(StrUtil.concat("@", Check.class.getName(), "注解不能在无参数的方法",
-								ReflectUtil.getFullMethodName(method), "上使用!"));
-						}
-						for (Parameter parameter : method.getParameters()) {
-							CodeCheckUtil.checkParameter(method, parameter);
-						}
+						codeChecker.checkMethod(method);
 						return true;
 					}
 

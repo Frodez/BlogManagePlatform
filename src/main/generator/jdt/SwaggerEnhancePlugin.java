@@ -1,5 +1,6 @@
 package jdt;
 
+import frodez.config.aop.validation.annotation.ValidateBean;
 import frodez.constant.settings.DefDesc;
 import frodez.util.beans.param.QueryPage;
 import io.swagger.annotations.ApiModel;
@@ -9,10 +10,8 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.jdt.core.dom.BooleanLiteral;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
-import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jface.text.BadLocationException;
@@ -27,6 +26,7 @@ public class SwaggerEnhancePlugin extends EnhancePlugin {
 
 	@Override
 	public void run() {
+		addValidateBean(super.unit);
 		addApiModel(super.unit);
 		addApiModelProperty(super.unit);
 	}
@@ -34,6 +34,10 @@ public class SwaggerEnhancePlugin extends EnhancePlugin {
 	@Override
 	public void close() throws MalformedTreeException, BadLocationException, IOException, URISyntaxException {
 		super.close();
+	}
+
+	private void addValidateBean(CompilationUnit unit) {
+		JDTUtil.addTypeAnnotation(unit, ValidateBean.class);
 	}
 
 	private void addApiModel(CompilationUnit unit) {
@@ -84,15 +88,6 @@ public class SwaggerEnhancePlugin extends EnhancePlugin {
 				if (annotation.getTypeName().getFullyQualifiedName().equals("NotNull") || annotation.getTypeName()
 					.getFullyQualifiedName().equals("NotBlank")) {
 					return true;
-				}
-				for (Object value : annotation.values()) {
-					if (value instanceof MemberValuePair) {
-						MemberValuePair valuePair = (MemberValuePair) value;
-						if (valuePair.getName().getFullyQualifiedName().equals("nullable")
-							&& ((BooleanLiteral) valuePair.getValue()).booleanValue()) {
-							return true;
-						}
-					}
 				}
 			}
 		}

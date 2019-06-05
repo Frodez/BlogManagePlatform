@@ -21,15 +21,18 @@ public class JacksonTest {
 	@Test
 	public void test() throws IOException {
 		Map<String, Object> map = new HashMap<>();
-		map.put("date", new Date());
+		Date date = new Date();
+		BigDecimal bigDecimal = new BigDecimal("12.555251635");
+		String string = "testString";
+		map.put("date", date);
 		map.put("decimal", new BigDecimal("12.555251635"));
-		map.put("string", "testString");
+		map.put("string", string);
 		map.put("object", QueryPage.DEFAULT);
 		JacksonTestBean bean = JSONUtil.as(JSONUtil.string(map), JacksonTestBean.class);
-		Assert.assertNotNull(bean.getDate());
-		Assert.assertNotNull(bean.getDecimal());
-		Assert.assertNotNull(bean.getString());
-		Assert.assertNotNull(bean.getObject());
+		Assert.assertNotNull(bean.getDate().equals(date));
+		Assert.assertNotNull(bean.getDecimal().equals(bigDecimal));
+		Assert.assertNotNull(bean.getString().equals(string));
+		Assert.assertNotNull(bean.getObject().equals(QueryPage.DEFAULT));
 	}
 
 	@Data

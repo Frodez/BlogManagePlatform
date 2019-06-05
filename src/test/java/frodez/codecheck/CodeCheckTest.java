@@ -1,11 +1,9 @@
 package frodez.codecheck;
 
 import frodez.config.aop.util.AOPUtil;
-import frodez.config.validator.CodeCheckUtil;
 import frodez.constant.errors.exception.CodeCheckException;
 import frodez.util.beans.result.Result;
 import java.lang.reflect.Method;
-import lombok.Data;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,20 +27,6 @@ public class CodeCheckTest {
 	public void test2() throws NoSuchMethodException, SecurityException {
 		Method wrongMethod = CodeCheckTest.class.getMethod("wrongMethod", new Class<?>[] {});
 		AOPUtil.isResultAsReturn(wrongMethod);
-	}
-
-	@Test(expected = CodeCheckException.class)
-	public void test3() {
-		CodeCheckUtil.checkClass(TestBean.class);
-	}
-
-	@Data
-	public static class TestBean {
-
-		private Long number;
-
-		private TestBean bean;
-
 	}
 
 	public Result resultMethod() {

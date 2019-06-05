@@ -1,11 +1,11 @@
 package frodez.dao.param.user;
 
+import frodez.config.aop.validation.annotation.ValidateBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import javax.validation.constraints.NotBlank;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 /**
@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.Length;
  * @date 2019-02-27
  */
 @Data
-@NoArgsConstructor
+@ValidateBean
 @ApiModel(description = "用户重新登录请求参数")
 public class DoRefresh implements Serializable {
 

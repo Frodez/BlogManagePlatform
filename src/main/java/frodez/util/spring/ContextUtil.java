@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.BeansException;
+import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
@@ -35,6 +36,25 @@ public class ContextUtil implements ApplicationContextAware {
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		context = applicationContext;
 		Assert.notNull(context, "context must not be null");
+	}
+
+	/**
+	 * 关闭spring应用,默认返回码-1
+	 * @author Frodez
+	 * @date 2019-06-04
+	 */
+	public static void exit() {
+		exit(-1);
+	}
+
+	/**
+	 * 关闭spring应用
+	 * @param exitCode 返回码
+	 * @author Frodez
+	 * @date 2019-06-04
+	 */
+	public static void exit(int exitCode) {
+		SpringApplication.exit(context, () -> exitCode);
 	}
 
 	/**

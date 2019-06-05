@@ -13,12 +13,15 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * 反射工具类
+ * 反射工具类<br>
+ * 建议不要在项目初始化阶段使用,而用于日常业务或者已经初始化完毕后。<br>
  * @author Frodez
  * @date 2019-01-13
  */
 @UtilityClass
 public class ReflectUtil {
+
+	public static final Object[] EMPTY_ARRAY_OBJECTS = new Object[] { null };
 
 	private static final Map<Class<?>, Pair<FastClass, FastMethod[]>> CGLIB_CACHE = new ConcurrentHashMap<>();
 

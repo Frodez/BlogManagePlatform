@@ -1,4 +1,4 @@
-package frodez.request;
+package frodez.mvc;
 
 import frodez.constant.settings.PropertyKey;
 import frodez.util.beans.result.Result;
@@ -14,17 +14,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(properties = { "spring.profiles.active=test" }, webEnvironment = WebEnvironment.DEFINED_PORT)
 @AutoConfigureWebTestClient
-public class RequestTest {
+public class MVCTest {
 
 	@Autowired
 	private WebTestClient webClient;
 
 	@Test
-	public void test() {
-		Result result = webClient.get().uri(PropertyUtil.get(PropertyKey.Web.BASE_PATH) + "/login/test?userName=123")
-			.exchange().expectBody(Result.class).returnResult().getResponseBody();
+	public void escapeTest() {
+		Result result = webClient.get().uri(PropertyUtil.get(PropertyKey.Web.BASE_PATH)
+			+ "/test/escape?name=<script>var data = $SomeJacksonWrapper.toJson($data);</script>").exchange().expectBody(
+				Result.class).returnResult().getResponseBody();
 		Assert.assertFalse(result.unable());
 	}
 

@@ -1,12 +1,11 @@
 package frodez.dao.result.article;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 文章信息
@@ -14,7 +13,6 @@ import io.swagger.annotations.ApiModelProperty;
  * @date 2019-03-06
  */
 @Data
-@NoArgsConstructor
 @ApiModel(description = "文章")
 public class ArticleInfo implements Serializable {
 

@@ -1,5 +1,6 @@
 package frodez.dao.param.user;
 
+import frodez.config.aop.validation.annotation.ValidateBean;
 import frodez.config.aop.validation.annotation.special.Mobile;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,7 +8,6 @@ import java.io.Serializable;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 /**
@@ -16,7 +16,7 @@ import org.hibernate.validator.constraints.Length;
  * @date 2019-02-02
  */
 @Data
-@NoArgsConstructor
+@ValidateBean
 @ApiModel(description = "用户注册请求参数")
 public class Doregister implements Serializable {
 

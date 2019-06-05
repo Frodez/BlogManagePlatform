@@ -79,8 +79,6 @@ public @interface LegalEnum {
 	 */
 	class Validator implements ConstraintValidator<LegalEnum, Object> {
 
-		private static final Object[] NULLPARAM_OBJECTS = new Object[] { null };
-
 		/**
 		 * 枚举类
 		 */
@@ -131,7 +129,7 @@ public @interface LegalEnum {
 					return true;
 				} else {
 					ValidationUtil.changeMessage(context, StrUtil.concat(value.toString(), "不符合要求,有效值为", ReflectUtil
-						.getFastMethod(klass, valuesMethod).invoke(null, NULLPARAM_OBJECTS).toString()));
+						.getFastMethod(klass, valuesMethod).invoke(null, ReflectUtil.EMPTY_ARRAY_OBJECTS).toString()));
 					return false;
 				}
 			} catch (InvocationTargetException | NoSuchMethodException e) {
