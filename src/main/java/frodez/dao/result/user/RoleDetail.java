@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 角色详细信息返回数据
@@ -14,7 +13,6 @@ import lombok.NoArgsConstructor;
  * @date 2019-03-19
  */
 @Data
-@NoArgsConstructor
 @ApiModel(value = "角色详细信息返回数据")
 public class RoleDetail implements Serializable {
 

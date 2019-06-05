@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.experimental.UtilityClass;
-import org.springframework.beans.BeanUtils;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.cglib.reflect.FastClass;
@@ -20,7 +19,8 @@ import org.springframework.cglib.reflect.FastMethod;
 import org.springframework.util.Assert;
 
 /**
- * Java Bean工具类
+ * Java Bean工具类<br>
+ * 建议不要在项目初始化阶段使用,而用于日常业务或者已经初始化完毕后。<br>
  * @author Frodez
  * @date 2019-01-15
  */
@@ -34,8 +34,6 @@ public class BeanUtil {
 	private static final Map<Class<?>, List<FastMethod>> SETTER_CACHE = new ConcurrentHashMap<>();
 
 	private static final Map<Class<?>, List<FastMethod>> NOT_NULL_FIELD_SETTER_CACHE = new ConcurrentHashMap<>();
-
-	private static final Object[] NULL_PARAM = new Object[] { null };
 
 	private static BeanCopier getCopier(Object source, Object target) {
 		return COPIER_CACHE.computeIfAbsent(StrUtil.concat(source.getClass().getName(), target.getClass().getName()),
@@ -137,7 +135,7 @@ public class BeanUtil {
 		List<FastMethod> methods = setters(bean.getClass());
 		int length = methods.size();
 		for (int i = 0; i < length; i++) {
-			methods.get(i).invoke(bean, NULL_PARAM);
+			methods.get(i).invoke(bean, ReflectUtil.EMPTY_ARRAY_OBJECTS);
 		}
 	}
 
@@ -264,19 +262,9 @@ public class BeanUtil {
 		List<FastMethod> methods = defaultNotNullSetters(bean);
 		int length = methods.size();
 		for (int i = 0; i < length; i++) {
-			methods.get(i).invoke(bean, NULL_PARAM);
+			methods.get(i).invoke(bean, ReflectUtil.EMPTY_ARRAY_OBJECTS);
 		}
 		return bean;
-	}
-
-	/**
-	 * 判断是否为复杂对象
-	 * @author Frodez
-	 * @date 2019-05-22
-	 */
-	public static boolean isComplex(Class<?> type) {
-		Assert.notNull(type, "type must not be null");
-		return !BeanUtils.isSimpleProperty(type);
 	}
 
 }

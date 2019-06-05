@@ -1,5 +1,6 @@
 package frodez.dao.param.task;
 
+import frodez.config.aop.validation.annotation.ValidateBean;
 import frodez.config.aop.validation.annotation.common.LegalEnum;
 import frodez.constant.enums.task.StatusEnum;
 import io.swagger.annotations.ApiModel;
@@ -8,7 +9,6 @@ import java.io.Serializable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 /**
@@ -17,7 +17,7 @@ import org.hibernate.validator.constraints.Length;
  * @date 2019-03-20
  */
 @Data
-@NoArgsConstructor
+@ValidateBean
 @ApiModel(description = "新增定时任务请求参数")
 public class AddTask implements Serializable {
 

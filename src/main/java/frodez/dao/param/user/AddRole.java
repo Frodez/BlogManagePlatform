@@ -1,5 +1,6 @@
 package frodez.dao.param.user;
 
+import frodez.config.aop.validation.annotation.ValidateBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -9,7 +10,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 /**
@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.Length;
  * @date 2019-03-15
  */
 @Data
-@NoArgsConstructor
+@ValidateBean
 @ApiModel(description = "新增角色请求参数")
 public class AddRole implements Serializable {
 

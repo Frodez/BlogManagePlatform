@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 可用任务信息
@@ -12,7 +11,6 @@ import lombok.NoArgsConstructor;
  * @date 2019-03-21
  */
 @Data
-@NoArgsConstructor
 @ApiModel(value = "可用任务信息返回数据")
 public class AvailableTaskInfo implements Serializable {
 

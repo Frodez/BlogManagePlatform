@@ -1,5 +1,6 @@
 package frodez.dao.param.user;
 
+import frodez.config.aop.validation.annotation.ValidateBean;
 import frodez.config.aop.validation.annotation.common.LegalEnum;
 import frodez.constant.enums.common.ModifyEnum;
 import io.swagger.annotations.ApiModel;
@@ -9,7 +10,6 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 修改角色权限请求参数
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
  * @date 2019-03-17
  */
 @Data
-@NoArgsConstructor
+@ValidateBean
 @ApiModel(description = "修改角色权限请求参数")
 public class UpdateRolePermission implements Serializable {
 

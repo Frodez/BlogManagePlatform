@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.List;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 用户信息
@@ -13,7 +12,6 @@ import lombok.NoArgsConstructor;
  * @date 2018-11-14
  */
 @Data
-@NoArgsConstructor
 @ApiModel(value = "用户信息返回数据")
 public class UserInfo implements Serializable {
 

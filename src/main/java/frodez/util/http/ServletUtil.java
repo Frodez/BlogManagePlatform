@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.Cleanup;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -77,15 +78,9 @@ public class ServletUtil {
 		response.setStatus(result.httpStatus().value());
 		response.setCharacterEncoding(DefCharset.UTF_8);
 		response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-		ServletOutputStream stream = null;
-		try {
-			stream = response.getOutputStream();
-			stream.write(result.jsonBytes());
-		} finally {
-			if (stream != null) {
-				stream.close();
-			}
-		}
+		@Cleanup
+		ServletOutputStream stream = response.getOutputStream();
+		stream.write(result.jsonBytes());
 	}
 
 	/**
@@ -106,16 +101,10 @@ public class ServletUtil {
 		}
 		response.setCharacterEncoding(DefCharset.UTF_8);
 		response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-		PrintWriter out = null;
-		try {
-			out = response.getWriter();
-			out.append(json);
-			out.flush();
-		} finally {
-			if (out != null) {
-				out.close();
-			}
-		}
+		@Cleanup
+		PrintWriter out = response.getWriter();
+		out.append(json);
+		out.flush();
 	}
 
 	/**
@@ -136,16 +125,10 @@ public class ServletUtil {
 		}
 		response.setCharacterEncoding(DefCharset.UTF_8);
 		response.setContentType(MediaType.TEXT_PLAIN_VALUE);
-		PrintWriter out = null;
-		try {
-			out = response.getWriter();
-			out.append(text);
-			out.flush();
-		} finally {
-			if (out != null) {
-				out.close();
-			}
-		}
+		@Cleanup
+		PrintWriter out = response.getWriter();
+		out.append(text);
+		out.flush();
 	}
 
 	/**
@@ -166,16 +149,10 @@ public class ServletUtil {
 		}
 		response.setCharacterEncoding(DefCharset.UTF_8);
 		response.setContentType(MediaType.TEXT_HTML_VALUE);
-		PrintWriter out = null;
-		try {
-			out = response.getWriter();
-			out.append(html);
-			out.flush();
-		} finally {
-			if (out != null) {
-				out.close();
-			}
-		}
+		@Cleanup
+		PrintWriter out = response.getWriter();
+		out.append(html);
+		out.flush();
 	}
 
 }

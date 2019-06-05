@@ -1,5 +1,6 @@
 package frodez.dao.param.user;
 
+import frodez.config.aop.validation.annotation.ValidateBean;
 import frodez.constant.settings.DefDesc;
 import frodez.util.beans.param.QueryPage;
 import io.swagger.annotations.ApiModel;
@@ -15,6 +16,7 @@ import lombok.Data;
  * @date 2019-03-06
  */
 @Data
+@ValidateBean
 @ApiModel(description = "权限查询请求参数")
 public class QueryRolePermission implements Serializable {
 

@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 权限信息
@@ -12,7 +11,6 @@ import lombok.NoArgsConstructor;
  * @date 2018-11-14
  */
 @Data
-@NoArgsConstructor
 @ApiModel(value = "权限信息返回数据")
 public class PermissionInfo implements Serializable {
 

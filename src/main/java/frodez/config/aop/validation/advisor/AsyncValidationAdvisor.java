@@ -6,8 +6,6 @@ import frodez.config.validator.CodeCheckUtil;
 import frodez.config.validator.ValidationUtil;
 import frodez.config.validator.ValidatorProperties;
 import frodez.util.beans.result.Result;
-import frodez.util.common.StrUtil;
-import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import org.aopalliance.aop.Advice;
@@ -107,10 +105,6 @@ public class AsyncValidationAdvisor implements PointcutAdvisor {
 						}
 						if (!properties.getCodeReview()) {
 							return true;
-						}
-						if (method.getParameterCount() == 0) {
-							throw new IllegalArgumentException(StrUtil.concat("@", Check.class.getName(), "注解不能在无参数的方法",
-								ReflectUtil.getFullMethodName(method), "上使用!"));
 						}
 						for (Parameter parameter : method.getParameters()) {
 							CodeCheckUtil.checkParameter(method, parameter);

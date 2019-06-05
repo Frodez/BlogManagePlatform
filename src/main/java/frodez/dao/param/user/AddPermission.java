@@ -1,5 +1,6 @@
 package frodez.dao.param.user;
 
+import frodez.config.aop.validation.annotation.ValidateBean;
 import frodez.config.aop.validation.annotation.common.LegalEnum;
 import frodez.constant.enums.user.PermissionTypeEnum;
 import io.swagger.annotations.ApiModel;
@@ -8,7 +9,6 @@ import java.io.Serializable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 /**
@@ -17,7 +17,7 @@ import org.hibernate.validator.constraints.Length;
  * @date 2019-03-15
  */
 @Data
-@NoArgsConstructor
+@ValidateBean
 @ApiModel(description = "新增权限请求参数")
 public class AddPermission implements Serializable {
 

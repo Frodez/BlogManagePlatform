@@ -1,5 +1,6 @@
 package frodez.config.validator;
 
+import frodez.config.aop.validation.annotation.ValidateBean;
 import frodez.util.spring.ContextUtil;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
@@ -28,17 +29,20 @@ public class ValidateCodeChecker implements ApplicationListener<ApplicationStart
 				check(properties);
 				log.info("[ValidateChecker]hibernate-validator代码校验结束");
 			} else {
-				log.info("[ValidateChecker]hibernate-validator代码校验已关闭");
+				log.info("[ValidateChecker]未开启hibernate-validator代码校验功能");
 			}
 		} catch (IOException | ClassNotFoundException | LinkageError e) {
 			log.error("[ValidateChecker]意外错误,程序终止", e);
+			ContextUtil.exit();
 		}
 	}
 
 	private void check(ValidatorProperties properties) throws IOException, ClassNotFoundException, LinkageError {
 		for (String path : properties.getModelPath()) {
 			for (Class<?> klass : ContextUtil.getClasses(path)) {
-				CodeCheckUtil.checkClass(klass);
+				if (klass.getAnnotation(ValidateBean.class) != null) {
+					CodeCheckUtil.checkClass(klass);
+				}
 			}
 		}
 	}

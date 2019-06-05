@@ -1,5 +1,6 @@
 package frodez.config.validator;
 
+import java.util.Arrays;
 import java.util.List;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -25,7 +26,7 @@ public class ValidatorProperties {
 	/**
 	 * 需要检查的代码,ant风格匹配
 	 */
-	private List<String> modelPath;
+	private List<String> modelPath = Arrays.asList("frodez.*.*");
 
 	/**
 	 * 消息插值配置路径(classpath下,不需增加classpath前缀)
