@@ -12,7 +12,7 @@ import lombok.Data;
  * @date 2018-11-14
  */
 @Data
-@ApiModel(value = "用户信息返回数据")
+@ApiModel(description = "用户信息返回数据")
 public class UserInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -1,6 +1,5 @@
 package frodez.controller.user;
 
-import frodez.constant.settings.DefDesc;
 import frodez.dao.model.user.Role;
 import frodez.dao.param.user.AddRole;
 import frodez.dao.param.user.UpdateRole;
@@ -54,15 +53,13 @@ public class RoleController {
 	@GetMapping("/page")
 	@ApiOperation(value = "分页查询角色信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Role.class) })
-	public Result getRoles(@RequestBody @ApiParam(value = DefDesc.Message.PAGE_QUERY,
-		required = true) QueryPage param) {
+	public Result getRoles(@RequestBody QueryPage param) {
 		return authorityService.getRoles(param);
 	}
 
 	@PostMapping("/updatePermission")
 	@ApiOperation(value = "修改角色权限接口")
-	public Result updateRolePermission(@RequestBody @ApiParam(value = "修改角色权限请求参数",
-		required = true) UpdateRolePermission param) {
+	public Result updateRolePermission(@RequestBody UpdateRolePermission param) {
 		return authorityService.updateRolePermission(param);
 	}
 
@@ -74,13 +71,13 @@ public class RoleController {
 
 	@PostMapping("/add")
 	@ApiOperation(value = "添加新角色接口")
-	public Result addRole(@RequestBody @ApiParam(value = "新增角色请求参数", required = true) AddRole param) {
+	public Result addRole(@RequestBody AddRole param) {
 		return authorityService.addRole(param);
 	}
 
 	@PostMapping("/update")
 	@ApiOperation(value = "修改角色接口")
-	public Result updateRole(@RequestBody @ApiParam(value = "修改角色请求参数", required = true) UpdateRole param) {
+	public Result updateRole(@RequestBody UpdateRole param) {
 		return authorityService.updateRole(param);
 	}
 

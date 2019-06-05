@@ -20,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseMessageBuilder;
@@ -29,7 +28,6 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.Contact;
-import springfox.documentation.service.Parameter;
 import springfox.documentation.service.ResponseMessage;
 import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
@@ -75,9 +73,14 @@ public class SwaggerConfig {
 				securityContext())).enableUrlTemplating(false).globalResponseMessage(RequestMethod.GET,
 					responseMessageList).globalResponseMessage(RequestMethod.POST, responseMessageList)
 			.globalResponseMessage(RequestMethod.PUT, responseMessageList).globalResponseMessage(RequestMethod.DELETE,
-				responseMessageList).globalOperationParameters(getGlobalOperationParameters());
+				responseMessageList);
 	}
 
+	/**
+	 * 全局返回信息
+	 * @author Frodez
+	 * @date 2019-06-06
+	 */
 	private List<ResponseMessage> getGlobalResponseMessage() {
 		List<ResponseMessage> list = new ArrayList<>();
 		Map<HttpStatus, List<Result.ResultEnum>> map = new HashMap<>();
@@ -97,13 +100,6 @@ public class SwaggerConfig {
 			list.add(new ResponseMessageBuilder().code(entry.getKey().value()).message(message).responseModel(
 				new ModelRef(Result.class.getSimpleName())).build());
 		}
-		return list;
-	}
-
-	private List<Parameter> getGlobalOperationParameters() {
-		List<Parameter> list = new ArrayList<>();
-		list.add(new ParameterBuilder().name(securityProperties.getJwt().getAuthorityClaim()).description(
-			"token,除免验证url外均必填").required(false).parameterType("header").modelRef(new ModelRef("string")).build());
 		return list;
 	}
 

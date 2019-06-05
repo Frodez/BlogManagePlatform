@@ -11,7 +11,7 @@ import lombok.Data;
  * @date 2019-03-21
  */
 @Data
-@ApiModel(value = "可用任务信息返回数据")
+@ApiModel(description = "可用任务信息返回数据")
 public class AvailableTaskInfo implements Serializable {
 
 	/**
