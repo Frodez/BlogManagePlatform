@@ -109,10 +109,20 @@ public class ReflectUtil {
 		return StrUtil.concat(method.getDeclaringClass().getSimpleName(), ".", method.getName());
 	}
 
+	/**
+	 * 获取字段全限定名
+	 * @author Frodez
+	 * @date 2019-06-05
+	 */
 	public static String getFullFieldName(Field field) {
 		return StrUtil.concat(field.getDeclaringClass().getName(), ".", field.getName());
 	}
 
+	/**
+	 * 获取字段全限定名
+	 * @author Frodez
+	 * @date 2019-06-05
+	 */
 	public static String getShortFieldName(Field field) {
 		return StrUtil.concat(field.getDeclaringClass().getSimpleName(), ".", field.getName());
 	}

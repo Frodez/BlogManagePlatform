@@ -95,7 +95,7 @@ public class SwaggerConfig {
 				return iter.getDesc() + ",自定义状态码:" + iter.getVal();
 			}).collect(Collectors.toList()));
 			list.add(new ResponseMessageBuilder().code(entry.getKey().value()).message(message).responseModel(
-				new ModelRef(Result.class.getName())).build());
+				new ModelRef(Result.class.getSimpleName())).build());
 		}
 		return list;
 	}
