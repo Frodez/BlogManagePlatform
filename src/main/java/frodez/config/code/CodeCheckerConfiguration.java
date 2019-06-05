@@ -3,6 +3,7 @@ package frodez.config.code;
 import frodez.config.code.checker.CodeChecker;
 import frodez.config.code.rule.CodeCheckRule;
 import frodez.config.code.rule.hibernate.CheckRule;
+import frodez.config.code.rule.hibernate.GenericConstraintRule;
 import frodez.config.code.rule.hibernate.LegalEnumRule;
 import frodez.config.code.rule.hibernate.ValidRule;
 import frodez.config.validator.ValidatorProperties;
@@ -39,6 +40,7 @@ public class CodeCheckerConfiguration {
 		rules.add(new CheckRule());
 		rules.add(new LegalEnumRule());
 		rules.add(new ValidRule());
+		rules.add(new GenericConstraintRule());
 		return rules;
 	}
 

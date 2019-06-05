@@ -2,6 +2,7 @@ package frodez.util.reflect;
 
 import frodez.util.beans.pair.Pair;
 import frodez.util.common.StrUtil;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -106,6 +107,14 @@ public class ReflectUtil {
 	 */
 	public static String getShortMethodName(Method method) {
 		return StrUtil.concat(method.getDeclaringClass().getSimpleName(), ".", method.getName());
+	}
+
+	public static String getFullFieldName(Field field) {
+		return StrUtil.concat(field.getDeclaringClass().getName(), ".", field.getName());
+	}
+
+	public static String getShortFieldName(Field field) {
+		return StrUtil.concat(field.getDeclaringClass().getSimpleName(), ".", field.getName());
 	}
 
 	/**

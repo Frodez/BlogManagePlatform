@@ -40,8 +40,7 @@ public class ValidRule implements CodeCheckRule {
 
 	private void assertFieldValid(Field field) {
 		if (field.getAnnotation(ValidateBean.class) != null && field.getAnnotation(Valid.class) == null) {
-			throw new CodeCheckException(field.getDeclaringClass().getName(), ".", field.getName(), "需要加上@", Valid.class
-				.getName(), "注解!");
+			throw new CodeCheckException(ReflectUtil.getFullFieldName(field), "需要加上@", Valid.class.getName(), "注解!");
 		}
 	}
 
