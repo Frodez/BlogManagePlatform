@@ -5,6 +5,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.experimental.UtilityClass;
@@ -49,22 +50,33 @@ public class MVCUtil {
 	 */
 	public static Map<RequestMethod, List<RequestMappingInfo>> endPoints() {
 		Map<RequestMethod, List<RequestMappingInfo>> endPoints = new EnumMap<>(RequestMethod.class);
+		Stream<RequestMappingHandlerMapping> stream = requestMappingHandlerMappingStream();
 		for (RequestMethod method : RequestMethod.values()) {
 			//从spring上下文里拿出所有HandlerMapping
 			//遍历每种RequestMethod,找出它们对应的端点放入EnumMap
-			endPoints.put(method, BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(),
-				HandlerMapping.class, true, false).values().stream().filter((iter) -> {
-					//过滤出其中的RequestMappingHandlerMapping
-					return iter instanceof RequestMappingHandlerMapping;
-				}).map((iter) -> {
-					//取出所有的RequestMapping和对应的HandlerMethod,即@RequestMapping,@GetMapping,@PostMapping这些注解和它们所在的方法
-					return ((RequestMappingHandlerMapping) iter).getHandlerMethods().keySet();
-				}).flatMap(Collection::stream).filter((iter) -> {
-					//判断这个RequestMappingInfo的http RequestMethod是否是这次遍历所要寻找的RequestMethod
-					return iter.getMethodsCondition().getMethods().contains(method);
-				}).collect(Collectors.toList()));
+			endPoints.put(method, stream.map((iter) -> {
+				//取出所有的RequestMapping和对应的HandlerMethod,即@RequestMapping,@GetMapping,@PostMapping这些注解和它们所在的方法
+				return iter.getHandlerMethods().keySet();
+			}).flatMap(Collection::stream).filter((iter) -> {
+				//判断这个RequestMappingInfo的http RequestMethod是否是这次遍历所要寻找的RequestMethod
+				return iter.getMethodsCondition().getMethods().contains(method);
+			}).collect(Collectors.toList()));
 		}
 		return endPoints;
+	}
+
+	/**
+	 * 获取spring中所有的RequestMappingHandlerMapping
+	 * @author Frodez
+	 * @date 2019-06-05
+	 */
+	public static Stream<RequestMappingHandlerMapping> requestMappingHandlerMappingStream() {
+		return BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false)
+			.values().stream().filter((iter) -> {
+				return iter instanceof RequestMappingHandlerMapping;
+			}).map((iter) -> {
+				return (RequestMappingHandlerMapping) iter;
+			});
 	}
 
 }

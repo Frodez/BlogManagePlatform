@@ -4,8 +4,8 @@ import frodez.config.aop.request.annotation.TimeoutLock;
 import frodez.config.aop.request.checker.facade.AutoChecker;
 import frodez.config.aop.request.checker.impl.KeyGenerator;
 import frodez.config.aop.util.AOPUtil;
+import frodez.constant.errors.exception.CodeCheckException;
 import frodez.util.beans.result.Result;
-import frodez.util.common.StrUtil;
 import frodez.util.http.ServletUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.MVCUtil;
@@ -129,8 +129,7 @@ public class AsyncTimeoutAdvisor implements PointcutAdvisor {
 							return false;
 						}
 						if (annotation.value() <= 0) {
-							throw new IllegalArgumentException(StrUtil.concat("方法", ReflectUtil.getFullMethodName(
-								method), "的过期时间必须大于0!"));
+							throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method), "的过期时间必须大于0!");
 						}
 						if (!AOPUtil.isAsyncResultAsReturn(method)) {
 							return false;

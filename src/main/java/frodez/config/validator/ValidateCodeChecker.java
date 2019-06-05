@@ -2,8 +2,10 @@ package frodez.config.validator;
 
 import frodez.config.aop.validation.annotation.ValidateBean;
 import frodez.util.spring.ContextUtil;
+import frodez.util.spring.PropertyUtil;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -20,11 +22,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class ValidateCodeChecker implements ApplicationListener<ApplicationStartedEvent> {
 
+	@Autowired
+	private ValidatorProperties properties;
+
 	@Override
 	public void onApplicationEvent(ApplicationStartedEvent event) {
 		try {
-			ValidatorProperties properties = ContextUtil.get(ValidatorProperties.class);
-			if (properties.getCodeReview()) {
+			if (PropertyUtil.matchEnvs(properties.getEnviroments())) {
 				log.info("[ValidateChecker]hibernate-validator代码校验开始");
 				check(properties);
 				log.info("[ValidateChecker]hibernate-validator代码校验结束");

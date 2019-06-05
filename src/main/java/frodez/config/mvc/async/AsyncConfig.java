@@ -1,6 +1,5 @@
 package frodez.config.mvc.async;
 
-import frodez.util.spring.ContextUtil;
 import java.util.concurrent.ThreadPoolExecutor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +24,6 @@ public class AsyncConfig {
 	private AsyncProperties properties;
 
 	public AsyncTaskExecutor getAsyncExecutor() {
-		AsyncProperties properties = ContextUtil.get(AsyncProperties.class);
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		int availableProcessors = Runtime.getRuntime().availableProcessors();
 		int corePoolSize = Math.round(availableProcessors * properties.getCoreThreadTimes());

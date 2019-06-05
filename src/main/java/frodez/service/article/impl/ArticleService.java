@@ -1,6 +1,7 @@
 package frodez.service.article.impl;
 
 import com.google.common.collect.Lists;
+import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.util.UserUtil;
 import frodez.constant.enums.common.DeleteEnum;
 import frodez.constant.settings.DefStr;
@@ -11,7 +12,6 @@ import frodez.dao.result.user.UserInfo;
 import frodez.service.article.facade.IArticleService;
 import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +29,9 @@ public class ArticleService implements IArticleService {
 	@Autowired
 	private ArticleMapper articleMapper;
 
+	@Check
 	@Override
-	public Result getDetail(@Valid @NotNull Long articleId) {
+	public Result getDetail(@NotNull Long articleId) {
 		try {
 			Article article = articleMapper.selectByPrimaryKey(articleId);
 			if (article == null) {

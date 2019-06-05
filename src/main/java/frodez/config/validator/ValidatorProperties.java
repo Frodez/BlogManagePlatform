@@ -19,9 +19,9 @@ import org.springframework.stereotype.Component;
 public class ValidatorProperties {
 
 	/**
-	 * 是否开启代码检查
+	 * 开启代码检查的环境名称
 	 */
-	private Boolean codeReview = true;
+	private List<String> enviroments = Arrays.asList("dev", "test");
 
 	/**
 	 * 需要检查的代码,ant风格匹配

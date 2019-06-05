@@ -19,6 +19,7 @@ import javax.validation.Valid;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 
 /**
  * hibernate-validator代码检查相关实现
@@ -66,8 +67,8 @@ public class CodeCheckUtil {
 		Assert.notNull(method, "method must not be null");
 		Assert.notNull(parameter, "parameter must not be null");
 		if (method.getParameterCount() == 0) {
-			throw new CodeCheckException(StrUtil.concat("@", Check.class.getName(), "注解不能在无参数的方法", ReflectUtil
-				.getFullMethodName(method), "上使用"));
+			throw new CodeCheckException("@", Check.class.getName(), "注解不能在无参数的方法", ReflectUtil.getFullMethodName(
+				method), "上使用");
 		}
 		Class<?> type = parameter.getType();
 		if (!Collection.class.isAssignableFrom(type) && !Map.class.isAssignableFrom(type)) {
@@ -75,13 +76,13 @@ public class CodeCheckUtil {
 		} else {
 			checkParameterCollectionOrMap(method, parameter, (ParameterizedType) parameter.getParameterizedType());
 		}
-		checkLegalEnum(parameter);
+		checkLegalEnum(method, parameter);
 	}
 
 	private static void assertFieldValid(Field field, Class<?> type) {
 		if (field.getAnnotation(ValidateBean.class) != null && field.getAnnotation(Valid.class) == null) {
-			throw new CodeCheckException(StrUtil.concat(field.getDeclaringClass().getName(), ".", field.getName(),
-				"是复杂类型,需要加上@", Valid.class.getName(), "注解!"));
+			throw new CodeCheckException(field.getDeclaringClass().getName(), ".", field.getName(), "需要加上@", Valid.class
+				.getName(), "注解!");
 		}
 	}
 
@@ -105,8 +106,8 @@ public class CodeCheckUtil {
 
 	private static void assertParameterValid(Method method, Parameter parameter, Class<?> type) {
 		if (parameter.getAnnotation(ValidateBean.class) != null && parameter.getAnnotation(Valid.class) == null) {
-			throw new CodeCheckException(StrUtil.concat("含有", "@", Check.class.getName(), "注解的方法", ReflectUtil
-				.getFullMethodName(method), "的参数", parameter.getName(), "必须使用@", Valid.class.getName(), "注解!"));
+			throw new CodeCheckException("含有", "@", Check.class.getName(), "注解的方法", ReflectUtil.getFullMethodName(
+				method), "的参数", parameter.getName(), "必须使用@", Valid.class.getName(), "注解!");
 		}
 	}
 
@@ -130,43 +131,56 @@ public class CodeCheckUtil {
 	}
 
 	private static void checkLegalEnum(Field field) {
-		checkLegalEnum(field.getAnnotation(LegalEnum.class));
+		LegalEnum annotation = field.getAnnotation(LegalEnum.class);
+		if (annotation != null) {
+			if (!ClassUtils.isPrimitiveOrWrapper(field.getType())) {
+				throw new CodeCheckException(field.getDeclaringClass().getName(), ".", field.getName(),
+					"不是基本类型或者其装箱类,不能使用@", LegalEnum.class.getName(), "注解");
+			}
+			checkLegalEnum(annotation);
+		}
 	}
 
-	private static void checkLegalEnum(Parameter parameter) {
-		checkLegalEnum(parameter.getAnnotation(LegalEnum.class));
+	private static void checkLegalEnum(Method method, Parameter parameter) {
+		LegalEnum annotation = parameter.getAnnotation(LegalEnum.class);
+		if (annotation != null) {
+			if (!ClassUtils.isPrimitiveOrWrapper(parameter.getType())) {
+				throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method), "的参数", parameter.getName(),
+					"不是基本类型或者其装箱类,不能使用@", LegalEnum.class.getName(), "注解");
+			}
+			checkLegalEnum(annotation);
+		}
 	}
 
 	private static void checkLegalEnum(LegalEnum annotation) {
 		try {
-			if (annotation != null) {
-				Class<?> enumClass = annotation.type();
-				String enumClassName = enumClass.getName();
-				if (!enumClass.isAnnotationPresent(EnumCheckable.class)) {
-					log.warn(StrUtil.concat(enumClassName, "被用于枚举类型检查,但是没有@", EnumCheckable.class.getName(), "注解"));
-				}
-				String methodName = annotation.method();
-				Class<?> parameterType = annotation.paramType();
-				Method method = enumClass.getMethod(methodName, parameterType);
-				if (method == null) {
-					throw new CodeCheckException(StrUtil.concat(enumClassName, "必须拥有", methodName, "方法,详情参见@",
-						EnumCheckable.class.getName(), "注解"));
-				}
-				if (method.getReturnType() != enumClass) {
-					throw new CodeCheckException(StrUtil.concat(enumClassName, "的", methodName, "方法返回值必须为",
-						enumClassName, ",详情参见@", EnumCheckable.class.getName(), "注解"));
-				}
-				String valuesMethodName = annotation.valuesMethod();
-				Method values = enumClass.getMethod(valuesMethodName);
-				if (values == null) {
-					throw new CodeCheckException(StrUtil.concat(enumClassName, "必须拥有", valuesMethodName, "方法,详情参见@",
-						EnumCheckable.class.getName(), "注解"));
-				}
+			Class<?> enumClass = annotation.type();
+			String enumClassName = enumClass.getName();
+			if (!enumClass.isAnnotationPresent(EnumCheckable.class)) {
+				log.warn(StrUtil.concat(enumClassName, "被用于枚举类型检查,但是没有@", EnumCheckable.class.getName(), "注解"));
 			}
-		} catch (Exception e) {
-			if (!(e instanceof CodeCheckException)) {
-				throw new CodeCheckException(e.getMessage());
+			String methodName = annotation.method();
+			Class<?> parameterType = annotation.paramType();
+			Method method;
+			try {
+				method = enumClass.getMethod(methodName, parameterType);
+			} catch (NoSuchMethodException e) {
+				throw new CodeCheckException(enumClassName, "必须拥有", methodName, "方法,详情参见@", EnumCheckable.class
+					.getName(), "注解");
 			}
+			if (method.getReturnType() != enumClass) {
+				throw new CodeCheckException(enumClassName, "的", methodName, "方法返回值必须为", enumClassName, ",详情参见@",
+					EnumCheckable.class.getName(), "注解");
+			}
+			String valuesMethodName = annotation.valuesMethod();
+			try {
+				enumClass.getMethod(valuesMethodName);
+			} catch (NoSuchMethodException e) {
+				throw new CodeCheckException(enumClassName, "必须拥有", valuesMethodName, "方法,详情参见@", EnumCheckable.class
+					.getName(), "注解");
+			}
+		} catch (SecurityException e) {
+			throw new CodeCheckException(e);
 		}
 	}
 

@@ -3,10 +3,10 @@ package frodez.config.aop.request.advisor;
 import com.google.common.util.concurrent.RateLimiter;
 import frodez.config.aop.request.annotation.Limit;
 import frodez.config.aop.util.AOPUtil;
+import frodez.constant.errors.exception.CodeCheckException;
 import frodez.constant.settings.DefTime;
 import frodez.util.beans.pair.Pair;
 import frodez.util.beans.result.Result;
-import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -106,12 +106,11 @@ public class LimitUserAdvisor implements PointcutAdvisor {
 							return false;
 						}
 						if (annotation.value() <= 0) {
-							throw new IllegalArgumentException(StrUtil.concat("方法", ReflectUtil.getFullMethodName(
-								method), "的每秒每token限制请求数必须大于0!"));
+							throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method),
+								"的每秒每token限制请求数必须大于0!");
 						}
 						if (annotation.timeout() <= 0) {
-							throw new IllegalArgumentException(StrUtil.concat("方法", ReflectUtil.getFullMethodName(
-								method), "的超时时间必须大于0!"));
+							throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method), "的超时时间必须大于0!");
 						}
 						if (!AOPUtil.isResultAsReturn(method)) {
 							return false;

@@ -4,7 +4,6 @@ import frodez.config.aop.validation.annotation.Check;
 import frodez.constant.errors.exception.CodeCheckException;
 import frodez.util.beans.result.Result;
 import frodez.util.common.EmptyUtil;
-import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -39,8 +38,8 @@ public class AOPUtil {
 		if (isResult(type)) {
 			return false;
 		}
-		throw new CodeCheckException(StrUtil.concat("含有", "@", Check.class.getName(), "注解的方法", ReflectUtil
-			.getFullMethodName(method), "的返回值类型必须为", ListenableFuture.class.getName(), "或者", Result.class.getName()));
+		throw new CodeCheckException("含有", "@", Check.class.getName(), "注解的方法", ReflectUtil.getFullMethodName(method),
+			"的返回值类型必须为", ListenableFuture.class.getName(), "或者", Result.class.getName());
 	}
 
 	/**
@@ -61,8 +60,8 @@ public class AOPUtil {
 		if (isAsyncResult(type)) {
 			return false;
 		}
-		throw new CodeCheckException(StrUtil.concat("含有", "@", Check.class.getName(), "注解的方法", ReflectUtil
-			.getFullMethodName(method), "的返回值类型必须为", ListenableFuture.class.getName(), "或者", Result.class.getName()));
+		throw new CodeCheckException("含有", "@", Check.class.getName(), "注解的方法", ReflectUtil.getFullMethodName(method),
+			"的返回值类型必须为", ListenableFuture.class.getName(), "或者", Result.class.getName());
 	}
 
 	private static boolean isResult(Type type) {
