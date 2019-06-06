@@ -1,6 +1,8 @@
 package frodez.controller.user;
 
 import frodez.config.aop.request.annotation.RepeatLock;
+import frodez.config.security.annotation.VerifyStrategy;
+import frodez.config.security.annotation.VerifyStrategy.VerifyStrategyEnum;
 import frodez.config.security.util.UserUtil;
 import frodez.dao.param.user.Doregister;
 import frodez.service.user.facade.IAuthorityService;
@@ -35,6 +37,7 @@ public class UserController {
 	private IUserService userService;
 
 	@RepeatLock
+	@VerifyStrategy(VerifyStrategyEnum.MUST_VERIFY)
 	@GetMapping("/info/self")
 	@ApiOperation(value = "查看本用户信息接口")
 	public Result getUserInfo() {
@@ -57,18 +60,16 @@ public class UserController {
 	}
 
 	@RepeatLock
-	@GetMapping("/infos/byId")
+	@GetMapping("/info/byIds")
 	@ApiOperation(value = "批量查看用户信息接口")
-	public Result getUserInfosById(@RequestParam("userId") @ApiParam(value = "用户ID", required = true) List<
-		Long> userIds) {
+	public Result getUserInfosById(@RequestBody @ApiParam(value = "用户ID", required = true) List<Long> userIds) {
 		return authorityService.getUserInfosByIds(userIds, false);
 	}
 
 	@RepeatLock
-	@GetMapping("/infos/byName")
+	@GetMapping("/info/byNames")
 	@ApiOperation(value = "批量查看用户信息接口")
-	public Result getUserInfosByName(@RequestParam("userName") @ApiParam(value = "用户名", required = true) List<
-		String> userNames) {
+	public Result getUserInfosByName(@RequestBody @ApiParam(value = "用户名", required = true) List<String> userNames) {
 		return authorityService.getUserInfosByNames(userNames, false);
 	}
 
