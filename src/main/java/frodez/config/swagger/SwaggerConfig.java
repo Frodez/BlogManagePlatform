@@ -66,14 +66,13 @@ public class SwaggerConfig {
 	public Docket petApi() {
 		List<ResponseMessage> responseMessageList = getGlobalResponseMessage();
 		return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage(
-			swaggerProperties.getBasePackage())).paths(PathSelectors.any()).build().apiInfo(apiInfo()).pathMapping(
-				PropertyUtil.get(PropertyKey.Web.BASE_PATH)).directModelSubstitute(LocalDate.class, String.class)
-			.genericModelSubstitutes(ResponseEntity.class).additionalModels(new TypeResolver().resolve(Result.class))
-			.useDefaultResponseMessages(false).securitySchemes(List.of(apiKey())).securityContexts(List.of(
-				securityContext())).enableUrlTemplating(false).globalResponseMessage(RequestMethod.GET,
-					responseMessageList).globalResponseMessage(RequestMethod.POST, responseMessageList)
-			.globalResponseMessage(RequestMethod.PUT, responseMessageList).globalResponseMessage(RequestMethod.DELETE,
-				responseMessageList);
+			swaggerProperties.getBasePackage())).paths(PathSelectors.any()).build().apiInfo(apiInfo())
+			.directModelSubstitute(LocalDate.class, String.class).genericModelSubstitutes(ResponseEntity.class)
+			.additionalModels(new TypeResolver().resolve(Result.class)).useDefaultResponseMessages(false)
+			.securitySchemes(List.of(apiKey())).securityContexts(List.of(securityContext())).enableUrlTemplating(false)
+			.globalResponseMessage(RequestMethod.GET, responseMessageList).globalResponseMessage(RequestMethod.POST,
+				responseMessageList).globalResponseMessage(RequestMethod.PUT, responseMessageList)
+			.globalResponseMessage(RequestMethod.DELETE, responseMessageList);
 	}
 
 	/**
