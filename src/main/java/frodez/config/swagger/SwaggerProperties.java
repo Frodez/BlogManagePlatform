@@ -19,6 +19,11 @@ import org.springframework.stereotype.Component;
 public class SwaggerProperties {
 
 	/**
+	 * 是否使用自定义插件
+	 */
+	private Boolean useCustomerizedPluggins = false;
+
+	/**
 	 * 接口位置
 	 */
 	private String basePackage = "";

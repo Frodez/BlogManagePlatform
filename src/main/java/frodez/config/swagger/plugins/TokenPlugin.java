@@ -2,6 +2,7 @@ package frodez.config.swagger.plugins;
 
 import frodez.config.security.settings.SecurityProperties;
 import frodez.config.security.util.Matcher;
+import frodez.config.swagger.SwaggerProperties;
 import frodez.constant.settings.PropertyKey;
 import frodez.util.common.StrUtil;
 import frodez.util.spring.PropertyUtil;
@@ -29,9 +30,15 @@ public class TokenPlugin implements OperationBuilderPlugin {
 	@Autowired
 	private SecurityProperties securityProperties;
 
+	private boolean useCustomerizedPluggins = false;
+
+	public TokenPlugin(SwaggerProperties properties) {
+		this.useCustomerizedPluggins = properties.getUseCustomerizedPluggins();
+	}
+
 	@Override
 	public boolean supports(DocumentationType delimiter) {
-		return true;
+		return useCustomerizedPluggins;
 	}
 
 	@Override

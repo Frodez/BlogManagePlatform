@@ -7,7 +7,6 @@ import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.ILoginService;
 import frodez.util.beans.result.Result;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,8 +37,7 @@ public class LoginController {
 	 * @date 2018-12-21
 	 */
 	@TimeoutLock(3000)
-	@PostMapping("/auth")
-	@ApiOperation(value = "登录接口")
+	@PostMapping(value = "/auth", name = "登录接口")
 	public Result auth(@RequestBody DoLogin param) {
 		return loginService.login(param);
 	}
@@ -50,8 +48,7 @@ public class LoginController {
 	 * @date 2019-02-27
 	 */
 	@TimeoutLock(3000)
-	@PostMapping("/refresh")
-	@ApiOperation(value = "重新登录接口")
+	@PostMapping(value = "/refresh", name = "重新登录接口")
 	public Result refresh(@RequestBody DoRefresh param) {
 		return loginService.refresh(param);
 	}
@@ -62,8 +59,7 @@ public class LoginController {
 	 * @date 2019-02-19
 	 */
 	@TimeoutLock(3000)
-	@PostMapping("/out")
-	@ApiOperation(value = "登出接口")
+	@PostMapping(value = "/out", name = "登出接口")
 	public Result out() {
 		return loginService.logout();
 	}
@@ -73,7 +69,7 @@ public class LoginController {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	@GetMapping("/test")
+	@GetMapping(value = "/test", name = "测试用接口")
 	public Result test(@RequestParam("userName") String userName) {
 		return authorityService.getUserInfo(userName);
 	}
