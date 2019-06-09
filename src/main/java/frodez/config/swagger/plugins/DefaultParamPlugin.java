@@ -4,6 +4,7 @@ import static com.google.common.base.Strings.emptyToNull;
 import static springfox.documentation.swagger.common.SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER;
 
 import com.google.common.collect.ArrayListMultimap;
+import frodez.config.swagger.SwaggerProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +30,18 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 
 	private final DescriptionResolver descriptions;
 
+	private boolean useCustomerizedPluggins = false;
+
 	@Autowired
-	public DefaultParamPlugin(DescriptionResolver descriptions, EnumTypeDeterminer enumTypeDeterminer) {
+	public DefaultParamPlugin(DescriptionResolver descriptions, EnumTypeDeterminer enumTypeDeterminer,
+		SwaggerProperties properties) {
 		this.descriptions = descriptions;
+		this.useCustomerizedPluggins = properties.getUseCustomerizedPluggins();
 	}
 
 	@Override
 	public boolean supports(DocumentationType delimiter) {
-		return true;
+		return useCustomerizedPluggins;
 	}
 
 	@Override

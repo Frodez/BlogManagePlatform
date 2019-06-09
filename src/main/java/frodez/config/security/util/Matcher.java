@@ -8,6 +8,7 @@ import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.model.user.Permission;
 import frodez.util.common.StrUtil;
 import frodez.util.spring.ContextUtil;
+import frodez.util.spring.MVCUtil;
 import frodez.util.spring.PropertyUtil;
 import java.util.Collection;
 import java.util.HashSet;
@@ -15,14 +16,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.HandlerMapping;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /**
  * 路径匹配器<br>
@@ -71,35 +69,32 @@ public class Matcher {
 		permitPaths.add(errorPath);
 		basePermitPaths.add(errorPath);
 		//找出所有端点的url
-		BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false)
-			.values().stream().filter((iter) -> {
-				return iter instanceof RequestMappingHandlerMapping;
-			}).map((iter) -> {
-				return ((RequestMappingHandlerMapping) iter).getHandlerMethods().entrySet();
-			}).flatMap(Collection::stream).forEach((entry) -> {
-				//获取该端点的路径
-				String requestPath = StrUtil.concat(basePath, entry.getKey().getPatternsCondition().getPatterns()
-					.iterator().next());
-				HandlerMethod handlerMethod = entry.getValue();
-				//如果方法上标注了@VerifyStrategy注解,则该路径的配置由注解接管
-				VerifyStrategy verifyStrategy = handlerMethod.getMethodAnnotation(VerifyStrategy.class);
-				if (verifyStrategy != null) {
-					if (verifyStrategy.value() == VerifyStrategyEnum.FREE_PASS) {
-						permitPaths.add(requestPath);
-					} else {
-						needVerifyPaths.add(requestPath);
-					}
+		MVCUtil.requestMappingHandlerMappingStream().map((iter) -> {
+			return iter.getHandlerMethods().entrySet();
+		}).flatMap(Collection::stream).forEach((entry) -> {
+			//获取该端点的路径
+			String requestPath = StrUtil.concat(basePath, entry.getKey().getPatternsCondition().getPatterns().iterator()
+				.next());
+			HandlerMethod handlerMethod = entry.getValue();
+			//如果方法上标注了@VerifyStrategy注解,则该路径的配置由注解接管
+			VerifyStrategy verifyStrategy = handlerMethod.getMethodAnnotation(VerifyStrategy.class);
+			if (verifyStrategy != null) {
+				if (verifyStrategy.value() == VerifyStrategyEnum.FREE_PASS) {
+					permitPaths.add(requestPath);
+				} else {
+					needVerifyPaths.add(requestPath);
+				}
+				return;
+			}
+			//直接判断该路径是否需要验证,如果与免验证路径匹配则加入不需要验证路径,否则加入需要验证路径中
+			for (String path : basePermitPaths) {
+				if (matcher.match(path, requestPath)) {
+					permitPaths.add(requestPath);
 					return;
 				}
-				//直接判断该路径是否需要验证,如果与免验证路径匹配则加入不需要验证路径,否则加入需要验证路径中
-				for (String path : basePermitPaths) {
-					if (matcher.match(path, requestPath)) {
-						permitPaths.add(requestPath);
-						return;
-					}
-				}
-				needVerifyPaths.add(requestPath);
-			});
+			}
+			needVerifyPaths.add(requestPath);
+		});
 		Assert.notNull(matcher, "matcher must not be null");
 		Assert.notNull(needVerifyPaths, "needVerifyPaths must not be null");
 		Assert.notNull(permitPaths, "permitPaths must not be null");

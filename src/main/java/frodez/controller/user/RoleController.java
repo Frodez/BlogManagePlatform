@@ -9,7 +9,6 @@ import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -36,8 +35,7 @@ public class RoleController {
 	@Autowired
 	private IAuthorityService authorityService;
 
-	@GetMapping
-	@ApiOperation(value = "查询角色信息接口")
+	@GetMapping(name = "查询角色信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = RoleDetail.class) })
 	public Result getRole(@RequestParam("id") @ApiParam(value = "角色ID", required = true) Long id) {
 		return authorityService.getRole(id);
@@ -50,33 +48,28 @@ public class RoleController {
 	 * @throws ExecutionException
 	 * @date 2019-03-06
 	 */
-	@GetMapping("/page")
-	@ApiOperation(value = "分页查询角色信息接口")
+	@GetMapping(value = "/page", name = "分页查询角色信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Role.class) })
 	public Result getRoles(@RequestBody QueryPage param) {
 		return authorityService.getRoles(param);
 	}
 
-	@PostMapping("/updatePermission")
-	@ApiOperation(value = "修改角色权限接口")
+	@PostMapping(value = "/updatePermission", name = "修改角色权限接口")
 	public Result updateRolePermission(@RequestBody UpdateRolePermission param) {
 		return authorityService.updateRolePermission(param);
 	}
 
-	@DeleteMapping
-	@ApiOperation(value = "删除角色接口")
+	@DeleteMapping(name = "删除角色接口")
 	public Result removeRole(@RequestParam("id") @ApiParam(value = "角色ID", required = true) Long id) {
 		return authorityService.removeRole(id);
 	}
 
-	@PostMapping("/add")
-	@ApiOperation(value = "添加新角色接口")
+	@PostMapping(value = "/add", name = "添加新角色接口")
 	public Result addRole(@RequestBody AddRole param) {
 		return authorityService.addRole(param);
 	}
 
-	@PostMapping("/update")
-	@ApiOperation(value = "修改角色接口")
+	@PostMapping(value = "/update", name = "修改角色接口")
 	public Result updateRole(@RequestBody UpdateRole param) {
 		return authorityService.updateRole(param);
 	}

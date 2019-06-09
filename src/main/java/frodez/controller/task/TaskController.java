@@ -7,7 +7,6 @@ import frodez.service.task.base.BaseTaskService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -33,54 +32,46 @@ public class TaskController {
 	@Autowired
 	private BaseTaskService taskService;
 
-	@GetMapping("/availables")
-	@ApiOperation(value = "查询可用定时任务接口")
+	@GetMapping(value = "/availables", name = "查询可用定时任务接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = AvailableTaskInfo.class) })
 	public Result getAvailableTasks(@RequestBody QueryPage param) {
 		return taskService.getAvailableTasks(param);
 	}
 
-	@GetMapping("/runnings")
-	@ApiOperation(value = "查询正在运行定时任务接口")
+	@GetMapping(value = "/runnings", name = "查询正在运行定时任务接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Task.class) })
 	public Result getRunningTaskInfo(@RequestBody QueryPage param) {
 		return taskService.getRunningTasksInfo(param);
 	}
 
-	@GetMapping("/saves")
-	@ApiOperation(value = "查询已保存定时任务接口")
+	@GetMapping(value = "/saves", name = "查询已保存定时任务接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Task.class) })
 	public Result getTasks(@RequestBody QueryPage param) {
 		return taskService.getTasks(param);
 	}
 
-	@PostMapping("/add")
-	@ApiOperation(value = "添加新定时任务接口")
+	@PostMapping(value = "/add", name = "添加新定时任务接口")
 	public Result addTask(@RequestBody AddTask param) {
 		return taskService.addTask(param);
 	}
 
-	@PostMapping("/cancel/all")
-	@ApiOperation(value = "取消所有定时任务接口")
+	@PostMapping(value = "/cancel/all", name = "取消所有定时任务接口")
 	public Result cancelAll() {
 		return taskService.cancelAllTasks();
 	}
 
-	@PostMapping("/cancel")
-	@ApiOperation(value = "取消定时任务接口")
+	@PostMapping(value = "/cancel", name = "取消定时任务接口")
 	public Result cancelTask(@RequestParam("id") @ApiParam(value = "任务ID", required = true) Long id) {
 		return taskService.cancelTask(id);
 	}
 
-	@PostMapping("/change")
-	@ApiOperation(value = "更改定时任务活跃状态接口")
+	@PostMapping(value = "/change", name = "更改定时任务活跃状态接口")
 	public Result changeStatus(@RequestParam("id") @ApiParam(value = "任务ID", required = true) Long id,
 		@RequestParam("status") @ApiParam(value = "是否立刻启动 1:立刻启动 2:暂不启动", required = true) Byte status) {
 		return taskService.changeStatus(id, status);
 	}
 
-	@DeleteMapping
-	@ApiOperation(value = "删除定时任务接口")
+	@DeleteMapping(name = "删除定时任务接口")
 	public Result deleteTask(@RequestParam("id") @ApiParam(value = "任务ID", required = true) Long id) {
 		return taskService.deleteTask(id);
 	}

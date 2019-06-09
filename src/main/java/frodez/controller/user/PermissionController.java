@@ -10,7 +10,6 @@ import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -36,41 +35,35 @@ public class PermissionController {
 	@Autowired
 	private IAuthorityService authorityService;
 
-	@GetMapping
-	@ApiOperation(value = "查询权限信息接口")
+	@GetMapping(name = "查询权限信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = PermissionDetail.class) })
 	public Result getPermission(@RequestParam("id") @ApiParam(value = "权限ID", required = true) Long id) {
 		return authorityService.getPermission(id);
 	}
 
-	@GetMapping("/page")
-	@ApiOperation(value = "分页查询权限信息接口")
+	@GetMapping(value = "/page", name = "分页查询权限信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Permission.class) })
 	public Result getPermissions(@RequestBody QueryPage param) {
 		return authorityService.getPermissions(param);
 	}
 
-	@GetMapping("/byRoleId")
-	@ApiOperation(value = "根据角色ID获取权限信息接口")
+	@GetMapping(value = "/byRoleId", name = "根据角色ID获取权限信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = PermissionInfo.class) })
 	public Result getRolePermissions(@RequestBody QueryRolePermission param) {
 		return authorityService.getRolePermissions(param);
 	}
 
-	@DeleteMapping
-	@ApiOperation(value = "删除权限接口")
+	@DeleteMapping(name = "删除权限接口")
 	public Result removePermission(@RequestParam("id") @ApiParam(value = "权限ID", required = true) Long id) {
 		return authorityService.removePermission(id);
 	}
 
-	@PostMapping("/add")
-	@ApiOperation(value = "添加新权限接口")
+	@PostMapping(value = "/add", name = "添加新权限接口")
 	public Result addPermission(@RequestBody AddPermission param) {
 		return authorityService.addPermission(param);
 	}
 
-	@PostMapping("/update")
-	@ApiOperation(value = "修改权限接口")
+	@PostMapping(value = "/update", name = "修改权限接口")
 	public Result updatePermission(@RequestBody UpdatePermission param) {
 		return authorityService.updatePermission(param);
 	}
