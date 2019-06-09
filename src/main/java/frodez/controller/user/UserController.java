@@ -1,8 +1,6 @@
 package frodez.controller.user;
 
 import frodez.config.aop.request.annotation.RepeatLock;
-import frodez.config.security.annotation.VerifyStrategy;
-import frodez.config.security.annotation.VerifyStrategy.VerifyStrategyEnum;
 import frodez.config.security.util.UserUtil;
 import frodez.dao.param.user.Doregister;
 import frodez.service.user.facade.IAuthorityService;
@@ -36,7 +34,6 @@ public class UserController {
 	private IUserService userService;
 
 	@RepeatLock
-	@VerifyStrategy(VerifyStrategyEnum.MUST_VERIFY)
 	@GetMapping(value = "/info/self", name = "查看本用户信息接口")
 	public Result getUserInfo() {
 		return Result.success(UserUtil.get());

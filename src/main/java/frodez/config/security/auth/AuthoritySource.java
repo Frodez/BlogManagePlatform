@@ -74,47 +74,48 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 */
 	@PostConstruct
 	private void init() {
+		if (defaultDeniedRoles != null || allCache != null || urlCache != null || urlTypeCache != null) {
+			return;
+		}
 		defaultDeniedRoles = List.of(new SecurityConfig(ContextUtil.get(SecurityProperties.class).getAuth()
 			.getDeniedRole()));
-		if (allCache == null) {
-			List<Permission> permissions = ContextUtil.get(PermissionMapper.class).selectAll();
-			allCache = permissions.stream().map((iter) -> {
+		List<Permission> permissions = ContextUtil.get(PermissionMapper.class).selectAll();
+		allCache = permissions.stream().map((iter) -> {
+			return new SecurityConfig(iter.getName());
+		}).collect(Collectors.toList());
+		urlCache = permissions.stream().collect(Collectors.toMap(Permission::getUrl, iter -> {
+			Collection<ConfigAttribute> list = new ArrayList<>();
+			list.add(new SecurityConfig(iter.getName()));
+			return list;
+		}, (Collection<ConfigAttribute> a, Collection<ConfigAttribute> b) -> {
+			a.addAll(b);
+			return a;
+		}));
+		urlTypeCache = new HashMap<>();
+		List<String> urls = permissions.stream().map(Permission::getUrl).distinct().collect(Collectors.toList());
+		for (String url : urls) {
+			Map<PermissionTypeEnum, Collection<ConfigAttribute>> typeMap = new EnumMap<>(PermissionTypeEnum.class);
+			for (PermissionTypeEnum type : PermissionTypeEnum.values()) {
+				if (type != PermissionTypeEnum.ALL) {
+					Collection<ConfigAttribute> configs = permissions.stream().filter((iter) -> {
+						return iter.getUrl().equals(url) && iter.getType().equals(type.getVal());
+					}).map((iter) -> {
+						return new SecurityConfig(iter.getName());
+					}).collect(Collectors.toList());
+					typeMap.put(type, configs);
+				}
+			}
+			List<SecurityConfig> allConfigs = permissions.stream().filter((iter) -> {
+				return iter.getUrl().equals(url) && iter.getType().equals(PermissionTypeEnum.ALL.getVal());
+			}).map((iter) -> {
 				return new SecurityConfig(iter.getName());
 			}).collect(Collectors.toList());
-			urlCache = permissions.stream().collect(Collectors.toMap(Permission::getUrl, iter -> {
-				Collection<ConfigAttribute> list = new ArrayList<>();
-				list.add(new SecurityConfig(iter.getName()));
-				return list;
-			}, (Collection<ConfigAttribute> a, Collection<ConfigAttribute> b) -> {
-				a.addAll(b);
-				return a;
-			}));
-			urlTypeCache = new HashMap<>();
-			List<String> urls = permissions.stream().map(Permission::getUrl).distinct().collect(Collectors.toList());
-			for (String url : urls) {
-				Map<PermissionTypeEnum, Collection<ConfigAttribute>> typeMap = new EnumMap<>(PermissionTypeEnum.class);
-				for (PermissionTypeEnum type : PermissionTypeEnum.values()) {
-					if (type != PermissionTypeEnum.ALL) {
-						Collection<ConfigAttribute> configs = permissions.stream().filter((iter) -> {
-							return iter.getUrl().equals(url) && iter.getType().equals(type.getVal());
-						}).map((iter) -> {
-							return new SecurityConfig(iter.getName());
-						}).collect(Collectors.toList());
-						typeMap.put(type, configs);
-					}
-				}
-				List<SecurityConfig> allConfigs = permissions.stream().filter((iter) -> {
-					return iter.getUrl().equals(url) && iter.getType().equals(PermissionTypeEnum.ALL.getVal());
-				}).map((iter) -> {
-					return new SecurityConfig(iter.getName());
-				}).collect(Collectors.toList());
-				for (Entry<PermissionTypeEnum, Collection<ConfigAttribute>> entry : typeMap.entrySet()) {
-					Collection<ConfigAttribute> configs = entry.getValue();
-					configs.addAll(allConfigs);
-					entry.setValue(configs.stream().distinct().collect(Collectors.toList()));
-				}
-				urlTypeCache.put(url, typeMap);
+			for (Entry<PermissionTypeEnum, Collection<ConfigAttribute>> entry : typeMap.entrySet()) {
+				Collection<ConfigAttribute> configs = entry.getValue();
+				configs.addAll(allConfigs);
+				entry.setValue(configs.stream().distinct().collect(Collectors.toList()));
 			}
+			urlTypeCache.put(url, typeMap);
 		}
 		Assert.notNull(defaultDeniedRoles, "defaultDeniedRoles must not be null");
 		Assert.notNull(allCache, "allCache must not be null");
