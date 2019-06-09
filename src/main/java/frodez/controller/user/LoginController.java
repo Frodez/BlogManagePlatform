@@ -1,6 +1,6 @@
 package frodez.controller.user;
 
-import frodez.config.aop.request.annotation.RepeatLock;
+import frodez.config.aop.request.annotation.TimeoutLock;
 import frodez.dao.param.user.DoLogin;
 import frodez.dao.param.user.DoRefresh;
 import frodez.service.user.facade.IAuthorityService;
@@ -37,7 +37,7 @@ public class LoginController {
 	 * @author Frodez
 	 * @date 2018-12-21
 	 */
-	@RepeatLock
+	@TimeoutLock(3000)
 	@PostMapping("/auth")
 	@ApiOperation(value = "登录接口")
 	public Result auth(@RequestBody DoLogin param) {
@@ -49,7 +49,7 @@ public class LoginController {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	@RepeatLock
+	@TimeoutLock(3000)
 	@PostMapping("/refresh")
 	@ApiOperation(value = "重新登录接口")
 	public Result refresh(@RequestBody DoRefresh param) {
@@ -61,7 +61,7 @@ public class LoginController {
 	 * @author Frodez
 	 * @date 2019-02-19
 	 */
-	@RepeatLock
+	@TimeoutLock(3000)
 	@PostMapping("/out")
 	@ApiOperation(value = "登出接口")
 	public Result out() {

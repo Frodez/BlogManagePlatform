@@ -40,6 +40,7 @@ public class ValidationTest {
 		System.out.println(ValidationUtil.validate(innerBean));
 	}
 
+	@Test
 	public void test2() throws JsonProcessingException, InvocationTargetException {
 		QueryRolePermission param = new QueryRolePermission();
 		param.setRoleId(1L);
@@ -51,8 +52,8 @@ public class ValidationTest {
 		System.out.println(result.json());
 		AddPermission addPermission = new AddPermission();
 		addPermission.setName("2222");
-		addPermission.setUrl("33333");
-		addPermission.setDescription("3333333");
+		addPermission.setUrl(null);
+		addPermission.setDescription(null);
 		addPermission.setType((byte) -1);
 		result = authorityService.addPermission(addPermission);
 		System.out.println(result.json());

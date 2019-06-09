@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class UserIdMapCache implements UserIdCache {
 
 	/**
-	 * 缓存 key:name, value:UserInfo
+	 * 缓存 key:userId, value:UserInfo
 	 */
 	private Map<Long, UserInfo> cache = new ConcurrentHashMap<>();
 
