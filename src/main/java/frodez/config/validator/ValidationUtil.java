@@ -61,21 +61,8 @@ public class ValidationUtil {
 	 */
 	public static String validateParam(final Object instance, final Method method, final Object[] args) {
 		Set<ConstraintViolation<Object>> set = engine.forExecutables().validateParameters(instance, method, args);
-		if (set.isEmpty()) {
-			return null;
-		}
 		//因为failFast写死为true,不考虑其他情况,为了提高效率,故此处直接取错误信息的第一条.
-		ConstraintViolation<Object> firstError = set.iterator().next();
-		List<Node> nodes = StreamSupport.stream(firstError.getPropertyPath().spliterator(), false).filter((node) -> {
-			return node.getKind() == ElementKind.PROPERTY || node.getKind() == ElementKind.PARAMETER || node
-				.getKind() == ElementKind.CROSS_PARAMETER;
-		}).collect(Collectors.toList());
-		if (EmptyUtil.no(nodes)) {
-			//获取最后一个节点,这个节点才是需要透露的信息
-			return StrUtil.concat(nodes.get(nodes.size() - 1).getName(), DefStr.SEPERATOR, firstError.getMessage());
-		} else {
-			return firstError.getMessage();
-		}
+		return set.isEmpty() ? null : getErrorMessage(set.iterator().next());
 	}
 
 	/**
@@ -101,22 +88,8 @@ public class ValidationUtil {
 			return nullMessage;
 		}
 		Set<ConstraintViolation<Object>> set = engine.validate(object);
-		if (set.isEmpty()) {
-			return null;
-		}
 		//因为failFast写死为true,不考虑其他情况,为了提高效率,故此处直接取错误信息的第一条.
-		ConstraintViolation<Object> firstError = set.iterator().next();
-		//获取错误定位
-		List<Node> nodes = StreamSupport.stream(firstError.getPropertyPath().spliterator(), false).filter((node) -> {
-			return node.getKind() == ElementKind.PROPERTY || node.getKind() == ElementKind.PARAMETER || node
-				.getKind() == ElementKind.CROSS_PARAMETER;
-		}).collect(Collectors.toList());
-		if (EmptyUtil.no(nodes)) {
-			//获取最后一个节点,这个节点才是需要透露的信息
-			return StrUtil.concat(nodes.get(nodes.size() - 1).getName(), DefStr.SEPERATOR, firstError.getMessage());
-		} else {
-			return firstError.getMessage();
-		}
+		return set.isEmpty() ? null : getErrorMessage(set.iterator().next());
 	}
 
 	/**
@@ -127,6 +100,20 @@ public class ValidationUtil {
 	public static ConstraintValidatorContext changeMessage(ConstraintValidatorContext context, String message) {
 		context.disableDefaultConstraintViolation();
 		return context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+	}
+
+	private static String getErrorMessage(ConstraintViolation<Object> violation) {
+		String errorSource = getErrorSource(violation);
+		return EmptyUtil.yes(errorSource) ? violation.getMessage() : StrUtil.concat(errorSource, DefStr.SEPERATOR,
+			violation.getMessage());
+	}
+
+	private static String getErrorSource(ConstraintViolation<Object> violation) {
+		List<Node> nodes = StreamSupport.stream(violation.getPropertyPath().spliterator(), false).filter((node) -> {
+			return node.getKind() == ElementKind.PROPERTY || node.getKind() == ElementKind.PARAMETER || node
+				.getKind() == ElementKind.CROSS_PARAMETER;
+		}).collect(Collectors.toList());
+		return nodes.isEmpty() ? null : nodes.get(nodes.size() - 1).getName();
 	}
 
 }
