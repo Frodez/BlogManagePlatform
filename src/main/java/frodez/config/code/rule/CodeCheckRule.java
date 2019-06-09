@@ -6,10 +6,22 @@ import java.lang.reflect.Method;
 
 public interface CodeCheckRule {
 
+	default boolean support(Class<?> klass) throws CodeCheckException {
+		return true;
+	};
+
 	default void check(Class<?> klass) throws CodeCheckException {
 	};
 
+	default boolean support(Field field) throws CodeCheckException {
+		return true;
+	};
+
 	default void check(Field field) throws CodeCheckException {
+	};
+
+	default boolean support(Method method) throws CodeCheckException {
+		return true;
 	};
 
 	default void check(Method method) throws CodeCheckException {

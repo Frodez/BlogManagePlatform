@@ -35,14 +35,18 @@ public class CodeChecker {
 	public void checkField(Field field) throws CodeCheckException {
 		Assert.notNull(field, "field must not be null");
 		for (CodeCheckRule rule : rules) {
-			rule.check(field);
+			if (rule.support(field)) {
+				rule.check(field);
+			}
 		}
 	}
 
 	public void checkMethod(Method method) throws CodeCheckException {
 		Assert.notNull(method, "field must not be null");
 		for (CodeCheckRule rule : rules) {
-			rule.check(method);
+			if (rule.support(method)) {
+				rule.check(method);
+			}
 		}
 	}
 

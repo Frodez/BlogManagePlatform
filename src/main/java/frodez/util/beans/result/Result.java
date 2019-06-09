@@ -84,7 +84,7 @@ public final class Result implements Serializable {
 	/**
 	 * 默认类型实例
 	 */
-	private static transient final Map<ResultEnum, Result> DEFAULT_RESULT_CACHE = new EnumMap<>(ResultEnum.class);
+	private static transient final EnumMap<ResultEnum, Result> DEFAULT_RESULT_CACHE = new EnumMap<>(ResultEnum.class);
 
 	/**
 	 * jackson writer
@@ -217,10 +217,6 @@ public final class Result implements Serializable {
 	 */
 	public static <T> Result page(Page<T> page) {
 		Assert.notNull(page, "page must not be null");
-		Assert.notNull(page.getPageNum(), "page.getPageNum() must not be null");
-		Assert.notNull(page.getPageSize(), "page.getPageSize() must not be null");
-		Assert.notNull(page.getTotal(), "page.getTotal() must not be null");
-		Assert.notNull(page.getResult(), "page.getResult() must not be null");
 		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(),
 			page.getResult()));
 	}
@@ -233,8 +229,9 @@ public final class Result implements Serializable {
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */
-	public static <T> Result page(@SuppressWarnings("rawtypes") Page page, Collection<T> data) {
+	public static <T> Result page(Page<?> page, Collection<T> data) {
 		Assert.notNull(page, "page must not be null");
+		Assert.notNull(data, "data must not be null");
 		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(),
 			data));
 	}
@@ -260,8 +257,9 @@ public final class Result implements Serializable {
 	 * @author Frodez
 	 * @date 2019-01-15
 	 */
-	public static <T> Result page(@SuppressWarnings("rawtypes") PageInfo page, Collection<T> data) {
+	public static <T> Result page(PageInfo<?> page, Collection<T> data) {
 		Assert.notNull(page, "page must not be null");
+		Assert.notNull(data, "data must not be null");
 		return new Result(ResultEnum.SUCCESS, new PageData<>(page.getPageNum(), page.getPageSize(), page.getTotal(),
 			data));
 	}

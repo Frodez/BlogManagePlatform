@@ -2,7 +2,9 @@ package frodez.config.swagger.plugins;
 
 import frodez.config.security.settings.SecurityProperties;
 import frodez.config.security.util.Matcher;
+import frodez.constant.settings.PropertyKey;
 import frodez.util.common.StrUtil;
+import frodez.util.spring.PropertyUtil;
 import java.util.Arrays;
 import org.apache.logging.log4j.core.config.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,17 +36,16 @@ public class TokenPlugin implements OperationBuilderPlugin {
 
 	@Override
 	public void apply(OperationContext context) {
-		String basePath = context.getDocumentationContext().getPathMapping().or("");
-		String path = StrUtil.concat(basePath, context.requestMappingPattern());
+		String path = StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), context.requestMappingPattern());
 		if (Matcher.needVerify(path)) {
 			context.operationBuilder().parameters(Arrays.asList(addTokenHeader()));
 		}
 	}
 
 	private Parameter addTokenHeader() {
-		return new ParameterBuilder().name("token").description(StrUtil.concat("key: ", securityProperties.getJwt()
-			.getHeader(), "\nvalue: token", "\nprefix: ", securityProperties.getJwt().getTokenPrefix(), "..."))
-			.required(true).parameterType("header").modelRef(new ModelRef("string")).build();
+		return new ParameterBuilder().name(securityProperties.getJwt().getHeader()).description(StrUtil.concat(
+			"value: token", "\nprefix: ", securityProperties.getJwt().getTokenPrefix(), "...")).required(true)
+			.parameterType("header").modelRef(new ModelRef("string")).build();
 	}
 
 }

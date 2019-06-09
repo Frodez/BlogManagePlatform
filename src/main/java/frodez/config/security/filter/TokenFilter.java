@@ -38,6 +38,7 @@ public class TokenFilter extends OncePerRequestFilter {
 				} catch (TokenExpiredException e) {
 					//如果token超时失效,这里不删除token,而是告诉客户端token失效,让客户端重新登陆.
 					ServletUtil.writeJson(response, Result.expired());
+					return;
 				}
 				if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user,

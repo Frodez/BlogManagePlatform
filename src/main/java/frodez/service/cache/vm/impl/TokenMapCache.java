@@ -40,9 +40,6 @@ public class TokenMapCache implements TokenCache {
 
 	@Override
 	public UserInfo get(String token) {
-		if (!cache.containsKey(token)) {
-			throw new RuntimeException("缓存中无此token!");
-		}
 		return cache.get(token);
 	}
 
@@ -69,9 +66,6 @@ public class TokenMapCache implements TokenCache {
 
 	@Override
 	public void remove(String token) {
-		if (!cache.containsKey(token)) {
-			throw new RuntimeException("缓存中无此token!");
-		}
 		cache.remove(token);
 	}
 
