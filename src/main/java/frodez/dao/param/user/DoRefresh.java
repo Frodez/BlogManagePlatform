@@ -28,14 +28,14 @@ public class DoRefresh implements Serializable {
 	 */
 	@NotBlank
 	@Length(min = 3, max = 25)
-	@ApiModelProperty(value = "用户名", required = true)
+	@ApiModelProperty(value = "用户名")
 	private String username;
 
 	/**
 	 * 原token
 	 */
 	@NotBlank
-	@ApiModelProperty(value = "原token", required = true)
+	@ApiModelProperty(value = "原token")
 	private String oldToken;
 
 }

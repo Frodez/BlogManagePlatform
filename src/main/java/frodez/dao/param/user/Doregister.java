@@ -30,7 +30,7 @@ public class Doregister implements Serializable {
 	 */
 	@NotBlank
 	@Length(min = 3, max = 25)
-	@ApiModelProperty(value = "用户名", required = true)
+	@ApiModelProperty(value = "用户名")
 	private String name;
 
 	/**
@@ -38,28 +38,28 @@ public class Doregister implements Serializable {
 	 */
 	@NotBlank
 	@Length(min = 8, max = 30)
-	@ApiModelProperty(value = "密码", required = true)
+	@ApiModelProperty(value = "密码")
 	private String password;
 
 	/**
 	 * 昵称
 	 */
 	@Length(min = 3, max = 25)
-	@ApiModelProperty(value = "昵称", required = false)
+	@ApiModelProperty(value = "昵称")
 	private String nickname;
 
 	/**
 	 * 邮箱地址
 	 */
 	@Email
-	@ApiModelProperty(value = "邮箱地址", required = false)
+	@ApiModelProperty(value = "邮箱地址")
 	private String email;
 
 	/**
 	 * 电话号码
 	 */
 	@Mobile
-	@ApiModelProperty(value = "电话号码", required = false)
+	@ApiModelProperty(value = "电话号码")
 	private String phone;
 
 }

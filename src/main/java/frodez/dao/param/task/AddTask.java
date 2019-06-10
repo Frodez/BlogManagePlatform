@@ -31,7 +31,7 @@ public class AddTask implements Serializable {
 	 */
 	@NotBlank
 	@Length(max = 255)
-	@ApiModelProperty(value = "目标", required = true)
+	@ApiModelProperty(value = "目标")
 	private String target;
 
 	/**
@@ -39,7 +39,7 @@ public class AddTask implements Serializable {
 	 */
 	@NotBlank
 	@Length(max = 65535)
-	@ApiModelProperty(value = "任务描述", required = true)
+	@ApiModelProperty(value = "任务描述")
 	private String description;
 
 	/**
@@ -47,7 +47,7 @@ public class AddTask implements Serializable {
 	 */
 	@NotBlank
 	@Length(max = 31)
-	@ApiModelProperty(value = "cron表达式", required = true)
+	@ApiModelProperty(value = "cron表达式")
 	private String cronExp;
 
 	/**
@@ -55,7 +55,7 @@ public class AddTask implements Serializable {
 	 */
 	@NotNull
 	@LegalEnum(type = StatusEnum.class)
-	@ApiModelProperty(value = "是否立刻启动 1:立刻启动 2:暂不启动", required = true)
+	@ApiModelProperty(value = "是否立刻启动 1:立刻启动 2:暂不启动")
 	private Byte startNow;
 
 }

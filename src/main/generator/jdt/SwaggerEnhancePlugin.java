@@ -73,14 +73,15 @@ public class SwaggerEnhancePlugin extends EnhancePlugin {
 				} else {
 					properties.put("value", fieldJavaDocs.get(0));
 				}
-				if (isNotNull(field)) {
-					properties.put("required", true);
-				}
+				//				if (isNotNull(field)) {
+				//					properties.put("required", true);
+				//				}
 				JDTUtil.addFieldAnnotation(unit, field, ApiModelProperty.class, properties);
 			}
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private boolean isNotNull(FieldDeclaration field) {
 		for (Object item : field.modifiers()) {
 			if (item instanceof NormalAnnotation) {

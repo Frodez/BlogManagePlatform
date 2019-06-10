@@ -32,7 +32,7 @@ public class AddRole implements Serializable {
 	 */
 	@NotBlank
 	@Length(min = 3, max = 255)
-	@ApiModelProperty(value = "角色名称", required = true)
+	@ApiModelProperty(value = "角色名称")
 	private String name;
 
 	/**
@@ -41,7 +41,7 @@ public class AddRole implements Serializable {
 	@Min(0)
 	@Max(9)
 	@NotNull
-	@ApiModelProperty(value = "角色等级 0-9 0最高,9最低", required = true)
+	@ApiModelProperty(value = "角色等级 0-9 0最高,9最低")
 	private Byte level;
 
 	/**

@@ -9,6 +9,7 @@ import frodez.util.spring.PropertyUtil;
 import java.util.Arrays;
 import org.apache.logging.log4j.core.config.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.schema.ModelRef;
@@ -24,6 +25,7 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
  * @date 2019-06-06
  */
 @Component
+@Profile({ "dev", "test" })
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 1000)
 public class TokenPlugin implements OperationBuilderPlugin {
 

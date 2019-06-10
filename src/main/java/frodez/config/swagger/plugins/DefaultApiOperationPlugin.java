@@ -3,8 +3,12 @@ package frodez.config.swagger.plugins;
 import com.google.common.base.Optional;
 import frodez.config.swagger.SwaggerProperties;
 import frodez.util.common.EmptyUtil;
+import frodez.util.common.StrUtil;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.core.config.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +26,9 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
  * @author Frodez
  * @date 2019-06-09
  */
+@Slf4j
 @Component
+@Profile({ "dev", "test" })
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 200)
 public class DefaultApiOperationPlugin implements OperationBuilderPlugin {
 
@@ -43,10 +49,15 @@ public class DefaultApiOperationPlugin implements OperationBuilderPlugin {
 
 	@Override
 	public void apply(OperationContext context) {
-		String defaultName = resolveNameAttribute(context);
-		if (EmptyUtil.no(defaultName)) {
-			context.operationBuilder().summary(descriptions.resolve(defaultName));
+		if (context.findAnnotation(ApiOperation.class).isPresent()) {
+			return;
 		}
+		String defaultName = resolveNameAttribute(context);
+		if (EmptyUtil.yes(defaultName)) {
+			log.warn(StrUtil.concat(context.requestMappingPattern(), "的接口名未配置"));
+			return;
+		}
+		context.operationBuilder().summary(descriptions.resolve(defaultName));
 	}
 
 	private String resolveNameAttribute(OperationContext context) {

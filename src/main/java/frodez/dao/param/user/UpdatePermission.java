@@ -29,7 +29,7 @@ public class UpdatePermission implements Serializable {
 	 * 权限ID
 	 */
 	@NotNull
-	@ApiModelProperty(value = "权限ID", required = true)
+	@ApiModelProperty(value = "权限ID")
 	private Long id;
 
 	/**

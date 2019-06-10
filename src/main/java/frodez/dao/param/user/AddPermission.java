@@ -31,7 +31,7 @@ public class AddPermission implements Serializable {
 	 */
 	@NotBlank
 	@Length(max = 100)
-	@ApiModelProperty(value = "权限名称", required = true)
+	@ApiModelProperty(value = "权限名称")
 	private String name;
 
 	/**
@@ -39,7 +39,7 @@ public class AddPermission implements Serializable {
 	 */
 	@NotNull
 	@LegalEnum(type = PermissionTypeEnum.class)
-	@ApiModelProperty(value = "类型 0:ALL 1:GET 2:POST 3:DELETE 4:PUT(不能为空,默认值:0)", required = true)
+	@ApiModelProperty(value = "类型 0:ALL 1:GET 2:POST 3:DELETE 4:PUT(不能为空,默认值:0)")
 	private Byte type;
 
 	/**
@@ -47,7 +47,7 @@ public class AddPermission implements Serializable {
 	 */
 	@NotBlank
 	@Length(max = 255)
-	@ApiModelProperty(value = "地址", required = true)
+	@ApiModelProperty(value = "地址")
 	private String url;
 
 	/**

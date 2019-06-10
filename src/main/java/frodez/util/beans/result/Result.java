@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -134,6 +135,7 @@ public final class Result implements Serializable {
 	/**
 	 * 状态
 	 */
+	@NotNull
 	@ApiModelProperty(value = "状态", example = "1000")
 	private int code;
 
@@ -149,6 +151,7 @@ public final class Result implements Serializable {
 	/**
 	 * 消息
 	 */
+	@NotNull
 	@ApiModelProperty(value = "消息", example = "成功")
 	private String message;
 

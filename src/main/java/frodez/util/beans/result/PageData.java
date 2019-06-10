@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class PageData<T> implements Serializable {
 	 * 页码数
 	 */
 	@Getter
+	@NotNull
 	@ApiModelProperty(value = "页码数")
 	private int pageNum;
 
@@ -36,6 +38,7 @@ public class PageData<T> implements Serializable {
 	 * 单页容量
 	 */
 	@Getter
+	@NotNull
 	@ApiModelProperty(value = "单页容量")
 	private int pageSize;
 
@@ -43,6 +46,7 @@ public class PageData<T> implements Serializable {
 	 * 查询总数
 	 */
 	@Getter
+	@NotNull
 	@ApiModelProperty(value = "查询总数")
 	private long total;
 
@@ -50,6 +54,7 @@ public class PageData<T> implements Serializable {
 	 * 分页数据
 	 */
 	@Getter
+	@NotNull
 	@ApiModelProperty(value = "分页数据")
 	private Collection<T> page;
 
