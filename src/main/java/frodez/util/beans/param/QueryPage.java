@@ -8,6 +8,7 @@ import frodez.constant.settings.DefPage;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -72,6 +73,7 @@ public class QueryPage implements IPage, Serializable {
 	 * 页码数
 	 */
 	@Getter
+	@NotNull
 	@ApiModelProperty(value = "页码数,必须大于0", example = "5")
 	private Integer pageNum;
 
@@ -79,6 +81,7 @@ public class QueryPage implements IPage, Serializable {
 	 * 单页容量
 	 */
 	@Getter
+	@NotNull
 	@ApiModelProperty(value = "单页容量,必须大于0且小于限定值", example = "20")
 	private Integer pageSize;
 

@@ -29,7 +29,7 @@ public class QueryRolePermission implements Serializable {
 	 * 角色ID
 	 */
 	@NotNull
-	@ApiModelProperty(value = "角色ID", required = true)
+	@ApiModelProperty(value = "角色ID")
 	private Long roleId;
 
 	/**

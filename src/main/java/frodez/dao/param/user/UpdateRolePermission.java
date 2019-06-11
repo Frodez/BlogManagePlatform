@@ -30,7 +30,7 @@ public class UpdateRolePermission implements Serializable {
 	 * 角色ID
 	 */
 	@NotNull
-	@ApiModelProperty(value = "角色ID", required = true)
+	@ApiModelProperty(value = "角色ID")
 	private Long roleId;
 
 	/**
@@ -38,7 +38,7 @@ public class UpdateRolePermission implements Serializable {
 	 */
 	@NotNull
 	@LegalEnum(type = ModifyEnum.class)
-	@ApiModelProperty(value = "操作类型  1:新增  2:删除  3:修改", required = true)
+	@ApiModelProperty(value = "操作类型  1:新增  2:删除  3:修改")
 	private Byte operationType;
 
 	/**
