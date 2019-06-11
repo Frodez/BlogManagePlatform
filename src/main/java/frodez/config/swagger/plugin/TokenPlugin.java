@@ -1,4 +1,4 @@
-package frodez.config.swagger.plugins;
+package frodez.config.swagger.plugin;
 
 import frodez.config.security.settings.SecurityProperties;
 import frodez.config.security.util.Matcher;

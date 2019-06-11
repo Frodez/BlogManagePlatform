@@ -1,4 +1,4 @@
-package frodez.config.swagger.plugins;
+package frodez.config.swagger.plugin;
 
 import com.google.common.base.Optional;
 import frodez.config.swagger.SwaggerProperties;

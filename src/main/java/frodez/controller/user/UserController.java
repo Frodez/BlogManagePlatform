@@ -41,26 +41,25 @@ public class UserController {
 
 	@RepeatLock
 	@GetMapping(value = "/info/byId", name = "查看用户信息接口")
-	public Result getUserInfoById(@RequestParam("userId") @ApiParam(value = "用户ID", required = true) Long userId) {
+	public Result getUserInfoById(@RequestParam("userId") @ApiParam(value = "用户ID") Long userId) {
 		return authorityService.getUserInfo(userId);
 	}
 
 	@RepeatLock
 	@GetMapping(value = "/info/byName", name = "查看用户信息接口")
-	public Result getUserInfoByName(@RequestParam("userName") @ApiParam(value = "用户名",
-		required = true) String userName) {
+	public Result getUserInfoByName(@RequestParam("userName") @ApiParam(value = "用户名") String userName) {
 		return authorityService.getUserInfo(userName);
 	}
 
 	@RepeatLock
 	@GetMapping(value = "/info/byIds", name = "批量查看用户信息接口")
-	public Result getUserInfosById(@RequestBody @ApiParam(value = "用户ID", required = true) List<Long> userIds) {
+	public Result getUserInfosById(@RequestBody @ApiParam(value = "用户ID") List<Long> userIds) {
 		return authorityService.getUserInfosByIds(userIds, false);
 	}
 
 	@RepeatLock
 	@GetMapping(value = "/info/byNames", name = "批量查看用户信息接口")
-	public Result getUserInfosByName(@RequestBody @ApiParam(value = "用户名", required = true) List<String> userNames) {
+	public Result getUserInfosByName(@RequestBody @ApiParam(value = "用户名") List<String> userNames) {
 		return authorityService.getUserInfosByNames(userNames, false);
 	}
 

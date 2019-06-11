@@ -1,4 +1,4 @@
-package frodez.config.swagger.plugins;
+package frodez.config.swagger.plugin;
 
 import static com.google.common.base.Strings.emptyToNull;
 import static springfox.documentation.swagger.common.SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER;
@@ -71,7 +71,7 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 	private void defaultApiParam(ParameterContext context, ApiModel annotation) {
 		context.parameterBuilder().name(emptyToNull(annotation.description())).description(emptyToNull(descriptions
 			.resolve(annotation.description()))).parameterAccess(emptyToNull(null)).defaultValue(emptyToNull(null))
-			.allowMultiple(false).allowEmptyValue(false).required(true).scalarExample(new Example("")).complexExamples(
+			.allowMultiple(false).allowEmptyValue(false).scalarExample(new Example("")).complexExamples(
 				ArrayListMultimap.create()).hidden(false).collectionFormat("").order(SWAGGER_PLUGIN_ORDER);
 	}
 

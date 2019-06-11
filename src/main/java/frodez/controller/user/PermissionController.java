@@ -37,7 +37,7 @@ public class PermissionController {
 
 	@GetMapping(name = "查询权限信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = PermissionDetail.class) })
-	public Result getPermission(@RequestParam("id") @ApiParam(value = "权限ID", required = true) Long id) {
+	public Result getPermission(@RequestParam(value = "id") @ApiParam(value = "权限ID") Long id) {
 		return authorityService.getPermission(id);
 	}
 
@@ -54,7 +54,7 @@ public class PermissionController {
 	}
 
 	@DeleteMapping(name = "删除权限接口")
-	public Result removePermission(@RequestParam("id") @ApiParam(value = "权限ID", required = true) Long id) {
+	public Result removePermission(@RequestParam("id") @ApiParam(value = "权限ID") Long id) {
 		return authorityService.removePermission(id);
 	}
 

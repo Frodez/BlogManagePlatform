@@ -1,4 +1,4 @@
-package frodez.config.swagger.plugins;
+package frodez.config.swagger.plugin;
 
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.google.common.base.Optional;
@@ -17,6 +17,11 @@ import springfox.documentation.spi.schema.ModelPropertyBuilderPlugin;
 import springfox.documentation.spi.schema.contexts.ModelPropertyContext;
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
+/**
+ * 自动检测字段是否为必填
+ * @author Frodez
+ * @date 2019-06-11
+ */
 @Component
 @Profile({ "dev", "test" })
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 300)
