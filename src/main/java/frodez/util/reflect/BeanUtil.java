@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.beans.BeanMap;
@@ -62,8 +63,8 @@ public class BeanUtil {
 	 * @throws InvocationTargetException
 	 * @date 2019-03-10
 	 */
-	public static <T> T initialize(Object source, Class<T> target) throws InvocationTargetException,
-		IllegalArgumentException, IllegalAccessException {
+	@SneakyThrows
+	public static <T> T initialize(Object source, Class<T> target) {
 		T bean = clearInstance(target);
 		getCopier(source, bean).copy(source, bean, null);
 		return bean;
@@ -90,7 +91,8 @@ public class BeanUtil {
 	 * @throws InvocationTargetException
 	 * @date 2019-03-10
 	 */
-	public static void cover(Object source, Object target) throws InvocationTargetException {
+	@SneakyThrows
+	public static void cover(Object source, Object target) {
 		clear(target);
 		getCopier(source, target).copy(source, target, null);
 	}
@@ -113,7 +115,8 @@ public class BeanUtil {
 	 * @throws InvocationTargetException
 	 * @date 2019-02-08
 	 */
-	public static <T> T as(Map<String, Object> map, Class<T> klass) throws InvocationTargetException {
+	@SneakyThrows
+	public static <T> T as(Map<String, Object> map, Class<T> klass) {
 		Assert.notNull(map, "map must not be null");
 		T bean = ReflectUtil.newInstance(klass);
 		BeanMap.create(bean).putAll(map);
@@ -130,7 +133,8 @@ public class BeanUtil {
 	 * @throws InvocationTargetException
 	 * @date 2019-02-08
 	 */
-	public static void clear(Object bean) throws InvocationTargetException {
+	@SneakyThrows
+	public static void clear(Object bean) {
 		Assert.notNull(bean, "bean must not be null");
 		List<FastMethod> methods = setters(bean.getClass());
 		int length = methods.size();
@@ -210,8 +214,8 @@ public class BeanUtil {
 	 * @author Frodez
 	 * @date 2019-05-22
 	 */
-	public static List<FastMethod> getDefaultNotNullSetters(Class<?> klass) throws IllegalArgumentException,
-		IllegalAccessException, InvocationTargetException {
+	@SneakyThrows
+	public static List<FastMethod> getDefaultNotNullSetters(Class<?> klass) {
 		Assert.notNull(klass, "klass must not be null");
 		return Collections.unmodifiableList(defaultNotNullSetters(ReflectUtil.newInstance(klass)));
 	}
@@ -256,8 +260,8 @@ public class BeanUtil {
 	 * @throws IllegalArgumentException
 	 * @date 2019-02-08
 	 */
-	public static <T> T clearInstance(Class<T> klass) throws InvocationTargetException, IllegalArgumentException,
-		IllegalAccessException {
+	@SneakyThrows
+	public static <T> T clearInstance(Class<T> klass) {
 		T bean = ReflectUtil.newInstance(klass);
 		List<FastMethod> methods = defaultNotNullSetters(bean);
 		int length = methods.size();

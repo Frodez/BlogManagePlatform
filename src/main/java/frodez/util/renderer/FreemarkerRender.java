@@ -9,7 +9,6 @@ import frodez.util.renderer.reverter.Reverter;
 import frodez.util.spring.ContextUtil;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +39,7 @@ public class FreemarkerRender {
 	private static Map<RenderMode, Reverter> reverterMap = new EnumMap<>(RenderMode.class);
 
 	@PostConstruct
-	private void init() throws InvocationTargetException {
+	private void init() {
 		configuration = ContextUtil.get(Configuration.class);
 		FreeMarkerProperties properties = ContextUtil.get(FreeMarkerProperties.class);
 		loaderPath = properties.getTemplateLoaderPath()[0];

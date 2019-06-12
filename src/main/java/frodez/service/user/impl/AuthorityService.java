@@ -2,6 +2,8 @@ package frodez.service.user.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import frodez.config.aop.exception.annotation.CatchAndReturn;
+import frodez.config.aop.exception.annotation.CatchAndThrow;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.auth.AuthorityManager;
 import frodez.config.security.auth.AuthoritySource;
@@ -10,7 +12,6 @@ import frodez.constant.enums.common.ModifyEnum;
 import frodez.constant.enums.user.PermissionTypeEnum;
 import frodez.constant.enums.user.UserStatusEnum;
 import frodez.constant.errors.code.ErrorCode;
-import frodez.constant.errors.code.ServiceException;
 import frodez.constant.settings.PropertyKey;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.mapper.user.RoleMapper;
@@ -55,7 +56,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +67,6 @@ import tk.mybatis.mapper.entity.Example;
  * @author Frodez
  * @date 2018-11-14
  */
-@Slf4j
 @Service
 public class AuthorityService implements IAuthorityService {
 
@@ -99,169 +98,141 @@ public class AuthorityService implements IAuthorityService {
 	private AuthoritySource authoritySource;
 
 	@Check
+	@CatchAndReturn
 	@Override
 	public Result getUserInfo(@NotNull Long userId) {
-		try {
-			UserInfo data = userIdCache.get(userId);
-			if (data != null) {
-				return Result.success(data);
-			}
-			User user = userMapper.selectByPrimaryKey(userId);
-			if (user == null) {
-				return Result.fail("未查询到用户信息!");
-			}
-			if (user.getStatus().equals(UserStatusEnum.FORBIDDEN.getVal())) {
-				return Result.fail("用户已禁用!");
-			}
-			Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
-			if (role == null) {
-				return Result.fail("未查询到用户角色信息!");
-			}
-			List<PermissionInfo> permissionList = rolePermissionMapper.getPermissions(user.getRoleId());
-			data = new UserInfo();
-			BeanUtil.copy(user, data);
-			data.setRoleName(role.getName());
-			data.setRoleLevel(role.getLevel());
-			data.setRoleDescription(role.getDescription());
-			data.setPermissionList(permissionList);
-			userIdCache.save(userId, data);
+		UserInfo data = userIdCache.get(userId);
+		if (data != null) {
 			return Result.success(data);
-		} catch (Exception e) {
-			log.error("[getUserInfo]", e);
-			return Result.errorService();
 		}
+		User user = userMapper.selectByPrimaryKey(userId);
+		if (user == null) {
+			return Result.fail("未查询到用户信息!");
+		}
+		if (user.getStatus().equals(UserStatusEnum.FORBIDDEN.getVal())) {
+			return Result.fail("用户已禁用!");
+		}
+		Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
+		if (role == null) {
+			return Result.fail("未查询到用户角色信息!");
+		}
+		List<PermissionInfo> permissionList = rolePermissionMapper.getPermissions(user.getRoleId());
+		data = new UserInfo();
+		BeanUtil.copy(user, data);
+		data.setRoleName(role.getName());
+		data.setRoleLevel(role.getLevel());
+		data.setRoleDescription(role.getDescription());
+		data.setPermissionList(permissionList);
+		userIdCache.save(userId, data);
+		return Result.success(data);
 	}
 
 	@Check
+	@CatchAndReturn
 	@Override
 	public Result getUserInfo(@NotBlank String userName) {
-		try {
-			UserInfo data = nameCache.get(userName);
-			if (data != null) {
-				return Result.success(data);
-			}
-			Example example = new Example(User.class);
-			example.createCriteria().andEqualTo("name", userName);
-			User user = userMapper.selectOneByExample(example);
-			if (user == null) {
-				return Result.fail("未查询到用户信息!");
-			}
-			if (user.getStatus().equals(UserStatusEnum.FORBIDDEN.getVal())) {
-				return Result.fail("用户已禁用!");
-			}
-			Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
-			if (role == null) {
-				return Result.fail("未查询到用户角色信息!");
-			}
-			List<PermissionInfo> permissionList = rolePermissionMapper.getPermissions(user.getRoleId());
-			data = new UserInfo();
-			BeanUtil.copy(user, data);
-			data.setRoleName(role.getName());
-			data.setRoleLevel(role.getLevel());
-			data.setRoleDescription(role.getDescription());
-			data.setPermissionList(permissionList);
-			nameCache.save(userName, data);
+		UserInfo data = nameCache.get(userName);
+		if (data != null) {
 			return Result.success(data);
-		} catch (Exception e) {
-			log.error("[getUserInfo]", e);
-			return Result.errorService();
 		}
+		Example example = new Example(User.class);
+		example.createCriteria().andEqualTo("name", userName);
+		User user = userMapper.selectOneByExample(example);
+		if (user == null) {
+			return Result.fail("未查询到用户信息!");
+		}
+		if (user.getStatus().equals(UserStatusEnum.FORBIDDEN.getVal())) {
+			return Result.fail("用户已禁用!");
+		}
+		Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
+		if (role == null) {
+			return Result.fail("未查询到用户角色信息!");
+		}
+		List<PermissionInfo> permissionList = rolePermissionMapper.getPermissions(user.getRoleId());
+		data = new UserInfo();
+		BeanUtil.copy(user, data);
+		data.setRoleName(role.getName());
+		data.setRoleLevel(role.getLevel());
+		data.setRoleDescription(role.getDescription());
+		data.setPermissionList(permissionList);
+		nameCache.save(userName, data);
+		return Result.success(data);
 	}
 
 	@Check
+	@CatchAndReturn
 	@Override
 	public Result getUserInfos(@Valid @NotNull QueryPage param) {
-		try {
-			Page<User> page = PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> {
-				userMapper.selectAll();
-			});
-			return Result.page(page, getUserInfos(page.getResult()));
-		} catch (Exception e) {
-			log.error("[getUserInfos]", e);
-			return Result.errorService();
-		}
+		Page<User> page = PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> {
+			userMapper.selectAll();
+		});
+		return Result.page(page, getUserInfos(page.getResult()));
 	}
 
 	@Check
+	@CatchAndReturn
 	@Override
 	public Result getUserInfosByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens) {
-		try {
-			Example example = new Example(User.class);
-			example.createCriteria().andIn("id", userIds);
-			if (includeFobiddens) {
-				example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
-			}
-			List<User> users = userMapper.selectByExample(example);
-			if (users.size() != userIds.size()) {
-				return Result.fail("存在非法的用户ID!");
-			}
-			return Result.success(getUserInfos(users));
-		} catch (Exception e) {
-			log.error("[getUserInfosByIds]", e);
-			return Result.errorService();
+		Example example = new Example(User.class);
+		example.createCriteria().andIn("id", userIds);
+		if (includeFobiddens) {
+			example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
 		}
+		List<User> users = userMapper.selectByExample(example);
+		if (users.size() != userIds.size()) {
+			return Result.fail("存在非法的用户ID!");
+		}
+		return Result.success(getUserInfos(users));
 	}
 
 	@Check
+	@CatchAndReturn
 	@Override
 	public Result getUserInfosByNames(@NotEmpty List<String> userNames, boolean includeFobiddens) {
-		try {
-			Example example = new Example(User.class);
-			example.createCriteria().andIn("name", userNames);
-			if (includeFobiddens) {
-				example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
-			}
-			List<User> users = userMapper.selectByExample(example);
-			if (users.size() != userNames.size()) {
-				return Result.fail("存在非法的用户名!");
-			}
-			return Result.success(getUserInfos(users));
-		} catch (Exception e) {
-			log.error("[getUserInfosByNames]", e);
-			return Result.errorService();
+		Example example = new Example(User.class);
+		example.createCriteria().andIn("name", userNames);
+		if (includeFobiddens) {
+			example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
 		}
+		List<User> users = userMapper.selectByExample(example);
+		if (users.size() != userNames.size()) {
+			return Result.fail("存在非法的用户名!");
+		}
+		return Result.success(getUserInfos(users));
 	}
 
 	@Check
+	@CatchAndReturn
 	@Override
 	public Result refreshUserInfoByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens) {
-		try {
-			Example example = new Example(User.class);
-			example.createCriteria().andIn("id", userIds);
-			if (includeFobiddens) {
-				example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
-			}
-			List<User> users = userMapper.selectByExample(example);
-			if (users.size() != userIds.size()) {
-				return Result.fail("存在非法的用户ID!");
-			}
-			refreshUserInfo(getUserInfos(users));
-			return Result.success();
-		} catch (Exception e) {
-			log.error("[refreshUserInfoByIds]", e);
-			return Result.errorService();
+		Example example = new Example(User.class);
+		example.createCriteria().andIn("id", userIds);
+		if (includeFobiddens) {
+			example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
 		}
+		List<User> users = userMapper.selectByExample(example);
+		if (users.size() != userIds.size()) {
+			return Result.fail("存在非法的用户ID!");
+		}
+		refreshUserInfo(getUserInfos(users));
+		return Result.success();
 	}
 
 	@Check
+	@CatchAndReturn
 	@Override
 	public Result refreshUserInfoByNames(@NotEmpty List<String> userNames, boolean includeFobiddens) {
-		try {
-			Example example = new Example(User.class);
-			example.createCriteria().andIn("name", userNames);
-			if (includeFobiddens) {
-				example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
-			}
-			List<User> users = userMapper.selectByExample(example);
-			if (users.size() != userNames.size()) {
-				return Result.fail("存在非法的用户名!");
-			}
-			refreshUserInfo(getUserInfos(users));
-			return Result.success();
-		} catch (Exception e) {
-			log.error("[refreshUserInfoByNames]", e);
-			return Result.errorService();
+		Example example = new Example(User.class);
+		example.createCriteria().andIn("name", userNames);
+		if (includeFobiddens) {
+			example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
 		}
+		List<User> users = userMapper.selectByExample(example);
+		if (users.size() != userNames.size()) {
+			return Result.fail("存在非法的用户名!");
+		}
+		refreshUserInfo(getUserInfos(users));
+		return Result.success();
 	}
 
 	private List<UserInfo> getUserInfos(List<User> users) {
@@ -316,132 +287,104 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@CatchAndReturn
 	@Override
 	public Result getPermission(@NotNull Long permissionId) {
-		try {
-			Permission permission = permissionMapper.selectByPrimaryKey(permissionId);
-			if (permission == null) {
-				return Result.fail("未找到该权限!");
-			}
-			PermissionDetail data = new PermissionDetail();
-			BeanUtil.copy(permission, data);
-			Example example = new Example(RolePermission.class);
-			example.createCriteria().andEqualTo("permissionId", permissionId);
-			data.setRoleIds(rolePermissionMapper.selectByExample(example).stream().map(RolePermission::getRoleId)
-				.collect(Collectors.toList()));
-			return Result.success(data);
-		} catch (Exception e) {
-			log.error("[getAllRoles]", e);
-			return Result.errorService();
+		Permission permission = permissionMapper.selectByPrimaryKey(permissionId);
+		if (permission == null) {
+			return Result.fail("未找到该权限!");
 		}
+		PermissionDetail data = new PermissionDetail();
+		BeanUtil.copy(permission, data);
+		Example example = new Example(RolePermission.class);
+		example.createCriteria().andEqualTo("permissionId", permissionId);
+		data.setRoleIds(rolePermissionMapper.selectByExample(example).stream().map(RolePermission::getRoleId).collect(
+			Collectors.toList()));
+		return Result.success(data);
 	}
 
 	@Check
+	@CatchAndReturn
 	@Override
 	public Result getPermissions(@Valid @NotNull QueryPage param) {
-		try {
-			return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> permissionMapper
-				.selectAll()));
-		} catch (Exception e) {
-			log.error("[getAllRoles]", e);
-			return Result.errorService();
-		}
+		return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> permissionMapper
+			.selectAll()));
 	}
 
 	@Check
+	@CatchAndReturn
 	@Override
 	public Result getRole(@NotNull Long roleId) {
-		try {
-			Role role = roleMapper.selectByPrimaryKey(roleId);
-			if (role == null) {
-				return Result.fail("未找到该角色!");
-			}
-			RoleDetail data = new RoleDetail();
-			BeanUtil.copy(role, data);
-			Example example = new Example(RolePermission.class);
-			example.createCriteria().andEqualTo("roleId", roleId);
-			data.setPermissionIds(rolePermissionMapper.selectByExample(example).stream().map(
-				RolePermission::getPermissionId).collect(Collectors.toList()));
-			return Result.success(data);
-		} catch (Exception e) {
-			log.error("[getAllRoles]", e);
-			return Result.errorService();
+		Role role = roleMapper.selectByPrimaryKey(roleId);
+		if (role == null) {
+			return Result.fail("未找到该角色!");
 		}
+		RoleDetail data = new RoleDetail();
+		BeanUtil.copy(role, data);
+		Example example = new Example(RolePermission.class);
+		example.createCriteria().andEqualTo("roleId", roleId);
+		data.setPermissionIds(rolePermissionMapper.selectByExample(example).stream().map(
+			RolePermission::getPermissionId).collect(Collectors.toList()));
+		return Result.success(data);
 	}
 
 	@Check
+	@CatchAndReturn
 	@Override
 	public Result getRoles(@Valid @NotNull QueryPage param) {
-		try {
-			return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> roleMapper.selectAll()));
-		} catch (Exception e) {
-			log.error("[getAllRoles]", e);
-			return Result.errorService();
-		}
+		return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> roleMapper.selectAll()));
 	}
 
 	@Check
+	@CatchAndReturn
 	@Override
 	public Result getRolePermissions(@Valid @NotNull QueryRolePermission param) {
-		try {
-			return Result.page(PageHelper.startPage(QueryPage.safe(param.getPage())).doSelectPage(
-				() -> rolePermissionMapper.getPermissions(param.getRoleId())));
-		} catch (Exception e) {
-			log.error("[getAllPermissions]", e);
-			return Result.errorService();
-		}
+		return Result.page(PageHelper.startPage(QueryPage.safe(param.getPage())).doSelectPage(() -> rolePermissionMapper
+			.getPermissions(param.getRoleId())));
 	}
 
 	@Check
+	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result addRole(@Valid @NotNull AddRole param) {
-		try {
-			if (roleMapper.selectAll().stream().filter((iter) -> {
-				return iter.getName().equals(param.getName());
-			}).count() != 0) {
-				return Result.fail("角色不能重名!");
-			}
-			Role role = new Role();
-			BeanUtil.copy(param, role);
-			role.setCreateTime(new Date());
-			roleMapper.insertUseGeneratedKeys(role);
-			if (EmptyUtil.no(param.getPermissionIds())) {
-				Date date = new Date();
-				List<RolePermission> rolePermissions = param.getPermissionIds().stream().map((id) -> {
-					RolePermission item = new RolePermission();
-					item.setCreateTime(date);
-					item.setRoleId(role.getId());
-					item.setPermissionId(id);
-					return item;
-				}).collect(Collectors.toList());
-				rolePermissionMapper.insertList(rolePermissions);
-			}
-			return Result.success();
-		} catch (Exception e) {
-			log.error("[addRole]", e);
-			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
+		if (roleMapper.selectAll().stream().filter((iter) -> {
+			return iter.getName().equals(param.getName());
+		}).count() != 0) {
+			return Result.fail("角色不能重名!");
 		}
+		Role role = new Role();
+		BeanUtil.copy(param, role);
+		role.setCreateTime(new Date());
+		roleMapper.insertUseGeneratedKeys(role);
+		if (EmptyUtil.no(param.getPermissionIds())) {
+			Date date = new Date();
+			List<RolePermission> rolePermissions = param.getPermissionIds().stream().map((id) -> {
+				RolePermission item = new RolePermission();
+				item.setCreateTime(date);
+				item.setRoleId(role.getId());
+				item.setPermissionId(id);
+				return item;
+			}).collect(Collectors.toList());
+			rolePermissionMapper.insertList(rolePermissions);
+		}
+		return Result.success();
 	}
 
 	@Check
+	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result updateRole(@Valid @NotNull UpdateRole param) {
-		try {
-			Role role = roleMapper.selectByPrimaryKey(param.getId());
-			if (role == null) {
-				return Result.fail("未找到该角色!");
-			}
-			if (param.getName() != null && checkRoleName(param.getName())) {
-				return Result.fail("角色不能重名!");
-			}
-			roleMapper.updateByPrimaryKeySelective(BeanUtil.initialize(param, Role.class));
-			return Result.success();
-		} catch (Exception e) {
-			log.error("[addRole]", e);
-			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
+		Role role = roleMapper.selectByPrimaryKey(param.getId());
+		if (role == null) {
+			return Result.fail("未找到该角色!");
 		}
+		if (param.getName() != null && checkRoleName(param.getName())) {
+			return Result.fail("角色不能重名!");
+		}
+		roleMapper.updateByPrimaryKeySelective(BeanUtil.initialize(param, Role.class));
+		return Result.success();
 	}
 
 	/**
@@ -467,6 +410,7 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result addPermission(@Valid @NotNull AddPermission param) {
@@ -485,9 +429,6 @@ public class AuthorityService implements IAuthorityService {
 			permission.setCreateTime(new Date());
 			permissionMapper.insert(permission);
 			return Result.success();
-		} catch (Exception e) {
-			log.error("[addPermission]", e);
-			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
 		} finally {
 			authorityManager.refresh();
 			authoritySource.refresh();
@@ -495,6 +436,7 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result updatePermission(@Valid @NotNull UpdatePermission param) {
@@ -518,9 +460,6 @@ public class AuthorityService implements IAuthorityService {
 			}
 			permissionMapper.updateByPrimaryKeySelective(BeanUtil.initialize(param, Permission.class));
 			return Result.success();
-		} catch (Exception e) {
-			log.error("[addPermission]", e);
-			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
 		} finally {
 			authorityManager.refresh();
 			authoritySource.refresh();
@@ -566,6 +505,7 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result updateRolePermission(@Valid @NotNull UpdateRolePermission param) {
@@ -645,9 +585,6 @@ public class AuthorityService implements IAuthorityService {
 			example.createCriteria().andEqualTo("roleId", param.getRoleId());
 			refreshUserInfo(getUserInfos(userMapper.selectByExample(example)));
 			return Result.success();
-		} catch (Exception e) {
-			log.error("[setRolePermission]", e);
-			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
 		} finally {
 			authorityManager.refresh();
 			authoritySource.refresh();
@@ -655,6 +592,7 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result removeRole(@NotNull Long roleId) {
@@ -673,9 +611,6 @@ public class AuthorityService implements IAuthorityService {
 			example.createCriteria().andEqualTo("roleId", roleId);
 			rolePermissionMapper.deleteByExample(example);
 			return Result.success();
-		} catch (Exception e) {
-			log.error("[removeRole]", e);
-			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
 		} finally {
 			authorityManager.refresh();
 			authoritySource.refresh();
@@ -683,6 +618,7 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
+	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result removePermission(@NotNull Long permissionId) {
@@ -699,15 +635,13 @@ public class AuthorityService implements IAuthorityService {
 			rolePermissionMapper.deleteByExample(example);
 			permissionMapper.deleteByPrimaryKey(permissionId);
 			return Result.success();
-		} catch (Exception e) {
-			log.error("[removePermission]", e);
-			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
 		} finally {
 			authorityManager.refresh();
 			authoritySource.refresh();
 		}
 	}
 
+	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result scanAndCreatePermissions() {
@@ -746,9 +680,6 @@ public class AuthorityService implements IAuthorityService {
 			});
 			permissionMapper.insertList(permissionList);
 			return Result.success();
-		} catch (Exception e) {
-			log.error("[scanAndCreatePermissions]", e);
-			throw new ServiceException(ErrorCode.AUTHORITY_SERVICE_ERROR);
 		} finally {
 			authorityManager.refresh();
 			authoritySource.refresh();

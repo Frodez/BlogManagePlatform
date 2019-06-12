@@ -21,6 +21,7 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.util.Assert;
@@ -552,7 +553,7 @@ public final class Result implements Serializable {
 	 * @author Frodez
 	 * @date 2019-05-24
 	 */
-	public String json() throws JsonProcessingException {
+	public String json() {
 		return new String(jsonBytes());
 	}
 
@@ -561,7 +562,8 @@ public final class Result implements Serializable {
 	 * @author Frodez
 	 * @date 2019-05-24
 	 */
-	public byte[] jsonBytes() throws JsonProcessingException {
+	@SneakyThrows
+	public byte[] jsonBytes() {
 		return cacheBytes != null ? cacheBytes : writer.writeValueAsBytes(this);
 	}
 
@@ -569,10 +571,9 @@ public final class Result implements Serializable {
 	 * 获取result的json字符串缓存(数组形式)<br>
 	 * 仅当为默认Result时使用.<br>
 	 * @author Frodez
-	 * @throws JsonProcessingException
 	 * @date 2018-11-27
 	 */
-	public byte[] cache() throws JsonProcessingException {
+	public byte[] cache() {
 		return cacheBytes;
 	}
 

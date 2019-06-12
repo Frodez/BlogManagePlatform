@@ -1,6 +1,5 @@
 package security;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import frodez.BlogManagePlatformApplication;
 import frodez.config.security.util.Matcher;
 import frodez.constant.enums.user.PermissionTypeEnum;
@@ -71,16 +70,13 @@ public class InitPermissionService {
 			permissionList.add(permission);
 		});
 		System.out.println("权限条目数量:" + permissionList.size());
-		try {
-			System.out.println("权限详细信息:" + JSONUtil.string(permissionList));
-		} catch (JsonProcessingException e) {
-		}
+		System.out.println("权限详细信息:" + JSONUtil.string(permissionList));
 		Example example = new Example(Permission.class);
 		permissionMapper.deleteByExample(example);
 		if (EmptyUtil.no(permissionList)) {
 			permissionMapper.insertList(permissionList);
 		}
-		SpringApplication.exit(ContextUtil.context(), () -> 1);
+		ContextUtil.exit();
 	}
 
 }

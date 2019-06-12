@@ -132,7 +132,7 @@ public @interface LegalEnum {
 						.getFastMethod(klass, valuesMethod).invoke(null, ReflectUtil.EMPTY_ARRAY_OBJECTS).toString()));
 					return false;
 				}
-			} catch (InvocationTargetException | NoSuchMethodException e) {
+			} catch (InvocationTargetException e) {
 				throw new RuntimeException(e);
 			}
 		}

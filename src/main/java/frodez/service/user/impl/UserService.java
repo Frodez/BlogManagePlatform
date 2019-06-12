@@ -1,5 +1,6 @@
 package frodez.service.user.impl;
 
+import frodez.config.aop.exception.annotation.CatchAndThrow;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.util.UserUtil;
 import frodez.constant.enums.user.UserStatusEnum;
@@ -15,7 +16,6 @@ import frodez.util.beans.result.Result;
 import java.util.Date;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Frodez
  * @date 2018-11-14
  */
-@Slf4j
 @Service
 public class UserService implements IUserService {
 
@@ -40,26 +39,22 @@ public class UserService implements IUserService {
 	private ILoginService loginService;
 
 	@Check
+	@CatchAndThrow(errorCode = ErrorCode.USER_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result register(@Valid @NotNull Doregister param) {
-		try {
-			User user = new User();
-			user.setCreateTime(new Date());
-			user.setName(param.getName());
-			user.setPassword(passwordEncoder.encode(param.getPassword()));
-			user.setNickname(param.getNickname());
-			user.setEmail(param.getEmail());
-			user.setPhone(param.getPhone());
-			user.setStatus(UserStatusEnum.NORMAL.getVal());
-			//暂时写死
-			user.setRoleId(1L);
-			userMapper.insert(user);
-			return Result.success();
-		} catch (Exception e) {
-			log.error("[register]", e);
-			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
-		}
+		User user = new User();
+		user.setCreateTime(new Date());
+		user.setName(param.getName());
+		user.setPassword(passwordEncoder.encode(param.getPassword()));
+		user.setNickname(param.getNickname());
+		user.setEmail(param.getEmail());
+		user.setPhone(param.getPhone());
+		user.setStatus(UserStatusEnum.NORMAL.getVal());
+		//暂时写死
+		user.setRoleId(1L);
+		userMapper.insert(user);
+		return Result.success();
 	}
 
 	/**
@@ -67,21 +62,17 @@ public class UserService implements IUserService {
 	 * @author Frodez
 	 * @date 2019-03-15
 	 */
+	@CatchAndThrow(errorCode = ErrorCode.USER_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result logOff() {
-		try {
-			UserInfo userInfo = UserUtil.get();
-			userMapper.deleteByPrimaryKey(userInfo.getId());
-			Result result = loginService.logout();
-			if (result.unable()) {
-				throw new ServiceException(result);
-			}
-			return Result.success();
-		} catch (Exception e) {
-			log.error("[logOff]", e);
-			throw new ServiceException(ErrorCode.USER_SERVICE_ERROR);
+		UserInfo userInfo = UserUtil.get();
+		userMapper.deleteByPrimaryKey(userInfo.getId());
+		Result result = loginService.logout();
+		if (result.unable()) {
+			throw new ServiceException(result);
 		}
+		return Result.success();
 	}
 
 }

@@ -12,7 +12,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,13 +40,6 @@ public class RoleController {
 		return authorityService.getRole(id);
 	}
 
-	/**
-	 * 分页查询角色信息
-	 * @author Frodez
-	 * @throws InterruptedException
-	 * @throws ExecutionException
-	 * @date 2019-03-06
-	 */
 	@GetMapping(value = "/page", name = "分页查询角色信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Role.class) })
 	public Result getRoles(@RequestBody QueryPage param) {
