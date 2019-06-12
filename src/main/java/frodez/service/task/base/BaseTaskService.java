@@ -97,14 +97,14 @@ public class BaseTaskService {
 				try {
 					runnable = getRunnable(task.getTarget());
 				} catch (ClassNotFoundException e) {
-					log.error("init", e);
+					log.error("[frodez.service.task.base.BaseTaskService.init]", e);
 					log.warn("初始化任务——类型初始化失败!类型名:{}", task.getTarget());
 					return;
 				}
 				try {
 					trigger = new CronTrigger(task.getCronExp());
 				} catch (IllegalArgumentException e) {
-					log.error("init", e);
+					log.error("[frodez.service.task.base.BaseTaskService.init]", e);
 					log.warn("初始化任务——时间表达式错误!表达式:{}", task.getCronExp());
 					return;
 				}
@@ -115,7 +115,7 @@ public class BaseTaskService {
 				}
 			});
 		} catch (Exception e) {
-			log.error("初始化任务错误!应用仍将继续启动...", e);
+			log.error("[frodez.service.task.base.BaseTaskService.init]初始化任务错误!应用仍将继续启动...", e);
 		}
 	}
 

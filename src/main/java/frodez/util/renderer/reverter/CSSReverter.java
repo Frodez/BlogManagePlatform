@@ -43,7 +43,7 @@ public class CSSReverter implements Reverter {
 			links.remove();
 			return document.html();
 		} catch (Exception e) {
-			log.error("[CSSReverter]", e);
+			log.error("[frodez.util.renderer.reverter.CSSReverter.revert]", e);
 			return html;
 		}
 	}

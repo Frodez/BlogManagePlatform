@@ -175,7 +175,7 @@ public class AuthorityService implements IAuthorityService {
 	public Result getUserInfosByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens) {
 		Example example = new Example(User.class);
 		example.createCriteria().andIn("id", userIds);
-		if (includeFobiddens) {
+		if (!includeFobiddens) {
 			example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
 		}
 		List<User> users = userMapper.selectByExample(example);
@@ -191,7 +191,7 @@ public class AuthorityService implements IAuthorityService {
 	public Result getUserInfosByNames(@NotEmpty List<String> userNames, boolean includeFobiddens) {
 		Example example = new Example(User.class);
 		example.createCriteria().andIn("name", userNames);
-		if (includeFobiddens) {
+		if (!includeFobiddens) {
 			example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
 		}
 		List<User> users = userMapper.selectByExample(example);
@@ -207,7 +207,7 @@ public class AuthorityService implements IAuthorityService {
 	public Result refreshUserInfoByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens) {
 		Example example = new Example(User.class);
 		example.createCriteria().andIn("id", userIds);
-		if (includeFobiddens) {
+		if (!includeFobiddens) {
 			example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
 		}
 		List<User> users = userMapper.selectByExample(example);
@@ -224,7 +224,7 @@ public class AuthorityService implements IAuthorityService {
 	public Result refreshUserInfoByNames(@NotEmpty List<String> userNames, boolean includeFobiddens) {
 		Example example = new Example(User.class);
 		example.createCriteria().andIn("name", userNames);
-		if (includeFobiddens) {
+		if (!includeFobiddens) {
 			example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
 		}
 		List<User> users = userMapper.selectByExample(example);

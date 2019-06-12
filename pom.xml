@@ -190,7 +190,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>27.1-jre</version>
+			<version>28.0-jre</version>
 			<exclusions>
 				<!-- 这几个依赖用于编译器增强,需要者可以引入,用于编写编译器相关插件,增强代码检查等方面功能 -->
 				<exclusion>

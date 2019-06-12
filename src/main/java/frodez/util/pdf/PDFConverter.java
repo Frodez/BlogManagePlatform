@@ -49,7 +49,7 @@ public class PDFConverter {
 					StrUtil.concat(properties.getPath(), entry.getValue()))), false));
 			}
 		} catch (IOException e) {
-			log.error("[init]", e);
+			log.error("[frodez.util.pdf.PDFConverter.init]", e);
 		}
 	}
 
