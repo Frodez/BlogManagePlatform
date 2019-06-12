@@ -52,6 +52,8 @@ public class DefaultRequiredModelPropertyPlugin implements ModelPropertyBuilderP
 				context.getBuilder().required(true);
 			} else if (AnnotationUtils.findAnnotation(annotated.get(), NotEmpty.class) != null) {
 				context.getBuilder().required(true);
+			} else {
+				context.getBuilder().required(false);
 			}
 		}
 	}
@@ -59,10 +61,12 @@ public class DefaultRequiredModelPropertyPlugin implements ModelPropertyBuilderP
 	private void resolveBeanPropertyDefinition(ModelPropertyContext context) {
 		Optional<BeanPropertyDefinition> beanPropertyDefinition = context.getBeanPropertyDefinition();
 		if (beanPropertyDefinition.isPresent()) {
-			if (Annotations.findPropertyAnnotation(beanPropertyDefinition.get(), NotNull.class) != null) {
+			if (Annotations.findPropertyAnnotation(beanPropertyDefinition.get(), NotNull.class).isPresent()) {
 				context.getBuilder().required(true);
-			} else if (Annotations.findPropertyAnnotation(beanPropertyDefinition.get(), NotEmpty.class) != null) {
+			} else if (Annotations.findPropertyAnnotation(beanPropertyDefinition.get(), NotEmpty.class).isPresent()) {
 				context.getBuilder().required(true);
+			} else {
+				context.getBuilder().required(false);
 			}
 		}
 	}

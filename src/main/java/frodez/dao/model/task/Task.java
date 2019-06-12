@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -27,6 +28,7 @@ public class Task implements Serializable {
 	 * 定时任务ID(不能为空)
 	 */
 	@Id
+	@NotNull
 	@Column(name = "id")
 	@ApiModelProperty(value = "定时任务ID")
 	private Long id;
@@ -34,6 +36,7 @@ public class Task implements Serializable {
 	/**
 	 * 创建时间(不能为空)
 	 */
+	@NotNull
 	@Column(name = "create_time")
 	@ApiModelProperty(value = "创建时间")
 	private Date createTime;
@@ -41,6 +44,7 @@ public class Task implements Serializable {
 	/**
 	 * 活跃状态 1:活跃中 2:不活跃(不能为空)
 	 */
+	@NotNull
 	@Column(name = "status")
 	@ApiModelProperty(value = "活跃状态  1:活跃中  2:不活跃")
 	private Byte status;
@@ -48,6 +52,7 @@ public class Task implements Serializable {
 	/**
 	 * 目标(不能为空)
 	 */
+	@NotNull
 	@Column(name = "target", length = 255)
 	@ApiModelProperty(value = "目标")
 	private String target;
@@ -55,6 +60,7 @@ public class Task implements Serializable {
 	/**
 	 * 任务描述(不能为空)
 	 */
+	@NotNull
 	@Column(name = "description", length = 255)
 	@ApiModelProperty(value = "任务描述")
 	private String description;
@@ -62,7 +68,9 @@ public class Task implements Serializable {
 	/**
 	 * cron表达式(不能为空)
 	 */
+	@NotNull
 	@Column(name = "cron_exp", length = 31)
 	@ApiModelProperty(value = "cron表达式")
 	private String cronExp;
+
 }

@@ -25,7 +25,7 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	/**
 	 * 基础Mapper,要与application.yml中mapper.mappers属性对应
 	 */
-	private static final String MAPPER_NAME = DataMapper.class.getName();
+	private static final String MAPPER_NAME = DataMapper.class.getCanonicalName();
 
 	/**
 	 * 配置生成的Mapper接口

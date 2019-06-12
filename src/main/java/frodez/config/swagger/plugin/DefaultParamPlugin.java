@@ -65,10 +65,10 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 			}
 			return;
 		}
-		defaultApiParam(context, apiModel);
+		setDefaultApiParam(context, apiModel);
 	}
 
-	private void defaultApiParam(ParameterContext context, ApiModel annotation) {
+	private void setDefaultApiParam(ParameterContext context, ApiModel annotation) {
 		context.parameterBuilder().name(emptyToNull(annotation.description())).description(emptyToNull(descriptions
 			.resolve(annotation.description()))).parameterAccess(emptyToNull(null)).defaultValue(emptyToNull(null))
 			.allowMultiple(false).allowEmptyValue(false).scalarExample(new Example("")).complexExamples(
