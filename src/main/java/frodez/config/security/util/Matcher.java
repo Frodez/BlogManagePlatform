@@ -51,8 +51,8 @@ public class Matcher {
 
 	@PostConstruct
 	private void init() {
-		SecurityProperties securityProperties = ContextUtil.get(SecurityProperties.class);
-		matcher = ContextUtil.get(PathMatcher.class);
+		SecurityProperties securityProperties = ContextUtil.bean(SecurityProperties.class);
+		matcher = ContextUtil.bean(PathMatcher.class);
 		String basePath = PropertyUtil.get(PropertyKey.Web.BASE_PATH);
 		//预处理所有允许的路径,这里的路径还是antMatcher风格的路径
 		for (String path : securityProperties.getAuth().getPermitAllPath()) {
@@ -95,7 +95,7 @@ public class Matcher {
 	 */
 	private static void checkCorrectPermissions(SecurityProperties securityProperties) {
 		if (securityProperties.getAuth().getPermissionCheck()) {
-			List<Permission> incorrectPermissions = ContextUtil.get(PermissionMapper.class).selectAll().stream().filter(
+			List<Permission> incorrectPermissions = ContextUtil.bean(PermissionMapper.class).selectAll().stream().filter(
 				(iter) -> {
 					return isPermitAllPath(StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), iter.getUrl()));
 				}).collect(Collectors.toList());

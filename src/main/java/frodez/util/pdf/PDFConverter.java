@@ -42,7 +42,7 @@ public class PDFConverter {
 
 	@PostConstruct
 	private void init() {
-		FontProperties properties = ContextUtil.get(FontProperties.class);
+		FontProperties properties = ContextUtil.bean(FontProperties.class);
 		try {
 			for (Entry<String, String> entry : properties.getAlias().entrySet()) {
 				fontCache.put(entry.getKey(), FontProgramFactory.createFont(FileUtil.readBytes(ResourceUtils.getFile(
@@ -60,7 +60,7 @@ public class PDFConverter {
 	 */
 	@SneakyThrows
 	public static void addFont(String alias, String fileName) {
-		FontProperties properties = ContextUtil.get(FontProperties.class);
+		FontProperties properties = ContextUtil.bean(FontProperties.class);
 		fontCache.put(alias, FontProgramFactory.createFont(FileUtil.readBytes(ResourceUtils.getFile(StrUtil.concat(
 			properties.getPath(), fileName))), false));
 	}

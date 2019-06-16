@@ -81,7 +81,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @author Frodez
 	 * @date 2018-12-21
 	 */
-	public static <T> T get(Class<T> klass) {
+	public static <T> T bean(Class<T> klass) {
 		return context.getBean(klass);
 	}
 
@@ -92,7 +92,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @param <T>
 	 * @date 2018-12-21
 	 */
-	public static <T> Map<String, T> gets(Class<T> klass) {
+	public static <T> Map<String, T> beans(Class<T> klass) {
 		return context.getBeansOfType(klass);
 	}
 
@@ -104,7 +104,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @date 2018-12-21
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T get(String beanName, Class<T> klass) {
+	public static <T> T bean(String beanName, Class<T> klass) {
 		return (T) context.getBean(beanName);
 	}
 
@@ -115,13 +115,8 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @throws ClassNotFoundException
 	 * @date 2019-05-23
 	 */
-	/**
-	 * 获取Reader
-	 * @author Frodez
-	 * @date 2019-05-24
-	 */
 	@SneakyThrows
-	public static List<Class<?>> getClasses(String pattern) {
+	public static List<Class<?>> classes(String pattern) {
 		ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 		MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
 		String packageSearchPath = StrUtil.concat(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, ClassUtils

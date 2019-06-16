@@ -1,8 +1,8 @@
 package frodez.constant.enums.user;
 
+import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,10 +70,11 @@ public enum PermissionTypeEnum {
 			.toUnmodifiableList());
 		descs = Arrays.asList(PermissionTypeEnum.values()).stream().map(PermissionTypeEnum::getDesc).collect(Collectors
 			.toUnmodifiableList());
-		enumMap = new HashMap<>();
+		var builder = ImmutableMap.<Byte, PermissionTypeEnum>builder();
 		for (PermissionTypeEnum iter : PermissionTypeEnum.values()) {
-			enumMap.put(iter.val, iter);
+			builder.put(iter.val, iter);
 		}
+		enumMap = builder.build();
 	}
 
 	/**

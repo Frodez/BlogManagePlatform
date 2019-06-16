@@ -27,8 +27,8 @@ public class UserUtil {
 
 	@PostConstruct
 	private void init() {
-		authorityService = ContextUtil.get(IAuthorityService.class);
-		tokenCache = ContextUtil.get(TokenCache.class);
+		authorityService = ContextUtil.bean(IAuthorityService.class);
+		tokenCache = ContextUtil.bean(TokenCache.class);
 		Assert.notNull(authorityService, "authorityService must not be null");
 		Assert.notNull(tokenCache, "tokenCache must not be null");
 	}
@@ -76,7 +76,7 @@ public class UserUtil {
 
 	/**
 	 * 根据用户id查询用户信息,以Result形式返回,功能同UserUtil.get(userId)
-	 * @see frodez.config.security.login.UserUtil#get(Long)
+	 * @see frodez.config.security.login.UserUtil#bean(Long)
 	 * @author Frodez
 	 * @date 2019-03-27
 	 */
@@ -86,7 +86,7 @@ public class UserUtil {
 
 	/**
 	 * 根据用户名查询用户信息,以Result形式返回,功能同UserUtil.get(userName)
-	 * @see frodez.config.security.login.UserUtil#get(String)
+	 * @see frodez.config.security.login.UserUtil#bean(String)
 	 * @author Frodez
 	 * @date 2019-03-27
 	 */

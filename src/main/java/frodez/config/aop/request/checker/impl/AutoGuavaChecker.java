@@ -5,11 +5,9 @@ import com.google.common.cache.CacheBuilder;
 import frodez.config.aop.request.checker.facade.AutoChecker;
 import frodez.config.cache.CacheProperties;
 import frodez.constant.settings.DefTime;
-import frodez.util.spring.ContextUtil;
-import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 /**
  * 自动超时型重复请求检查GUAVACACHE实现
@@ -22,11 +20,10 @@ public class AutoGuavaChecker implements AutoChecker {
 
 	private Cache<String, Long> cache;
 
-	@PostConstruct
-	private void init() {
-		cache = CacheBuilder.newBuilder().expireAfterAccess(ContextUtil.get(CacheProperties.class).getAutoGuavaChecker()
-			.getTimeout(), DefTime.UNIT).build();
-		Assert.notNull(cache, "cache must not be null");
+	@Autowired
+	public AutoGuavaChecker(CacheProperties properties) {
+		cache = CacheBuilder.newBuilder().expireAfterAccess(properties.getAutoGuavaChecker().getTimeout(), DefTime.UNIT)
+			.build();
 	}
 
 	@Override

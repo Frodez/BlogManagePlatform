@@ -75,7 +75,7 @@ public class BaseTaskService {
 	@PostConstruct
 	private void init() {
 		try {
-			taskServiceInfos = ContextUtil.gets(ITask.class).entrySet().stream().map((entry) -> {
+			taskServiceInfos = ContextUtil.beans(ITask.class).entrySet().stream().map((entry) -> {
 				AvailableTaskInfo info = new AvailableTaskInfo();
 				info.setName(entry.getKey());
 				info.setDescription(entry.getValue().getDescription());
@@ -150,7 +150,7 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	private Runnable getRunnable(String className) throws ClassNotFoundException {
-		return (Runnable) ContextUtil.get(Class.forName(StrUtil.concat(properties.getPrefix(), DefStr.POINT_SEPERATOR,
+		return (Runnable) ContextUtil.bean(Class.forName(StrUtil.concat(properties.getPrefix(), DefStr.POINT_SEPERATOR,
 			className)));
 	}
 

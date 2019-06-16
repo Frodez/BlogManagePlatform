@@ -40,8 +40,8 @@ public class FreemarkerRender {
 
 	@PostConstruct
 	private void init() {
-		configuration = ContextUtil.get(Configuration.class);
-		FreeMarkerProperties properties = ContextUtil.get(FreeMarkerProperties.class);
+		configuration = ContextUtil.bean(Configuration.class);
+		FreeMarkerProperties properties = ContextUtil.bean(FreeMarkerProperties.class);
 		loaderPath = properties.getTemplateLoaderPath()[0];
 		suffix = properties.getSuffix();
 		for (RenderMode mode : RenderMode.values()) {

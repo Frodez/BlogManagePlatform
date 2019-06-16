@@ -29,7 +29,7 @@ public class InitPermissionService {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BlogManagePlatformApplication.class, args);
-		PermissionMapper permissionMapper = ContextUtil.get(PermissionMapper.class);
+		PermissionMapper permissionMapper = ContextUtil.bean(PermissionMapper.class);
 		List<Permission> permissionList = new ArrayList<>();
 		Date date = new Date();
 		//拿到mvc里定义的所有端点,然后自动生成权限

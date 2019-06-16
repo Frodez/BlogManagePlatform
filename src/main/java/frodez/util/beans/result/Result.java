@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.ImmutableMap;
 import frodez.constant.errors.exception.ResultParseException;
 import frodez.constant.settings.DefDesc;
 import frodez.util.json.JSONUtil;
@@ -13,7 +14,6 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -656,13 +656,14 @@ public final class Result implements Serializable {
 		private static final Map<Integer, ResultEnum> enumMap;
 
 		static {
-			enumMap = new HashMap<>();
+			var builder = ImmutableMap.<Integer, ResultEnum>builder();
 			for (ResultEnum iter : ResultEnum.values()) {
-				enumMap.put(iter.val, iter);
+				builder.put(iter.val, iter);
 			}
+			enumMap = builder.build();
 		}
 
-		public static ResultEnum of(int value) {
+		public static ResultEnum of(Integer value) {
 			return enumMap.get(value);
 		}
 

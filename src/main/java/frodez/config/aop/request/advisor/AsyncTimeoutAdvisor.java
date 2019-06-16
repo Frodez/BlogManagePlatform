@@ -10,8 +10,8 @@ import frodez.util.http.ServletUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.MVCUtil;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.aop.Advice;
@@ -49,7 +49,7 @@ public class AsyncTimeoutAdvisor implements PointcutAdvisor {
 	/**
 	 * 注解配置缓存
 	 */
-	private Map<String, Long> timeoutCache = new ConcurrentHashMap<>();
+	private Map<String, Long> timeoutCache = new HashMap<>();
 
 	/**
 	 * AOP切点

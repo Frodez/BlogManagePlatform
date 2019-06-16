@@ -1,8 +1,8 @@
 package frodez.constant.enums.user;
 
+import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,10 +58,11 @@ public enum UserStatusEnum {
 			.toUnmodifiableList());
 		descs = Arrays.asList(UserStatusEnum.values()).stream().map(UserStatusEnum::getDesc).collect(Collectors
 			.toUnmodifiableList());
-		enumMap = new HashMap<>();
+		var builder = ImmutableMap.<Byte, UserStatusEnum>builder();
 		for (UserStatusEnum iter : UserStatusEnum.values()) {
-			enumMap.put(iter.val, iter);
+			builder.put(iter.val, iter);
 		}
+		enumMap = builder.build();
 	}
 
 	public static UserStatusEnum of(Byte value) {

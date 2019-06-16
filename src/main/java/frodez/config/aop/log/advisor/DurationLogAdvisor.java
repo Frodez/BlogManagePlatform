@@ -4,8 +4,8 @@ import frodez.config.aop.log.annotation.DurationLog;
 import frodez.constant.errors.exception.CodeCheckException;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -29,7 +29,7 @@ public class DurationLogAdvisor implements PointcutAdvisor {
 	/**
 	 * 注解配置缓存
 	 */
-	private Map<String, Long> thresholdCache = new ConcurrentHashMap<>();
+	private Map<String, Long> thresholdCache = new HashMap<>();
 
 	private long times = 1000 * 1000;
 

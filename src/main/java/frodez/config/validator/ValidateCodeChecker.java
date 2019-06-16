@@ -48,7 +48,7 @@ public class ValidateCodeChecker implements ApplicationListener<ApplicationStart
 
 	private void check() throws IOException, ClassNotFoundException, LinkageError {
 		for (String path : properties.getModelPath()) {
-			for (Class<?> klass : ContextUtil.getClasses(path)) {
+			for (Class<?> klass : ContextUtil.classes(path)) {
 				if (klass.getAnnotation(ValidateBean.class) != null) {
 					codeChecker.checkClass(klass);
 				}

@@ -33,7 +33,7 @@ public class AuthorityManager implements AccessDecisionManager {
 
 	@PostConstruct
 	private void init() {
-		SecurityProperties properties = ContextUtil.get(SecurityProperties.class);
+		SecurityProperties properties = ContextUtil.bean(SecurityProperties.class);
 		defaultDeniedRole = new SecurityConfig(properties.getAuth().getDeniedRole());
 		Assert.notNull(defaultDeniedRole, "defaultDeniedRole must not be null");
 	}

@@ -6,8 +6,8 @@ import frodez.constant.errors.code.ServiceException;
 import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Order(Integer.MIN_VALUE)
 public class CatchAndThrowAdvisor implements PointcutAdvisor {
 
-	private Map<String, ErrorCode> errorCodeCache = new ConcurrentHashMap<>();
+	private Map<String, ErrorCode> errorCodeCache = new HashMap<>();
 
 	@Override
 	public Advice getAdvice() {

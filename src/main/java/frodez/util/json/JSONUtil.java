@@ -63,7 +63,7 @@ public class JSONUtil {
 
 	@PostConstruct
 	private void init() {
-		OBJECT_MAPPER = ContextUtil.get(ObjectMapper.class);
+		OBJECT_MAPPER = ContextUtil.bean(ObjectMapper.class);
 		DEFAULT_MAP_READER = OBJECT_MAPPER.readerFor(OBJECT_MAPPER.getTypeFactory().constructParametricType(
 			DEFAULT_MAP_CLASS, String.class, Object.class));
 		Assert.notNull(OBJECT_MAPPER, "OBJECT_MAPPER must not be null");
