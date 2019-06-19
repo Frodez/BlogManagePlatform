@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -27,6 +28,7 @@ public class RolePermission implements Serializable {
 	 * 角色权限ID(不能为空)
 	 */
 	@Id
+	@NotNull
 	@Column(name = "id")
 	@ApiModelProperty(value = "角色权限ID")
 	private Long id;
@@ -34,6 +36,7 @@ public class RolePermission implements Serializable {
 	/**
 	 * 创建时间(不能为空)
 	 */
+	@NotNull
 	@Column(name = "create_time")
 	@ApiModelProperty(value = "创建时间")
 	private Date createTime;
@@ -41,6 +44,7 @@ public class RolePermission implements Serializable {
 	/**
 	 * 角色ID(不能为空)
 	 */
+	@NotNull
 	@Column(name = "role_id")
 	@ApiModelProperty(value = "角色ID")
 	private Long roleId;
@@ -48,7 +52,9 @@ public class RolePermission implements Serializable {
 	/**
 	 * 权限ID(不能为空)
 	 */
+	@NotNull
 	@Column(name = "permission_id")
 	@ApiModelProperty(value = "权限ID")
 	private Long permissionId;
+
 }

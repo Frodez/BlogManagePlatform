@@ -33,7 +33,7 @@ public class GlobalController {
 	@ExceptionHandler(value = ServiceException.class)
 	public void serviceExceptionHandler(HttpServletResponse response, ServiceException e)
 		throws JsonProcessingException, IOException {
-		log.error("[serviceExceptionHandler]{}", e.getMessage());
+		log.error("[frodez.config.mvc.error.GlobalController.serviceExceptionHandler]{}", e.getMessage());
 		ServletUtil.writeJson(response, Result.errorService(e));
 	}
 
@@ -49,7 +49,7 @@ public class GlobalController {
 	@ExceptionHandler(value = Exception.class)
 	public void exceptionHandler(HttpServletResponse response, Exception e) throws JsonProcessingException,
 		IOException {
-		log.error("[exceptionHandler]", e);
+		log.error("[frodez.config.mvc.error.GlobalController.exceptionHandler]", e);
 		ServletUtil.writeJson(response, Result.errorService(e));
 	}
 
@@ -65,7 +65,7 @@ public class GlobalController {
 	@ExceptionHandler(value = HttpMessageConversionException.class)
 	public void httpMessageConversionExceptionHandler(HttpServletResponse response, HttpMessageConversionException e)
 		throws JsonProcessingException, IOException {
-		log.error("[httpMessageConversionExceptionHandler]{}", e.getMessage());
+		log.error("[frodez.config.mvc.error.GlobalController.httpMessageConversionExceptionHandler]{}", e.getMessage());
 		ServletUtil.writeJson(response, Result.errorRequest());
 	}
 
@@ -81,7 +81,7 @@ public class GlobalController {
 	@ExceptionHandler(value = ServletRequestBindingException.class)
 	public void servletRequestBindingExceptionHandler(HttpServletResponse response, ServletRequestBindingException e)
 		throws JsonProcessingException, IOException {
-		log.error("[servletRequestBindingExceptionHandler]{}", e.getMessage());
+		log.error("[frodez.config.mvc.error.GlobalController.servletRequestBindingExceptionHandler]{}", e.getMessage());
 		ServletUtil.writeJson(response, Result.errorRequest());
 	}
 
@@ -97,7 +97,7 @@ public class GlobalController {
 	@ExceptionHandler(value = AsyncRequestTimeoutException.class)
 	public void asyncRequestTimeoutExceptionHandler(HttpServletResponse response, AsyncRequestTimeoutException e)
 		throws JsonProcessingException, IOException {
-		log.error("[asyncRequestTimeoutExceptionHandler]{}");
+		log.error("[frodez.config.mvc.error.GlobalController.asyncRequestTimeoutExceptionHandler]{}");
 		ServletUtil.writeJson(response, Result.busy());
 	}
 

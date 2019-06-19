@@ -3,10 +3,10 @@ package frodez.util.reflect;
 import frodez.util.beans.pair.Pair;
 import frodez.util.common.StrUtil;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.cglib.reflect.FastClass;
 import org.springframework.cglib.reflect.FastMethod;
@@ -26,8 +26,9 @@ public class ReflectUtil {
 
 	private static final Map<Class<?>, Pair<FastClass, FastMethod[]>> CGLIB_CACHE = new ConcurrentHashMap<>();
 
+	@SneakyThrows
 	@SuppressWarnings("unchecked")
-	public <T> T newInstance(Class<T> klass) throws InvocationTargetException {
+	public <T> T newInstance(Class<T> klass) {
 		return (T) getFastClass(klass).newInstance();
 	}
 
@@ -57,8 +58,8 @@ public class ReflectUtil {
 	 * @throws NoSuchMethodException
 	 * @date 2019-04-12
 	 */
-	public static FastMethod getFastMethod(Class<?> klass, String method, Class<?>... params)
-		throws NoSuchMethodException {
+	@SneakyThrows
+	public static FastMethod getFastMethod(Class<?> klass, String method, Class<?>... params) {
 		Assert.notNull(klass, "klass must not be null");
 		Assert.notNull(method, "method must not be null");
 		Pair<FastClass, FastMethod[]> pair = CGLIB_CACHE.get(klass);

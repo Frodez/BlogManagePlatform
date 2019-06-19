@@ -1,6 +1,5 @@
 package frodez.service.cache.base;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import frodez.constant.settings.DefTime;
 import frodez.util.common.EmptyUtil;
 import frodez.util.json.JSONUtil;
@@ -9,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Component;
  * @author Frodez
  * @date 2018-12-21
  */
-@Slf4j
 @Component
 public class BaseRedisCache {
 
@@ -53,12 +50,7 @@ public class BaseRedisCache {
 		if (value instanceof String) {
 			return (String) value;
 		}
-		try {
-			return JSONUtil.string(value);
-		} catch (JsonProcessingException e) {
-			log.error("[getString]", e);
-			return null;
-		}
+		return JSONUtil.string(value);
 	}
 
 	/**
@@ -199,12 +191,7 @@ public class BaseRedisCache {
 		if (EmptyUtil.no(map)) {
 			return null;
 		}
-		try {
-			return JSONUtil.string(map);
-		} catch (JsonProcessingException e) {
-			log.error("[hmgetString]", e);
-			return null;
-		}
+		return JSONUtil.string(map);
 	}
 
 	/**
@@ -232,12 +219,7 @@ public class BaseRedisCache {
 		if (value instanceof String) {
 			return (String) value;
 		}
-		try {
-			return JSONUtil.string(value);
-		} catch (JsonProcessingException e) {
-			log.error("[hmgetString]", e);
-			return null;
-		}
+		return JSONUtil.string(value);
 	}
 
 	/**

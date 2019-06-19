@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.lang.Nullable;
 
@@ -28,6 +29,7 @@ public class Article implements Serializable {
 	 * 文章ID(不能为空)
 	 */
 	@Id
+	@NotNull
 	@Column(name = "id")
 	@ApiModelProperty(value = "文章ID")
 	private Long id;
@@ -35,6 +37,7 @@ public class Article implements Serializable {
 	/**
 	 * 创建时间(不能为空)
 	 */
+	@NotNull
 	@Column(name = "create_time")
 	@ApiModelProperty(value = "创建时间")
 	private Date createTime;
@@ -42,6 +45,7 @@ public class Article implements Serializable {
 	/**
 	 * 修改时间(不能为空)
 	 */
+	@NotNull
 	@Column(name = "update_time")
 	@ApiModelProperty(value = "修改时间")
 	private Date updateTime;
@@ -49,6 +53,7 @@ public class Article implements Serializable {
 	/**
 	 * 作者ID(不能为空)
 	 */
+	@NotNull
 	@Column(name = "user_id")
 	@ApiModelProperty(value = "作者ID")
 	private Long userId;
@@ -56,6 +61,7 @@ public class Article implements Serializable {
 	/**
 	 * 可见角色最低等级(不能为空)
 	 */
+	@NotNull
 	@Column(name = "permit_level")
 	@ApiModelProperty(value = "可见角色最低等级")
 	private Byte permitLevel;
@@ -63,6 +69,7 @@ public class Article implements Serializable {
 	/**
 	 * 是否被删除 1:未删除 2:已删除(不能为空,默认值:1)
 	 */
+	@NotNull
 	@Column(name = "is_delete")
 	@ApiModelProperty(value = "是否被删除  1:未删除  2:已删除", example = "1")
 	private Byte isDelete = 1;
@@ -70,6 +77,7 @@ public class Article implements Serializable {
 	/**
 	 * 标题(不能为空)
 	 */
+	@NotNull
 	@Column(name = "title", length = 127)
 	@ApiModelProperty(value = "标题")
 	private String title;
@@ -93,7 +101,9 @@ public class Article implements Serializable {
 	/**
 	 * 内容(不能为空)
 	 */
+	@NotNull
 	@Column(name = "content", length = 65535)
 	@ApiModelProperty(value = "内容")
 	private String content;
+
 }

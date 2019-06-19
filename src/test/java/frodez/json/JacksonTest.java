@@ -1,5 +1,6 @@
 package frodez.json;
 
+import frodez.constant.settings.DefPage;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.json.JSONUtil;
 import java.io.IOException;
@@ -27,12 +28,12 @@ public class JacksonTest {
 		map.put("date", date);
 		map.put("decimal", new BigDecimal("12.555251635"));
 		map.put("string", string);
-		map.put("object", QueryPage.DEFAULT);
+		map.put("object", DefPage.QUERY_PAGE);
 		JacksonTestBean bean = JSONUtil.as(JSONUtil.string(map), JacksonTestBean.class);
 		Assert.assertNotNull(bean.getDate().equals(date));
 		Assert.assertNotNull(bean.getDecimal().equals(bigDecimal));
 		Assert.assertNotNull(bean.getString().equals(string));
-		Assert.assertNotNull(bean.getObject().equals(QueryPage.DEFAULT));
+		Assert.assertNotNull(bean.getObject().equals(DefPage.QUERY_PAGE));
 	}
 
 	@Data

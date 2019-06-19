@@ -5,11 +5,10 @@ import com.google.common.io.FileWriteMode;
 import com.google.common.io.Files;
 import frodez.constant.settings.DefCharset;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -25,7 +24,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static String readString(File file) throws IOException {
+	@SneakyThrows
+	public static String readString(File file) {
 		return readString(file, DefCharset.UTF_8_CHARSET);
 	}
 
@@ -34,7 +34,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static String readString(File file, Charset charset) throws IOException {
+	@SneakyThrows
+	public static String readString(File file, Charset charset) {
 		return Files.asCharSource(file, charset).read();
 	}
 
@@ -43,7 +44,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static String readString(String uri) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static String readString(String uri) {
 		return readString(uri, DefCharset.UTF_8_CHARSET);
 	}
 
@@ -52,7 +54,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static String readString(String uri, Charset charset) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static String readString(String uri, Charset charset) {
 		return Files.asCharSource(new File(new URI(uri)), charset).read();
 	}
 
@@ -62,7 +65,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static ImmutableList<String> readStrings(File file) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static ImmutableList<String> readStrings(File file) {
 		return readStrings(file, DefCharset.UTF_8_CHARSET);
 	}
 
@@ -72,7 +76,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static ImmutableList<String> readStrings(File file, Charset charset) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static ImmutableList<String> readStrings(File file, Charset charset) {
 		return Files.asCharSource(file, charset).readLines();
 	}
 
@@ -82,7 +87,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static ImmutableList<String> readStrings(String uri) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static ImmutableList<String> readStrings(String uri) {
 		return readStrings(uri, DefCharset.UTF_8_CHARSET);
 	}
 
@@ -92,8 +98,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static ImmutableList<String> readStrings(String uri, Charset charset) throws IOException,
-		URISyntaxException {
+	@SneakyThrows
+	public static ImmutableList<String> readStrings(String uri, Charset charset) {
 		return Files.asCharSource(new File(new URI(uri)), charset).readLines();
 	}
 
@@ -102,7 +108,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeString(String content, File file) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static void writeString(String content, File file) {
 		writeString(content, file, false);
 	}
 
@@ -111,7 +118,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeString(String content, File file, boolean isAppend) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static void writeString(String content, File file, boolean isAppend) {
 		if (isAppend) {
 			Files.asCharSink(file, DefCharset.UTF_8_CHARSET, FileWriteMode.APPEND).write(content);
 		} else {
@@ -124,7 +132,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeString(String content, String uri) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static void writeString(String content, String uri) {
 		writeString(content, uri, false);
 	}
 
@@ -133,8 +142,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeString(String content, String uri, boolean isAppend) throws IOException,
-		URISyntaxException {
+	@SneakyThrows
+	public static void writeString(String content, String uri, boolean isAppend) {
 		if (isAppend) {
 			Files.asCharSink(new File(new URI(uri)), DefCharset.UTF_8_CHARSET, FileWriteMode.APPEND).write(content);
 		} else {
@@ -147,7 +156,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeString(String content, File file, Charset charset) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static void writeString(String content, File file, Charset charset) {
 		writeString(content, file, charset, false);
 	}
 
@@ -156,8 +166,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeString(String content, File file, Charset charset, boolean isAppend) throws IOException,
-		URISyntaxException {
+	@SneakyThrows
+	public static void writeString(String content, File file, Charset charset, boolean isAppend) {
 		if (isAppend) {
 			Files.asCharSink(file, charset, FileWriteMode.APPEND).write(content);
 		} else {
@@ -170,7 +180,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeString(String content, String uri, Charset charset) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static void writeString(String content, String uri, Charset charset) {
 		writeString(content, uri, charset, false);
 	}
 
@@ -179,8 +190,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeString(String content, String uri, Charset charset, boolean isAppend) throws IOException,
-		URISyntaxException {
+	@SneakyThrows
+	public static void writeString(String content, String uri, Charset charset, boolean isAppend) {
 		if (isAppend) {
 			Files.asCharSink(new File(new URI(uri)), charset, FileWriteMode.APPEND).write(content);
 		} else {
@@ -193,7 +204,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static byte[] readBytes(File file) throws IOException {
+	@SneakyThrows
+	public static byte[] readBytes(File file) {
 		return Files.asByteSource(file).read();
 	}
 
@@ -202,7 +214,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static byte[] readBytes(String uri) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static byte[] readBytes(String uri) {
 		return Files.asByteSource(new File(new URI(uri))).read();
 	}
 
@@ -211,7 +224,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeBytes(byte[] content, File file) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static void writeBytes(byte[] content, File file) {
 		writeBytes(content, file, false);
 	}
 
@@ -220,7 +234,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeBytes(byte[] content, File file, boolean isAppend) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static void writeBytes(byte[] content, File file, boolean isAppend) {
 		if (isAppend) {
 			Files.asByteSink(file, FileWriteMode.APPEND).write(content);
 		} else {
@@ -233,7 +248,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeBytes(byte[] content, String uri) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static void writeBytes(byte[] content, String uri) {
 		writeBytes(content, uri, false);
 	}
 
@@ -242,7 +258,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void writeBytes(byte[] content, String uri, boolean isAppend) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static void writeBytes(byte[] content, String uri, boolean isAppend) {
 		if (isAppend) {
 			Files.asByteSink(new File(new URI(uri)), FileWriteMode.APPEND).write(content);
 		} else {
@@ -255,7 +272,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void transfer(InputStream input, File file) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static void transfer(InputStream input, File file) {
 		transfer(input, file, false);
 	}
 
@@ -264,7 +282,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void transfer(InputStream input, File file, boolean isAppend) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static void transfer(InputStream input, File file, boolean isAppend) {
 		if (isAppend) {
 			Files.asByteSink(file, FileWriteMode.APPEND).writeFrom(input);
 		} else {
@@ -277,7 +296,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void transfer(InputStream input, String uri) throws IOException, URISyntaxException {
+	@SneakyThrows
+	public static void transfer(InputStream input, String uri) {
 		transfer(input, uri, false);
 	}
 
@@ -286,8 +306,8 @@ public class FileUtil {
 	 * @author Frodez
 	 * @date 2019-03-09
 	 */
-	public static void transfer(InputStream input, String uri, boolean isAppend) throws IOException,
-		URISyntaxException {
+	@SneakyThrows
+	public static void transfer(InputStream input, String uri, boolean isAppend) {
 		if (isAppend) {
 			Files.asByteSink(new File(new URI(uri)), FileWriteMode.APPEND).writeFrom(input);
 		} else {

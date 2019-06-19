@@ -2,12 +2,12 @@ package frodez.util.spring;
 
 import frodez.constant.settings.DefStr;
 import frodez.util.common.StrUtil;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.SneakyThrows;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
@@ -39,12 +39,12 @@ public class ContextUtil implements ApplicationContextAware {
 	}
 
 	/**
-	 * 关闭spring应用,默认返回码-1
+	 * 关闭spring应用,默认返回码1
 	 * @author Frodez
 	 * @date 2019-06-04
 	 */
 	public static void exit() {
-		exit(-1);
+		exit(1);
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @author Frodez
 	 * @date 2018-12-21
 	 */
-	public static <T> T get(Class<T> klass) {
+	public static <T> T bean(Class<T> klass) {
 		return context.getBean(klass);
 	}
 
@@ -92,7 +92,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @param <T>
 	 * @date 2018-12-21
 	 */
-	public static <T> Map<String, T> gets(Class<T> klass) {
+	public static <T> Map<String, T> beans(Class<T> klass) {
 		return context.getBeansOfType(klass);
 	}
 
@@ -104,7 +104,7 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @date 2018-12-21
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T get(String beanName, Class<T> klass) {
+	public static <T> T bean(String beanName, Class<T> klass) {
 		return (T) context.getBean(beanName);
 	}
 
@@ -115,7 +115,8 @@ public class ContextUtil implements ApplicationContextAware {
 	 * @throws ClassNotFoundException
 	 * @date 2019-05-23
 	 */
-	public static List<Class<?>> getClasses(String pattern) throws IOException, ClassNotFoundException, LinkageError {
+	@SneakyThrows
+	public static List<Class<?>> classes(String pattern) {
 		ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 		MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
 		String packageSearchPath = StrUtil.concat(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, ClassUtils

@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
+import org.springframework.lang.Nullable;
 
 /**
  * @description 用户表
@@ -21,76 +22,80 @@ import lombok.Data;
 @Table(name = "tb_user")
 @ApiModel(description = "用户返回数据")
 public class User implements Serializable {
-    
-    private static final long serialVersionUID = 1L;
 
-    /** 
-     * 用户ID
-     */
-    @Id
-    @NotNull
-    @Column(name = "id")
-    @ApiModelProperty(value = "用户ID")
-    private Long id;
+	private static final long serialVersionUID = 1L;
 
-    /** 
-     * 创建时间
-     */
-    @NotNull
-    @Column(name = "create_time")
-    @ApiModelProperty(value = "创建时间")
-    private Date createTime;
+	/**
+	 * 用户ID
+	 */
+	@Id
+	@NotNull
+	@Column(name = "id")
+	@ApiModelProperty(value = "用户ID")
+	private Long id;
 
-    /** 
-     * 用户名
-     */
-    @NotNull
-    @Column(name = "name", length = 50)
-    @ApiModelProperty(value = "用户名")
-    private String name;
+	/**
+	 * 创建时间
+	 */
+	@NotNull
+	@Column(name = "create_time")
+	@ApiModelProperty(value = "创建时间")
+	private Date createTime;
 
-    /** 
-     * 密码
-     */
-    @NotNull
-    @Column(name = "password", length = 2000)
-    @ApiModelProperty(value = "密码")
-    private String password;
+	/**
+	 * 用户名
+	 */
+	@NotNull
+	@Column(name = "name", length = 50)
+	@ApiModelProperty(value = "用户名")
+	private String name;
 
-    /** 
-     * 昵称
-     */
-    @Column(name = "nickname", length = 50)
-    @ApiModelProperty(value = "昵称")
-    private String nickname;
+	/**
+	 * 密码
+	 */
+	@NotNull
+	@Column(name = "password", length = 2000)
+	@ApiModelProperty(value = "密码")
+	private String password;
 
-    /** 
-     * 邮箱地址
-     */
-    @Column(name = "email", length = 255)
-    @ApiModelProperty(value = "邮箱地址")
-    private String email;
+	/**
+	 * 昵称
+	 */
+	@Nullable
+	@Column(name = "nickname", length = 50)
+	@ApiModelProperty(value = "昵称")
+	private String nickname;
 
-    /** 
-     * 电话号码
-     */
-    @Column(name = "phone", length = 255)
-    @ApiModelProperty(value = "电话号码")
-    private String phone;
+	/**
+	 * 邮箱地址
+	 */
+	@Nullable
+	@Column(name = "email", length = 255)
+	@ApiModelProperty(value = "邮箱地址")
+	private String email;
 
-    /** 
-     * 用户状态  0:禁用  1:正常
-     */
-    @NotNull
-    @Column(name = "status")
-    @ApiModelProperty(value = "用户状态  0:禁用  1:正常", example = "1")
-    private Byte status = 1;
+	/**
+	 * 电话号码
+	 */
+	@Nullable
+	@Column(name = "phone", length = 255)
+	@ApiModelProperty(value = "电话号码")
+	private String phone;
 
-    /** 
-     * 角色ID
-     */
-    @NotNull
-    @Column(name = "role_id")
-    @ApiModelProperty(value = "角色ID")
-    private Long roleId;
+	/**
+	 * 用户状态 0:禁用 1:正常
+	 */
+	@NotNull
+	@Column(name = "status")
+	@ApiModelProperty(value = "用户状态  0:禁用  1:正常", example = "1")
+	private Byte status = 1;
+
+	/**
+	 * 角色ID
+	 */
+	@NotNull
+	@Column(name = "role_id")
+	@ApiModelProperty(value = "角色ID")
+	private Long roleId;
+
 }

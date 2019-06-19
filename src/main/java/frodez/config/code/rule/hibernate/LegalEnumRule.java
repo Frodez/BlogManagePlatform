@@ -61,8 +61,8 @@ public class LegalEnumRule implements CodeCheckRule {
 			try {
 				method = enumClass.getMethod(methodName, parameterType);
 			} catch (NoSuchMethodException e) {
-				throw new CodeCheckException(enumClassName, "必须拥有", methodName, "方法,详情参见@", EnumCheckable.class
-					.getName(), "注解");
+				throw new CodeCheckException(enumClassName, "未找到", methodName, "方法,或者方法入参类型有误,详情参见@",
+					EnumCheckable.class.getName(), "注解");
 			}
 			if (method.getReturnType() != enumClass) {
 				throw new CodeCheckException(enumClassName, "的", methodName, "方法返回值必须为", enumClassName, ",详情参见@",

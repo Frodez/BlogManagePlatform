@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.ImmutableMap;
 import frodez.constant.errors.exception.ResultParseException;
 import frodez.constant.settings.DefDesc;
 import frodez.util.json.JSONUtil;
@@ -13,7 +14,6 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,6 +21,7 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.util.Assert;
@@ -552,7 +553,7 @@ public final class Result implements Serializable {
 	 * @author Frodez
 	 * @date 2019-05-24
 	 */
-	public String json() throws JsonProcessingException {
+	public String json() {
 		return new String(jsonBytes());
 	}
 
@@ -561,7 +562,8 @@ public final class Result implements Serializable {
 	 * @author Frodez
 	 * @date 2019-05-24
 	 */
-	public byte[] jsonBytes() throws JsonProcessingException {
+	@SneakyThrows
+	public byte[] jsonBytes() {
 		return cacheBytes != null ? cacheBytes : writer.writeValueAsBytes(this);
 	}
 
@@ -569,10 +571,9 @@ public final class Result implements Serializable {
 	 * 获取result的json字符串缓存(数组形式)<br>
 	 * 仅当为默认Result时使用.<br>
 	 * @author Frodez
-	 * @throws JsonProcessingException
 	 * @date 2018-11-27
 	 */
-	public byte[] cache() throws JsonProcessingException {
+	public byte[] cache() {
 		return cacheBytes;
 	}
 
@@ -655,13 +656,14 @@ public final class Result implements Serializable {
 		private static final Map<Integer, ResultEnum> enumMap;
 
 		static {
-			enumMap = new HashMap<>();
+			var builder = ImmutableMap.<Integer, ResultEnum>builder();
 			for (ResultEnum iter : ResultEnum.values()) {
-				enumMap.put(iter.val, iter);
+				builder.put(iter.val, iter);
 			}
+			enumMap = builder.build();
 		}
 
-		public static ResultEnum of(int value) {
+		public static ResultEnum of(Integer value) {
 			return enumMap.get(value);
 		}
 

@@ -34,21 +34,21 @@ public class ValidateCodeChecker implements ApplicationListener<ApplicationStart
 	public void onApplicationEvent(ApplicationStartedEvent event) {
 		try {
 			if (codeChecker.needCheck()) {
-				log.info("[ValidateChecker]hibernate-validator代码校验开始");
+				log.info("[frodez.config.validator.ValidateCodeChecker.ValidateChecker]hibernate-validator代码校验开始");
 				check();
-				log.info("[ValidateChecker]hibernate-validator代码校验结束");
+				log.info("[frodez.config.validator.ValidateCodeChecker.ValidateChecker]hibernate-validator代码校验结束");
 			} else {
-				log.info("[ValidateChecker]未开启hibernate-validator代码校验功能");
+				log.info("[frodez.config.validator.ValidateCodeChecker.ValidateChecker]未开启hibernate-validator代码校验功能");
 			}
 		} catch (IOException | ClassNotFoundException | LinkageError e) {
-			log.error("[ValidateChecker]发生错误,程序终止", e);
+			log.error("[frodez.config.validator.ValidateCodeChecker.ValidateChecker]发生错误,程序终止", e);
 			ContextUtil.exit();
 		}
 	}
 
 	private void check() throws IOException, ClassNotFoundException, LinkageError {
 		for (String path : properties.getModelPath()) {
-			for (Class<?> klass : ContextUtil.getClasses(path)) {
+			for (Class<?> klass : ContextUtil.classes(path)) {
 				if (klass.getAnnotation(ValidateBean.class) != null) {
 					codeChecker.checkClass(klass);
 				}

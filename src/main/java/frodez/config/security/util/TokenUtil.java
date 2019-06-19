@@ -66,7 +66,7 @@ public class TokenUtil {
 
 	@PostConstruct
 	private void init() {
-		SecurityProperties properties = ContextUtil.get(SecurityProperties.class);
+		SecurityProperties properties = ContextUtil.bean(SecurityProperties.class);
 		algorithm = Algorithm.HMAC256(properties.getJwt().getSecret());
 		issuer = properties.getJwt().getIssuer();
 		expiration = properties.getJwt().getExpiration() * 1000;

@@ -9,8 +9,8 @@ import frodez.util.beans.pair.Pair;
 import frodez.util.beans.result.Result;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.springframework.aop.ClassFilter;
@@ -30,7 +30,7 @@ public class LimitUserAdvisor implements PointcutAdvisor {
 	/**
 	 * 限流器
 	 */
-	private Map<String, Pair<RateLimiter, Long>> limitCache = new ConcurrentHashMap<>();
+	private Map<String, Pair<RateLimiter, Long>> limitCache = new HashMap<>();
 
 	/**
 	 * AOP切点

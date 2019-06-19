@@ -1,13 +1,13 @@
 package frodez.service.task.base;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.pagehelper.PageHelper;
+import frodez.config.aop.exception.annotation.CatchAndReturn;
+import frodez.config.aop.exception.annotation.CatchAndThrow;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.aop.validation.annotation.common.LegalEnum;
 import frodez.config.task.TaskProperties;
 import frodez.constant.enums.task.StatusEnum;
 import frodez.constant.errors.code.ErrorCode;
-import frodez.constant.errors.code.ServiceException;
 import frodez.constant.settings.DefStr;
 import frodez.dao.mapper.task.TaskMapper;
 import frodez.dao.model.task.Task;
@@ -16,6 +16,7 @@ import frodez.dao.result.task.AvailableTaskInfo;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
+import frodez.util.common.StreamUtil;
 import frodez.util.json.JSONUtil;
 import frodez.util.reflect.BeanUtil;
 import frodez.util.spring.ContextUtil;
@@ -75,7 +76,7 @@ public class BaseTaskService {
 	@PostConstruct
 	private void init() {
 		try {
-			taskServiceInfos = ContextUtil.gets(ITask.class).entrySet().stream().map((entry) -> {
+			taskServiceInfos = ContextUtil.beans(ITask.class).entrySet().stream().map((entry) -> {
 				AvailableTaskInfo info = new AvailableTaskInfo();
 				info.setName(entry.getKey());
 				info.setDescription(entry.getValue().getDescription());
@@ -89,37 +90,33 @@ public class BaseTaskService {
 			example.clear();
 			example.createCriteria().andIsNotNull("target").andEqualTo("status", StatusEnum.ACTIVE.getVal());
 			example.orderBy("id");
-			PageHelper.startPage(new QueryPage(properties.getMaxSize()));
-			List<Task> tasks = taskMapper.selectByExample(example);
+			List<Task> tasks = taskMapper.selectByExampleAndRowBounds(example, new QueryPage(properties.getMaxSize())
+				.toRowBounds());
 			tasks.parallelStream().forEach((task) -> {
 				Runnable runnable = null;
 				CronTrigger trigger = null;
 				try {
 					runnable = getRunnable(task.getTarget());
 				} catch (ClassNotFoundException e) {
-					log.error("init", e);
+					log.error("[frodez.service.task.base.BaseTaskService.init]", e);
 					log.warn("初始化任务——类型初始化失败!类型名:{}", task.getTarget());
 					return;
 				}
 				try {
 					trigger = new CronTrigger(task.getCronExp());
 				} catch (IllegalArgumentException e) {
-					log.error("init", e);
+					log.error("[frodez.service.task.base.BaseTaskService.init]", e);
 					log.warn("初始化任务——时间表达式错误!表达式:{}", task.getCronExp());
 					return;
 				}
 				if (runnable != null && trigger != null) {
 					taskMap.put(task.getId(), scheduler.schedule(runnable, trigger));
 					taskInfoMap.put(task.getId(), task);
-					try {
-						log.info("第{}号任务启动,任务详情:{}", task.getId(), JSONUtil.string(task));
-					} catch (JsonProcessingException e) {
-						return;
-					}
+					log.info("第{}号任务启动,任务详情:{}", task.getId(), JSONUtil.string(task));
 				}
 			});
 		} catch (Exception e) {
-			log.error("初始化任务错误!应用仍将继续启动...", e);
+			log.error("[frodez.service.task.base.BaseTaskService.init]初始化任务错误!应用仍将继续启动...", e);
 		}
 	}
 
@@ -154,7 +151,7 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	private Runnable getRunnable(String className) throws ClassNotFoundException {
-		return (Runnable) ContextUtil.get(Class.forName(StrUtil.concat(properties.getPrefix(), DefStr.POINT_SEPERATOR,
+		return (Runnable) ContextUtil.bean(Class.forName(StrUtil.concat(properties.getPrefix(), DefStr.POINT_SEPERATOR,
 			className)));
 	}
 
@@ -175,16 +172,11 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
+	@CatchAndReturn
 	public Result getAvailableTasks(@Valid @NotNull QueryPage param) {
-		try {
-			param = QueryPage.safe(param);
-			List<AvailableTaskInfo> infos = taskServiceInfos.stream().skip((param.getPageNum() - 1) * param
-				.getPageSize()).limit(param.getPageNum() * param.getPageSize()).collect(Collectors.toList());
-			return Result.page(param.getPageNum(), param.getPageSize(), infos.size(), infos);
-		} catch (Exception e) {
-			log.error("[getAllAvailableTasks]", e);
-			return Result.errorService();
-		}
+		List<AvailableTaskInfo> infos = StreamUtil.startPage(taskServiceInfos.stream(), param).collect(Collectors
+			.toList());
+		return Result.page(param.getPageNum(), param.getPageSize(), infos.size(), infos);
 	}
 
 	/**
@@ -193,16 +185,10 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
+	@CatchAndReturn
 	public Result getRunningTasksInfo(@Valid @NotNull QueryPage param) {
-		try {
-			param = QueryPage.safe(param);
-			List<Task> tasks = taskInfoMap.values().stream().skip((param.getPageNum() - 1) * param.getPageSize()).limit(
-				param.getPageNum() * param.getPageSize()).collect(Collectors.toList());
-			return Result.page(param.getPageNum(), param.getPageSize(), tasks.size(), tasks);
-		} catch (Exception e) {
-			log.error("[getRunningTasksInfo]", e);
-			return Result.errorService();
-		}
+		List<Task> tasks = StreamUtil.startPage(taskInfoMap.values().stream(), param).collect(Collectors.toList());
+		return Result.page(param.getPageNum(), param.getPageSize(), tasks.size(), tasks);
 	}
 
 	/**
@@ -211,15 +197,11 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
+	@CatchAndReturn
 	public Result getTasks(@Valid @NotNull QueryPage param) {
-		try {
-			return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> {
-				taskMapper.selectAll();
-			}));
-		} catch (Exception e) {
-			log.error("[getRunningTasks]", e);
-			return Result.errorService();
-		}
+		return Result.page(PageHelper.startPage(param).doSelectPage(() -> {
+			taskMapper.selectAll();
+		}));
 	}
 
 	/**
@@ -227,23 +209,19 @@ public class BaseTaskService {
 	 * @author Frodez
 	 * @date 2019-03-21
 	 */
+	@CatchAndReturn
 	public Result cancelAllTasks() {
-		try {
-			int total = taskMap.size();
-			int alreadyCanceled = 0;
-			for (Entry<Long, ScheduledFuture<?>> entry : taskMap.entrySet()) {
-				if (entry.getValue().cancel(true)) {
-					taskMap.remove(entry.getKey());
-					taskInfoMap.remove(entry.getKey());
-					++alreadyCanceled;
-				}
+		int total = taskMap.size();
+		int alreadyCanceled = 0;
+		for (Entry<Long, ScheduledFuture<?>> entry : taskMap.entrySet()) {
+			if (entry.getValue().cancel(true)) {
+				taskMap.remove(entry.getKey());
+				taskInfoMap.remove(entry.getKey());
+				++alreadyCanceled;
 			}
-			return Result.success(StrUtil.concat("共计", Integer.valueOf(total).toString(), "个任务正在执行,已取消", Integer
-				.valueOf(alreadyCanceled).toString(), "个。"));
-		} catch (Exception e) {
-			log.error("[cancelAllTasks]", e);
-			return Result.errorService();
 		}
+		return Result.success(StrUtil.concat("共计", Integer.valueOf(total).toString(), "个任务正在执行,已取消", Integer.valueOf(
+			alreadyCanceled).toString(), "个。"));
 	}
 
 	/**
@@ -252,39 +230,41 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
+	@CatchAndThrow(errorCode = ErrorCode.TASK_SERVICE_ERROR)
 	@Transactional
 	public Result addTask(@Valid @NotNull AddTask param) {
+		if (isAvailable(param.getTarget())) {
+			return Result.fail("非法的类型!");
+		}
+		Runnable runnable;
+		CronTrigger trigger;
 		try {
-			if (isAvailable(param.getTarget())) {
-				return Result.fail("非法的类型!");
-			}
-			Runnable runnable;
-			CronTrigger trigger;
-			try {
-				runnable = getRunnable(param.getTarget());
-				trigger = new CronTrigger(param.getCronExp());
-			} catch (ClassNotFoundException e) {
-				return Result.fail("类型初始化失败!");
-			} catch (IllegalArgumentException e) {
-				return Result.fail("时间表达式错误!");
-			}
-			if (taskMapper.selectCount(null) >= properties.getMaxSize()) {
-				return Result.fail("已达可用任务最大数量!");
-			}
-			Task task = new Task();
-			BeanUtil.copy(param, task);
-			task.setCreateTime(new Date());
-			task.setStatus(param.getStartNow());
-			taskMapper.insertUseGeneratedKeys(task);
-			if (param.getStartNow() == StatusEnum.ACTIVE.getVal()) {
+			runnable = getRunnable(param.getTarget());
+			trigger = new CronTrigger(param.getCronExp());
+		} catch (ClassNotFoundException e) {
+			return Result.fail("类型初始化失败!");
+		} catch (IllegalArgumentException e) {
+			return Result.fail("时间表达式错误!");
+		}
+		if (taskMapper.selectCount(null) >= properties.getMaxSize()) {
+			return Result.fail("已达可用任务最大数量!");
+		}
+		Task task = new Task();
+		BeanUtil.copy(param, task);
+		task.setCreateTime(new Date());
+		task.setStatus(param.getStartNow());
+		taskMapper.insertUseGeneratedKeys(task);
+		switch (StatusEnum.of(param.getStartNow())) {
+			case ACTIVE : {
 				taskMap.put(task.getId(), scheduler.schedule(runnable, trigger));
 				taskInfoMap.put(task.getId(), task);
+				break;
 			}
-			return Result.success(task.getId());
-		} catch (Exception e) {
-			log.error("[addJob]", e);
-			throw new ServiceException(ErrorCode.TASK_SERVICE_ERROR);
+			default : {
+				break;
+			}
 		}
+		return Result.success(task.getId());
 	}
 
 	/**
@@ -293,37 +273,34 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
+	@CatchAndThrow(errorCode = ErrorCode.TASK_SERVICE_ERROR)
+	@Transactional
 	public Result deleteTask(@NotNull Long id) {
-		try {
-			Task task = taskMapper.selectByPrimaryKey(id);
-			if (task == null) {
-				return Result.fail("未找到该任务!");
-			}
-			ScheduledFuture<?> future = taskMap.get(id);
-			if (future != null) {
-				Runnable runnable;
-				try {
-					runnable = getRunnable(task.getTarget());
-				} catch (ClassNotFoundException e) {
-					return Result.fail("类型初始化失败!");
-				}
-				boolean mayInterruptIfRunning = canForcelyIntterrupt(runnable);
-				if (!future.cancel(mayInterruptIfRunning)) {
-					if (mayInterruptIfRunning) {
-						return Result.fail("该任务正在执行,且不能强行中止,因此暂不能删除!");
-					} else {
-						return Result.fail("该任务正在执行,且中止失败,因此暂不能删除!");
-					}
-				}
-			}
-			taskMapper.deleteByPrimaryKey(id);
-			taskMap.remove(id);
-			taskInfoMap.remove(id);
-			return Result.success();
-		} catch (Exception e) {
-			log.error("[removeJob]", e);
-			throw new ServiceException(ErrorCode.TASK_SERVICE_ERROR);
+		Task task = taskMapper.selectByPrimaryKey(id);
+		if (task == null) {
+			return Result.fail("未找到该任务!");
 		}
+		ScheduledFuture<?> future = taskMap.get(id);
+		if (future != null) {
+			Runnable runnable;
+			try {
+				runnable = getRunnable(task.getTarget());
+			} catch (ClassNotFoundException e) {
+				return Result.fail("类型初始化失败!");
+			}
+			boolean mayInterruptIfRunning = canForcelyIntterrupt(runnable);
+			if (!future.cancel(mayInterruptIfRunning)) {
+				if (mayInterruptIfRunning) {
+					return Result.fail("该任务正在执行,且不能强行中止,因此暂不能删除!");
+				} else {
+					return Result.fail("该任务正在执行,且中止失败,因此暂不能删除!");
+				}
+			}
+		}
+		taskMapper.deleteByPrimaryKey(id);
+		taskMap.remove(id);
+		taskInfoMap.remove(id);
+		return Result.success();
 	}
 
 	/**
@@ -332,22 +309,18 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
+	@CatchAndReturn
 	public Result cancelTask(@NotNull Long id) {
-		try {
-			ScheduledFuture<?> future = taskMap.get(id);
-			if (future == null) {
-				return Result.fail("未找到该任务!");
-			}
-			if (!future.cancel(true)) {
-				return Result.fail("强行取消任务失败!");
-			}
-			taskMap.remove(id);
-			taskInfoMap.remove(id);
-			return Result.success();
-		} catch (Exception e) {
-			log.error("[removeJob]", e);
-			return Result.errorService();
+		ScheduledFuture<?> future = taskMap.get(id);
+		if (future == null) {
+			return Result.fail("未找到该任务!");
 		}
+		if (!future.cancel(true)) {
+			return Result.fail("强行取消任务失败!");
+		}
+		taskMap.remove(id);
+		taskInfoMap.remove(id);
+		return Result.success();
 	}
 
 	/**
@@ -356,20 +329,16 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
+	@CatchAndThrow(errorCode = ErrorCode.TASK_SERVICE_ERROR)
 	@Transactional
 	public Result changeStatus(@NotNull Long id, @LegalEnum(type = StatusEnum.class) Byte status) {
-		try {
-			Task task = taskMapper.selectByPrimaryKey(id);
-			if (task == null) {
-				return Result.fail("未找到该任务!");
-			}
-			task.setStatus(status);
-			taskMapper.updateByPrimaryKeySelective(task);
-			return Result.success();
-		} catch (Exception e) {
-			log.error("[removeJob]", e);
-			throw new ServiceException(ErrorCode.TASK_SERVICE_ERROR);
+		Task task = taskMapper.selectByPrimaryKey(id);
+		if (task == null) {
+			return Result.fail("未找到该任务!");
 		}
+		task.setStatus(status);
+		taskMapper.updateByPrimaryKeySelective(task);
+		return Result.success();
 	}
 
 }

@@ -28,7 +28,7 @@ public class PropertyUtil {
 
 	@PostConstruct
 	private void init() {
-		env = ContextUtil.get(Environment.class);
+		env = ContextUtil.bean(Environment.class);
 		activeEnvs = List.of(env.getActiveProfiles());
 		Assert.notNull(env, "env must not be null");
 		Assert.notNull(activeEnvs, "activeEnvs must not be null");

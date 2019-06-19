@@ -1,6 +1,5 @@
 package security;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import frodez.BlogManagePlatformApplication;
 import frodez.config.security.util.Matcher;
 import frodez.constant.enums.user.PermissionTypeEnum;
@@ -30,7 +29,7 @@ public class InitPermissionService {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BlogManagePlatformApplication.class, args);
-		PermissionMapper permissionMapper = ContextUtil.get(PermissionMapper.class);
+		PermissionMapper permissionMapper = ContextUtil.bean(PermissionMapper.class);
 		List<Permission> permissionList = new ArrayList<>();
 		Date date = new Date();
 		//拿到mvc里定义的所有端点,然后自动生成权限
@@ -71,16 +70,13 @@ public class InitPermissionService {
 			permissionList.add(permission);
 		});
 		System.out.println("权限条目数量:" + permissionList.size());
-		try {
-			System.out.println("权限详细信息:" + JSONUtil.string(permissionList));
-		} catch (JsonProcessingException e) {
-		}
+		System.out.println("权限详细信息:" + JSONUtil.string(permissionList));
 		Example example = new Example(Permission.class);
 		permissionMapper.deleteByExample(example);
 		if (EmptyUtil.no(permissionList)) {
 			permissionMapper.insertList(permissionList);
 		}
-		SpringApplication.exit(ContextUtil.context(), () -> 1);
+		ContextUtil.exit();
 	}
 
 }

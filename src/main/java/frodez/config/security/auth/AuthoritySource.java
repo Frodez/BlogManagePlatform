@@ -77,9 +77,9 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 		if (defaultDeniedRoles != null || allCache != null || urlCache != null || urlTypeCache != null) {
 			return;
 		}
-		defaultDeniedRoles = List.of(new SecurityConfig(ContextUtil.get(SecurityProperties.class).getAuth()
+		defaultDeniedRoles = List.of(new SecurityConfig(ContextUtil.bean(SecurityProperties.class).getAuth()
 			.getDeniedRole()));
-		List<Permission> permissions = ContextUtil.get(PermissionMapper.class).selectAll();
+		List<Permission> permissions = ContextUtil.bean(PermissionMapper.class).selectAll();
 		allCache = permissions.stream().map((iter) -> {
 			return new SecurityConfig(iter.getName());
 		}).collect(Collectors.toList());

@@ -41,7 +41,7 @@ public class ValidationUtil {
 
 	@PostConstruct
 	private void init() {
-		ValidatorProperties properties = ContextUtil.get(ValidatorProperties.class);
+		ValidatorProperties properties = ContextUtil.bean(ValidatorProperties.class);
 		HibernateValidatorConfiguration configuration = Validation.byProvider(HibernateValidator.class).configure();
 		//配置hibernate-validator消息插值源
 		PlatformResourceBundleLocator locator = new PlatformResourceBundleLocator(properties.getMessageConfigPath());

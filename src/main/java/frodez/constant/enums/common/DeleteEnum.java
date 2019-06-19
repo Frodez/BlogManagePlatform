@@ -1,8 +1,8 @@
 package frodez.constant.enums.common;
 
+import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,10 +58,11 @@ public enum DeleteEnum {
 			.toUnmodifiableList());
 		descs = Arrays.asList(DeleteEnum.values()).stream().map(DeleteEnum::getDesc).collect(Collectors
 			.toUnmodifiableList());
-		enumMap = new HashMap<>();
+		var builder = ImmutableMap.<Byte, DeleteEnum>builder();
 		for (DeleteEnum iter : DeleteEnum.values()) {
-			enumMap.put(iter.val, iter);
+			builder.put(iter.val, iter);
 		}
+		enumMap = builder.build();
 	}
 
 	/**

@@ -32,8 +32,7 @@ public class AsyncService {
 		} catch (InterruptedException e) {
 			Result.errorService().async();
 		}
-		return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> permissionMapper
-			.selectAll())).async();
+		return Result.page(PageHelper.startPage(param).doSelectPage(() -> permissionMapper.selectAll())).async();
 	}
 
 	@Check
@@ -47,8 +46,7 @@ public class AsyncService {
 		} catch (InterruptedException e) {
 			Result.errorService();
 		}
-		return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> permissionMapper
-			.selectAll()));
+		return Result.page(PageHelper.startPage(param).doSelectPage(() -> permissionMapper.selectAll()));
 	}
 
 }

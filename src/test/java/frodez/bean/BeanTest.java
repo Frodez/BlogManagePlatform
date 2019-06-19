@@ -3,7 +3,9 @@ package frodez.bean;
 import frodez.dao.model.user.Role;
 import frodez.util.reflect.BeanUtil;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import lombok.Data;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +39,30 @@ public class BeanTest {
 			}
 			duration = System.currentTimeMillis() - start;
 			System.out.println(duration);
+		}
+	}
+
+	@SuppressWarnings("unused")
+	@Test
+	public void testBatch() {
+		List<Role> roles = new ArrayList<>();
+		int total = 100 * 10000;
+		for (int i = 0; i < total; i++) {
+			Role role = new Role();
+			role.setCreateTime(new Date());
+			role.setDescription("test123");
+			role.setId(123L);
+			role.setLevel((byte) 1);
+			role.setName("wqwq");
+			roles.add(role);
+		}
+		int times = 5;
+		for (int i = 1; i <= times; ++i) {
+			long start = System.nanoTime();
+			List<Role> copies = BeanUtil.copies(roles, Role.class);
+			start = System.nanoTime() - start;
+			System.out.println(start / 1000);
+			System.out.println("--------");
 		}
 	}
 
