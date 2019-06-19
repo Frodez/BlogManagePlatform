@@ -38,8 +38,8 @@ public class AOPUtil {
 		if (isResult(type)) {
 			return false;
 		}
-		throw new CodeCheckException("含有", "@", Check.class.getName(), "注解的方法", ReflectUtil.getFullMethodName(method),
-			"的返回值类型必须为", ListenableFuture.class.getName(), "或者", Result.class.getName());
+		throw new CodeCheckException("含有", "@", Check.class.getCanonicalName(), "注解的方法", ReflectUtil.getFullMethodName(
+			method), "的返回值类型必须为", ListenableFuture.class.getCanonicalName(), "或者", Result.class.getCanonicalName());
 	}
 
 	/**
@@ -60,8 +60,8 @@ public class AOPUtil {
 		if (isAsyncResult(type)) {
 			return false;
 		}
-		throw new CodeCheckException("含有", "@", Check.class.getName(), "注解的方法", ReflectUtil.getFullMethodName(method),
-			"的返回值类型必须为", ListenableFuture.class.getName(), "或者", Result.class.getName());
+		throw new CodeCheckException("含有", "@", Check.class.getCanonicalName(), "注解的方法", ReflectUtil.getFullMethodName(
+			method), "的返回值类型必须为", ListenableFuture.class.getCanonicalName(), "或者", Result.class.getCanonicalName());
 	}
 
 	private static boolean isResult(Type type) {

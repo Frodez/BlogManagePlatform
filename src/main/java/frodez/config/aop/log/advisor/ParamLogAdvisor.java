@@ -102,7 +102,7 @@ public class ParamLogAdvisor implements PointcutAdvisor {
 						}
 						if (method.getParameterCount() == 0) {
 							throw new CodeCheckException("不能对无参数的方法", ReflectUtil.getFullMethodName(method), "使用@",
-								ParamLog.class.getName(), "注解!");
+								ParamLog.class.getCanonicalName(), "注解!");
 						}
 						return true;
 					}

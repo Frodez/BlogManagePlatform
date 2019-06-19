@@ -29,8 +29,8 @@ public class GenericConstraintRule implements CodeCheckRule {
 			if (constraint != null) {
 				for (Class<?> klass : getAllSuitableClasses(field.getType(), constraint)) {
 					if (!isSuitable(field.getType(), klass)) {
-						throw new CodeCheckException(ReflectUtil.getFullFieldName(field), "的类型必须是", klass.getName(),
-							"或者其子类");
+						throw new CodeCheckException(ReflectUtil.getFullFieldName(field), "的类型必须是", klass
+							.getCanonicalName(), "或者其子类");
 					}
 				}
 			}
@@ -50,7 +50,7 @@ public class GenericConstraintRule implements CodeCheckRule {
 					for (Class<?> klass : getAllSuitableClasses(parameter.getType(), constraint)) {
 						if (!isSuitable(parameter.getType(), klass)) {
 							throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method), "的参数", parameter
-								.getName(), "的类型必须是", klass.getName(), "或者其子类");
+								.getName(), "的类型必须是", klass.getCanonicalName(), "或者其子类");
 						}
 					}
 				}

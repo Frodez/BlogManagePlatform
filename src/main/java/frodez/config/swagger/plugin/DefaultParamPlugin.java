@@ -61,7 +61,8 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 		if (apiModel == null) {
 			if (!BeanUtils.isSimpleProperty(parameterClass)) {
 				log.warn(StrUtil.concat(context.getOperationContext().requestMappingPattern(), "的参数", parameterClass
-					.getName(), "既未配置@", ApiParam.class.getName(), "注解,也未配置@", ApiModel.class.getName(), "注解"));
+					.getCanonicalName(), "既未配置@", ApiParam.class.getCanonicalName(), "注解,也未配置@", ApiModel.class
+						.getCanonicalName(), "注解"));
 			}
 			return;
 		}
