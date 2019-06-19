@@ -26,6 +26,11 @@ public class ReflectUtil {
 
 	private static final Map<Class<?>, Pair<FastClass, FastMethod[]>> CGLIB_CACHE = new ConcurrentHashMap<>();
 
+	/**
+	 * 对象实例化
+	 * @author Frodez
+	 * @date 2019-06-19
+	 */
 	@SneakyThrows
 	@SuppressWarnings("unchecked")
 	public <T> T newInstance(Class<T> klass) {

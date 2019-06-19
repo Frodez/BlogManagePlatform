@@ -2,6 +2,9 @@ package frodez.constant.enums.common;
 
 import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
+import frodez.constant.enums.IEnum;
+import frodez.constant.settings.DefStr;
+import frodez.util.common.StrUtil;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +19,7 @@ import lombok.Getter;
  */
 @EnumCheckable
 @AllArgsConstructor
-public enum DeleteEnum {
+public enum DeleteEnum implements IEnum<Byte> {
 
 	/**
 	 * 未删除
@@ -54,10 +57,10 @@ public enum DeleteEnum {
 	private static final Map<Byte, DeleteEnum> enumMap;
 
 	static {
-		vals = Arrays.asList(DeleteEnum.values()).stream().map(DeleteEnum::getVal).collect(Collectors
-			.toUnmodifiableList());
-		descs = Arrays.asList(DeleteEnum.values()).stream().map(DeleteEnum::getDesc).collect(Collectors
-			.toUnmodifiableList());
+		vals = Arrays.stream(DeleteEnum.values()).map(DeleteEnum::getVal).collect(Collectors.toUnmodifiableList());
+		descs = Arrays.stream(DeleteEnum.values()).map((iter) -> {
+			return StrUtil.concat(iter.val.toString(), DefStr.SEPERATOR, iter.desc);
+		}).collect(Collectors.toUnmodifiableList());
 		var builder = ImmutableMap.<Byte, DeleteEnum>builder();
 		for (DeleteEnum iter : DeleteEnum.values()) {
 			builder.put(iter.val, iter);

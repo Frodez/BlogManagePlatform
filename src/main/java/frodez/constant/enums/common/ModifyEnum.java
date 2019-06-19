@@ -2,6 +2,9 @@ package frodez.constant.enums.common;
 
 import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
+import frodez.constant.enums.IEnum;
+import frodez.constant.settings.DefStr;
+import frodez.util.common.StrUtil;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +20,7 @@ import lombok.Getter;
  */
 @EnumCheckable
 @AllArgsConstructor
-public enum ModifyEnum {
+public enum ModifyEnum implements IEnum<Byte> {
 
 	/**
 	 * 新增
@@ -59,10 +62,10 @@ public enum ModifyEnum {
 	private static final Map<Byte, ModifyEnum> enumMap;
 
 	static {
-		vals = Arrays.asList(ModifyEnum.values()).stream().map(ModifyEnum::getVal).collect(Collectors
-			.toUnmodifiableList());
-		descs = Arrays.asList(ModifyEnum.values()).stream().map(ModifyEnum::getDesc).collect(Collectors
-			.toUnmodifiableList());
+		vals = Arrays.stream(ModifyEnum.values()).map(ModifyEnum::getVal).collect(Collectors.toUnmodifiableList());
+		descs = Arrays.stream(ModifyEnum.values()).map((iter) -> {
+			return StrUtil.concat(iter.val.toString(), DefStr.SEPERATOR, iter.desc);
+		}).collect(Collectors.toUnmodifiableList());
 		var builder = ImmutableMap.<Byte, ModifyEnum>builder();
 		for (ModifyEnum iter : ModifyEnum.values()) {
 			builder.put(iter.val, iter);
