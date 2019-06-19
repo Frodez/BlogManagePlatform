@@ -115,7 +115,7 @@ public class MethodLogAdvisor implements PointcutAdvisor {
 						}
 						if (returnType == Void.class && method.getParameterCount() == 0) {
 							throw new CodeCheckException("不能对void返回类型且无参数的方法", ReflectUtil.getFullMethodName(method),
-								"使用@", MethodLog.class.getName(), "注解!");
+								"使用@", MethodLog.class.getCanonicalName(), "注解!");
 						}
 						return true;
 					}

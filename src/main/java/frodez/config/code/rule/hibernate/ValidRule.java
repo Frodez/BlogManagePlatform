@@ -40,7 +40,8 @@ public class ValidRule implements CodeCheckRule {
 
 	private void assertFieldValid(Field field) {
 		if (field.getAnnotation(ValidateBean.class) != null && field.getAnnotation(Valid.class) == null) {
-			throw new CodeCheckException(ReflectUtil.getFullFieldName(field), "需要加上@", Valid.class.getName(), "注解!");
+			throw new CodeCheckException(ReflectUtil.getFullFieldName(field), "需要加上@", Valid.class.getCanonicalName(),
+				"注解!");
 		}
 	}
 
@@ -64,8 +65,8 @@ public class ValidRule implements CodeCheckRule {
 
 	private void assertParameterValid(Method method, Parameter parameter) {
 		if (parameter.getAnnotation(ValidateBean.class) != null && parameter.getAnnotation(Valid.class) == null) {
-			throw new CodeCheckException("含有", "@", Check.class.getName(), "注解的方法", ReflectUtil.getFullMethodName(
-				method), "的参数", parameter.getName(), "必须使用@", Valid.class.getName(), "注解!");
+			throw new CodeCheckException("含有", "@", Check.class.getCanonicalName(), "注解的方法", ReflectUtil
+				.getFullMethodName(method), "的参数", parameter.getName(), "必须使用@", Valid.class.getCanonicalName(), "注解!");
 		}
 	}
 

@@ -2,6 +2,9 @@ package frodez.constant.enums.user;
 
 import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
+import frodez.constant.enums.IEnum;
+import frodez.constant.settings.DefStr;
+import frodez.util.common.StrUtil;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +19,7 @@ import lombok.Getter;
  */
 @EnumCheckable
 @AllArgsConstructor
-public enum UserStatusEnum {
+public enum UserStatusEnum implements IEnum<Byte> {
 
 	/**
 	 * 0:禁用
@@ -54,10 +57,11 @@ public enum UserStatusEnum {
 	private static final Map<Byte, UserStatusEnum> enumMap;
 
 	static {
-		vals = Arrays.asList(UserStatusEnum.values()).stream().map(UserStatusEnum::getVal).collect(Collectors
+		vals = Arrays.stream(UserStatusEnum.values()).map(UserStatusEnum::getVal).collect(Collectors
 			.toUnmodifiableList());
-		descs = Arrays.asList(UserStatusEnum.values()).stream().map(UserStatusEnum::getDesc).collect(Collectors
-			.toUnmodifiableList());
+		descs = Arrays.stream(UserStatusEnum.values()).map((iter) -> {
+			return StrUtil.concat(iter.val.toString(), DefStr.SEPERATOR, iter.desc);
+		}).collect(Collectors.toUnmodifiableList());
 		var builder = ImmutableMap.<Byte, UserStatusEnum>builder();
 		for (UserStatusEnum iter : UserStatusEnum.values()) {
 			builder.put(iter.val, iter);

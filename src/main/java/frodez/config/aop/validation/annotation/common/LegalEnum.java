@@ -8,11 +8,11 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.InvocationTargetException;
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
+import lombok.SneakyThrows;
 
 /**
  * 枚举类型验证注解 <br>
@@ -118,22 +118,19 @@ public @interface LegalEnum {
 		 * @date 2018-12-17
 		 */
 		@Override
+		@SneakyThrows
 		public boolean isValid(Object value, ConstraintValidatorContext context) {
 			if (value == null) {
 				//对于非空检查的情况,请继续使用@NotNull注解
 				return true;
 			}
-			try {
-				if (ReflectUtil.getFastMethod(klass, method, paramType).invoke(null, new Object[] { ReflectUtil
-					.primitiveAdapt(value, paramType) }) != null) {
-					return true;
-				} else {
-					ValidationUtil.changeMessage(context, StrUtil.concat(value.toString(), "不符合要求,有效值为", ReflectUtil
-						.getFastMethod(klass, valuesMethod).invoke(null, ReflectUtil.EMPTY_ARRAY_OBJECTS).toString()));
-					return false;
-				}
-			} catch (InvocationTargetException e) {
-				throw new RuntimeException(e);
+			if (ReflectUtil.getFastMethod(klass, method, paramType).invoke(null, new Object[] { ReflectUtil
+				.primitiveAdapt(value, paramType) }) != null) {
+				return true;
+			} else {
+				ValidationUtil.changeMessage(context, StrUtil.concat(value.toString(), "不符合要求,有效值为", ReflectUtil
+					.getFastMethod(klass, valuesMethod).invoke(null, ReflectUtil.EMPTY_ARRAY_OBJECTS).toString()));
+				return false;
 			}
 		}
 

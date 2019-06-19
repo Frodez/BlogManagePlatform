@@ -2,6 +2,8 @@ package frodez.constant.enums.user;
 
 import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
+import frodez.constant.enums.IEnum;
+import frodez.util.common.StrUtil;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +18,7 @@ import lombok.Getter;
  */
 @EnumCheckable
 @AllArgsConstructor
-public enum PermissionTypeEnum {
+public enum PermissionTypeEnum implements IEnum<Byte> {
 
 	/**
 	 * 0:所有类型请求
@@ -66,10 +68,11 @@ public enum PermissionTypeEnum {
 	private static final Map<Byte, PermissionTypeEnum> enumMap;
 
 	static {
-		vals = Arrays.asList(PermissionTypeEnum.values()).stream().map(PermissionTypeEnum::getVal).collect(Collectors
+		vals = Arrays.stream(PermissionTypeEnum.values()).map(PermissionTypeEnum::getVal).collect(Collectors
 			.toUnmodifiableList());
-		descs = Arrays.asList(PermissionTypeEnum.values()).stream().map(PermissionTypeEnum::getDesc).collect(Collectors
-			.toUnmodifiableList());
+		descs = Arrays.stream(PermissionTypeEnum.values()).map((iter) -> {
+			return StrUtil.concat(iter.val.toString(), ":", iter.desc);
+		}).collect(Collectors.toUnmodifiableList());
 		var builder = ImmutableMap.<Byte, PermissionTypeEnum>builder();
 		for (PermissionTypeEnum iter : PermissionTypeEnum.values()) {
 			builder.put(iter.val, iter);

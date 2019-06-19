@@ -1,6 +1,6 @@
 package frodez.constant.errors.code;
 
-import java.util.HashMap;
+import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,10 +25,11 @@ public enum ErrorCode {
 	private static final Map<String, ErrorCode> enumMap;
 
 	static {
-		enumMap = new HashMap<>();
+		var builder = ImmutableMap.<String, ErrorCode>builder();
 		for (ErrorCode iter : ErrorCode.values()) {
-			enumMap.put(iter.description, iter);
+			builder.put(iter.description, iter);
 		}
+		enumMap = builder.build();
 	}
 
 	public static ErrorCode of(String description) {

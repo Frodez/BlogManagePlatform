@@ -30,14 +30,15 @@ import java.lang.annotation.Target;
  *		private static List descs;
  * 		private static final Map<Byte, UserStatusEnum> enumMap;
  * 		static {
- *			vals = Arrays.asList(UserStatusEnum.values()).stream().map(UserStatusEnum::getVal).collect(Collectors
- *				.toUnmodifiableList());
- *			descs = Arrays.asList(UserStatusEnum.values()).stream().map(UserStatusEnum::getDesc).collect(Collectors
- *				.toUnmodifiableList());
- *			enumMap = new HashMap<>();
+ *			vals = Arrays.stream(UserStatusEnum.values()).map(UserStatusEnum::getVal).collect(Collectors.toUnmodifiableList());
+ *			descs = Arrays.stream(UserStatusEnum.values()).map((iter) -> {
+ *				return StrUtil.concat(iter.val.toString(), DefStr.SEPERATOR, iter.desc);
+ *			}).collect(Collectors.toUnmodifiableList());
+ *			var builder = ImmutableMap.<Byte, UserStatusEnum>builder();
  *			for (UserStatusEnum iter : UserStatusEnum.values()) {
- *				enumMap.put(iter.val, iter);
+ *				builder.put(iter.val, iter);
  *			}
+ *			enumMap = builder.build();
  *		}
  * 		public UserStatusEnum of(byte value) {
  * 			return enumMap.get(value);

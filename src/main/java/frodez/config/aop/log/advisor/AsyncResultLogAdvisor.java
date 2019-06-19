@@ -100,7 +100,7 @@ public class AsyncResultLogAdvisor implements PointcutAdvisor {
 						}
 						if (returnType == Void.class) {
 							throw new CodeCheckException("不能对void返回类型的方法", ReflectUtil.getFullMethodName(method), "使用@",
-								ResultLog.class.getName(), "注解!");
+								ResultLog.class.getCanonicalName(), "注解!");
 						}
 						return true;
 					}
