@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -61,18 +60,17 @@ public class TaskController {
 	}
 
 	@PostMapping(value = "/cancel", name = "取消定时任务接口")
-	public Result cancelTask(@RequestParam("id") @ApiParam(value = "任务ID", required = true) Long id) {
+	public Result cancelTask(@ApiParam(value = "任务ID") Long id) {
 		return taskService.cancelTask(id);
 	}
 
 	@PostMapping(value = "/change", name = "更改定时任务活跃状态接口")
-	public Result changeStatus(@RequestParam("id") @ApiParam(value = "任务ID", required = true) Long id,
-		@RequestParam("status") @ApiParam(value = "是否立刻启动 1:立刻启动 2:暂不启动", required = true) Byte status) {
+	public Result changeStatus(@ApiParam(value = "任务ID") Long id, @ApiParam(value = "活跃状态 1:活跃中 2:不活跃") Byte status) {
 		return taskService.changeStatus(id, status);
 	}
 
 	@DeleteMapping(name = "删除定时任务接口")
-	public Result deleteTask(@RequestParam("id") @ApiParam(value = "任务ID", required = true) Long id) {
+	public Result deleteTask(@ApiParam(value = "任务ID") Long id) {
 		return taskService.deleteTask(id);
 	}
 

@@ -16,6 +16,7 @@ import frodez.dao.result.task.AvailableTaskInfo;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
+import frodez.util.common.StreamUtil;
 import frodez.util.json.JSONUtil;
 import frodez.util.reflect.BeanUtil;
 import frodez.util.spring.ContextUtil;
@@ -89,8 +90,8 @@ public class BaseTaskService {
 			example.clear();
 			example.createCriteria().andIsNotNull("target").andEqualTo("status", StatusEnum.ACTIVE.getVal());
 			example.orderBy("id");
-			PageHelper.startPage(new QueryPage(properties.getMaxSize()));
-			List<Task> tasks = taskMapper.selectByExample(example);
+			List<Task> tasks = taskMapper.selectByExampleAndRowBounds(example, new QueryPage(properties.getMaxSize())
+				.toRowBounds());
 			tasks.parallelStream().forEach((task) -> {
 				Runnable runnable = null;
 				CronTrigger trigger = null;
@@ -173,9 +174,8 @@ public class BaseTaskService {
 	@Check
 	@CatchAndReturn
 	public Result getAvailableTasks(@Valid @NotNull QueryPage param) {
-		param = QueryPage.safe(param);
-		List<AvailableTaskInfo> infos = taskServiceInfos.stream().skip((param.getPageNum() - 1) * param.getPageSize())
-			.limit(param.getPageNum() * param.getPageSize()).collect(Collectors.toList());
+		List<AvailableTaskInfo> infos = StreamUtil.startPage(taskServiceInfos.stream(), param).collect(Collectors
+			.toList());
 		return Result.page(param.getPageNum(), param.getPageSize(), infos.size(), infos);
 	}
 
@@ -187,9 +187,7 @@ public class BaseTaskService {
 	@Check
 	@CatchAndReturn
 	public Result getRunningTasksInfo(@Valid @NotNull QueryPage param) {
-		param = QueryPage.safe(param);
-		List<Task> tasks = taskInfoMap.values().stream().skip((param.getPageNum() - 1) * param.getPageSize()).limit(
-			param.getPageNum() * param.getPageSize()).collect(Collectors.toList());
+		List<Task> tasks = StreamUtil.startPage(taskInfoMap.values().stream(), param).collect(Collectors.toList());
 		return Result.page(param.getPageNum(), param.getPageSize(), tasks.size(), tasks);
 	}
 
@@ -201,7 +199,7 @@ public class BaseTaskService {
 	@Check
 	@CatchAndReturn
 	public Result getTasks(@Valid @NotNull QueryPage param) {
-		return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> {
+		return Result.page(PageHelper.startPage(param).doSelectPage(() -> {
 			taskMapper.selectAll();
 		}));
 	}
@@ -256,9 +254,15 @@ public class BaseTaskService {
 		task.setCreateTime(new Date());
 		task.setStatus(param.getStartNow());
 		taskMapper.insertUseGeneratedKeys(task);
-		if (param.getStartNow() == StatusEnum.ACTIVE.getVal()) {
-			taskMap.put(task.getId(), scheduler.schedule(runnable, trigger));
-			taskInfoMap.put(task.getId(), task);
+		switch (StatusEnum.of(param.getStartNow())) {
+			case ACTIVE : {
+				taskMap.put(task.getId(), scheduler.schedule(runnable, trigger));
+				taskInfoMap.put(task.getId(), task);
+				break;
+			}
+			default : {
+				break;
+			}
 		}
 		return Result.success(task.getId());
 	}

@@ -76,6 +76,7 @@ mapper:
   mappers: frodez.config.mybatis.DataMapper
   
 pagehelper:
+  row-bounds-with-count: true
   helperDialect: mysql
   params: count=countSql
   pageSizeZero: true

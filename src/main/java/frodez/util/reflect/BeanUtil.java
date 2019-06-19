@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.cglib.beans.BeanCopier;
@@ -50,6 +51,22 @@ public class BeanUtil {
 	 */
 	public static void copy(Object source, Object target) {
 		getCopier(source, target).copy(source, target, null);
+	}
+
+	/**
+	 * 批量copy对象属性<br>
+	 * <strong>只有当除了直接copy外不做任何额外处理的情况下,才能使用本方法</strong>
+	 * @author Frodez
+	 * @date 2019-06-19
+	 */
+	public static <E, T> List<T> copies(List<E> sources, Class<T> klass) {
+		Assert.notNull(sources, "sources must not be null");
+		Assert.notNull(klass, "klass must not be null");
+		return sources.stream().map((iter) -> {
+			T item = ReflectUtil.newInstance(klass);
+			copy(iter, item);
+			return item;
+		}).collect(Collectors.toList());
 	}
 
 	/**

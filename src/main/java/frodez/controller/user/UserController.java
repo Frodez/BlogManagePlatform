@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -46,14 +45,14 @@ public class UserController {
 	@RepeatLock
 	@GetMapping(value = "/info/byId", name = "查看用户信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = UserInfo.class) })
-	public Result getUserInfoById(@RequestParam("userId") @ApiParam(value = "用户ID") Long userId) {
+	public Result getUserInfoById(@ApiParam(value = "用户ID") Long userId) {
 		return authorityService.getUserInfo(userId);
 	}
 
 	@RepeatLock
 	@GetMapping(value = "/info/byName", name = "查看用户信息接口")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = UserInfo.class) })
-	public Result getUserInfoByName(@RequestParam("userName") @ApiParam(value = "用户名") String userName) {
+	public Result getUserInfoByName(@ApiParam(value = "用户名") String userName) {
 		return authorityService.getUserInfo(userName);
 	}
 

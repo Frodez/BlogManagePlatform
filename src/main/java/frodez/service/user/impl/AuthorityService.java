@@ -163,7 +163,7 @@ public class AuthorityService implements IAuthorityService {
 	@CatchAndReturn
 	@Override
 	public Result getUserInfos(@Valid @NotNull QueryPage param) {
-		Page<User> page = PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> {
+		Page<User> page = PageHelper.startPage(param).doSelectPage(() -> {
 			userMapper.selectAll();
 		});
 		return Result.page(page, getUserInfos(page.getResult()));
@@ -307,8 +307,7 @@ public class AuthorityService implements IAuthorityService {
 	@CatchAndReturn
 	@Override
 	public Result getPermissions(@Valid @NotNull QueryPage param) {
-		return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> permissionMapper
-			.selectAll()));
+		return Result.page(PageHelper.startPage(param).doSelectPage(() -> permissionMapper.selectAll()));
 	}
 
 	@Check
@@ -332,15 +331,15 @@ public class AuthorityService implements IAuthorityService {
 	@CatchAndReturn
 	@Override
 	public Result getRoles(@Valid @NotNull QueryPage param) {
-		return Result.page(PageHelper.startPage(QueryPage.safe(param)).doSelectPage(() -> roleMapper.selectAll()));
+		return Result.page(PageHelper.startPage(param).doSelectPage(() -> roleMapper.selectAll()));
 	}
 
 	@Check
 	@CatchAndReturn
 	@Override
 	public Result getRolePermissions(@Valid @NotNull QueryRolePermission param) {
-		return Result.page(PageHelper.startPage(QueryPage.safe(param.getPage())).doSelectPage(() -> rolePermissionMapper
-			.getPermissions(param.getRoleId())));
+		return Result.page(PageHelper.startPage(param.getPage()).doSelectPage(() -> rolePermissionMapper.getPermissions(
+			param.getRoleId())));
 	}
 
 	@Check
