@@ -53,7 +53,7 @@ public class LegalEnumRule implements CodeCheckRule {
 				return;
 			}
 			String enumClassName = enumClass.getCanonicalName();
-			if (!enumClass.isAssignableFrom(IEnum.class)) {
+			if (!IEnum.class.isAssignableFrom(enumClass)) {
 				throw new CodeCheckException(StrUtil.concat(enumClassName, "被用于枚举类型检查,但不是", IEnum.class
 					.getCanonicalName(), "的实现类"));
 			}
