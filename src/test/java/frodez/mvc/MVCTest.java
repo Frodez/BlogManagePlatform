@@ -3,7 +3,6 @@ package frodez.mvc;
 import frodez.constant.settings.PropertyKey;
 import frodez.util.beans.result.Result;
 import frodez.util.spring.PropertyUtil;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +22,11 @@ public class MVCTest {
 
 	@Test
 	public void escapeTest() {
-		Result result = webClient.get().uri(PropertyUtil.get(PropertyKey.Web.BASE_PATH)
-			+ "/test/escape?name=<script>var data = $SomeJacksonWrapper.toJson($data);</script>").exchange().expectBody(
-				Result.class).returnResult().getResponseBody();
-		Assert.assertFalse(result.unable());
+		String uri = "http://localhost:9090" + PropertyUtil.get(PropertyKey.Web.BASE_PATH)
+			+ "/login/test?userName=<script>var data = $SomeJacksonWrapper.toJson($data);</script>";
+		System.out.println(uri);
+		Result result = webClient.get().uri(uri).exchange().expectBody(Result.class).returnResult().getResponseBody();
+		System.out.println(result.json());
 	}
 
 }

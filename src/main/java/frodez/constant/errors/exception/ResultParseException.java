@@ -11,20 +11,12 @@ public class ResultParseException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public ResultParseException(Throwable throwable, String... message) {
-		super(StrUtil.concat(message), throwable);
-	}
-
-	public ResultParseException(Throwable throwable) {
-		super(throwable);
-	}
-
 	public ResultParseException(String... message) {
-		super(StrUtil.concat(message));
+		super(StrUtil.concat(message), null, false, false);
 	}
 
 	public ResultParseException() {
-		super();
+		super(null, null, false, false);
 	}
 
 }

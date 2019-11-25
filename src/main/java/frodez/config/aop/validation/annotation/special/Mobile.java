@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import javax.validation.Payload;
 
 /**
  * 手机号验证注解
@@ -28,6 +29,10 @@ public @interface Mobile {
 	 * @date 2019-04-13
 	 */
 	String message() default "{frodez.config.aop.validation.annotation.special.Mobile.message}";
+
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
 
 	/**
 	 * 格式验证器

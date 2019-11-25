@@ -59,4 +59,9 @@ public class StreamUtil {
 		return limit > 0 ? stream.skip(limit).limit(limit + offset) : stream.limit(offset);
 	}
 
+	public static void main(String[] args) {
+		var stream = Stream.of(1, 3, 5, 66, 71);
+		StreamUtil.startPage(stream, 0, 3).count();
+	}
+
 }

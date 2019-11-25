@@ -41,7 +41,7 @@ public class JsonConverter extends AbstractGenericHttpMessageConverter<Object> {
 
 	public JsonConverter() {
 		setDefaultCharset(DefCharset.UTF_8_CHARSET);
-		setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
+		setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON));
 	}
 
 	@Override
@@ -67,8 +67,7 @@ public class JsonConverter extends AbstractGenericHttpMessageConverter<Object> {
 		if (cacheResult != null) {
 			return cacheResult;
 		}
-		JavaType javaType = JSONUtil.mapper().getTypeFactory().constructType(GenericTypeResolver.resolveType(type,
-			contextClass));
+		JavaType javaType = JSONUtil.mapper().getTypeFactory().constructType(GenericTypeResolver.resolveType(type, contextClass));
 		AtomicReference<Throwable> causeRef = new AtomicReference<>();
 		cacheResult = JSONUtil.mapper().canDeserialize(javaType, causeRef);
 		logWarningIfNecessary(javaType, causeRef.get());
@@ -113,8 +112,8 @@ public class JsonConverter extends AbstractGenericHttpMessageConverter<Object> {
 		// Do not log warning for serializer not found (note: different message wording on Jackson 2.9)
 		boolean debugLevel = cause instanceof JsonMappingException && cause.getMessage().startsWith("Cannot find");
 		if (debugLevel ? logger.isDebugEnabled() : logger.isWarnEnabled()) {
-			String msg = StrUtil.concat("Failed to evaluate Jackson ", type instanceof JavaType ? "de" : "",
-				"serialization for type [", type.toString(), "]");
+			String msg = StrUtil.concat("Failed to evaluate Jackson ", type instanceof JavaType ? "de" : "", "serialization for type [", type
+				.toString(), "]");
 			if (debugLevel) {
 				logger.debug(msg, cause);
 			} else if (logger.isDebugEnabled()) {
@@ -126,8 +125,7 @@ public class JsonConverter extends AbstractGenericHttpMessageConverter<Object> {
 	}
 
 	@Override
-	protected Object readInternal(Class<?> clazz, HttpInputMessage inputMessage) throws IOException,
-		HttpMessageNotReadableException {
+	protected Object readInternal(Class<?> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
 		return JSONUtil.as(inputMessage.getBody(), clazz);
 	}
 
@@ -138,18 +136,16 @@ public class JsonConverter extends AbstractGenericHttpMessageConverter<Object> {
 	}
 
 	@Override
-	protected void writeInternal(Object object, @Nullable Type type, HttpOutputMessage outputMessage)
-		throws IOException, HttpMessageNotWritableException {
+	protected void writeInternal(Object object, @Nullable Type type, HttpOutputMessage outputMessage) throws IOException,
+		HttpMessageNotWritableException {
 		try {
 			OutputStream outputStream = outputMessage.getBody();
 			JSONUtil.writer(object).writeValue(outputStream, object);
 			outputStream.flush();
 		} catch (InvalidDefinitionException ex) {
-			throw new HttpMessageConversionException(StrUtil.concat("Type definition error: ", ex.getType().toString()),
-				ex);
+			throw new HttpMessageConversionException(StrUtil.concat("Type definition error: ", ex.getType().toString()), ex);
 		} catch (JsonProcessingException ex) {
-			throw new HttpMessageNotWritableException(StrUtil.concat("Could not write JSON: ", ex.getOriginalMessage()),
-				ex);
+			throw new HttpMessageNotWritableException(StrUtil.concat("Could not write JSON: ", ex.getOriginalMessage()), ex);
 		}
 	}
 

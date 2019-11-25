@@ -1,6 +1,7 @@
 package frodez.config.aop.validation.annotation.common;
 
 import frodez.config.validator.ValidationUtil;
+import frodez.util.common.PrimitiveUtil;
 import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.annotation.Documented;
@@ -124,12 +125,12 @@ public @interface LegalEnum {
 				//对于非空检查的情况,请继续使用@NotNull注解
 				return true;
 			}
-			if (ReflectUtil.getFastMethod(klass, method, paramType).invoke(null, new Object[] { ReflectUtil
-				.primitiveAdapt(value, paramType) }) != null) {
+			Object[] params = new Object[] { PrimitiveUtil.cast(value, paramType) };
+			if (ReflectUtil.getFastMethod(klass, method, paramType).invoke(null, params) != null) {
 				return true;
 			} else {
-				ValidationUtil.changeMessage(context, StrUtil.concat(value.toString(), "不符合要求,有效值为", ReflectUtil
-					.getFastMethod(klass, valuesMethod).invoke(null, ReflectUtil.EMPTY_ARRAY_OBJECTS).toString()));
+				ValidationUtil.changeMessage(context, StrUtil.concat(value.toString(), "不符合要求,有效值为", ReflectUtil.getFastMethod(klass, valuesMethod)
+					.invoke(null, ReflectUtil.EMPTY_ARRAY_OBJECTS).toString()));
 				return false;
 			}
 		}

@@ -11,20 +11,12 @@ public class RepeatException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public RepeatException(Throwable throwable, String... message) {
-		super(StrUtil.concat(message), throwable);
-	}
-
-	public RepeatException(Throwable throwable) {
-		super(throwable);
-	}
-
 	public RepeatException(String... message) {
-		super(StrUtil.concat(message));
+		super(StrUtil.concat(message), null, false, false);
 	}
 
 	public RepeatException() {
-		super();
+		super(null, null, false, false);
 	}
 
 }
