@@ -29,7 +29,7 @@ public class ResultConverter extends AbstractGenericHttpMessageConverter<Object>
 
 	public ResultConverter() {
 		setDefaultCharset(DefCharset.UTF_8_CHARSET);
-		setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
+		setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON));
 		Assert.isTrue(JSONUtil.mapper().canSerialize(Result.class), "Result can't be serialized!");
 		Assert.isTrue(JSONUtil.mapper().canDeserialize(JSONUtil.mapper().getTypeFactory().constructType(Result.class)),
 			"Result can't be deserialized!");
@@ -51,8 +51,7 @@ public class ResultConverter extends AbstractGenericHttpMessageConverter<Object>
 	}
 
 	@Override
-	protected Object readInternal(Class<?> clazz, HttpInputMessage inputMessage) throws IOException,
-		HttpMessageNotReadableException {
+	protected Object readInternal(Class<?> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
 		return Result.reader().readValue(inputMessage.getBody());
 	}
 
@@ -63,8 +62,8 @@ public class ResultConverter extends AbstractGenericHttpMessageConverter<Object>
 	}
 
 	@Override
-	protected void writeInternal(Object object, @Nullable Type type, HttpOutputMessage outputMessage)
-		throws IOException, HttpMessageNotWritableException {
+	protected void writeInternal(Object object, @Nullable Type type, HttpOutputMessage outputMessage) throws IOException,
+		HttpMessageNotWritableException {
 		try {
 			OutputStream outputStream = outputMessage.getBody();
 			//对通用Result采用特殊的优化过的方式
@@ -76,11 +75,9 @@ public class ResultConverter extends AbstractGenericHttpMessageConverter<Object>
 			}
 			outputStream.flush();
 		} catch (InvalidDefinitionException ex) {
-			throw new HttpMessageConversionException(StrUtil.concat("Type definition error: ", ex.getType().toString()),
-				ex);
+			throw new HttpMessageConversionException(StrUtil.concat("Type definition error: ", ex.getType().toString()), ex);
 		} catch (JsonProcessingException ex) {
-			throw new HttpMessageNotWritableException(StrUtil.concat("Could not write JSON: ", ex.getOriginalMessage()),
-				ex);
+			throw new HttpMessageNotWritableException(StrUtil.concat("Could not write JSON: ", ex.getOriginalMessage()), ex);
 		}
 	}
 

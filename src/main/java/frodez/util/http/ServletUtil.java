@@ -77,7 +77,7 @@ public class ServletUtil {
 		}
 		response.setStatus(result.httpStatus().value());
 		response.setCharacterEncoding(DefCharset.UTF_8);
-		response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		@Cleanup ServletOutputStream stream = response.getOutputStream();
 		stream.write(result.jsonBytes());
 	}
@@ -99,7 +99,7 @@ public class ServletUtil {
 			response.setStatus(status.value());
 		}
 		response.setCharacterEncoding(DefCharset.UTF_8);
-		response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		@Cleanup PrintWriter out = response.getWriter();
 		out.append(json);
 		out.flush();

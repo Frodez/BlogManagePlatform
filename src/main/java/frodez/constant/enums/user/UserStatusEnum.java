@@ -2,7 +2,6 @@ package frodez.constant.enums.user;
 
 import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
-import frodez.constant.enums.IEnum;
 import frodez.constant.settings.DefStr;
 import frodez.util.common.StrUtil;
 import java.util.Arrays;
@@ -19,7 +18,7 @@ import lombok.Getter;
  */
 @EnumCheckable
 @AllArgsConstructor
-public enum UserStatusEnum implements IEnum<Byte> {
+public enum UserStatusEnum {
 
 	/**
 	 * 0:禁用
@@ -57,8 +56,7 @@ public enum UserStatusEnum implements IEnum<Byte> {
 	private static final Map<Byte, UserStatusEnum> enumMap;
 
 	static {
-		vals = Arrays.stream(UserStatusEnum.values()).map(UserStatusEnum::getVal).collect(Collectors
-			.toUnmodifiableList());
+		vals = Arrays.stream(UserStatusEnum.values()).map(UserStatusEnum::getVal).collect(Collectors.toUnmodifiableList());
 		descs = Arrays.stream(UserStatusEnum.values()).map((iter) -> {
 			return StrUtil.concat(iter.val.toString(), DefStr.SEPERATOR, iter.desc);
 		}).collect(Collectors.toUnmodifiableList());

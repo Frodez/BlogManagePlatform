@@ -11,20 +11,12 @@ public class CodeCheckException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public CodeCheckException(Throwable throwable, String... message) {
-		super(StrUtil.concat(message), throwable);
-	}
-
-	public CodeCheckException(Throwable throwable) {
-		super(throwable);
-	}
-
 	public CodeCheckException(String... message) {
-		super(StrUtil.concat(message));
+		super(StrUtil.concat(message), null, false, false);
 	}
 
 	public CodeCheckException() {
-		super();
+		super(null, null, false, false);
 	}
 
 }

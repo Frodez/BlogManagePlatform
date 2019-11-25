@@ -2,7 +2,6 @@ package frodez.constant.enums.task;
 
 import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
-import frodez.constant.enums.IEnum;
 import frodez.constant.settings.DefStr;
 import frodez.util.common.StrUtil;
 import java.util.Arrays;
@@ -19,7 +18,7 @@ import lombok.Getter;
  */
 @EnumCheckable
 @AllArgsConstructor
-public enum StatusEnum implements IEnum<Byte> {
+public enum StatusEnum {
 
 	/**
 	 * 1:活跃中

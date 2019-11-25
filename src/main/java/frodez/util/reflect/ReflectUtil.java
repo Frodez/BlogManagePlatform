@@ -10,7 +10,6 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.cglib.reflect.FastClass;
 import org.springframework.cglib.reflect.FastMethod;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
@@ -131,123 +130,6 @@ public class ReflectUtil {
 	 */
 	public static String getShortFieldName(Field field) {
 		return StrUtil.concat(field.getDeclaringClass().getSimpleName(), ".", field.getName());
-	}
-
-	/**
-	 * 将两个数转换为指定的类型然后进行比较<br>
-	 * 涉及类型:byte, short, int, long以及对应装箱类
-	 * @author Frodez
-	 * @date 2019-05-17
-	 */
-	public static int compareTo(Object first, Object second, Class<?> baseClass) {
-		Assert.notNull(first, "first must not be null");
-		Assert.notNull(second, "second must not be null");
-		Assert.notNull(baseClass, "baseClass must not be null");
-		if (baseClass == Byte.class || baseClass == byte.class) {
-			return Byte.compare(primitiveAdapt(first, Byte.class), primitiveAdapt(second, Byte.class));
-		} else if (baseClass == Short.class || baseClass == short.class) {
-			return Short.compare(primitiveAdapt(first, Short.class), primitiveAdapt(second, Short.class));
-		} else if (baseClass == Integer.class || baseClass == int.class) {
-			return Integer.compare(primitiveAdapt(first, Integer.class), primitiveAdapt(second, Integer.class));
-		} else if (baseClass == Long.class || baseClass == Long.class) {
-			return Long.compare(primitiveAdapt(first, long.class), primitiveAdapt(second, Long.class));
-		} else {
-			throw new UnsupportedOperationException("只能用于byte, short, int, long以及对应装箱类!");
-		}
-	}
-
-	/**
-	 * 基本数据类型适配<br>
-	 * value可为空<br>
-	 * 涉及类型:byte, short, int, long以及对应装箱类,还有void
-	 * @author Frodez
-	 * @param <T>
-	 * @date 2018-12-17
-	 */
-	public static <T> T primitiveAdapt(@Nullable Object value, Class<T> parameterClass) {
-		Assert.notNull(parameterClass, "parameterClass must not be null");
-		if (value == null) {
-			return null;
-		}
-		Class<?> valueClass = value.getClass();
-		if (valueClass == Byte.class || valueClass == byte.class) {
-			return castByteValue(parameterClass, (Byte) value);
-		} else if (valueClass == Short.class || valueClass == short.class) {
-			return castShortValue(parameterClass, (Short) value);
-		} else if (valueClass == Integer.class || valueClass == int.class) {
-			return castIntValue(parameterClass, (Integer) value);
-		} else if (valueClass == Long.class || valueClass == Long.class) {
-			return castLongValue(parameterClass, (Long) value);
-		}
-		throw new UnsupportedOperationException("只能用于byte, short, int, long以及对应装箱类,以及void类型!");
-	}
-
-	@SuppressWarnings("unchecked")
-	private static <T> T castByteValue(Class<T> parameterClass, Byte value) {
-		if (parameterClass == Byte.class || parameterClass == byte.class) {
-			return (T) value;
-		}
-		if (parameterClass == Short.class || parameterClass == short.class) {
-			return (T) Short.valueOf(value.shortValue());
-		}
-		if (parameterClass == Integer.class || parameterClass == int.class) {
-			return (T) Integer.valueOf(value.intValue());
-		}
-		if (parameterClass == Long.class || parameterClass == long.class) {
-			return (T) Long.valueOf(value.longValue());
-		}
-		return (T) value;
-	}
-
-	@SuppressWarnings("unchecked")
-	private static <T> T castShortValue(Class<T> parameterClass, Short value) {
-		if (parameterClass == Byte.class || parameterClass == byte.class) {
-			return (T) Byte.valueOf(value.byteValue());
-		}
-		if (parameterClass == Short.class || parameterClass == short.class) {
-			return (T) value;
-		}
-		if (parameterClass == Integer.class || parameterClass == int.class) {
-			return (T) Integer.valueOf(value.intValue());
-		}
-		if (parameterClass == Long.class || parameterClass == long.class) {
-			return (T) Long.valueOf(value.longValue());
-		}
-		return (T) value;
-	}
-
-	@SuppressWarnings("unchecked")
-	private static <T> T castIntValue(Class<T> parameterClass, Integer value) {
-		if (parameterClass == Byte.class || parameterClass == byte.class) {
-			return (T) Byte.valueOf(value.byteValue());
-		}
-		if (parameterClass == Short.class || parameterClass == short.class) {
-			return (T) Short.valueOf(value.shortValue());
-		}
-		if (parameterClass == Integer.class || parameterClass == int.class) {
-			return (T) value;
-		}
-		if (parameterClass == Long.class || parameterClass == long.class) {
-			return (T) Long.valueOf(value.longValue());
-		}
-		return (T) value;
-	}
-
-	@SuppressWarnings("unchecked")
-	private static <T> T castLongValue(Class<T> parameterClass, Long value) {
-		if (parameterClass == Byte.class || parameterClass == byte.class) {
-			return (T) Byte.valueOf(value.byteValue());
-		}
-		if (parameterClass == Short.class || parameterClass == short.class) {
-			return (T) Short.valueOf(value.shortValue());
-		}
-		if (parameterClass == Integer.class || parameterClass == int.class) {
-			return (T) Integer.valueOf(value.intValue());
-		}
-		if (parameterClass == Long.class || parameterClass == long.class) {
-			return (T) value;
-		}
-		return (T) value;
 	}
 
 }

@@ -55,7 +55,8 @@ public class BeanUtil {
 
 	/**
 	 * 批量copy对象属性<br>
-	 * <strong>只有当除了直接copy外不做任何额外处理的情况下,才能使用本方法</strong>
+	 * <strong>只有当除了直接copy外不做任何额外处理的情况下,才能使用本方法</strong><br>
+	 * <strong>本方法性能会弱于普通的stream.map.collect操作,原因在于生成新实例的开销。性能差距大概在25%左右，但胜在方便。</strong>
 	 * @author Frodez
 	 * @date 2019-06-19
 	 */
