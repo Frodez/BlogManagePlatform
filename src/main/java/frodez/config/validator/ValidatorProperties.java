@@ -33,4 +33,9 @@ public class ValidatorProperties {
 	 */
 	private String messageConfigPath;
 
+	/**
+	 * 是否开启快速失败模式
+	 */
+	private Boolean failFast = true;
+
 }

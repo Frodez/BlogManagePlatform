@@ -27,8 +27,12 @@ public class CodeChecker {
 
 	public void checkClass(Class<?> klass) throws CodeCheckException {
 		Assert.notNull(klass, "klass must not be null");
-		for (Field field : BeanUtil.getSetterFields(klass)) {
-			checkField(field);
+		try {
+			for (Field field : BeanUtil.getSetterFields(klass)) {
+				checkField(field);
+			}
+		} catch (Exception e) {
+			throw new CodeCheckException(klass.getName(), e.getMessage());
 		}
 	}
 

@@ -67,7 +67,7 @@ public class ResultConverter extends AbstractGenericHttpMessageConverter<Object>
 		try {
 			OutputStream outputStream = outputMessage.getBody();
 			//对通用Result采用特殊的优化过的方式
-			byte[] cacheBytes = ((Result) object).cache();
+			byte[] cacheBytes = ((Result) object).cacheBytes();
 			if (cacheBytes != null) {
 				outputStream.write(cacheBytes);
 			} else {

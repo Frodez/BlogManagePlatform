@@ -1,6 +1,7 @@
 package frodez.util.common;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -49,6 +50,32 @@ public class StrUtil {
 		StringBuilder builder = new StringBuilder(size);
 		for (int i = 0; i < strings.length; i++) {
 			builder.append(strings[i]);
+		}
+		return builder.toString();
+	}
+
+	/**
+	 * 批量拼接字符串。<br>
+	 * 注意:<strong>当输入的字符串数组中某处为null时，会抛出异常.</strong><br>
+	 * 经测试,在绝大多数场景下相对jdk的实现更快(平均20-30%左右),在最坏情况下也与其相当。<br>
+	 * 与StringBuilder的非优化使用方式相比,性能提高从20%-70%不等。当拼接的字符串长度较长,或者字符串数组长度较长时,性能优势更大。
+	 * @see java.lang.String#concat(String)
+	 * @author Frodez
+	 * @date 2019-04-01
+	 */
+	public static String concat(Collection<String> strings) {
+		if (EmptyUtil.yes(strings)) {
+			throw new IllegalArgumentException("it isn't suitable for empty string.");
+		}
+		int size = 0;
+		for (String string : strings) {
+			//如果字符串数组某处为null,会自动抛出异常
+			size = size + string.length();
+		}
+		size = size << code;
+		StringBuilder builder = new StringBuilder(size);
+		for (String string : strings) {
+			builder.append(string);
 		}
 		return builder.toString();
 	}
