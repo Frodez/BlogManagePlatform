@@ -1,5 +1,6 @@
 package frodez.util.reflect;
 
+import frodez.constant.settings.DefStr;
 import frodez.util.beans.pair.Pair;
 import frodez.util.common.StrUtil;
 import java.lang.reflect.Field;
@@ -102,7 +103,7 @@ public class ReflectUtil {
 	 * @date 2019-01-13
 	 */
 	public static String getFullMethodName(Method method) {
-		return StrUtil.concat(method.getDeclaringClass().getName(), ".", method.getName());
+		return StrUtil.concat(method.getDeclaringClass().getName(), DefStr.POINT_SEPERATOR, method.getName());
 	}
 
 	/**
@@ -111,7 +112,7 @@ public class ReflectUtil {
 	 * @date 2019-01-13
 	 */
 	public static String getShortMethodName(Method method) {
-		return StrUtil.concat(method.getDeclaringClass().getSimpleName(), ".", method.getName());
+		return StrUtil.concat(method.getDeclaringClass().getSimpleName(), DefStr.POINT_SEPERATOR, method.getName());
 	}
 
 	/**
@@ -120,7 +121,7 @@ public class ReflectUtil {
 	 * @date 2019-06-05
 	 */
 	public static String getFullFieldName(Field field) {
-		return StrUtil.concat(field.getDeclaringClass().getName(), ".", field.getName());
+		return StrUtil.concat(field.getDeclaringClass().getName(), DefStr.POINT_SEPERATOR, field.getName());
 	}
 
 	/**
@@ -129,7 +130,7 @@ public class ReflectUtil {
 	 * @date 2019-06-05
 	 */
 	public static String getShortFieldName(Field field) {
-		return StrUtil.concat(field.getDeclaringClass().getSimpleName(), ".", field.getName());
+		return StrUtil.concat(field.getDeclaringClass().getSimpleName(), DefStr.POINT_SEPERATOR, field.getName());
 	}
 
 }

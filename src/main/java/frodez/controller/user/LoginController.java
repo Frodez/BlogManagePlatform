@@ -1,8 +1,10 @@
 package frodez.controller.user;
 
 import frodez.config.aop.request.annotation.TimeoutLock;
+import frodez.config.swagger.annotation.Success;
 import frodez.dao.param.user.DoLogin;
 import frodez.dao.param.user.DoRefresh;
+import frodez.dao.result.user.UserInfo;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.ILoginService;
 import frodez.util.beans.result.Result;
@@ -50,6 +52,7 @@ public class LoginController {
 	}
 
 	@GetMapping(value = "/test", name = "测试用接口")
+	@Success(UserInfo.class)
 	public Result test(@ApiParam(value = "用户名") String userName) {
 		return authorityService.getUserInfo(userName);
 	}

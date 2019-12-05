@@ -1,5 +1,7 @@
 package frodez.controller.user;
 
+import frodez.config.swagger.annotation.Success;
+import frodez.config.swagger.annotation.Success.ContainerType;
 import frodez.dao.model.user.Role;
 import frodez.dao.param.user.AddRole;
 import frodez.dao.param.user.UpdateRole;
@@ -10,8 +12,6 @@ import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,13 +34,13 @@ public class RoleController {
 	private IAuthorityService authorityService;
 
 	@GetMapping(name = "查询角色信息接口")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = RoleDetail.class) })
+	@Success(RoleDetail.class)
 	public Result getRole(@ApiParam(value = "角色ID") Long id) {
 		return authorityService.getRole(id);
 	}
 
 	@GetMapping(value = "/page", name = "分页查询角色信息接口")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Role.class) })
+	@Success(value = Role.class, containerType = ContainerType.PAGE)
 	public Result getRoles(@RequestBody QueryPage param) {
 		return authorityService.getRoles(param);
 	}

@@ -84,14 +84,12 @@ public class BaseTaskService {
 				return info;
 			}).collect(Collectors.toList());
 			Example example = new Example(Task.class);
-			example.createCriteria().andNotIn("target", taskServiceInfos.stream().map(AvailableTaskInfo::getName)
-				.collect(Collectors.toList()));
+			example.createCriteria().andNotIn("target", taskServiceInfos.stream().map(AvailableTaskInfo::getName).collect(Collectors.toList()));
 			taskMapper.deleteByExample(example);
 			example.clear();
 			example.createCriteria().andIsNotNull("target").andEqualTo("status", StatusEnum.ACTIVE.getVal());
 			example.orderBy("id");
-			List<Task> tasks = taskMapper.selectByExampleAndRowBounds(example, new QueryPage(properties.getMaxSize())
-				.toRowBounds());
+			List<Task> tasks = taskMapper.selectByExampleAndRowBounds(example, new QueryPage(properties.getMaxSize()).toRowBounds());
 			tasks.parallelStream().forEach((task) -> {
 				Runnable runnable = null;
 				CronTrigger trigger = null;
@@ -136,8 +134,8 @@ public class BaseTaskService {
 	 */
 	private boolean isTransactional(Runnable runnable) {
 		try {
-			return runnable.getClass().getAnnotation(Transactional.class) != null || runnable.getClass().getMethod(
-				"run").getAnnotation(Transactional.class) != null;
+			return runnable.getClass().getAnnotation(Transactional.class) != null || runnable.getClass().getMethod("run").getAnnotation(
+				Transactional.class) != null;
 		} catch (NoSuchMethodException e) {
 			return false;
 		} catch (SecurityException e) {
@@ -151,8 +149,7 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	private Runnable getRunnable(String className) throws ClassNotFoundException {
-		return (Runnable) ContextUtil.bean(Class.forName(StrUtil.concat(properties.getPrefix(), DefStr.POINT_SEPERATOR,
-			className)));
+		return (Runnable) ContextUtil.bean(Class.forName(StrUtil.concat(properties.getPrefix(), DefStr.POINT_SEPERATOR, className)));
 	}
 
 	/**
@@ -174,8 +171,7 @@ public class BaseTaskService {
 	@Check
 	@CatchAndReturn
 	public Result getAvailableTasks(@Valid @NotNull QueryPage param) {
-		List<AvailableTaskInfo> infos = StreamUtil.startPage(taskServiceInfos.stream(), param).collect(Collectors
-			.toList());
+		List<AvailableTaskInfo> infos = StreamUtil.startPage(taskServiceInfos, param).collect(Collectors.toList());
 		return Result.page(param.getPageNum(), param.getPageSize(), infos.size(), infos);
 	}
 
@@ -187,7 +183,7 @@ public class BaseTaskService {
 	@Check
 	@CatchAndReturn
 	public Result getRunningTasksInfo(@Valid @NotNull QueryPage param) {
-		List<Task> tasks = StreamUtil.startPage(taskInfoMap.values().stream(), param).collect(Collectors.toList());
+		List<Task> tasks = StreamUtil.startPage(taskInfoMap.values(), param).collect(Collectors.toList());
 		return Result.page(param.getPageNum(), param.getPageSize(), tasks.size(), tasks);
 	}
 
@@ -220,8 +216,8 @@ public class BaseTaskService {
 				++alreadyCanceled;
 			}
 		}
-		return Result.success(StrUtil.concat("共计", Integer.valueOf(total).toString(), "个任务正在执行,已取消", Integer.valueOf(
-			alreadyCanceled).toString(), "个。"));
+		return Result.success(StrUtil.concat("共计", Integer.valueOf(total).toString(), "个任务正在执行,已取消", Integer.valueOf(alreadyCanceled).toString(),
+			"个。"));
 	}
 
 	/**

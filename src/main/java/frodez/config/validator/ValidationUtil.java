@@ -2,7 +2,6 @@ package frodez.config.validator;
 
 import frodez.constant.settings.DefDesc;
 import frodez.constant.settings.DefStr;
-import frodez.util.common.EmptyUtil;
 import frodez.util.common.StrUtil;
 import frodez.util.spring.ContextUtil;
 import java.lang.reflect.Method;
@@ -13,9 +12,8 @@ import java.util.stream.StreamSupport;
 import javax.annotation.PostConstruct;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ConstraintViolation;
-import javax.validation.ElementKind;
 import javax.validation.MessageInterpolator;
-import javax.validation.Path.Node;
+import javax.validation.Path;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import org.hibernate.validator.HibernateValidator;
@@ -39,16 +37,25 @@ public class ValidationUtil {
 	 */
 	private static Validator engine;
 
+	/**
+	 * 快速失败配置
+	 */
+	private static boolean failFast;
+
 	@PostConstruct
 	private void init() {
 		ValidatorProperties properties = ContextUtil.bean(ValidatorProperties.class);
 		HibernateValidatorConfiguration configuration = Validation.byProvider(HibernateValidator.class).configure();
 		//配置hibernate-validator消息插值源
-		PlatformResourceBundleLocator locator = new PlatformResourceBundleLocator(properties.getMessageConfigPath());
-		MessageInterpolator interpolator = new ResourceBundleMessageInterpolator(locator);
-		configuration.allowOverridingMethodAlterParameterConstraint(true);//允许覆写接口方法约束必须为true
-		configuration.failFast(true);//快速失败写死为true,能加快验证速度。如果想要修改为false,那么下面的验证方法的代码也要改变。
-		engine = configuration.messageInterpolator(interpolator).buildValidatorFactory().getValidator();
+		MessageInterpolator interpolator = new ResourceBundleMessageInterpolator(new PlatformResourceBundleLocator(properties
+			.getMessageConfigPath()));
+		configuration.messageInterpolator(interpolator);
+		//允许覆写接口方法约束必须为true
+		configuration.allowOverridingMethodAlterParameterConstraint(true);
+		//配置快速失败
+		configuration.failFast(properties.getFailFast());
+		failFast = properties.getFailFast();
+		engine = configuration.buildValidatorFactory().getValidator();
 	}
 
 	/**
@@ -63,6 +70,7 @@ public class ValidationUtil {
 
 	/**
 	 * 对方法参数进行验证,如果验证通过,返回null<br>
+	 * <strong>用于AOP,因为AOP做出了保证,故无NPE检查。如需要单独使用,请保证参数均非null。</strong>
 	 * @author Frodez
 	 * @param instance 需要验证的方法所在类实例
 	 * @param method 需要验证的方法
@@ -71,8 +79,10 @@ public class ValidationUtil {
 	 */
 	public static String validateParam(final Object instance, final Method method, final Object[] args) {
 		Set<ConstraintViolation<Object>> set = engine.forExecutables().validateParameters(instance, method, args);
-		//因为failFast写死为true,不考虑其他情况,为了提高效率,故此处直接取错误信息的第一条.
-		return set.isEmpty() ? null : getErrorMessage(set.iterator().next());
+		if (set.isEmpty()) {
+			return null;
+		}
+		return failFast ? getErrorMessage(set.iterator().next()) : getErrorMessages(set);
 	}
 
 	/**
@@ -98,8 +108,22 @@ public class ValidationUtil {
 			return nullMessage;
 		}
 		Set<ConstraintViolation<Object>> set = engine.validate(object);
-		//因为failFast写死为true,不考虑其他情况,为了提高效率,故此处直接取错误信息的第一条.
-		return set.isEmpty() ? null : getErrorMessage(set.iterator().next());
+		if (set.isEmpty()) {
+			return null;
+		}
+		return failFast ? getErrorMessage(set.iterator().next()) : getErrorMessages(set);
+	}
+
+	/**
+	 * 获取格式化的错误信息
+	 * @author Frodez
+	 * @date 2019-11-27
+	 */
+	private static String getErrorMessages(Set<ConstraintViolation<Object>> violations) {
+		List<String> messages = violations.stream().map(ValidationUtil::getErrorMessage).filter((message) -> {
+			return message != null;
+		}).collect(Collectors.toList());
+		return String.join(";\n", messages);
 	}
 
 	/**
@@ -109,8 +133,7 @@ public class ValidationUtil {
 	 */
 	private static String getErrorMessage(ConstraintViolation<Object> violation) {
 		String errorSource = getErrorSource(violation);
-		return EmptyUtil.yes(errorSource) ? violation.getMessage() : StrUtil.concat(errorSource, DefStr.SEPERATOR,
-			violation.getMessage());
+		return errorSource == null ? violation.getMessage() : StrUtil.concat(errorSource, DefStr.SEPERATOR, violation.getMessage());
 	}
 
 	/**
@@ -119,11 +142,21 @@ public class ValidationUtil {
 	 * @date 2019-06-11
 	 */
 	private static String getErrorSource(ConstraintViolation<Object> violation) {
-		List<Node> nodes = StreamSupport.stream(violation.getPropertyPath().spliterator(), false).filter((node) -> {
-			return node.getKind() == ElementKind.PROPERTY || node.getKind() == ElementKind.PARAMETER || node
-				.getKind() == ElementKind.CROSS_PARAMETER;
-		}).collect(Collectors.toList());
-		return nodes.isEmpty() ? null : nodes.get(nodes.size() - 1).getName();
+		List<String> nodes = StreamSupport.stream(violation.getPropertyPath().spliterator(), false).filter((node) -> {
+			switch (node.getKind()) {
+				case PROPERTY :
+					return true;
+				case PARAMETER :
+					return true;
+				case CROSS_PARAMETER :
+					return true;
+				case CONTAINER_ELEMENT :
+					return true;
+				default :
+					return false;
+			}
+		}).map(Path.Node::toString).collect(Collectors.toList());
+		return nodes.isEmpty() ? null : String.join(DefStr.POINT_SEPERATOR, nodes);
 	}
 
 }
