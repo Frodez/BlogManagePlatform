@@ -53,7 +53,7 @@ public class LoginController {
 
 	@GetMapping(value = "/test", name = "测试用接口")
 	@Success(UserInfo.class)
-	public Result test(@ApiParam(value = "用户名") String userName) {
+	public Result test(@ApiParam("用户名") String userName) {
 		return authorityService.getUserInfo(userName);
 	}
 
