@@ -24,7 +24,7 @@ public class BeanTest {
 		BeanUtil.cover(one, oneCopy);
 		Assert.assertTrue(oneCopy.equals(BeanUtil.initialize(one, BeanOne.class)));
 		int thread = 16;
-		int total = 300 * 1000;
+		int total = 200 * 1000;
 		int times = 4;
 		System.out.println("test");
 		for (int i = 1; i <= times; ++i) {

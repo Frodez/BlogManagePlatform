@@ -60,12 +60,12 @@ public class TaskController {
 	}
 
 	@PostMapping(value = "/cancel", name = "取消定时任务接口")
-	public Result cancelTask(@ApiParam(value = "任务ID") Long id) {
+	public Result cancelTask(@ApiParam("任务ID") Long id) {
 		return taskService.cancelTask(id);
 	}
 
 	@PostMapping(value = "/change", name = "更改定时任务活跃状态接口")
-	public Result changeStatus(@ApiParam(value = "任务ID") Long id, @ApiParam(value = "活跃状态 1:活跃中 2:不活跃") Byte status) {
+	public Result changeStatus(@ApiParam("任务ID") Long id, @ApiParam("活跃状态 1:活跃中 2:不活跃") Byte status) {
 		return taskService.changeStatus(id, status);
 	}
 

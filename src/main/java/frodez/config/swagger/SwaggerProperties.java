@@ -39,6 +39,16 @@ public class SwaggerProperties {
 	private String appVersion = "";
 
 	/**
+	 * 许可证
+	 */
+	private String license = "";
+
+	/**
+	 * 许可证链接
+	 */
+	private String licenseUrl = "";
+
+	/**
 	 * 描述
 	 */
 	private String description = "";

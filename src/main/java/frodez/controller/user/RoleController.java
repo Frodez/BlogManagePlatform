@@ -35,7 +35,7 @@ public class RoleController {
 
 	@GetMapping(name = "查询角色信息接口")
 	@Success(RoleDetail.class)
-	public Result getRole(@ApiParam(value = "角色ID") Long id) {
+	public Result getRole(@ApiParam("角色ID") Long id) {
 		return authorityService.getRole(id);
 	}
 
@@ -51,7 +51,7 @@ public class RoleController {
 	}
 
 	@DeleteMapping(name = "删除角色接口")
-	public Result removeRole(@ApiParam(value = "角色ID") Long id) {
+	public Result removeRole(@ApiParam("角色ID") Long id) {
 		return authorityService.removeRole(id);
 	}
 

@@ -1,6 +1,5 @@
 package frodez.config.swagger;
 
-import com.fasterxml.classmate.TypeResolver;
 import frodez.config.security.settings.SecurityProperties;
 import frodez.constant.settings.PropertyKey;
 import frodez.util.beans.result.Result;
@@ -17,7 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -31,6 +29,7 @@ import springfox.documentation.service.ResponseMessage;
 import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
+import springfox.documentation.spi.service.contexts.SecurityContextBuilder;
 import springfox.documentation.spring.web.plugins.ApiSelectorBuilder;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -96,6 +95,8 @@ public class SwaggerConfig {
 		Contact contact = new Contact(swagger.getAuthor(), swagger.getDocUrl(), swagger.getEmail());
 		infoBuilder.contact(contact);
 		infoBuilder.version(swagger.getAppVersion());
+		infoBuilder.license(swagger.getLicense());
+		infoBuilder.licenseUrl(swagger.getLicenseUrl());
 		docket.apiInfo(infoBuilder.build());
 	}
 
@@ -106,8 +107,6 @@ public class SwaggerConfig {
 	 */
 	private void typeConfig(Docket docket) {
 		docket.directModelSubstitute(LocalDate.class, String.class);
-		docket.genericModelSubstitutes(ResponseEntity.class);
-		docket.additionalModels(new TypeResolver().resolve(Result.class));
 	}
 
 	/**
@@ -186,9 +185,10 @@ public class SwaggerConfig {
 	 */
 	private List<SecurityContext> securityContext() {
 		// 注意要与RestfulAPI路径一致
-		SecurityContext securityContext = SecurityContext.builder().securityReferences(defaultAuth()).forPaths(PathSelectors.regex(PropertyUtil.get(
-			PropertyKey.Web.BASE_PATH))).build();
-		return List.of(securityContext);
+		SecurityContextBuilder builder = SecurityContext.builder();
+		builder.securityReferences(defaultAuth());
+		builder.forPaths(PathSelectors.regex(PropertyUtil.get(PropertyKey.Web.BASE_PATH)));
+		return List.of(builder.build());
 	}
 
 	/**

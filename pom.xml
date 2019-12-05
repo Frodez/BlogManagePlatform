@@ -22,7 +22,11 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<!-- <maven.test.skip>true</maven.test.skip> -->
+		<project.author>Frodez</project.author>
+		<project.url>https://github.com/Frodez/BlogManagePlatform</project.url>
+		<project.license>Apache License 2.0</project.license>
+		<project.license.url>https://github.com/Frodez/BlogManagePlatform/blob/master/LICENSE</project.license.url>
+		<maven.test.skip>true</maven.test.skip>
 	</properties>
 
 	<dependencies>
