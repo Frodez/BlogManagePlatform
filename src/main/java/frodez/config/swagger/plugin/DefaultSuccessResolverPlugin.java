@@ -8,19 +8,14 @@ import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Optional;
 import frodez.config.swagger.SwaggerProperties;
 import frodez.config.swagger.annotation.Success;
-import frodez.config.swagger.annotation.Success.Container;
+import frodez.config.swagger.util.SwaggerUtil;
 import frodez.constant.settings.DefDesc;
-import frodez.util.beans.result.PageData;
-import frodez.util.beans.result.Result;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiResponses;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.Data;
 import org.apache.logging.log4j.core.config.Order;
 import org.springframework.context.annotation.Profile;
@@ -65,11 +60,9 @@ public class DefaultSuccessResolverPlugin implements OperationBuilderPlugin, Ope
 		this.typeNameExtractor = typeNameExtractor;
 		this.typeResolver = typeResolver;
 		this.useCustomerizedPluggins = properties.getUseCustomerizedPluggins();
-		okMessage = String.join(" | ", Stream.of(Result.ResultEnum.values()).filter((item) -> {
+		okMessage = SwaggerUtil.statusDescription((item) -> {
 			return item.getStatus() == HttpStatus.OK;
-		}).map((iter) -> {
-			return iter.getDesc() + ",自定义状态码:" + iter.getVal();
-		}).collect(Collectors.toList()));
+		});
 		ResponseMessageBuilder messageBuilder = new ResponseMessageBuilder();
 		messageBuilder.code(HttpStatus.OK.value());
 		messageBuilder.message(okMessage);
@@ -95,11 +88,11 @@ public class DefaultSuccessResolverPlugin implements OperationBuilderPlugin, Ope
 			context.operationBuilder().responseMessages(okResponses);
 			return;
 		}
-		Success success = annotation.get();
 		ResponseMessageBuilder messageBuilder = new ResponseMessageBuilder();
 		messageBuilder.code(HttpStatus.OK.value());
 		messageBuilder.message(okMessage);
-		messageBuilder.responseModel(resolveModel(context, success).orNull());
+		ModelReference model = resolveModel(context, annotation.get());
+		messageBuilder.responseModel(model);
 		context.operationBuilder().responseMessages(Set.of(messageBuilder.build()));
 	}
 
@@ -113,34 +106,15 @@ public class DefaultSuccessResolverPlugin implements OperationBuilderPlugin, Ope
 			context.operationModelsBuilder().addReturn(okResult);
 			return;
 		}
-		Success success = annotation.get();
-		context.operationModelsBuilder().addReturn(resolvedType(typeResolver, success.value(), success.containerType()).orNull());
+		ResolvedType resolvedType = SwaggerUtil.resolvedType(typeResolver, annotation.get());
+		context.operationModelsBuilder().addReturn(resolvedType);
 	}
 
-	private Optional<ModelReference> resolveModel(OperationContext context, Success success) {
+	private ModelReference resolveModel(OperationContext context, Success success) {
 		ModelContext modelContext = returnValue(context.getGroupName(), success.value(), context.getDocumentationType(), context
 			.getAlternateTypeProvider(), context.getGenericsNamingStrategy(), context.getIgnorableParameterTypes());
-		Optional<ResolvedType> type = resolvedType(typeResolver, success.value(), success.containerType());
-		return Optional.of(modelRefFactory(modelContext, typeNameExtractor).apply(context.alternateFor(type.get())));
-	}
-
-	private <T> Optional<ResolvedType> resolvedType(TypeResolver resolver, Class<T> response, Container containerType) {
-		if (Void.class != response && void.class != response) {
-			if (containerType == Container.PAGE) {
-				ResolvedType type = resolver.resolve(SwaggerModel.class, resolver.resolve(PageData.class, response));
-				return Optional.of(type);
-			} else if (containerType == Container.LIST) {
-				ResolvedType type = resolver.resolve(SwaggerModel.class, resolver.resolve(List.class, response));
-				return Optional.of(type);
-			} else if (containerType == Container.SET) {
-				ResolvedType type = resolver.resolve(SwaggerModel.class, resolver.resolve(Set.class, response));
-				return Optional.of(type);
-			} else {
-				ResolvedType type = resolver.resolve(SwaggerModel.class, response);
-				return Optional.of(type);
-			}
-		}
-		return Optional.absent();
+		ResolvedType type = context.alternateFor(SwaggerUtil.resolvedType(typeResolver, success));
+		return modelRefFactory(modelContext, typeNameExtractor).apply(type);
 	}
 
 	/**
