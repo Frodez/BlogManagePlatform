@@ -34,6 +34,11 @@ public class SwaggerProperties {
 	private String title = "";
 
 	/**
+	 * 版本
+	 */
+	private String appVersion = "";
+
+	/**
 	 * 描述
 	 */
 	private String description = "";

@@ -24,7 +24,6 @@ import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.schema.ModelRef;
-import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.Contact;
@@ -32,6 +31,7 @@ import springfox.documentation.service.ResponseMessage;
 import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
+import springfox.documentation.spring.web.plugins.ApiSelectorBuilder;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -49,13 +49,13 @@ public class SwaggerConfig {
 	 * 访问控制参数配置
 	 */
 	@Autowired
-	private SecurityProperties securityProperties;
+	private SecurityProperties security;
 
 	/**
 	 * swagger参数配置
 	 */
 	@Autowired
-	private SwaggerProperties swaggerProperties;
+	private SwaggerProperties swagger;
 
 	/**
 	 * 主配置
@@ -64,15 +64,75 @@ public class SwaggerConfig {
 	 */
 	@Bean
 	public Docket petApi() {
+		Docket docket = baseConfig();
+		infoConfig(docket);
+		typeConfig(docket);
+		secretConfig(docket);
+		modelConfig(docket);
+		return docket;
+	}
+
+	/**
+	 * 基本配置
+	 * @author Frodez
+	 * @date 2019-12-04
+	 */
+	private Docket baseConfig() {
+		ApiSelectorBuilder selectorBuilder = new Docket(DocumentationType.SWAGGER_2).select();
+		selectorBuilder.apis(RequestHandlerSelectors.basePackage(swagger.getBasePackage()));
+		selectorBuilder.paths(PathSelectors.any());
+		return selectorBuilder.build();
+	}
+
+	/**
+	 * 说明配置
+	 * @author Frodez
+	 * @date 2019-01-06
+	 */
+	private void infoConfig(Docket docket) {
+		ApiInfoBuilder infoBuilder = new ApiInfoBuilder();
+		infoBuilder.title(swagger.getTitle());
+		infoBuilder.description(swagger.getDescription());
+		Contact contact = new Contact(swagger.getAuthor(), swagger.getDocUrl(), swagger.getEmail());
+		infoBuilder.contact(contact);
+		infoBuilder.version(swagger.getAppVersion());
+		docket.apiInfo(infoBuilder.build());
+	}
+
+	/**
+	 * 类型映射配置
+	 * @author Frodez
+	 * @date 2019-12-04
+	 */
+	private void typeConfig(Docket docket) {
+		docket.directModelSubstitute(LocalDate.class, String.class);
+		docket.genericModelSubstitutes(ResponseEntity.class);
+		docket.additionalModels(new TypeResolver().resolve(Result.class));
+	}
+
+	/**
+	 * 安全配置
+	 * @author Frodez
+	 * @date 2019-12-04
+	 */
+	private void secretConfig(Docket docket) {
+		docket.securitySchemes(apiKey());
+		docket.securityContexts(securityContext());
+	}
+
+	/**
+	 * 模型映射配置
+	 * @author Frodez
+	 * @date 2019-12-04
+	 */
+	private void modelConfig(Docket docket) {
 		List<ResponseMessage> responseMessageList = getGlobalResponseMessage();
-		return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage(
-			swaggerProperties.getBasePackage())).paths(PathSelectors.any()).build().apiInfo(apiInfo())
-			.directModelSubstitute(LocalDate.class, String.class).genericModelSubstitutes(ResponseEntity.class)
-			.additionalModels(new TypeResolver().resolve(Result.class)).useDefaultResponseMessages(false)
-			.securitySchemes(List.of(apiKey())).securityContexts(List.of(securityContext())).enableUrlTemplating(false)
-			.globalResponseMessage(RequestMethod.GET, responseMessageList).globalResponseMessage(RequestMethod.POST,
-				responseMessageList).globalResponseMessage(RequestMethod.PUT, responseMessageList)
-			.globalResponseMessage(RequestMethod.DELETE, responseMessageList);
+		docket.useDefaultResponseMessages(false);
+		docket.enableUrlTemplating(false);
+		docket.globalResponseMessage(RequestMethod.GET, responseMessageList);
+		docket.globalResponseMessage(RequestMethod.POST, responseMessageList);
+		docket.globalResponseMessage(RequestMethod.PUT, responseMessageList);
+		docket.globalResponseMessage(RequestMethod.DELETE, responseMessageList);
 	}
 
 	/**
@@ -84,6 +144,10 @@ public class SwaggerConfig {
 		List<ResponseMessage> list = new ArrayList<>();
 		Map<HttpStatus, List<Result.ResultEnum>> map = new HashMap<>();
 		for (Result.ResultEnum item : Result.ResultEnum.values()) {
+			if (item.getStatus() == HttpStatus.OK) {
+				//成功的返回信息不设置默认
+				continue;
+			}
 			if (map.containsKey(item.getStatus())) {
 				map.get(item.getStatus()).add(item);
 			} else {
@@ -96,21 +160,13 @@ public class SwaggerConfig {
 			String message = String.join(" | ", entry.getValue().stream().map((iter) -> {
 				return iter.getDesc() + ",自定义状态码:" + iter.getVal();
 			}).collect(Collectors.toList()));
-			list.add(new ResponseMessageBuilder().code(entry.getKey().value()).message(message).responseModel(
-				new ModelRef(Result.class.getSimpleName())).build());
+			ResponseMessageBuilder messageBuilder = new ResponseMessageBuilder();
+			messageBuilder.code(entry.getKey().value());
+			messageBuilder.message(message);
+			messageBuilder.responseModel(new ModelRef(Result.class.getSimpleName()));
+			list.add(messageBuilder.build());
 		}
 		return list;
-	}
-
-	/**
-	 * 配置说明
-	 * @author Frodez
-	 * @date 2019-01-06
-	 */
-	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title(swaggerProperties.getTitle()).description(swaggerProperties.getDescription())
-			.contact(new Contact(swaggerProperties.getAuthor(), swaggerProperties.getDocUrl(), swaggerProperties
-				.getEmail())).version("1.0").build();
 	}
 
 	/**
@@ -118,9 +174,9 @@ public class SwaggerConfig {
 	 * @author Frodez
 	 * @date 2019-01-06
 	 */
-	private ApiKey apiKey() {
-		return new ApiKey(securityProperties.getJwt().getTokenPrefix(), securityProperties.getJwt().getHeader(),
-			"header");
+	private List<ApiKey> apiKey() {
+		ApiKey apiKey = new ApiKey(security.getJwt().getTokenPrefix(), security.getJwt().getHeader(), "header");
+		return List.of(apiKey);
 	}
 
 	/**
@@ -128,10 +184,11 @@ public class SwaggerConfig {
 	 * @author Frodez
 	 * @date 2019-01-06
 	 */
-	private SecurityContext securityContext() {
+	private List<SecurityContext> securityContext() {
 		// 注意要与RestfulAPI路径一致
-		return SecurityContext.builder().securityReferences(defaultAuth()).forPaths(PathSelectors.regex(PropertyUtil
-			.get(PropertyKey.Web.BASE_PATH))).build();
+		SecurityContext securityContext = SecurityContext.builder().securityReferences(defaultAuth()).forPaths(PathSelectors.regex(PropertyUtil.get(
+			PropertyKey.Web.BASE_PATH))).build();
+		return List.of(securityContext);
 	}
 
 	/**
@@ -143,7 +200,7 @@ public class SwaggerConfig {
 		AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
 		AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
 		authorizationScopes[0] = authorizationScope;
-		return List.of(new SecurityReference(securityProperties.getJwt().getTokenPrefix(), authorizationScopes));
+		return List.of(new SecurityReference(security.getJwt().getTokenPrefix(), authorizationScopes));
 	}
 
 }

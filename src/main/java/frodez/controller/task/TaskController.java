@@ -1,5 +1,7 @@
 package frodez.controller.task;
 
+import frodez.config.swagger.annotation.Success;
+import frodez.config.swagger.annotation.Success.ContainerType;
 import frodez.dao.model.task.Task;
 import frodez.dao.param.task.AddTask;
 import frodez.dao.result.task.AvailableTaskInfo;
@@ -8,8 +10,6 @@ import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,19 +32,19 @@ public class TaskController {
 	private BaseTaskService taskService;
 
 	@GetMapping(value = "/availables", name = "查询可用定时任务接口")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = AvailableTaskInfo.class) })
+	@Success(value = AvailableTaskInfo.class, containerType = ContainerType.PAGE)
 	public Result getAvailableTasks(@RequestBody QueryPage param) {
 		return taskService.getAvailableTasks(param);
 	}
 
 	@GetMapping(value = "/runnings", name = "查询正在运行定时任务接口")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Task.class) })
+	@Success(value = Task.class, containerType = ContainerType.PAGE)
 	public Result getRunningTaskInfo(@RequestBody QueryPage param) {
 		return taskService.getRunningTasksInfo(param);
 	}
 
 	@GetMapping(value = "/saves", name = "查询已保存定时任务接口")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "成功", response = Task.class) })
+	@Success(value = Task.class, containerType = ContainerType.PAGE)
 	public Result getTasks(@RequestBody QueryPage param) {
 		return taskService.getTasks(param);
 	}
