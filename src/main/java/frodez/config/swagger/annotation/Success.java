@@ -31,7 +31,7 @@ public @interface Success {
 	 * @author Frodez
 	 * @date 2019-12-05
 	 */
-	ContainerType containerType() default ContainerType.NONE;
+	Container containerType() default Container.NONE;
 
 	/**
 	 * 包装类型<br>
@@ -41,7 +41,7 @@ public @interface Success {
 	 * @author Frodez
 	 * @date 2019-12-05
 	 */
-	public enum ContainerType {
+	public enum Container {
 		/**
 		 * 无包装
 		 */

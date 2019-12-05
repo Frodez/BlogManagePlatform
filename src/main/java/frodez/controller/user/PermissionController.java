@@ -1,7 +1,7 @@
 package frodez.controller.user;
 
 import frodez.config.swagger.annotation.Success;
-import frodez.config.swagger.annotation.Success.ContainerType;
+import frodez.config.swagger.annotation.Success.Container;
 import frodez.dao.model.user.Permission;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.QueryRolePermission;
@@ -41,13 +41,13 @@ public class PermissionController {
 	}
 
 	@GetMapping(value = "/page", name = "分页查询权限信息接口")
-	@Success(value = Permission.class, containerType = ContainerType.PAGE)
+	@Success(value = Permission.class, containerType = Container.PAGE)
 	public Result getPermissions(@RequestBody QueryPage param) {
 		return authorityService.getPermissions(param);
 	}
 
 	@GetMapping(value = "/byRoleId", name = "根据角色ID获取权限信息接口")
-	@Success(value = PermissionInfo.class, containerType = ContainerType.PAGE)
+	@Success(value = PermissionInfo.class, containerType = Container.PAGE)
 	public Result getRolePermissions(@RequestBody QueryRolePermission param) {
 		return authorityService.getRolePermissions(param);
 	}

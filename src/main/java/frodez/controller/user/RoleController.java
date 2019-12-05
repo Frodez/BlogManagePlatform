@@ -1,7 +1,7 @@
 package frodez.controller.user;
 
 import frodez.config.swagger.annotation.Success;
-import frodez.config.swagger.annotation.Success.ContainerType;
+import frodez.config.swagger.annotation.Success.Container;
 import frodez.dao.model.user.Role;
 import frodez.dao.param.user.AddRole;
 import frodez.dao.param.user.UpdateRole;
@@ -40,7 +40,7 @@ public class RoleController {
 	}
 
 	@GetMapping(value = "/page", name = "分页查询角色信息接口")
-	@Success(value = Role.class, containerType = ContainerType.PAGE)
+	@Success(value = Role.class, containerType = Container.PAGE)
 	public Result getRoles(@RequestBody QueryPage param) {
 		return authorityService.getRoles(param);
 	}

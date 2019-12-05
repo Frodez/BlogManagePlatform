@@ -1,6 +1,8 @@
 package frodez.config.swagger;
 
+import com.fasterxml.classmate.TypeResolver;
 import frodez.config.security.settings.SecurityProperties;
+import frodez.config.swagger.plugin.DefaultSuccessResolverPlugin.SwaggerModel;
 import frodez.constant.settings.PropertyKey;
 import frodez.util.beans.result.Result;
 import frodez.util.spring.PropertyUtil;
@@ -107,6 +109,7 @@ public class SwaggerConfig {
 	 */
 	private void typeConfig(Docket docket) {
 		docket.directModelSubstitute(LocalDate.class, String.class);
+		docket.additionalModels(new TypeResolver().resolve(SwaggerModel.class));
 	}
 
 	/**
@@ -162,7 +165,7 @@ public class SwaggerConfig {
 			ResponseMessageBuilder messageBuilder = new ResponseMessageBuilder();
 			messageBuilder.code(entry.getKey().value());
 			messageBuilder.message(message);
-			messageBuilder.responseModel(new ModelRef(Result.class.getSimpleName()));
+			messageBuilder.responseModel(new ModelRef(SwaggerModel.class.getSimpleName()));
 			list.add(messageBuilder.build());
 		}
 		return list;

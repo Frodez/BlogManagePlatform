@@ -8,15 +8,20 @@ import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Optional;
 import frodez.config.swagger.SwaggerProperties;
 import frodez.config.swagger.annotation.Success;
-import frodez.config.swagger.annotation.Success.ContainerType;
+import frodez.config.swagger.annotation.Success.Container;
+import frodez.constant.settings.DefDesc;
 import frodez.util.beans.result.PageData;
 import frodez.util.beans.result.Result;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiResponses;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.Data;
 import org.apache.logging.log4j.core.config.Order;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -68,9 +73,9 @@ public class DefaultSuccessResolverPlugin implements OperationBuilderPlugin, Ope
 		ResponseMessageBuilder messageBuilder = new ResponseMessageBuilder();
 		messageBuilder.code(HttpStatus.OK.value());
 		messageBuilder.message(okMessage);
-		messageBuilder.responseModel(new ModelRef(Result.class.getSimpleName()));
+		messageBuilder.responseModel(new ModelRef(SwaggerModel.class.getSimpleName()));
 		okResponses.add(messageBuilder.build());
-		okResult = typeResolver.resolve(Result.class);
+		okResult = typeResolver.resolve(SwaggerModel.class);
 	}
 
 	@Override
@@ -93,7 +98,7 @@ public class DefaultSuccessResolverPlugin implements OperationBuilderPlugin, Ope
 		Success success = annotation.get();
 		ResponseMessageBuilder messageBuilder = new ResponseMessageBuilder();
 		messageBuilder.code(HttpStatus.OK.value());
-		messageBuilder.message(okMessage.concat("\n注意:本返回值仍然包装在通用Result内,位于Result.data位置"));
+		messageBuilder.message(okMessage);
 		messageBuilder.responseModel(resolveModel(context, success).orNull());
 		context.operationBuilder().responseMessages(Set.of(messageBuilder.build()));
 	}
@@ -119,19 +124,46 @@ public class DefaultSuccessResolverPlugin implements OperationBuilderPlugin, Ope
 		return Optional.of(modelRefFactory(modelContext, typeNameExtractor).apply(context.alternateFor(type.get())));
 	}
 
-	private static Optional<ResolvedType> resolvedType(TypeResolver resolver, Class<?> response, ContainerType containerType) {
+	private <T> Optional<ResolvedType> resolvedType(TypeResolver resolver, Class<T> response, Container containerType) {
 		if (Void.class != response && void.class != response) {
-			if (containerType == ContainerType.PAGE) {
-				return Optional.of(resolver.resolve(PageData.class, response));
-			} else if (containerType == ContainerType.LIST) {
-				return Optional.of(resolver.resolve(List.class, response));
-			} else if (containerType == ContainerType.SET) {
-				return Optional.of(resolver.resolve(Set.class, response));
+			if (containerType == Container.PAGE) {
+				ResolvedType type = resolver.resolve(SwaggerModel.class, resolver.resolve(PageData.class, response));
+				return Optional.of(type);
+			} else if (containerType == Container.LIST) {
+				ResolvedType type = resolver.resolve(SwaggerModel.class, resolver.resolve(List.class, response));
+				return Optional.of(type);
+			} else if (containerType == Container.SET) {
+				ResolvedType type = resolver.resolve(SwaggerModel.class, resolver.resolve(Set.class, response));
+				return Optional.of(type);
 			} else {
-				return Optional.of(resolver.resolve(response));
+				ResolvedType type = resolver.resolve(SwaggerModel.class, response);
+				return Optional.of(type);
 			}
 		}
 		return Optional.absent();
+	}
+
+	/**
+	 * 用于显示的返回值模型,为frodez.util.beans.result.Result的泛型版本
+	 * @see frodez.util.beans.result.Result
+	 * @author Frodez
+	 * @date 2019-12-05
+	 */
+	@Data
+	@ApiModel(description = DefDesc.Message.RESULT)
+	public static class SwaggerModel<T> implements Serializable {
+
+		private static final long serialVersionUID = 1L;
+
+		@ApiModelProperty(value = "状态", example = "1000")
+		private int code;
+
+		@ApiModelProperty(value = "消息", example = "成功")
+		private String message;
+
+		@ApiModelProperty(value = "数据")
+		private T data;
+
 	}
 
 }

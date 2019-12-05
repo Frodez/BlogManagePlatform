@@ -3,7 +3,7 @@ package frodez.controller.user;
 import frodez.config.aop.request.annotation.RepeatLock;
 import frodez.config.security.util.UserUtil;
 import frodez.config.swagger.annotation.Success;
-import frodez.config.swagger.annotation.Success.ContainerType;
+import frodez.config.swagger.annotation.Success.Container;
 import frodez.dao.param.user.Doregister;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.user.facade.IAuthorityService;
@@ -58,14 +58,14 @@ public class UserController {
 
 	@RepeatLock
 	@GetMapping(value = "/info/byIds", name = "批量查看用户信息接口")
-	@Success(value = UserInfo.class, containerType = ContainerType.PAGE)
+	@Success(value = UserInfo.class, containerType = Container.PAGE)
 	public Result getUserInfosById(@RequestBody @ApiParam("用户ID") List<Long> userIds) {
 		return authorityService.getUserInfosByIds(userIds, false);
 	}
 
 	@RepeatLock
 	@GetMapping(value = "/info/byNames", name = "批量查看用户信息接口")
-	@Success(value = UserInfo.class, containerType = ContainerType.PAGE)
+	@Success(value = UserInfo.class, containerType = Container.PAGE)
 	public Result getUserInfosByName(@RequestBody @ApiParam("用户名") List<String> userNames) {
 		return authorityService.getUserInfosByNames(userNames, false);
 	}

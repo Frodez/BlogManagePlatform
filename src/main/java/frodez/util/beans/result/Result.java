@@ -6,11 +6,8 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.ImmutableMap;
-import frodez.constant.settings.DefDesc;
 import frodez.util.common.StrUtil;
 import frodez.util.json.JSONUtil;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -72,11 +69,12 @@ import org.springframework.util.concurrent.ListenableFuture;
  * httpStatus()和resultEnum()用于获取Result的http状态码和自定义状态码。
  * </pre>
  *
+ * <strong>此参数的泛型版本见frodez.config.swagger.plugin.DefaultSuccessResolverPlugin.SwaggerModel</strong>
+ * @see frodez.config.swagger.plugin.DefaultSuccessResolverPlugin.SwaggerModel
  * @author Frodez
  * @date 2018-11-13
  */
 @EqualsAndHashCode
-@ApiModel(description = DefDesc.Message.RESULT)
 public final class Result implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -91,7 +89,6 @@ public final class Result implements Serializable {
 	 * 状态
 	 */
 	@NotNull
-	@ApiModelProperty(value = "状态", example = "1000")
 	private int code;
 
 	/**
@@ -107,7 +104,6 @@ public final class Result implements Serializable {
 	 * 消息
 	 */
 	@NotNull
-	@ApiModelProperty(value = "消息", example = "成功")
 	private String message;
 
 	/**
@@ -122,7 +118,6 @@ public final class Result implements Serializable {
 	/**
 	 * 数据
 	 */
-	@ApiModelProperty(value = "数据")
 	private Object data;
 
 	/**

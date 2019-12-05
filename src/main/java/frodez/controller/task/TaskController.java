@@ -1,7 +1,7 @@
 package frodez.controller.task;
 
 import frodez.config.swagger.annotation.Success;
-import frodez.config.swagger.annotation.Success.ContainerType;
+import frodez.config.swagger.annotation.Success.Container;
 import frodez.dao.model.task.Task;
 import frodez.dao.param.task.AddTask;
 import frodez.dao.result.task.AvailableTaskInfo;
@@ -32,19 +32,19 @@ public class TaskController {
 	private BaseTaskService taskService;
 
 	@GetMapping(value = "/availables", name = "查询可用定时任务接口")
-	@Success(value = AvailableTaskInfo.class, containerType = ContainerType.PAGE)
+	@Success(value = AvailableTaskInfo.class, containerType = Container.PAGE)
 	public Result getAvailableTasks(@RequestBody QueryPage param) {
 		return taskService.getAvailableTasks(param);
 	}
 
 	@GetMapping(value = "/runnings", name = "查询正在运行定时任务接口")
-	@Success(value = Task.class, containerType = ContainerType.PAGE)
+	@Success(value = Task.class, containerType = Container.PAGE)
 	public Result getRunningTaskInfo(@RequestBody QueryPage param) {
 		return taskService.getRunningTasksInfo(param);
 	}
 
 	@GetMapping(value = "/saves", name = "查询已保存定时任务接口")
-	@Success(value = Task.class, containerType = ContainerType.PAGE)
+	@Success(value = Task.class, containerType = Container.PAGE)
 	public Result getTasks(@RequestBody QueryPage param) {
 		return taskService.getTasks(param);
 	}
