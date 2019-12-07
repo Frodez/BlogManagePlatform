@@ -109,7 +109,7 @@ public class AuthorityService implements IAuthorityService {
 		if (user == null) {
 			return Result.fail("未查询到用户信息!");
 		}
-		if (user.getStatus().equals(UserStatusEnum.FORBIDDEN.getVal())) {
+		if (UserStatusEnum.FORBIDDEN.getVal().equals(user.getStatus())) {
 			return Result.fail("用户已禁用!");
 		}
 		Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
@@ -141,7 +141,7 @@ public class AuthorityService implements IAuthorityService {
 		if (user == null) {
 			return Result.fail("未查询到用户信息!");
 		}
-		if (user.getStatus().equals(UserStatusEnum.FORBIDDEN.getVal())) {
+		if (UserStatusEnum.FORBIDDEN.getVal().equals(user.getStatus())) {
 			return Result.fail("用户已禁用!");
 		}
 		Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
@@ -238,13 +238,12 @@ public class AuthorityService implements IAuthorityService {
 	private List<UserInfo> getUserInfos(List<User> users) {
 		List<Long> roleIds = users.stream().map(User::getRoleId).collect(Collectors.toList());
 		Example example = new Example(Permission.class);
-		example.createCriteria().andIn("id", rolePermissionMapper.batchGetPermissions(roleIds).stream().map(
-			Pair::getValue).collect(Collectors.toList()));
+		example.createCriteria().andIn("id", rolePermissionMapper.batchGetPermissions(roleIds).stream().map(Pair::getValue).collect(Collectors
+			.toList()));
 		List<Permission> permissions = permissionMapper.selectByExample(example);
 		example = new Example(Role.class);
 		example.createCriteria().andIn("id", roleIds);
-		Map<Long, Role> roleMap = roleMapper.selectByExample(example).stream().collect(Collectors.toMap(Role::getId, (
-			iter) -> {
+		Map<Long, Role> roleMap = roleMapper.selectByExample(example).stream().collect(Collectors.toMap(Role::getId, (iter) -> {
 			return iter;
 		}));
 		Map<Long, List<PermissionInfo>> rolePermissionsMap = new HashMap<>();
@@ -298,8 +297,7 @@ public class AuthorityService implements IAuthorityService {
 		BeanUtil.copy(permission, data);
 		Example example = new Example(RolePermission.class);
 		example.createCriteria().andEqualTo("permissionId", permissionId);
-		data.setRoleIds(rolePermissionMapper.selectByExample(example).stream().map(RolePermission::getRoleId).collect(
-			Collectors.toList()));
+		data.setRoleIds(rolePermissionMapper.selectByExample(example).stream().map(RolePermission::getRoleId).collect(Collectors.toList()));
 		return Result.success(data);
 	}
 
@@ -322,8 +320,8 @@ public class AuthorityService implements IAuthorityService {
 		BeanUtil.copy(role, data);
 		Example example = new Example(RolePermission.class);
 		example.createCriteria().andEqualTo("roleId", roleId);
-		data.setPermissionIds(rolePermissionMapper.selectByExample(example).stream().map(
-			RolePermission::getPermissionId).collect(Collectors.toList()));
+		data.setPermissionIds(rolePermissionMapper.selectByExample(example).stream().map(RolePermission::getPermissionId).collect(Collectors
+			.toList()));
 		return Result.success(data);
 	}
 
@@ -338,8 +336,7 @@ public class AuthorityService implements IAuthorityService {
 	@CatchAndReturn
 	@Override
 	public Result getRolePermissions(@Valid @NotNull QueryRolePermission param) {
-		return Result.page(PageHelper.startPage(param.getPage()).doSelectPage(() -> rolePermissionMapper.getPermissions(
-			param.getRoleId())));
+		return Result.page(PageHelper.startPage(param.getPage()).doSelectPage(() -> rolePermissionMapper.getPermissions(param.getRoleId())));
 	}
 
 	@Check
@@ -440,8 +437,7 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result updatePermission(@Valid @NotNull UpdatePermission param) {
 		try {
-			if (param.getType() == null && param.getUrl() != null || param.getType() != null && param
-				.getUrl() == null) {
+			if (param.getType() == null && param.getUrl() != null || param.getType() != null && param.getUrl() == null) {
 				return Result.errorRequest("类型和url必须同时存在!");
 			}
 			if (param.getUrl() != null && Matcher.isPermitAllPath(param.getUrl())) {
@@ -520,14 +516,12 @@ public class AuthorityService implements IAuthorityService {
 				case INSERT : {
 					Example example = new Example(Permission.class);
 					example.createCriteria().andIn("id", param.getPermissionIds());
-					List<Long> permissionIds = permissionMapper.selectByExample(example).stream().map(Permission::getId)
-						.collect(Collectors.toList());
+					List<Long> permissionIds = permissionMapper.selectByExample(example).stream().map(Permission::getId).collect(Collectors.toList());
 					if (permissionIds.size() != param.getPermissionIds().size()) {
 						return Result.fail("存在错误的权限!");
 					}
 					example = new Example(RolePermission.class);
-					example.createCriteria().andIn("permissionId", param.getPermissionIds()).andEqualTo("roleId", param
-						.getRoleId());
+					example.createCriteria().andIn("permissionId", param.getPermissionIds()).andEqualTo("roleId", param.getRoleId());
 					if (rolePermissionMapper.selectCountByExample(example) != 0) {
 						return Result.fail("不能添加已拥有的权限!");
 					}
@@ -544,8 +538,7 @@ public class AuthorityService implements IAuthorityService {
 				}
 				case DELETE : {
 					Example example = new Example(RolePermission.class);
-					example.createCriteria().andIn("permissionId", param.getPermissionIds()).andEqualTo("roleId", param
-						.getRoleId());
+					example.createCriteria().andIn("permissionId", param.getPermissionIds()).andEqualTo("roleId", param.getRoleId());
 					if (rolePermissionMapper.selectCountByExample(example) != param.getPermissionIds().size()) {
 						return Result.fail("存在错误的权限!");
 					}
@@ -650,14 +643,14 @@ public class AuthorityService implements IAuthorityService {
 			MVCUtil.requestMappingHandlerMappingStream().map((iter) -> {
 				return iter.getHandlerMethods().entrySet();
 			}).flatMap(Collection::stream).forEach((entry) -> {
-				String requestUrl = StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), entry.getKey()
-					.getPatternsCondition().getPatterns().stream().findFirst().get());
+				String requestUrl = StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), entry.getKey().getPatternsCondition().getPatterns()
+					.stream().findFirst().get());
 				if (!Matcher.needVerify(requestUrl)) {
 					return;
 				}
 				requestUrl = requestUrl.substring(PropertyUtil.get(PropertyKey.Web.BASE_PATH).length());
-				String requestType = entry.getKey().getMethodsCondition().getMethods().stream().map(RequestMethod::name)
-					.findFirst().orElse(PermissionTypeEnum.ALL.name());
+				String requestType = entry.getKey().getMethodsCondition().getMethods().stream().map(RequestMethod::name).findFirst().orElse(
+					PermissionTypeEnum.ALL.name());
 				String permissionName = ReflectUtil.getShortMethodName(entry.getValue().getMethod());
 				Permission permission = new Permission();
 				permission.setCreateTime(date);

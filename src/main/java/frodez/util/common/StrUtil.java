@@ -14,6 +14,8 @@ public class StrUtil {
 
 	private static byte code = 0;
 
+	private static final String EMPTY = "";
+
 	static {
 		try {
 			Method method = String.class.getDeclaredMethod("coder", new Class<?>[0]);
@@ -26,6 +28,27 @@ public class StrUtil {
 
 	public static void main(String[] args) {
 
+	}
+
+	/**
+	 * 将空字符串转换为null
+	 * @author Frodez
+	 * @date 2019-12-07
+	 */
+	public static String orNull(String string) {
+		if (string == null) {
+			return null;
+		}
+		return string.isEmpty() ? null : string;
+	}
+
+	/**
+	 * 将null转换为空字符串
+	 * @author Frodez
+	 * @date 2019-12-07
+	 */
+	public static String orEmpty(String string) {
+		return string == null ? EMPTY : string;
 	}
 
 	/**

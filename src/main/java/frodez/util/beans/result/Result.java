@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.ImmutableMap;
+import frodez.constant.errors.code.ServiceException;
 import frodez.util.common.StrUtil;
 import frodez.util.json.JSONUtil;
 import java.io.Serializable;
@@ -443,6 +444,19 @@ public final class Result implements Serializable {
 	 */
 	public boolean unable() {
 		return code != ResultEnum.SUCCESS.val;
+	}
+
+	/**
+	 * 判断是否可用,如果不可用,则抛出ServiceException
+	 * @see frodez.constant.errors.code.ServiceException.ServiceException
+	 * @author Frodez
+	 * @date 2019-12-07
+	 */
+	public Result ableOrThrow() {
+		if (code != ResultEnum.SUCCESS.val) {
+			throw new ServiceException(this);
+		}
+		return this;
 	}
 
 	/**

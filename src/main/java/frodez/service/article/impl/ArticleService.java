@@ -10,6 +10,7 @@ import frodez.dao.result.article.ArticleInfo;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.article.facade.IArticleService;
 import frodez.util.beans.result.Result;
+import frodez.util.common.StrUtil;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class ArticleService implements IArticleService {
 		if (UserUtil.get().getRoleLevel() > article.getPermitLevel()) {
 			return Result.noAccess();
 		}
-		if (DeleteEnum.YES.getVal() == article.getIsDelete()) {
+		if (DeleteEnum.YES.getVal().equals(article.getIsDelete())) {
 			return Result.fail("文章已删除");
 		}
 		UserInfo userInfo = UserUtil.get(article.getUserId());
@@ -46,11 +47,11 @@ public class ArticleService implements IArticleService {
 		}
 		ArticleInfo info = new ArticleInfo();
 		info.setTitle(article.getTitle());
-		info.setDescription(article.getDescription() == null ? "" : article.getDescription());
+		info.setDescription(StrUtil.orEmpty(article.getDescription()));
 		info.setCreateTime(article.getCreateTime());
 		info.setUpdateTime(article.getUpdateTime());
 		info.setAuthorName(userInfo.getName());
-		info.setTags(List.of(article.getTag() == null ? "" : article.getTag()));
+		info.setTags(List.of(StrUtil.orEmpty(article.getTag())));
 		info.setContent(article.getContent());
 		return Result.success(info);
 	}
