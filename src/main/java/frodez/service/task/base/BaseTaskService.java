@@ -171,7 +171,7 @@ public class BaseTaskService {
 	@Check
 	@CatchAndReturn
 	public Result getAvailableTasks(@Valid @NotNull QueryPage param) {
-		List<AvailableTaskInfo> infos = StreamUtil.startPage(taskServiceInfos, param).collect(Collectors.toList());
+		List<AvailableTaskInfo> infos = StreamUtil.page(taskServiceInfos, param).collect(Collectors.toList());
 		return Result.page(param.getPageNum(), param.getPageSize(), infos.size(), infos);
 	}
 
@@ -183,7 +183,7 @@ public class BaseTaskService {
 	@Check
 	@CatchAndReturn
 	public Result getRunningTasksInfo(@Valid @NotNull QueryPage param) {
-		List<Task> tasks = StreamUtil.startPage(taskInfoMap.values(), param).collect(Collectors.toList());
+		List<Task> tasks = StreamUtil.page(taskInfoMap.values(), param).collect(Collectors.toList());
 		return Result.page(param.getPageNum(), param.getPageSize(), tasks.size(), tasks);
 	}
 
@@ -327,7 +327,7 @@ public class BaseTaskService {
 	@Check
 	@CatchAndThrow(errorCode = ErrorCode.TASK_SERVICE_ERROR)
 	@Transactional
-	public Result changeStatus(@NotNull Long id, @LegalEnum(type = StatusEnum.class) Byte status) {
+	public Result changeStatus(@NotNull Long id, @LegalEnum(StatusEnum.class) Byte status) {
 		Task task = taskMapper.selectByPrimaryKey(id);
 		if (task == null) {
 			return Result.fail("未找到该任务!");

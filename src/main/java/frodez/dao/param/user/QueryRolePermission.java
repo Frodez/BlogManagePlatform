@@ -29,14 +29,14 @@ public class QueryRolePermission implements Serializable {
 	 * 角色ID
 	 */
 	@NotNull
-	@ApiModelProperty(value = "角色ID")
+	@ApiModelProperty("角色ID")
 	private Long roleId;
 
 	/**
 	 * 分页查询参数
 	 */
 	@Valid
-	@ApiModelProperty(value = DefDesc.Message.PAGE_QUERY)
+	@ApiModelProperty(DefDesc.Message.PAGE_QUERY)
 	private QueryPage page;
 
 }

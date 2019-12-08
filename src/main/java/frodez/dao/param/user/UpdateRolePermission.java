@@ -30,22 +30,21 @@ public class UpdateRolePermission implements Serializable {
 	 * 角色ID
 	 */
 	@NotNull
-	@ApiModelProperty(value = "角色ID")
+	@ApiModelProperty("角色ID")
 	private Long roleId;
 
 	/**
 	 * 操作类型 1:新增 2:删除 3:修改
 	 */
 	@NotNull
-	@LegalEnum(type = ModifyEnum.class)
-	@ApiModelProperty(value = "操作类型  1:新增  2:删除  3:修改")
+	@LegalEnum(ModifyEnum.class)
 	private Byte operationType;
 
 	/**
 	 * 权限ID
 	 */
 	@Valid
-	@ApiModelProperty(value = "权限ID")
+	@ApiModelProperty("权限ID")
 	private List<Long> permissionIds;
 
 }

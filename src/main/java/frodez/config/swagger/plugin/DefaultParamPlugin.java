@@ -3,7 +3,6 @@ package frodez.config.swagger.plugin;
 import static com.google.common.base.Strings.emptyToNull;
 import static springfox.documentation.swagger.common.SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER;
 
-import com.google.common.collect.ArrayListMultimap;
 import frodez.config.swagger.SwaggerProperties;
 import frodez.util.common.StrUtil;
 import io.swagger.annotations.ApiModel;
@@ -15,7 +14,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import springfox.documentation.builders.ParameterBuilder;
-import springfox.documentation.schema.Example;
 import springfox.documentation.service.ResolvedMethodParameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.schema.EnumTypeDeterminer;
@@ -32,7 +30,7 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 @Slf4j
 @Component
 @Profile({ "dev", "test" })
-@Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 100)
+@Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 300)
 public class DefaultParamPlugin implements ParameterBuilderPlugin {
 
 	private static String ApiParam = ApiParam.class.getCanonicalName();
@@ -82,11 +80,8 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 		builder.name(emptyToNull(annotation.description()));
 		builder.description(emptyToNull(descriptions.resolve(annotation.description())));
 		builder.parameterAccess(null);
-		builder.defaultValue(null);
 		builder.allowMultiple(false);
 		builder.allowEmptyValue(false);
-		builder.scalarExample(new Example(""));
-		builder.complexExamples(ArrayListMultimap.create());
 		builder.hidden(false);
 		builder.collectionFormat("");
 		builder.order(SWAGGER_PLUGIN_ORDER);

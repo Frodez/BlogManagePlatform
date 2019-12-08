@@ -22,19 +22,19 @@ public class AvailableTaskInfo implements Serializable {
 	/**
 	 * 名称
 	 */
-	@ApiModelProperty(value = "名称")
+	@ApiModelProperty("名称")
 	private String name;
 
 	/**
 	 * 描述
 	 */
-	@ApiModelProperty(value = "描述")
+	@ApiModelProperty("描述")
 	private String description;
 
 	/**
 	 * 可被强制中断(只是建议,非必要)
 	 */
-	@ApiModelProperty(value = "可被强制中断(只是建议,非必要)")
+	@ApiModelProperty("可被强制中断(只是建议,非必要)")
 	private Boolean permitForceInterrupt;
 
 }

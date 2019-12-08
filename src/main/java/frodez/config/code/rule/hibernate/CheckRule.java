@@ -9,10 +9,14 @@ import java.lang.reflect.Method;
 public class CheckRule implements CodeCheckRule {
 
 	@Override
+	public boolean support(Method method) throws CodeCheckException {
+		return true;
+	}
+
+	@Override
 	public void check(Method method) throws CodeCheckException {
 		if (method.getParameterCount() == 0) {
-			throw new CodeCheckException("@", Check.class.getCanonicalName(), "注解不能在无参数的方法", ReflectUtil
-				.getFullMethodName(method), "上使用");
+			throw new CodeCheckException("@", Check.class.getCanonicalName(), "注解不能在无参数的方法", ReflectUtil.getFullMethodName(method), "上使用");
 		}
 	}
 

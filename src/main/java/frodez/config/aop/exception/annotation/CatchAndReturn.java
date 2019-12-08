@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 
 /**
  * 异常处理,截获所有异常,输出日志,然后返回错误消息码<br>
+ * 不能在静态方法以及未在spring中注册的类实例中使用。<br>
  * 本注解无法处理finally块,请在方法体内处理finally<br>
  * 等同于:
  *

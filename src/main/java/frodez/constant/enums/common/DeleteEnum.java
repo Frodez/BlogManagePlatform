@@ -3,6 +3,7 @@ package frodez.constant.enums.common;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import frodez.constant.annotations.decoration.EnumCheckable;
+import frodez.constant.annotations.info.Description;
 import frodez.constant.settings.DefStr;
 import frodez.util.common.StrUtil;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import lombok.Getter;
  * @date 2018-12-04
  */
 @EnumCheckable
+@Description(name = "删除状态枚举")
 @AllArgsConstructor
 public enum DeleteEnum {
 
@@ -77,6 +79,24 @@ public enum DeleteEnum {
 	 */
 	public static DeleteEnum of(Byte value) {
 		return enumMap.get(value);
+	}
+
+	/**
+	 * 默认枚举
+	 * @author Frodez
+	 * @date 2019-05-17
+	 */
+	public static DeleteEnum defaultEnum() {
+		return DeleteEnum.NO;
+	}
+
+	/**
+	 * 默认值
+	 * @author Frodez
+	 * @date 2019-05-17
+	 */
+	public static Byte defaultValue() {
+		return defaultEnum().val;
 	}
 
 }

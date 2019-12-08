@@ -11,7 +11,6 @@ import frodez.dao.result.user.PermissionInfo;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,8 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2018-12-01
  */
 @RestController
-@RequestMapping("/permission")
-@Api(tags = "用户权限信息控制器")
+@RequestMapping(value = "/permission", name = "用户权限信息控制器")
 public class PermissionController {
 
 	@Autowired

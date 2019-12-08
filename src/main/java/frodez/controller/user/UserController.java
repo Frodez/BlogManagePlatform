@@ -9,7 +9,6 @@ import frodez.dao.result.user.UserInfo;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.IUserService;
 import frodez.util.beans.result.Result;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2018-12-01
  */
 @RestController
-@RequestMapping("/user")
-@Api(tags = "用户管理控制器")
+@RequestMapping(value = "/user", name = "用户管理控制器")
 public class UserController {
 
 	@Autowired

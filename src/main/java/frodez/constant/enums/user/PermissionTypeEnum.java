@@ -2,6 +2,7 @@ package frodez.constant.enums.user;
 
 import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
+import frodez.constant.annotations.info.Description;
 import frodez.util.common.StrUtil;
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +17,7 @@ import lombok.Getter;
  * @date 2018-12-04
  */
 @EnumCheckable
+@Description(name = "权限类型枚举")
 @AllArgsConstructor
 public enum PermissionTypeEnum {
 
@@ -85,6 +87,24 @@ public enum PermissionTypeEnum {
 	 */
 	public static PermissionTypeEnum of(Byte value) {
 		return enumMap.get(value);
+	}
+
+	/**
+	 * 默认枚举
+	 * @author Frodez
+	 * @date 2019-05-17
+	 */
+	public static PermissionTypeEnum defaultEnum() {
+		return PermissionTypeEnum.ALL;
+	}
+
+	/**
+	 * 默认值
+	 * @author Frodez
+	 * @date 2019-05-17
+	 */
+	public static Byte defaultValue() {
+		return defaultEnum().val;
 	}
 
 }

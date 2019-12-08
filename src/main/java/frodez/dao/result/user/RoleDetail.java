@@ -24,19 +24,19 @@ public class RoleDetail implements Serializable {
 	/**
 	 * 角色ID(不能为空)
 	 */
-	@ApiModelProperty(value = "角色ID")
+	@ApiModelProperty("角色ID")
 	private Long id;
 
 	/**
 	 * 创建时间(不能为空)
 	 */
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty("创建时间")
 	private Date createTime;
 
 	/**
 	 * 角色名称(不能为空)
 	 */
-	@ApiModelProperty(value = "角色名称")
+	@ApiModelProperty("角色名称")
 	private String name;
 
 	/**
@@ -48,13 +48,13 @@ public class RoleDetail implements Serializable {
 	/**
 	 * 描述
 	 */
-	@ApiModelProperty(value = "描述")
+	@ApiModelProperty("描述")
 	private String description;
 
 	/**
 	 * 角色拥有的权限ID
 	 */
-	@ApiModelProperty(value = "角色拥有的权限ID")
+	@ApiModelProperty("角色拥有的权限ID")
 	private List<Long> permissionIds;
 
 }

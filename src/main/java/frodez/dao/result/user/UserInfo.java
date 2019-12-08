@@ -1,5 +1,7 @@
 package frodez.dao.result.user;
 
+import frodez.config.swagger.annotation.EnumParam;
+import frodez.constant.enums.user.UserStatusEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -20,25 +22,25 @@ public class UserInfo implements Serializable {
 	/**
 	 * 用户ID
 	 */
-	@ApiModelProperty(value = "用户ID")
+	@ApiModelProperty("用户ID")
 	private Long id;
 
 	/**
 	 * 用户名
 	 */
-	@ApiModelProperty(value = "用户名")
+	@ApiModelProperty("用户名")
 	private String name;
 
 	/**
 	 * 密码
 	 */
-	@ApiModelProperty(value = "密码")
+	@ApiModelProperty("密码")
 	private String password;
 
 	/**
 	 * 昵称
 	 */
-	@ApiModelProperty(value = "昵称")
+	@ApiModelProperty("昵称")
 	private String nickname;
 
 	/**
@@ -56,7 +58,7 @@ public class UserInfo implements Serializable {
 	/**
 	 * 用户状态 0:禁用 1:正常
 	 */
-	@ApiModelProperty(value = "用户状态 0:禁用 1:正常")
+	@EnumParam(value = UserStatusEnum.class)
 	private Byte status;
 
 	/**

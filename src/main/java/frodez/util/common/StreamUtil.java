@@ -18,10 +18,10 @@ public class StreamUtil {
 	 * @author Frodez
 	 * @date 2019-06-19
 	 */
-	public static <T> Stream<T> startPage(Collection<T> collection, QueryPage page) {
+	public static <T> Stream<T> page(Collection<T> collection, QueryPage page) {
 		Assert.notNull(page, "page must not be null");
 		Assert.notNull(collection, "collection must not be null");
-		return startPage(collection, page.getPageNum(), page.getPageSize());
+		return page(collection, page.getPageNum(), page.getPageSize());
 	}
 
 	/**
@@ -31,7 +31,7 @@ public class StreamUtil {
 	 * @author Frodez
 	 * @date 2019-06-19
 	 */
-	public static <T> Stream<T> startPage(Collection<T> collection, int pageNum, int pageSize) {
+	public static <T> Stream<T> page(Collection<T> collection, int pageNum, int pageSize) {
 		Assert.notNull(collection, "collection must not be null");
 		Assert.state(pageNum >= 0, "pageNum can't be negetive");
 		Assert.state(pageSize > 0, "pageSize must be positive");
@@ -43,10 +43,10 @@ public class StreamUtil {
 	 * @author Frodez
 	 * @date 2019-06-19
 	 */
-	public static <T> Stream<T> startRowBounds(Collection<T> collection, RowBounds rowBounds) {
+	public static <T> Stream<T> rowBounds(Collection<T> collection, RowBounds rowBounds) {
 		Assert.notNull(rowBounds, "rowBounds must not be null");
 		Assert.notNull(collection, "stream must not be null");
-		return startRowBounds(collection, rowBounds.getLimit(), rowBounds.getOffset());
+		return rowBounds(collection, rowBounds.getLimit(), rowBounds.getOffset());
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class StreamUtil {
 	 * @author Frodez
 	 * @date 2019-06-19
 	 */
-	public static <T> Stream<T> startRowBounds(Collection<T> collection, int limit, int offset) {
+	public static <T> Stream<T> rowBounds(Collection<T> collection, int limit, int offset) {
 		Assert.notNull(collection, "stream must not be null");
 		Assert.state(limit >= 0, "limit can't be negetive");
 		Assert.state(offset > 0, "offset must be positive");
@@ -67,18 +67,18 @@ public class StreamUtil {
 		var stream = List.of(1, 3, 5, 66, 71, 34, 20, 130, 524, 623);
 		QueryPage queryPage = new QueryPage(2, 4);
 		RowBounds rowBounds = new RowBounds(1, 8);
-		StreamUtil.startPage(stream, 0, 3).forEach(System.out::println);
+		StreamUtil.page(stream, 0, 3).forEach(System.out::println);
 		System.out.println("\n");
-		StreamUtil.startPage(stream, queryPage).forEach(System.out::println);
+		StreamUtil.page(stream, queryPage).forEach(System.out::println);
 		System.out.println("\n");
-		StreamUtil.startRowBounds(stream, 3, 5).forEach(System.out::println);
+		StreamUtil.rowBounds(stream, 3, 5).forEach(System.out::println);
 		System.out.println("\n");
-		StreamUtil.startRowBounds(stream, rowBounds).forEach(System.out::println);
+		StreamUtil.rowBounds(stream, rowBounds).forEach(System.out::println);
 		System.out.println("\n");
-		StreamUtil.startRowBounds(stream, queryPage.toRowBounds()).forEach(System.out::println);
-		var random = new Random();
+		StreamUtil.rowBounds(stream, queryPage.toRowBounds()).forEach(System.out::println);
+		var Random = new Random();
 		var test = List.of("222", "32d", "32d", "32d", "32d", "32d", "32d", "32d", "32d", "32d", "32d").stream().map((item) -> {
-			if (random.nextBoolean()) {
+			if (Random.nextBoolean()) {
 				return item;
 			} else {
 				return null;

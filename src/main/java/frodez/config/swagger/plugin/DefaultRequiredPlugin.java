@@ -31,7 +31,7 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
  */
 @Component
 @Profile({ "dev", "test" })
-@Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 100)
+@Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 300)
 public class DefaultRequiredPlugin implements ParameterBuilderPlugin {
 
 	private boolean useCustomerizedPluggins = false;
@@ -67,8 +67,8 @@ public class DefaultRequiredPlugin implements ParameterBuilderPlugin {
 	 * @date 2019-06-11
 	 */
 	private boolean hasNullableAnnotation(ResolvedMethodParameter methodParameter) {
-		return methodParameter.hasParameterAnnotation(Null.class) || methodParameter.hasParameterAnnotation(
-			Nullable.class) || methodParameter.hasParameterAnnotation(reactor.util.annotation.Nullable.class);
+		return methodParameter.hasParameterAnnotation(Null.class) || methodParameter.hasParameterAnnotation(Nullable.class) || methodParameter
+			.hasParameterAnnotation(reactor.util.annotation.Nullable.class);
 	}
 
 	/**

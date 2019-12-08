@@ -29,35 +29,34 @@ public class UpdatePermission implements Serializable {
 	 * 权限ID
 	 */
 	@NotNull
-	@ApiModelProperty(value = "权限ID")
+	@ApiModelProperty("权限ID")
 	private Long id;
 
 	/**
 	 * 类型 0:ALL 1:GET 2:POST 3:DELETE 4:PUT
 	 */
 	@NotNull
-	@LegalEnum(type = PermissionTypeEnum.class)
-	@ApiModelProperty(value = "类型 0:ALL 1:GET 2:POST 3:DELETE 4:PUT")
+	@LegalEnum(PermissionTypeEnum.class)
 	private Byte type;
 
 	/**
 	 * 权限名称
 	 */
 	@Length(max = 255)
-	@ApiModelProperty(value = "权限名称")
+	@ApiModelProperty("权限名称")
 	private String name;
 
 	/**
 	 * 地址
 	 */
-	@ApiModelProperty(value = "地址")
+	@ApiModelProperty("地址")
 	private String url;
 
 	/**
 	 * 描述
 	 */
 	@Length(max = 1000)
-	@ApiModelProperty(value = "描述")
+	@ApiModelProperty("描述")
 	private String description;
 
 }

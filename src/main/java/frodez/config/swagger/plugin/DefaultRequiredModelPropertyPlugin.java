@@ -1,7 +1,6 @@
 package frodez.config.swagger.plugin;
 
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
-import com.google.common.base.Optional;
 import frodez.config.swagger.SwaggerProperties;
 import java.lang.reflect.AnnotatedElement;
 import javax.validation.constraints.NotEmpty;
@@ -46,28 +45,30 @@ public class DefaultRequiredModelPropertyPlugin implements ModelPropertyBuilderP
 	}
 
 	private void resolveAnnotatedElement(ModelPropertyContext context) {
-		Optional<AnnotatedElement> annotated = context.getAnnotatedElement();
-		if (annotated.isPresent()) {
-			if (AnnotationUtils.findAnnotation(annotated.get(), NotNull.class) != null) {
-				context.getBuilder().required(true);
-			} else if (AnnotationUtils.findAnnotation(annotated.get(), NotEmpty.class) != null) {
-				context.getBuilder().required(true);
-			} else {
-				context.getBuilder().required(false);
-			}
+		AnnotatedElement annotated = context.getAnnotatedElement().orNull();
+		if (annotated == null) {
+			return;
+		}
+		if (AnnotationUtils.findAnnotation(annotated, NotNull.class) != null) {
+			context.getBuilder().required(true);
+		} else if (AnnotationUtils.findAnnotation(annotated, NotEmpty.class) != null) {
+			context.getBuilder().required(true);
+		} else {
+			context.getBuilder().required(false);
 		}
 	}
 
 	private void resolveBeanPropertyDefinition(ModelPropertyContext context) {
-		Optional<BeanPropertyDefinition> beanPropertyDefinition = context.getBeanPropertyDefinition();
-		if (beanPropertyDefinition.isPresent()) {
-			if (Annotations.findPropertyAnnotation(beanPropertyDefinition.get(), NotNull.class).isPresent()) {
-				context.getBuilder().required(true);
-			} else if (Annotations.findPropertyAnnotation(beanPropertyDefinition.get(), NotEmpty.class).isPresent()) {
-				context.getBuilder().required(true);
-			} else {
-				context.getBuilder().required(false);
-			}
+		BeanPropertyDefinition beanPropertyDefinition = context.getBeanPropertyDefinition().orNull();
+		if (beanPropertyDefinition == null) {
+			return;
+		}
+		if (Annotations.findPropertyAnnotation(beanPropertyDefinition, NotNull.class).isPresent()) {
+			context.getBuilder().required(true);
+		} else if (Annotations.findPropertyAnnotation(beanPropertyDefinition, NotEmpty.class).isPresent()) {
+			context.getBuilder().required(true);
+		} else {
+			context.getBuilder().required(false);
 		}
 	}
 

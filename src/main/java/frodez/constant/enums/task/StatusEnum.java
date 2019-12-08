@@ -2,6 +2,7 @@ package frodez.constant.enums.task;
 
 import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
+import frodez.constant.annotations.info.Description;
 import frodez.constant.settings.DefStr;
 import frodez.util.common.StrUtil;
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import lombok.Getter;
  * @date 2019-03-20
  */
 @EnumCheckable
+@Description(name = "任务状态枚举")
 @AllArgsConstructor
 public enum StatusEnum {
 
@@ -53,7 +55,7 @@ public enum StatusEnum {
 	@Getter
 	private static List<String> descs;
 
-	private static final Map<Byte, StatusEnum> enumMap;
+	private static Map<Byte, StatusEnum> enumMap;
 
 	static {
 		vals = Arrays.stream(StatusEnum.values()).map(StatusEnum::getVal).collect(Collectors.toUnmodifiableList());
@@ -69,6 +71,24 @@ public enum StatusEnum {
 
 	public static StatusEnum of(Byte value) {
 		return enumMap.get(value);
+	}
+
+	/**
+	 * 默认枚举
+	 * @author Frodez
+	 * @date 2019-05-17
+	 */
+	public static StatusEnum defaultEnum() {
+		return StatusEnum.ACTIVE;
+	}
+
+	/**
+	 * 默认值
+	 * @author Frodez
+	 * @date 2019-05-17
+	 */
+	public static Byte defaultValue() {
+		return defaultEnum().val;
 	}
 
 }

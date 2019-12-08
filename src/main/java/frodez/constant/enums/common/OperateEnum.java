@@ -2,6 +2,7 @@ package frodez.constant.enums.common;
 
 import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
+import frodez.constant.annotations.info.Description;
 import frodez.constant.settings.DefStr;
 import frodez.util.common.StrUtil;
 import java.util.Arrays;
@@ -18,6 +19,7 @@ import lombok.Getter;
  * @date 2019-03-17
  */
 @EnumCheckable
+@Description(name = "操作类型枚举")
 @AllArgsConstructor
 public enum OperateEnum {
 
@@ -83,6 +85,24 @@ public enum OperateEnum {
 	 */
 	public static OperateEnum of(Byte value) {
 		return enumMap.get(value);
+	}
+
+	/**
+	 * 默认枚举
+	 * @author Frodez
+	 * @date 2019-05-17
+	 */
+	public static OperateEnum defaultEnum() {
+		return null;
+	}
+
+	/**
+	 * 默认值
+	 * @author Frodez
+	 * @date 2019-05-17
+	 */
+	public static Byte defaultValue() {
+		return null;
 	}
 
 }

@@ -1,6 +1,9 @@
 package frodez.util.common;
 
+import frodez.constant.settings.DefStr;
 import java.lang.reflect.Method;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import lombok.experimental.UtilityClass;
 
@@ -14,7 +17,7 @@ public class StrUtil {
 
 	private static byte code = 0;
 
-	private static final String EMPTY = "";
+	private static final CharsetEncoder ASCII_ENCODER = StandardCharsets.US_ASCII.newEncoder();
 
 	static {
 		try {
@@ -48,7 +51,7 @@ public class StrUtil {
 	 * @date 2019-12-07
 	 */
 	public static String orEmpty(String string) {
-		return string == null ? EMPTY : string;
+		return string == null ? DefStr.EMPTY : string;
 	}
 
 	/**
@@ -164,6 +167,15 @@ public class StrUtil {
 			builder.append(upperStarters[i]).append(tokens[i]);
 		}
 		return builder.toString();
+	}
+
+	/**
+	 * 是否为ascii字符串
+	 * @author Frodez
+	 * @date 2019-12-07
+	 */
+	public boolean isAscii(String string) {
+		return ASCII_ENCODER.canEncode(string);
 	}
 
 }

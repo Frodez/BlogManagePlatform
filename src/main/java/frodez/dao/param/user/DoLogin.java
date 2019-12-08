@@ -25,7 +25,7 @@ public class DoLogin implements Serializable {
 	 */
 	@NotBlank
 	@Length(min = 3, max = 25)
-	@ApiModelProperty(value = "用户名")
+	@ApiModelProperty("用户名")
 	private String username;
 
 	/**
@@ -33,7 +33,7 @@ public class DoLogin implements Serializable {
 	 */
 	@NotBlank
 	@Length(min = 8, max = 30)
-	@ApiModelProperty(value = "密码")
+	@ApiModelProperty("密码")
 	private String password;
 
 }

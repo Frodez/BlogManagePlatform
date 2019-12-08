@@ -10,7 +10,6 @@ import frodez.dao.result.user.RoleDetail;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,8 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2018-12-01
  */
 @RestController
-@RequestMapping("/role")
-@Api(tags = "用户角色信息控制器")
+@RequestMapping(value = "/role", name = "用户角色信息控制器")
 public class RoleController {
 
 	@Autowired

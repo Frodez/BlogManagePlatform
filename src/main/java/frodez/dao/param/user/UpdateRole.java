@@ -29,14 +29,14 @@ public class UpdateRole implements Serializable {
 	 * 角色ID
 	 */
 	@NotNull
-	@ApiModelProperty(value = "角色ID")
+	@ApiModelProperty("角色ID")
 	private Long id;
 
 	/**
 	 * 角色名称
 	 */
 	@Length(max = 255)
-	@ApiModelProperty(value = "角色名称")
+	@ApiModelProperty("角色名称")
 	private String name;
 
 	/**
@@ -44,14 +44,14 @@ public class UpdateRole implements Serializable {
 	 */
 	@Min(0)
 	@Max(9)
-	@ApiModelProperty(value = "角色等级 0-9 0最高,9最低")
+	@ApiModelProperty("角色等级 0-9 0最高,9最低")
 	private Byte level;
 
 	/**
 	 * 描述
 	 */
 	@Length(max = 1000)
-	@ApiModelProperty(value = "描述")
+	@ApiModelProperty("描述")
 	private String description;
 
 }

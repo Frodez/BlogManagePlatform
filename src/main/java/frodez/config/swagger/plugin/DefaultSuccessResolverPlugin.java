@@ -41,7 +41,7 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
  */
 @Component
 @Profile({ "dev", "test" })
-@Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 200)
+@Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 300)
 public class DefaultSuccessResolverPlugin implements OperationBuilderPlugin, OperationModelsProviderPlugin {
 
 	private final TypeNameExtractor typeNameExtractor;
