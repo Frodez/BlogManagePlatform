@@ -5,11 +5,9 @@ import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.util.UserUtil;
 import frodez.constant.enums.user.UserStatusEnum;
 import frodez.constant.errors.code.ErrorCode;
-import frodez.constant.errors.code.ServiceException;
 import frodez.dao.mapper.user.UserMapper;
 import frodez.dao.model.user.User;
 import frodez.dao.param.user.Doregister;
-import frodez.dao.result.user.UserInfo;
 import frodez.service.user.facade.ILoginService;
 import frodez.service.user.facade.IUserService;
 import frodez.util.beans.result.Result;
@@ -66,12 +64,8 @@ public class UserService implements IUserService {
 	@Transactional
 	@Override
 	public Result logOff() {
-		UserInfo userInfo = UserUtil.get();
-		userMapper.deleteByPrimaryKey(userInfo.getId());
-		Result result = loginService.logout();
-		if (result.unable()) {
-			throw new ServiceException(result);
-		}
+		userMapper.deleteByPrimaryKey(UserUtil.get().getId());
+		loginService.logout().ableOrThrow();
 		return Result.success();
 	}
 

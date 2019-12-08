@@ -1,14 +1,15 @@
 package frodez.controller.task;
 
+import frodez.config.swagger.annotation.EnumParam;
 import frodez.config.swagger.annotation.Success;
-import frodez.config.swagger.annotation.Success.ContainerType;
+import frodez.config.swagger.annotation.Success.Container;
+import frodez.constant.enums.task.StatusEnum;
 import frodez.dao.model.task.Task;
 import frodez.dao.param.task.AddTask;
 import frodez.dao.result.task.AvailableTaskInfo;
 import frodez.service.task.base.BaseTaskService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,27 +25,26 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2019-03-21
  */
 @RestController
-@RequestMapping("/task")
-@Api(tags = "任务控制器")
+@RequestMapping(value = "/task", name = "任务控制器")
 public class TaskController {
 
 	@Autowired
 	private BaseTaskService taskService;
 
 	@GetMapping(value = "/availables", name = "查询可用定时任务接口")
-	@Success(value = AvailableTaskInfo.class, containerType = ContainerType.PAGE)
+	@Success(value = AvailableTaskInfo.class, containerType = Container.PAGE)
 	public Result getAvailableTasks(@RequestBody QueryPage param) {
 		return taskService.getAvailableTasks(param);
 	}
 
 	@GetMapping(value = "/runnings", name = "查询正在运行定时任务接口")
-	@Success(value = Task.class, containerType = ContainerType.PAGE)
+	@Success(value = Task.class, containerType = Container.PAGE)
 	public Result getRunningTaskInfo(@RequestBody QueryPage param) {
 		return taskService.getRunningTasksInfo(param);
 	}
 
 	@GetMapping(value = "/saves", name = "查询已保存定时任务接口")
-	@Success(value = Task.class, containerType = ContainerType.PAGE)
+	@Success(value = Task.class, containerType = Container.PAGE)
 	public Result getTasks(@RequestBody QueryPage param) {
 		return taskService.getTasks(param);
 	}
@@ -65,7 +65,7 @@ public class TaskController {
 	}
 
 	@PostMapping(value = "/change", name = "更改定时任务活跃状态接口")
-	public Result changeStatus(@ApiParam("任务ID") Long id, @ApiParam("活跃状态 1:活跃中 2:不活跃") Byte status) {
+	public Result changeStatus(@ApiParam("任务ID") Long id, @EnumParam(StatusEnum.class) Byte status) {
 		return taskService.changeStatus(id, status);
 	}
 

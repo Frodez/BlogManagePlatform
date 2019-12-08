@@ -2,6 +2,7 @@ package frodez.constant.enums.user;
 
 import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
+import frodez.constant.annotations.info.Description;
 import frodez.constant.settings.DefStr;
 import frodez.util.common.StrUtil;
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import lombok.Getter;
  * @date 2018-11-14
  */
 @EnumCheckable
+@Description(name = "用户状态枚举")
 @AllArgsConstructor
 public enum UserStatusEnum {
 
@@ -69,6 +71,24 @@ public enum UserStatusEnum {
 
 	public static UserStatusEnum of(Byte value) {
 		return enumMap.get(value);
+	}
+
+	/**
+	 * 默认枚举
+	 * @author Frodez
+	 * @date 2019-05-17
+	 */
+	public static UserStatusEnum defaultEnum() {
+		return UserStatusEnum.NORMAL;
+	}
+
+	/**
+	 * 默认值
+	 * @author Frodez
+	 * @date 2019-05-17
+	 */
+	public static Byte defaultValue() {
+		return defaultEnum().val;
 	}
 
 }

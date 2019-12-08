@@ -1,5 +1,7 @@
 package frodez.dao.model.user;
 
+import frodez.config.aop.validation.annotation.common.LegalEnum;
+import frodez.constant.enums.user.UserStatusEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -31,7 +33,7 @@ public class User implements Serializable {
 	@Id
 	@NotNull
 	@Column(name = "id")
-	@ApiModelProperty(value = "用户ID")
+	@ApiModelProperty("用户ID")
 	private Long id;
 
 	/**
@@ -39,7 +41,7 @@ public class User implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "create_time")
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty("创建时间")
 	private Date createTime;
 
 	/**
@@ -47,7 +49,7 @@ public class User implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "name", length = 50)
-	@ApiModelProperty(value = "用户名")
+	@ApiModelProperty("用户名")
 	private String name;
 
 	/**
@@ -55,7 +57,7 @@ public class User implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "password", length = 2000)
-	@ApiModelProperty(value = "密码")
+	@ApiModelProperty("密码")
 	private String password;
 
 	/**
@@ -63,7 +65,7 @@ public class User implements Serializable {
 	 */
 	@Nullable
 	@Column(name = "nickname", length = 50)
-	@ApiModelProperty(value = "昵称")
+	@ApiModelProperty("昵称")
 	private String nickname;
 
 	/**
@@ -71,7 +73,7 @@ public class User implements Serializable {
 	 */
 	@Nullable
 	@Column(name = "email", length = 255)
-	@ApiModelProperty(value = "邮箱地址")
+	@ApiModelProperty("邮箱地址")
 	private String email;
 
 	/**
@@ -79,7 +81,7 @@ public class User implements Serializable {
 	 */
 	@Nullable
 	@Column(name = "phone", length = 255)
-	@ApiModelProperty(value = "电话号码")
+	@ApiModelProperty("电话号码")
 	private String phone;
 
 	/**
@@ -87,7 +89,7 @@ public class User implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "status")
-	@ApiModelProperty(value = "用户状态  0:禁用  1:正常", example = "1")
+	@LegalEnum(UserStatusEnum.class)
 	private Byte status = 1;
 
 	/**
@@ -95,7 +97,7 @@ public class User implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "role_id")
-	@ApiModelProperty(value = "角色ID")
+	@ApiModelProperty("角色ID")
 	private Long roleId;
 
 }

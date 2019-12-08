@@ -11,6 +11,11 @@ import lombok.experimental.UtilityClass;
 public class DefStr {
 
 	/**
+	 * 空字符串
+	 */
+	public static final String EMPTY = "";
+
+	/**
 	 * 冒号间隔符
 	 */
 	public static final String SEPERATOR = ":";

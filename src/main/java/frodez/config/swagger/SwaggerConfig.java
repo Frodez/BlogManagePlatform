@@ -1,6 +1,9 @@
 package frodez.config.swagger;
 
+import com.fasterxml.classmate.TypeResolver;
 import frodez.config.security.settings.SecurityProperties;
+import frodez.config.swagger.plugin.DefaultSuccessResolverPlugin.SwaggerModel;
+import frodez.config.swagger.util.SwaggerUtil;
 import frodez.constant.settings.PropertyKey;
 import frodez.util.beans.result.Result;
 import frodez.util.spring.PropertyUtil;
@@ -10,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -107,6 +109,7 @@ public class SwaggerConfig {
 	 */
 	private void typeConfig(Docket docket) {
 		docket.directModelSubstitute(LocalDate.class, String.class);
+		docket.additionalModels(new TypeResolver().resolve(SwaggerModel.class));
 	}
 
 	/**
@@ -156,13 +159,11 @@ public class SwaggerConfig {
 			}
 		}
 		for (Entry<HttpStatus, List<Result.ResultEnum>> entry : map.entrySet()) {
-			String message = String.join(" | ", entry.getValue().stream().map((iter) -> {
-				return iter.getDesc() + ",自定义状态码:" + iter.getVal();
-			}).collect(Collectors.toList()));
+			String message = SwaggerUtil.statusDescription(entry.getValue());
 			ResponseMessageBuilder messageBuilder = new ResponseMessageBuilder();
 			messageBuilder.code(entry.getKey().value());
 			messageBuilder.message(message);
-			messageBuilder.responseModel(new ModelRef(Result.class.getSimpleName()));
+			messageBuilder.responseModel(new ModelRef(SwaggerModel.class.getSimpleName()));
 			list.add(messageBuilder.build());
 		}
 		return list;

@@ -2,14 +2,14 @@ package frodez.dao.param.task;
 
 import frodez.config.aop.validation.annotation.ValidateBean;
 import frodez.config.aop.validation.annotation.common.LegalEnum;
-import frodez.constant.enums.task.StatusEnum;
+import frodez.constant.enums.task.StartNowEnum;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 新增定时任务请求参数
@@ -31,7 +31,7 @@ public class AddTask implements Serializable {
 	 */
 	@NotBlank
 	@Length(max = 255)
-	@ApiModelProperty(value = "目标")
+	@ApiModelProperty("目标")
 	private String target;
 
 	/**
@@ -39,7 +39,7 @@ public class AddTask implements Serializable {
 	 */
 	@NotBlank
 	@Length(max = 65535)
-	@ApiModelProperty(value = "任务描述")
+	@ApiModelProperty("任务描述")
 	private String description;
 
 	/**
@@ -47,15 +47,14 @@ public class AddTask implements Serializable {
 	 */
 	@NotBlank
 	@Length(max = 31)
-	@ApiModelProperty(value = "cron表达式")
+	@ApiModelProperty("cron表达式")
 	private String cronExp;
 
 	/**
 	 * 是否立刻启动 1:立刻启动 2:暂不启动
 	 */
 	@NotNull
-	@LegalEnum(type = StatusEnum.class)
-	@ApiModelProperty(value = "是否立刻启动 1:立刻启动 2:暂不启动")
+	@LegalEnum(StartNowEnum.class)
 	private Byte startNow;
 
 }

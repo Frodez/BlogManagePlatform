@@ -3,13 +3,12 @@ package frodez.controller.user;
 import frodez.config.aop.request.annotation.RepeatLock;
 import frodez.config.security.util.UserUtil;
 import frodez.config.swagger.annotation.Success;
-import frodez.config.swagger.annotation.Success.ContainerType;
+import frodez.config.swagger.annotation.Success.Container;
 import frodez.dao.param.user.Doregister;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.IUserService;
 import frodez.util.beans.result.Result;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2018-12-01
  */
 @RestController
-@RequestMapping("/user")
-@Api(tags = "用户管理控制器")
+@RequestMapping(value = "/user", name = "用户管理控制器")
 public class UserController {
 
 	@Autowired
@@ -58,14 +56,14 @@ public class UserController {
 
 	@RepeatLock
 	@GetMapping(value = "/info/byIds", name = "批量查看用户信息接口")
-	@Success(value = UserInfo.class, containerType = ContainerType.PAGE)
+	@Success(value = UserInfo.class, containerType = Container.PAGE)
 	public Result getUserInfosById(@RequestBody @ApiParam("用户ID") List<Long> userIds) {
 		return authorityService.getUserInfosByIds(userIds, false);
 	}
 
 	@RepeatLock
 	@GetMapping(value = "/info/byNames", name = "批量查看用户信息接口")
-	@Success(value = UserInfo.class, containerType = ContainerType.PAGE)
+	@Success(value = UserInfo.class, containerType = Container.PAGE)
 	public Result getUserInfosByName(@RequestBody @ApiParam("用户名") List<String> userNames) {
 		return authorityService.getUserInfosByNames(userNames, false);
 	}

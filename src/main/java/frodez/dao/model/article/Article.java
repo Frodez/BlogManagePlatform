@@ -1,5 +1,7 @@
 package frodez.dao.model.article;
 
+import frodez.config.aop.validation.annotation.common.LegalEnum;
+import frodez.constant.enums.common.DeleteEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -31,7 +33,7 @@ public class Article implements Serializable {
 	@Id
 	@NotNull
 	@Column(name = "id")
-	@ApiModelProperty(value = "文章ID")
+	@ApiModelProperty("文章ID")
 	private Long id;
 
 	/**
@@ -39,7 +41,7 @@ public class Article implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "create_time")
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty("创建时间")
 	private Date createTime;
 
 	/**
@@ -47,7 +49,7 @@ public class Article implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "update_time")
-	@ApiModelProperty(value = "修改时间")
+	@ApiModelProperty("修改时间")
 	private Date updateTime;
 
 	/**
@@ -55,7 +57,7 @@ public class Article implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "user_id")
-	@ApiModelProperty(value = "作者ID")
+	@ApiModelProperty("作者ID")
 	private Long userId;
 
 	/**
@@ -63,7 +65,7 @@ public class Article implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "permit_level")
-	@ApiModelProperty(value = "可见角色最低等级")
+	@ApiModelProperty("可见角色最低等级")
 	private Byte permitLevel;
 
 	/**
@@ -71,7 +73,7 @@ public class Article implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "is_delete")
-	@ApiModelProperty(value = "是否被删除  1:未删除  2:已删除", example = "1")
+	@LegalEnum(DeleteEnum.class)
 	private Byte isDelete = 1;
 
 	/**
@@ -79,7 +81,7 @@ public class Article implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "title", length = 127)
-	@ApiModelProperty(value = "标题")
+	@ApiModelProperty("标题")
 	private String title;
 
 	/**
@@ -87,7 +89,7 @@ public class Article implements Serializable {
 	 */
 	@Nullable
 	@Column(name = "description", length = 255)
-	@ApiModelProperty(value = "简介")
+	@ApiModelProperty("简介")
 	private String description;
 
 	/**
@@ -95,7 +97,7 @@ public class Article implements Serializable {
 	 */
 	@Nullable
 	@Column(name = "tag", length = 255)
-	@ApiModelProperty(value = "标签")
+	@ApiModelProperty("标签")
 	private String tag;
 
 	/**
@@ -103,7 +105,7 @@ public class Article implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "content", length = 65535)
-	@ApiModelProperty(value = "内容")
+	@ApiModelProperty("内容")
 	private String content;
 
 }

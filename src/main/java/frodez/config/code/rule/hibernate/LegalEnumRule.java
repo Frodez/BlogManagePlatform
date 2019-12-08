@@ -20,6 +20,11 @@ public class LegalEnumRule implements CodeCheckRule {
 	private Set<Class<?>> legalEnumCheckCache = new HashSet<>();
 
 	@Override
+	public boolean support(Field field) throws CodeCheckException {
+		return true;
+	}
+
+	@Override
 	public void check(Field field) throws CodeCheckException {
 		LegalEnum annotation = field.getAnnotation(LegalEnum.class);
 		if (annotation != null) {
@@ -28,6 +33,11 @@ public class LegalEnumRule implements CodeCheckRule {
 			}
 			checkLegalEnum(annotation);
 		}
+	}
+
+	@Override
+	public boolean support(Method method) throws CodeCheckException {
+		return true;
 	}
 
 	@Override
@@ -45,7 +55,7 @@ public class LegalEnumRule implements CodeCheckRule {
 	}
 
 	private void checkLegalEnum(LegalEnum annotation) {
-		Class<?> enumClass = annotation.type();
+		Class<?> enumClass = annotation.value();
 		if (legalEnumCheckCache.contains(enumClass)) {
 			return;
 		}
@@ -65,11 +75,23 @@ public class LegalEnumRule implements CodeCheckRule {
 			throw new CodeCheckException(enumClassName, "的", methodName, "方法返回值必须为", enumClassName, ",详情参见@", EnumCheckable.class.getCanonicalName(),
 				"注解");
 		}
-		String valuesMethodName = annotation.valuesMethod();
+		String descMethodName = annotation.descMethod();
 		try {
-			enumClass.getMethod(valuesMethodName);
+			enumClass.getMethod(descMethodName);
 		} catch (NoSuchMethodException e) {
-			throw new CodeCheckException(enumClassName, "必须拥有", valuesMethodName, "方法,详情参见@", EnumCheckable.class.getCanonicalName(), "注解");
+			throw new CodeCheckException(enumClassName, "必须拥有", descMethodName, "方法,详情参见@", EnumCheckable.class.getCanonicalName(), "注解");
+		}
+		try {
+			enumClass.getMethod("defaultEnum");
+		} catch (NoSuchMethodException e) {
+			throw new CodeCheckException(enumClass.getCanonicalName(), "未找到defaultEnum方法,或者方法入参类型有误,详情参见@", EnumCheckable.class.getCanonicalName(),
+				"注解");
+		}
+		try {
+			enumClass.getMethod("defaultValue");
+		} catch (NoSuchMethodException e) {
+			throw new CodeCheckException(enumClass.getCanonicalName(), "未找到defaultValue方法,或者方法入参类型有误,详情参见@", EnumCheckable.class.getCanonicalName(),
+				"注解");
 		}
 		synchronized (legalEnumCheckCache) {
 			legalEnumCheckCache.add(enumClass);

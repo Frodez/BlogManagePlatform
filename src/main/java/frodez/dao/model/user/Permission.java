@@ -1,5 +1,7 @@
 package frodez.dao.model.user;
 
+import frodez.config.aop.validation.annotation.common.LegalEnum;
+import frodez.constant.enums.user.PermissionTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -31,7 +33,7 @@ public class Permission implements Serializable {
 	@Id
 	@NotNull
 	@Column(name = "id")
-	@ApiModelProperty(value = "用户权限ID")
+	@ApiModelProperty("用户权限ID")
 	private Long id;
 
 	/**
@@ -39,7 +41,7 @@ public class Permission implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "create_time")
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty("创建时间")
 	private Date createTime;
 
 	/**
@@ -47,7 +49,7 @@ public class Permission implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "type")
-	@ApiModelProperty(value = "类型  0:ALL  1:GET  2:POST  3:DELETE  4:PUT", example = "0")
+	@LegalEnum(PermissionTypeEnum.class)
 	private Byte type = 0;
 
 	/**
@@ -55,7 +57,7 @@ public class Permission implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "name", length = 100)
-	@ApiModelProperty(value = "权限名称")
+	@ApiModelProperty("权限名称")
 	private String name;
 
 	/**
@@ -63,7 +65,7 @@ public class Permission implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "url", length = 255)
-	@ApiModelProperty(value = "地址")
+	@ApiModelProperty("地址")
 	private String url;
 
 	/**
@@ -71,7 +73,7 @@ public class Permission implements Serializable {
 	 */
 	@Nullable
 	@Column(name = "description", length = 1000)
-	@ApiModelProperty(value = "描述")
+	@ApiModelProperty("描述")
 	private String description;
 
 }

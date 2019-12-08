@@ -1,6 +1,8 @@
 package jdt;
 
 import frodez.config.aop.validation.annotation.ValidateBean;
+import frodez.config.aop.validation.annotation.common.LegalEnum;
+import frodez.config.swagger.annotation.EnumParam;
 import frodez.constant.settings.DefDesc;
 import frodez.util.beans.param.QueryPage;
 import io.swagger.annotations.ApiModel;
@@ -12,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
-import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.text.edits.MalformedTreeException;
@@ -76,23 +77,15 @@ public class SwaggerEnhancePlugin extends EnhancePlugin {
 				//				if (isNotNull(field)) {
 				//					properties.put("required", true);
 				//				}
+				if (JDTUtil.hasAnnotation(field, LegalEnum.class)) {
+					continue;
+				}
+				if (JDTUtil.hasAnnotation(field, EnumParam.class)) {
+					continue;
+				}
 				JDTUtil.addFieldAnnotation(unit, field, ApiModelProperty.class, properties);
 			}
 		}
-	}
-
-	@SuppressWarnings("unused")
-	private boolean isNotNull(FieldDeclaration field) {
-		for (Object item : field.modifiers()) {
-			if (item instanceof NormalAnnotation) {
-				NormalAnnotation annotation = (NormalAnnotation) item;
-				if (annotation.getTypeName().getFullyQualifiedName().equals("NotNull") || annotation.getTypeName()
-					.getFullyQualifiedName().equals("NotBlank")) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 }

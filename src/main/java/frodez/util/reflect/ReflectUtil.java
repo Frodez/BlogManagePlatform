@@ -133,4 +133,132 @@ public class ReflectUtil {
 		return StrUtil.concat(field.getDeclaringClass().getSimpleName(), DefStr.POINT_SEPERATOR, field.getName());
 	}
 
+	/**
+	 * 给类的字段赋值,赋值后还原accessible设置
+	 * @author Frodez
+	 * @date 2019-12-08
+	 */
+	public void trySet(Class<?> klass, String fieldName, Object target, Object value) {
+		trySet(klass, fieldName, target, value, true);
+	}
+
+	/**
+	 * 给类的字段赋值
+	 * @param reviveAccessible 赋值后是否还原accessible设置
+	 * @author Frodez
+	 * @date 2019-12-08
+	 */
+	@SneakyThrows
+	public void trySet(Class<?> klass, String fieldName, Object target, Object value, boolean reviveAccessible) {
+		Assert.notNull(klass, "klass must not be null");
+		Assert.notNull(fieldName, "fieldName must not be null");
+		Assert.notNull(target, "target must not be null");
+		Assert.notNull(value, "value must not be null");
+		Field field = klass.getDeclaredField(fieldName);
+		if (reviveAccessible) {
+			boolean accessible = field.canAccess(target);
+			field.trySetAccessible();
+			field.set(target, value);
+			field.setAccessible(accessible);
+		} else {
+			field.trySetAccessible();
+			field.set(target, value);
+		}
+	}
+
+	/**
+	 * 给类的字段赋值,赋值后还原accessible设置
+	 * @author Frodez
+	 * @date 2019-12-08
+	 */
+	public void trySet(Field field, Object target, Object value) {
+		trySet(field, target, value, true);
+	}
+
+	/**
+	 * 给类的字段赋值
+	 * @param reviveAccessible 赋值后是否还原accessible设置
+	 * @author Frodez
+	 * @date 2019-12-08
+	 */
+	@SneakyThrows
+	public void trySet(Field field, Object target, Object value, boolean reviveAccessible) {
+		Assert.notNull(field, "field must not be null");
+		Assert.notNull(target, "target must not be null");
+		Assert.notNull(value, "value must not be null");
+		if (reviveAccessible) {
+			boolean accessible = field.canAccess(target);
+			field.trySetAccessible();
+			field.set(target, value);
+			field.setAccessible(accessible);
+		} else {
+			field.trySetAccessible();
+			field.set(target, value);
+		}
+	}
+
+	/**
+	 * 获取字段的值,取值后还原accessible设置
+	 * @author Frodez
+	 * @date 2019-12-08
+	 */
+	public Object tryGet(Class<?> klass, String fieldName, Object target) {
+		return tryGet(klass, fieldName, target, true);
+	}
+
+	/**
+	 * 获取字段的值
+	 * @param reviveAccessible 取值后是否还原accessible设置
+	 * @author Frodez
+	 * @date 2019-12-08
+	 */
+	@SneakyThrows
+	public Object tryGet(Class<?> klass, String fieldName, Object target, boolean reviveAccessible) {
+		Assert.notNull(klass, "klass must not be null");
+		Assert.notNull(fieldName, "fieldName must not be null");
+		Assert.notNull(target, "target must not be null");
+		Field field = klass.getDeclaredField(fieldName);
+		if (reviveAccessible) {
+			boolean accessible = field.canAccess(target);
+			field.trySetAccessible();
+			Object result = field.get(target);
+			field.setAccessible(accessible);
+			return result;
+		} else {
+			field.trySetAccessible();
+			return field.get(target);
+		}
+	}
+
+	/**
+	 * 获取字段的值,取值后还原accessible设置
+	 * @author Frodez
+	 * @date 2019-12-08
+	 */
+	public Object tryGet(Field field, Object target) {
+		return tryGet(field, target, true);
+	}
+
+	/**
+	 * 获取字段的值
+	 * @param reviveAccessible 取值后是否还原accessible设置
+	 * @author Frodez
+	 * @date 2019-12-08
+	 */
+	@SneakyThrows
+	public Object tryGet(Field field, Object target, boolean reviveAccessible) {
+		Assert.notNull(field, "field must not be null");
+		Assert.notNull(target, "target must not be null");
+		if (reviveAccessible) {
+			boolean accessible = field.canAccess(target);
+			field.trySetAccessible();
+			Object result = field.get(target);
+			field.setAccessible(accessible);
+			return result;
+		} else {
+			field.trySetAccessible();
+			return field.get(target);
+		}
+	}
+
 }

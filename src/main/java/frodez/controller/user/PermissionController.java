@@ -1,7 +1,7 @@
 package frodez.controller.user;
 
 import frodez.config.swagger.annotation.Success;
-import frodez.config.swagger.annotation.Success.ContainerType;
+import frodez.config.swagger.annotation.Success.Container;
 import frodez.dao.model.user.Permission;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.QueryRolePermission;
@@ -11,7 +11,6 @@ import frodez.dao.result.user.PermissionInfo;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,8 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2018-12-01
  */
 @RestController
-@RequestMapping("/permission")
-@Api(tags = "用户权限信息控制器")
+@RequestMapping(value = "/permission", name = "用户权限信息控制器")
 public class PermissionController {
 
 	@Autowired
@@ -41,13 +39,13 @@ public class PermissionController {
 	}
 
 	@GetMapping(value = "/page", name = "分页查询权限信息接口")
-	@Success(value = Permission.class, containerType = ContainerType.PAGE)
+	@Success(value = Permission.class, containerType = Container.PAGE)
 	public Result getPermissions(@RequestBody QueryPage param) {
 		return authorityService.getPermissions(param);
 	}
 
 	@GetMapping(value = "/byRoleId", name = "根据角色ID获取权限信息接口")
-	@Success(value = PermissionInfo.class, containerType = ContainerType.PAGE)
+	@Success(value = PermissionInfo.class, containerType = Container.PAGE)
 	public Result getRolePermissions(@RequestBody QueryRolePermission param) {
 		return authorityService.getRolePermissions(param);
 	}

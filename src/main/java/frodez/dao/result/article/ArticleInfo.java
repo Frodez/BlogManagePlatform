@@ -24,43 +24,43 @@ public class ArticleInfo implements Serializable {
 	/**
 	 * 创建时间
 	 */
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty("创建时间")
 	private Date createTime;
 
 	/**
 	 * 修改时间
 	 */
-	@ApiModelProperty(value = "修改时间")
+	@ApiModelProperty("修改时间")
 	private Date updateTime;
 
 	/**
 	 * 作者
 	 */
-	@ApiModelProperty(value = "作者")
+	@ApiModelProperty("作者")
 	private String authorName;
 
 	/**
 	 * 标题
 	 */
-	@ApiModelProperty(value = "标题")
+	@ApiModelProperty("标题")
 	private String title;
 
 	/**
 	 * 简介
 	 */
-	@ApiModelProperty(value = "简介")
+	@ApiModelProperty("简介")
 	private String description;
 
 	/**
 	 * 标签
 	 */
-	@ApiModelProperty(value = "标签")
+	@ApiModelProperty("标签")
 	private List<String> tags;
 
 	/**
 	 * 内容
 	 */
-	@ApiModelProperty(value = "内容")
+	@ApiModelProperty("内容")
 	private String content;
 
 }

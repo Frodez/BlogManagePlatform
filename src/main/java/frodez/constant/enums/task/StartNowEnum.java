@@ -1,4 +1,4 @@
-package frodez.constant.enums.common;
+package frodez.constant.enums.task;
 
 import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
@@ -13,28 +13,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 修改操作类型枚举
- * @see OperateEnum
+ * 任务启动状态枚举
  * @author Frodez
- * @date 2019-03-17
+ * @date 2019-03-20
  */
-@Description(name = "修改操作类型枚举")
 @EnumCheckable
+@Description(name = "任务启动状态枚举")
 @AllArgsConstructor
-public enum ModifyEnum {
+public enum StartNowEnum {
 
 	/**
-	 * 新增
+	 * 1:立刻启动
 	 */
-	INSERT((byte) 1, "新增"),
+	YES((byte) 1, "立刻启动"),
 	/**
-	 * 删除
+	 * 2:不活跃
 	 */
-	DELETE((byte) 2, "删除"),
-	/**
-	 * 修改
-	 */
-	UPDATE((byte) 3, "修改");
+	NO((byte) 2, "暂不启动");
 
 	/**
 	 * 值
@@ -60,26 +55,21 @@ public enum ModifyEnum {
 	@Getter
 	private static List<String> descs;
 
-	private static final Map<Byte, ModifyEnum> enumMap;
+	private static Map<Byte, StartNowEnum> enumMap;
 
 	static {
-		vals = Arrays.stream(ModifyEnum.values()).map(ModifyEnum::getVal).collect(Collectors.toUnmodifiableList());
-		descs = Arrays.stream(ModifyEnum.values()).map((iter) -> {
+		vals = Arrays.stream(StartNowEnum.values()).map(StartNowEnum::getVal).collect(Collectors.toUnmodifiableList());
+		descs = Arrays.stream(StartNowEnum.values()).map((iter) -> {
 			return StrUtil.concat(iter.val.toString(), DefStr.SEPERATOR, iter.desc);
 		}).collect(Collectors.toUnmodifiableList());
-		var builder = ImmutableMap.<Byte, ModifyEnum>builder();
-		for (ModifyEnum iter : ModifyEnum.values()) {
+		var builder = ImmutableMap.<Byte, StartNowEnum>builder();
+		for (StartNowEnum iter : StartNowEnum.values()) {
 			builder.put(iter.val, iter);
 		}
 		enumMap = builder.build();
 	}
 
-	/**
-	 * 转化
-	 * @author Frodez
-	 * @date 2019-05-17
-	 */
-	public static ModifyEnum of(Byte value) {
+	public static StartNowEnum of(Byte value) {
 		return enumMap.get(value);
 	}
 
@@ -88,7 +78,7 @@ public enum ModifyEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static ModifyEnum defaultEnum() {
+	public static StartNowEnum defaultEnum() {
 		return null;
 	}
 

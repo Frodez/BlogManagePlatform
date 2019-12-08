@@ -1,5 +1,7 @@
 package frodez.dao.model.task;
 
+import frodez.config.aop.validation.annotation.common.LegalEnum;
+import frodez.constant.enums.task.StatusEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -30,7 +32,7 @@ public class Task implements Serializable {
 	@Id
 	@NotNull
 	@Column(name = "id")
-	@ApiModelProperty(value = "定时任务ID")
+	@ApiModelProperty("定时任务ID")
 	private Long id;
 
 	/**
@@ -38,7 +40,7 @@ public class Task implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "create_time")
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty("创建时间")
 	private Date createTime;
 
 	/**
@@ -46,7 +48,7 @@ public class Task implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "status")
-	@ApiModelProperty(value = "活跃状态  1:活跃中  2:不活跃")
+	@LegalEnum(StatusEnum.class)
 	private Byte status;
 
 	/**
@@ -54,7 +56,7 @@ public class Task implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "target", length = 255)
-	@ApiModelProperty(value = "目标")
+	@ApiModelProperty("目标")
 	private String target;
 
 	/**
@@ -62,7 +64,7 @@ public class Task implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "description", length = 255)
-	@ApiModelProperty(value = "任务描述")
+	@ApiModelProperty("任务描述")
 	private String description;
 
 	/**
@@ -70,7 +72,7 @@ public class Task implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "cron_exp", length = 31)
-	@ApiModelProperty(value = "cron表达式")
+	@ApiModelProperty("cron表达式")
 	private String cronExp;
 
 }

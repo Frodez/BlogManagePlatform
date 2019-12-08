@@ -8,15 +8,15 @@ import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Optional;
 import frodez.config.swagger.SwaggerProperties;
 import frodez.config.swagger.annotation.Success;
-import frodez.config.swagger.annotation.Success.ContainerType;
-import frodez.util.beans.result.PageData;
-import frodez.util.beans.result.Result;
+import frodez.config.swagger.util.SwaggerUtil;
+import frodez.constant.settings.DefDesc;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiResponses;
+import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import lombok.Data;
 import org.apache.logging.log4j.core.config.Order;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -41,7 +41,7 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
  */
 @Component
 @Profile({ "dev", "test" })
-@Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 200)
+@Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 300)
 public class DefaultSuccessResolverPlugin implements OperationBuilderPlugin, OperationModelsProviderPlugin {
 
 	private final TypeNameExtractor typeNameExtractor;
@@ -60,17 +60,15 @@ public class DefaultSuccessResolverPlugin implements OperationBuilderPlugin, Ope
 		this.typeNameExtractor = typeNameExtractor;
 		this.typeResolver = typeResolver;
 		this.useCustomerizedPluggins = properties.getUseCustomerizedPluggins();
-		okMessage = String.join(" | ", Stream.of(Result.ResultEnum.values()).filter((item) -> {
+		okMessage = SwaggerUtil.statusDescription((item) -> {
 			return item.getStatus() == HttpStatus.OK;
-		}).map((iter) -> {
-			return iter.getDesc() + ",自定义状态码:" + iter.getVal();
-		}).collect(Collectors.toList()));
+		});
 		ResponseMessageBuilder messageBuilder = new ResponseMessageBuilder();
 		messageBuilder.code(HttpStatus.OK.value());
 		messageBuilder.message(okMessage);
-		messageBuilder.responseModel(new ModelRef(Result.class.getSimpleName()));
+		messageBuilder.responseModel(new ModelRef(SwaggerModel.class.getSimpleName()));
 		okResponses.add(messageBuilder.build());
-		okResult = typeResolver.resolve(Result.class);
+		okResult = typeResolver.resolve(SwaggerModel.class);
 	}
 
 	@Override
@@ -90,11 +88,11 @@ public class DefaultSuccessResolverPlugin implements OperationBuilderPlugin, Ope
 			context.operationBuilder().responseMessages(okResponses);
 			return;
 		}
-		Success success = annotation.get();
 		ResponseMessageBuilder messageBuilder = new ResponseMessageBuilder();
 		messageBuilder.code(HttpStatus.OK.value());
-		messageBuilder.message(okMessage.concat("\n注意:本返回值仍然包装在通用Result内,位于Result.data位置"));
-		messageBuilder.responseModel(resolveModel(context, success).orNull());
+		messageBuilder.message(okMessage);
+		ModelReference model = resolveModel(context, annotation.get());
+		messageBuilder.responseModel(model);
 		context.operationBuilder().responseMessages(Set.of(messageBuilder.build()));
 	}
 
@@ -108,30 +106,38 @@ public class DefaultSuccessResolverPlugin implements OperationBuilderPlugin, Ope
 			context.operationModelsBuilder().addReturn(okResult);
 			return;
 		}
-		Success success = annotation.get();
-		context.operationModelsBuilder().addReturn(resolvedType(typeResolver, success.value(), success.containerType()).orNull());
+		ResolvedType resolvedType = SwaggerUtil.resolvedType(typeResolver, annotation.get());
+		context.operationModelsBuilder().addReturn(resolvedType);
 	}
 
-	private Optional<ModelReference> resolveModel(OperationContext context, Success success) {
+	private ModelReference resolveModel(OperationContext context, Success success) {
 		ModelContext modelContext = returnValue(context.getGroupName(), success.value(), context.getDocumentationType(), context
 			.getAlternateTypeProvider(), context.getGenericsNamingStrategy(), context.getIgnorableParameterTypes());
-		Optional<ResolvedType> type = resolvedType(typeResolver, success.value(), success.containerType());
-		return Optional.of(modelRefFactory(modelContext, typeNameExtractor).apply(context.alternateFor(type.get())));
+		ResolvedType type = context.alternateFor(SwaggerUtil.resolvedType(typeResolver, success));
+		return modelRefFactory(modelContext, typeNameExtractor).apply(type);
 	}
 
-	private static Optional<ResolvedType> resolvedType(TypeResolver resolver, Class<?> response, ContainerType containerType) {
-		if (Void.class != response && void.class != response) {
-			if (containerType == ContainerType.PAGE) {
-				return Optional.of(resolver.resolve(PageData.class, response));
-			} else if (containerType == ContainerType.LIST) {
-				return Optional.of(resolver.resolve(List.class, response));
-			} else if (containerType == ContainerType.SET) {
-				return Optional.of(resolver.resolve(Set.class, response));
-			} else {
-				return Optional.of(resolver.resolve(response));
-			}
-		}
-		return Optional.absent();
+	/**
+	 * 用于显示的返回值模型,为frodez.util.beans.result.Result的泛型版本
+	 * @see frodez.util.beans.result.Result
+	 * @author Frodez
+	 * @date 2019-12-05
+	 */
+	@Data
+	@ApiModel(description = DefDesc.Message.RESULT)
+	public static class SwaggerModel<T> implements Serializable {
+
+		private static final long serialVersionUID = 1L;
+
+		@ApiModelProperty(value = "状态", example = "1000")
+		private int code;
+
+		@ApiModelProperty(value = "消息", example = "成功")
+		private String message;
+
+		@ApiModelProperty(value = "数据")
+		private T data;
+
 	}
 
 }

@@ -3,7 +3,6 @@ package frodez.config.swagger.plugin;
 import static com.google.common.base.Strings.emptyToNull;
 import static springfox.documentation.swagger.common.SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER;
 
-import com.google.common.collect.ArrayListMultimap;
 import frodez.config.swagger.SwaggerProperties;
 import frodez.util.common.StrUtil;
 import io.swagger.annotations.ApiModel;
@@ -14,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import springfox.documentation.schema.Example;
+import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.service.ResolvedMethodParameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.schema.EnumTypeDeterminer;
@@ -31,16 +30,19 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 @Slf4j
 @Component
 @Profile({ "dev", "test" })
-@Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 100)
+@Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 300)
 public class DefaultParamPlugin implements ParameterBuilderPlugin {
+
+	private static String ApiParam = ApiParam.class.getCanonicalName();
+
+	private static String ApiModel = ApiModel.class.getCanonicalName();
 
 	private final DescriptionResolver descriptions;
 
 	private boolean useCustomerizedPluggins = false;
 
 	@Autowired
-	public DefaultParamPlugin(DescriptionResolver descriptions, EnumTypeDeterminer enumTypeDeterminer,
-		SwaggerProperties properties) {
+	public DefaultParamPlugin(DescriptionResolver descriptions, EnumTypeDeterminer enumTypeDeterminer, SwaggerProperties properties) {
 		this.descriptions = descriptions;
 		this.useCustomerizedPluggins = properties.getUseCustomerizedPluggins();
 	}
@@ -60,20 +62,29 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 		ApiModel apiModel = parameterClass.getAnnotation(ApiModel.class);
 		if (apiModel == null) {
 			if (!BeanUtils.isSimpleProperty(parameterClass)) {
-				log.warn(StrUtil.concat(context.getOperationContext().requestMappingPattern(), "的参数", parameterClass
-					.getCanonicalName(), "既未配置@", ApiParam.class.getCanonicalName(), "注解,也未配置@", ApiModel.class
-						.getCanonicalName(), "注解"));
+				warn(context, parameterClass);
 			}
 			return;
 		}
 		setDefaultApiParam(context, apiModel);
 	}
 
+	private static void warn(ParameterContext context, Class<?> parameterClass) {
+		String pattern = context.getOperationContext().requestMappingPattern();
+		String parameterName = parameterClass.getCanonicalName();
+		log.warn(StrUtil.concat(pattern, "的参数", parameterName, "既未配置@", ApiParam, "注解,也未配置@", ApiModel, "注解"));
+	}
+
 	private void setDefaultApiParam(ParameterContext context, ApiModel annotation) {
-		context.parameterBuilder().name(emptyToNull(annotation.description())).description(emptyToNull(descriptions
-			.resolve(annotation.description()))).parameterAccess(emptyToNull(null)).defaultValue(emptyToNull(null))
-			.allowMultiple(false).allowEmptyValue(false).scalarExample(new Example("")).complexExamples(
-				ArrayListMultimap.create()).hidden(false).collectionFormat("").order(SWAGGER_PLUGIN_ORDER);
+		ParameterBuilder builder = context.parameterBuilder();
+		builder.name(emptyToNull(annotation.description()));
+		builder.description(emptyToNull(descriptions.resolve(annotation.description())));
+		builder.parameterAccess(null);
+		builder.allowMultiple(false);
+		builder.allowEmptyValue(false);
+		builder.hidden(false);
+		builder.collectionFormat("");
+		builder.order(SWAGGER_PLUGIN_ORDER);
 	}
 
 }

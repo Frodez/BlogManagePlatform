@@ -19,6 +19,11 @@ public class GenericConstraintRule implements CodeCheckRule {
 	private Set<Class<?>> excepts = Set.of(LegalEnum.class);
 
 	@Override
+	public boolean support(Field field) throws CodeCheckException {
+		return true;
+	}
+
+	@Override
 	public void check(Field field) throws CodeCheckException {
 		Annotation[] annotations = field.getAnnotations();
 		for (Annotation annotation : annotations) {
@@ -29,12 +34,16 @@ public class GenericConstraintRule implements CodeCheckRule {
 			if (constraint != null) {
 				for (Class<?> klass : getAllSuitableClasses(field.getType(), constraint)) {
 					if (!isSuitable(field.getType(), klass)) {
-						throw new CodeCheckException(ReflectUtil.getFullFieldName(field), "的类型必须是", klass
-							.getCanonicalName(), "或者其子类");
+						throw new CodeCheckException(ReflectUtil.getFullFieldName(field), "的类型必须是", klass.getCanonicalName(), "或者其子类");
 					}
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean support(Method method) throws CodeCheckException {
+		return true;
 	}
 
 	@Override
@@ -49,8 +58,8 @@ public class GenericConstraintRule implements CodeCheckRule {
 				if (constraint != null) {
 					for (Class<?> klass : getAllSuitableClasses(parameter.getType(), constraint)) {
 						if (!isSuitable(parameter.getType(), klass)) {
-							throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method), "的参数", parameter
-								.getName(), "的类型必须是", klass.getCanonicalName(), "或者其子类");
+							throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method), "的参数", parameter.getName(), "的类型必须是", klass
+								.getCanonicalName(), "或者其子类");
 						}
 					}
 				}
@@ -61,8 +70,7 @@ public class GenericConstraintRule implements CodeCheckRule {
 	private List<Class<?>> getAllSuitableClasses(Class<?> klass, Constraint constraint) {
 		List<Class<?>> classes = new ArrayList<>();
 		for (var validator : constraint.validatedBy()) {
-			Class<?> actualClass = (Class<?>) ((ParameterizedType) validator.getGenericInterfaces()[0])
-				.getActualTypeArguments()[1];
+			Class<?> actualClass = (Class<?>) ((ParameterizedType) validator.getGenericInterfaces()[0]).getActualTypeArguments()[1];
 			classes.add(actualClass);
 		}
 		return classes;

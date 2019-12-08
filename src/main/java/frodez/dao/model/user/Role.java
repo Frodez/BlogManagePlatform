@@ -31,7 +31,7 @@ public class Role implements Serializable {
 	@Id
 	@NotNull
 	@Column(name = "id")
-	@ApiModelProperty(value = "角色ID")
+	@ApiModelProperty("角色ID")
 	private Long id;
 
 	/**
@@ -39,7 +39,7 @@ public class Role implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "create_time")
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty("创建时间")
 	private Date createTime;
 
 	/**
@@ -47,7 +47,7 @@ public class Role implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "name", length = 255)
-	@ApiModelProperty(value = "角色名称")
+	@ApiModelProperty("角色名称")
 	private String name;
 
 	/**
@@ -63,7 +63,7 @@ public class Role implements Serializable {
 	 */
 	@Nullable
 	@Column(name = "description", length = 1000)
-	@ApiModelProperty(value = "描述")
+	@ApiModelProperty("描述")
 	private String description;
 
 }

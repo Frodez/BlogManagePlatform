@@ -16,6 +16,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.ArrayType;
+import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
@@ -28,6 +29,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SimpleType;
+import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jdt.core.dom.Type;
@@ -55,8 +57,8 @@ public class JDTUtil {
 		return parser;
 	}
 
-	public static void commit(String path, Document document, CompilationUnit unit) throws MalformedTreeException,
-		BadLocationException, IOException, URISyntaxException {
+	public static void commit(String path, Document document, CompilationUnit unit) throws MalformedTreeException, BadLocationException, IOException,
+		URISyntaxException {
 		unit.rewrite(document, defaultOptions()).apply(document);
 		FileUtil.writeString(document.get(), path);
 	}
@@ -94,12 +96,14 @@ public class JDTUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void addTypeAnnotation(CompilationUnit unit, Class<? extends Annotation> annotationClass, Map<String,
-		Object> properties) {
+	public static void addTypeAnnotation(CompilationUnit unit, Class<? extends Annotation> annotationClass, Map<String, Object> properties) {
 		if (unit == null || annotationClass == null) {
 			throw new IllegalArgumentException();
 		}
 		TypeDeclaration typeDeclaration = (TypeDeclaration) unit.types().get(0);
+		if (JDTUtil.hasAnnotation(typeDeclaration, annotationClass)) {
+			return;
+		}
 		if (properties == null) {
 			addMarkerAnnotation(unit, typeDeclaration.modifiers(), annotationClass.getSimpleName());
 		} else {
@@ -108,19 +112,29 @@ public class JDTUtil {
 		addImport(unit, annotationClass);
 	}
 
-	public static void addFieldAnnotation(CompilationUnit unit, FieldDeclaration field, Class<
-		? extends Annotation> annotationClass) {
+	public static void addFieldAnnotation(CompilationUnit unit, FieldDeclaration field, Class<? extends Annotation> annotationClass) {
 		addFieldAnnotation(unit, field, annotationClass, null);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void addFieldAnnotation(CompilationUnit unit, FieldDeclaration field, Class<
-		? extends Annotation> annotationClass, Map<String, Object> properties) {
+	public static void addFieldAnnotation(CompilationUnit unit, FieldDeclaration field, Class<? extends Annotation> annotationClass, Map<String,
+		Object> properties) {
 		if (unit == null || annotationClass == null) {
 			throw new IllegalArgumentException();
 		}
+		if (JDTUtil.hasAnnotation(field, annotationClass)) {
+			return;
+		}
 		if (EmptyUtil.yes(properties)) {
 			addMarkerAnnotation(unit, field.modifiers(), annotationClass.getSimpleName());
+		} else if (properties.size() == 1) {
+			String key = properties.entrySet().iterator().next().getKey();
+			if ("value".equals(key)) {
+				Object value = properties.entrySet().iterator().next().getValue();
+				addSingleMemberAnnotation(unit, field.modifiers(), annotationClass.getSimpleName(), value);
+			} else {
+				addNormalAnnotation(unit, field.modifiers(), annotationClass.getSimpleName(), properties);
+			}
 		} else {
 			addNormalAnnotation(unit, field.modifiers(), annotationClass.getSimpleName(), properties);
 		}
@@ -135,8 +149,7 @@ public class JDTUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void addNormalAnnotation(CompilationUnit unit, List<Object> list, String simpleName, Map<String,
-		Object> properties) {
+	private static void addNormalAnnotation(CompilationUnit unit, List<Object> list, String simpleName, Map<String, Object> properties) {
 		AST ast = unit.getAST();
 		NormalAnnotation normalAnnotation = ast.newNormalAnnotation();
 		normalAnnotation.setTypeName(ast.newSimpleName(simpleName));
@@ -147,6 +160,14 @@ public class JDTUtil {
 			normalAnnotation.values().add(pair);
 		}
 		attachAnnotation(list, normalAnnotation);
+	}
+
+	private static void addSingleMemberAnnotation(CompilationUnit unit, List<Object> list, String simpleName, Object value) {
+		AST ast = unit.getAST();
+		SingleMemberAnnotation singleMemberAnnotation = ast.newSingleMemberAnnotation();
+		singleMemberAnnotation.setTypeName(ast.newSimpleName(simpleName));
+		singleMemberAnnotation.setValue(getExpression(ast, value));
+		attachAnnotation(list, singleMemberAnnotation);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -214,6 +235,19 @@ public class JDTUtil {
 				return simpleType.getName().getFullyQualifiedName().equals(klass.getName());
 			} else {
 				return simpleType.getName().getFullyQualifiedName().equals(klass.getSimpleName());
+			}
+		}
+		return false;
+	}
+
+	public static boolean hasAnnotation(BodyDeclaration field, Class<? extends java.lang.annotation.Annotation> annotation) {
+		String annotationName = annotation.getSimpleName();
+		for (Object item : field.modifiers()) {
+			if (item instanceof org.eclipse.jdt.core.dom.Annotation) {
+				org.eclipse.jdt.core.dom.Annotation normalAnnotation = (org.eclipse.jdt.core.dom.Annotation) item;
+				if (normalAnnotation.getTypeName().getFullyQualifiedName().equals(annotationName)) {
+					return true;
+				}
 			}
 		}
 		return false;

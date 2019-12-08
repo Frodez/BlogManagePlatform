@@ -111,7 +111,7 @@ public class ValidationTest {
 		@NotEmpty
 		private List<Integer> list;
 
-		@LegalEnum(type = OperateEnum.class, paramType = Byte.class)
+		@LegalEnum(value = OperateEnum.class, paramType = Byte.class)
 		private Byte type;
 
 	}
