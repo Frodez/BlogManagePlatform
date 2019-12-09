@@ -3,6 +3,7 @@ package frodez.config.swagger.plugin;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import frodez.config.swagger.SwaggerProperties;
 import java.lang.reflect.AnnotatedElement;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,8 @@ public class DefaultRequiredModelPropertyPlugin implements ModelPropertyBuilderP
 			context.getBuilder().required(true);
 		} else if (AnnotationUtils.findAnnotation(annotated, NotEmpty.class) != null) {
 			context.getBuilder().required(true);
+		} else if (AnnotationUtils.findAnnotation(annotated, NotBlank.class) != null) {
+			context.getBuilder().required(true);
 		} else {
 			context.getBuilder().required(false);
 		}
@@ -66,6 +69,8 @@ public class DefaultRequiredModelPropertyPlugin implements ModelPropertyBuilderP
 		if (Annotations.findPropertyAnnotation(beanPropertyDefinition, NotNull.class).isPresent()) {
 			context.getBuilder().required(true);
 		} else if (Annotations.findPropertyAnnotation(beanPropertyDefinition, NotEmpty.class).isPresent()) {
+			context.getBuilder().required(true);
+		} else if (Annotations.findPropertyAnnotation(beanPropertyDefinition, NotBlank.class).isPresent()) {
 			context.getBuilder().required(true);
 		} else {
 			context.getBuilder().required(false);
