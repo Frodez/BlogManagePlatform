@@ -7,10 +7,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 本注解标明的类只针对于枚举类,表明该类可以使用LegalEnum注解来进行验证。<br>
- * <strong>1.要求:验证的枚举类必须实现一个方法(方法名建议为of,如果有变动,请在使用LegalEnum注解时显式配置),<br>
+ * 本注解标明的类只针对于枚举类,表明该类可以使用MapEnum注解来进行验证。<br>
+ * <strong>1.要求:验证的枚举类必须实现一个方法(方法名建议为of,如果有变动,请在使用MapEnum注解时显式配置),<br>
  * 这个方法在当参数符合要求时,返回对应的枚举,否则返回null.<br>
- * 2.要求:验证的枚举类必须实现一个方法(方法名建议为getDescs,如果有变动,请在使用LegalEnum注解时显式配置),<br>
+ * 2.要求:验证的枚举类必须实现一个方法(方法名建议为getDescs,如果有变动,请在使用MapEnum注解时显式配置),<br>
  * 这个方法在当参数不符合要求时,返回枚举所对应的所有值,以List形式返回.</strong> <br>
  * 以下是示例代码(这里的getDescs方法由lombok自动生成,表现为descs上有@Getter注解).<br>
  *
@@ -46,7 +46,7 @@ import java.lang.annotation.Target;
  * 	}
  * </pre>
  *
- * @see frodez.config.aop.validation.annotation.common.LegalEnum
+ * @see frodez.config.aop.validation.annotation.common.MapEnum
  * @author Frodez
  * @date 2019-03-18
  */

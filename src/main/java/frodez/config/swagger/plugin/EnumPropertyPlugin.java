@@ -1,7 +1,7 @@
 package frodez.config.swagger.plugin;
 
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
-import frodez.config.aop.validation.annotation.common.LegalEnum;
+import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.swagger.SwaggerProperties;
 import frodez.constant.annotations.info.Description;
 import frodez.constant.settings.DefEnum;
@@ -68,7 +68,7 @@ public class EnumPropertyPlugin implements ModelPropertyBuilderPlugin, Parameter
 		if (AnnotationUtils.findAnnotation(annotated, ApiModelProperty.class) != null) {
 			return;
 		}
-		LegalEnum legalEnum = AnnotationUtils.findAnnotation(annotated, LegalEnum.class);
+		MapEnum legalEnum = AnnotationUtils.findAnnotation(annotated, MapEnum.class);
 		if (legalEnum != null) {
 			String descs = getDescs(legalEnum.value(), legalEnum.descMethod());
 			Object defaultValue = getDefaultValue(legalEnum.value());
@@ -89,7 +89,7 @@ public class EnumPropertyPlugin implements ModelPropertyBuilderPlugin, Parameter
 		if (Annotations.findPropertyAnnotation(beanPropertyDefinition, ApiModelProperty.class).isPresent()) {
 			return;
 		}
-		LegalEnum legalEnum = Annotations.findPropertyAnnotation(beanPropertyDefinition, LegalEnum.class).orNull();
+		MapEnum legalEnum = Annotations.findPropertyAnnotation(beanPropertyDefinition, MapEnum.class).orNull();
 		if (legalEnum != null) {
 			String descs = getDescs(legalEnum.value(), legalEnum.descMethod());
 			Object defaultValue = getDefaultValue(legalEnum.value());
@@ -111,7 +111,7 @@ public class EnumPropertyPlugin implements ModelPropertyBuilderPlugin, Parameter
 
 	@SneakyThrows
 	private void resolveParameter(ParameterContext context) {
-		LegalEnum enumParam = context.resolvedMethodParameter().findAnnotation(LegalEnum.class).orNull();
+		MapEnum enumParam = context.resolvedMethodParameter().findAnnotation(MapEnum.class).orNull();
 		if (enumParam != null) {
 			String descs = getDescs(enumParam.value(), enumParam.descMethod());
 			Object defaultValue = getDefaultValue(enumParam.value());

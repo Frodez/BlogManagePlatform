@@ -17,11 +17,13 @@ import javax.validation.Payload;
 import lombok.SneakyThrows;
 
 /**
- * 枚举类型验证注解 <br>
+ * 枚举类型映射注解 <br>
+ * <strong>将枚举类型同相应映射类型的对象进行映射,并可以验证正确性。</strong><br>
+ * <strong>对枚举类型相应的映射类型的参数用本注解标注,可以自动生成swagger文档。作用类似于@ApiParam。</strong>
  * <strong>建议:枚举类上增加@EnumCheckable注解,以增强可读性</strong><br>
  * <strong>枚举类示例代码请参见@EnumCheckable注解的javadoc.</strong><br>
  * 注解使用范例:<br>
- * <span>@ValidEnum(message = "状态非法!", type = UserStatusEnum.class, method = "of", descMethod = "getDescs")</span><br>
+ * <span>@MapEnum(message = "状态非法!", type = UserStatusEnum.class, method = "of", descMethod = "getDescs")</span><br>
  * private Byte status;<br>
  * 以下为注解参数说明:<br>
  * message: String类型,代表验证失败时的返回信息<br>
@@ -36,8 +38,8 @@ import lombok.SneakyThrows;
 @Documented
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = LegalEnum.Validator.class)
-public @interface LegalEnum {
+@Constraint(validatedBy = MapEnum.Validator.class)
+public @interface MapEnum {
 
 	String message() default "";
 
@@ -79,7 +81,7 @@ public @interface LegalEnum {
 	 * @author Frodez
 	 * @date 2018-12-17
 	 */
-	class Validator implements ConstraintValidator<LegalEnum, Object> {
+	class Validator implements ConstraintValidator<MapEnum, Object> {
 
 		/**
 		 * 枚举类
@@ -107,7 +109,7 @@ public @interface LegalEnum {
 		 * @date 2018-12-17
 		 */
 		@Override
-		public void initialize(LegalEnum enumValue) {
+		public void initialize(MapEnum enumValue) {
 			method = enumValue.method();
 			klass = enumValue.value();
 			paramType = enumValue.paramType();

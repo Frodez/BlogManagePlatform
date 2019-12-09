@@ -1,6 +1,6 @@
 package frodez.config.code.rule.hibernate;
 
-import frodez.config.aop.validation.annotation.common.LegalEnum;
+import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.code.rule.CodeCheckRule;
 import frodez.constant.errors.exception.CodeCheckException;
 import frodez.util.reflect.ReflectUtil;
@@ -16,7 +16,7 @@ import javax.validation.Constraint;
 
 public class GenericConstraintRule implements CodeCheckRule {
 
-	private Set<Class<?>> excepts = Set.of(LegalEnum.class);
+	private Set<Class<?>> excepts = Set.of(MapEnum.class);
 
 	@Override
 	public boolean support(Field field) throws CodeCheckException {
