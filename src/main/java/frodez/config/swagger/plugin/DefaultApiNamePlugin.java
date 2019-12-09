@@ -70,8 +70,8 @@ public class DefaultApiNamePlugin implements ApiListingBuilderPlugin {
 		}
 		ApiListingBuilder builder = context.apiListingBuilder();
 		ReflectUtil.trySet(ApiListingBuilder.class, "tagNames", builder, Set.of(info.name));
-		builder.produces(Set.of(info.produces));
 		builder.consumes(Set.of(info.consumes));
+		builder.produces(Set.of(info.produces));
 	}
 
 	private ControllerInfo resolveNameAttribute(Class<?> controller) {
