@@ -3,7 +3,6 @@ package frodez.config.swagger.plugin;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import frodez.config.aop.validation.annotation.common.LegalEnum;
 import frodez.config.swagger.SwaggerProperties;
-import frodez.config.swagger.annotation.EnumParam;
 import frodez.constant.annotations.info.Description;
 import frodez.constant.settings.DefEnum;
 import frodez.constant.settings.DefStr;
@@ -79,16 +78,6 @@ public class EnumPropertyPlugin implements ModelPropertyBuilderPlugin, Parameter
 			builder.allowableValues(getAllowableValues(legalEnum.value()));
 			builder.defaultValue(defaultValue == null ? DefStr.EMPTY : defaultValue.toString());
 		}
-		EnumParam enumParam = AnnotationUtils.findAnnotation(annotated, EnumParam.class);
-		if (enumParam != null) {
-			String descs = getDescs(enumParam.value(), enumParam.descMethod());
-			Object defaultValue = getDefaultValue(enumParam.value());
-			ModelPropertyBuilder builder = context.getBuilder();
-			builder.description(descs);
-			builder.example(defaultValue);
-			builder.allowableValues(getAllowableValues(enumParam.value()));
-			builder.defaultValue(defaultValue == null ? DefStr.EMPTY : defaultValue.toString());
-		}
 	}
 
 	@SneakyThrows
@@ -110,16 +99,6 @@ public class EnumPropertyPlugin implements ModelPropertyBuilderPlugin, Parameter
 			builder.allowableValues(getAllowableValues(legalEnum.value()));
 			builder.defaultValue(defaultValue == null ? DefStr.EMPTY : defaultValue.toString());
 		}
-		EnumParam enumParam = Annotations.findPropertyAnnotation(beanPropertyDefinition, EnumParam.class).orNull();
-		if (enumParam != null) {
-			String descs = getDescs(enumParam.value(), enumParam.descMethod());
-			Object defaultValue = getDefaultValue(enumParam.value());
-			ModelPropertyBuilder builder = context.getBuilder();
-			builder.description(descs);
-			builder.example(defaultValue);
-			builder.allowableValues(getAllowableValues(enumParam.value()));
-			builder.defaultValue(defaultValue == null ? DefStr.EMPTY : defaultValue.toString());
-		}
 	}
 
 	@Override
@@ -132,7 +111,7 @@ public class EnumPropertyPlugin implements ModelPropertyBuilderPlugin, Parameter
 
 	@SneakyThrows
 	private void resolveParameter(ParameterContext context) {
-		EnumParam enumParam = context.resolvedMethodParameter().findAnnotation(EnumParam.class).orNull();
+		LegalEnum enumParam = context.resolvedMethodParameter().findAnnotation(LegalEnum.class).orNull();
 		if (enumParam != null) {
 			String descs = getDescs(enumParam.value(), enumParam.descMethod());
 			Object defaultValue = getDefaultValue(enumParam.value());

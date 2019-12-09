@@ -2,7 +2,6 @@ package jdt;
 
 import frodez.config.aop.validation.annotation.ValidateBean;
 import frodez.config.aop.validation.annotation.common.LegalEnum;
-import frodez.config.swagger.annotation.EnumParam;
 import frodez.constant.settings.DefDesc;
 import frodez.util.beans.param.QueryPage;
 import io.swagger.annotations.ApiModel;
@@ -78,9 +77,6 @@ public class SwaggerEnhancePlugin extends EnhancePlugin {
 				//					properties.put("required", true);
 				//				}
 				if (JDTUtil.hasAnnotation(field, LegalEnum.class)) {
-					continue;
-				}
-				if (JDTUtil.hasAnnotation(field, EnumParam.class)) {
 					continue;
 				}
 				JDTUtil.addFieldAnnotation(unit, field, ApiModelProperty.class, properties);

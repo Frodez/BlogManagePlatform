@@ -6,8 +6,8 @@ import static springfox.documentation.schema.Collections.isContainerType;
 import static springfox.documentation.swagger.common.SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER;
 
 import com.fasterxml.classmate.ResolvedType;
+import frodez.config.aop.validation.annotation.common.LegalEnum;
 import frodez.config.swagger.SwaggerProperties;
-import frodez.config.swagger.annotation.EnumParam;
 import frodez.util.common.StrUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiParam;
@@ -133,7 +133,7 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 		if (parameter.hasParameterAnnotation(ApiParam.class)) {
 			return "query";
 		}
-		if (parameter.hasParameterAnnotation(EnumParam.class)) {
+		if (parameter.hasParameterAnnotation(LegalEnum.class)) {
 			return "query";
 		}
 		return "body";
