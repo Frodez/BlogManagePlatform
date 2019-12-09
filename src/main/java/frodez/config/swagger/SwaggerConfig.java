@@ -108,6 +108,7 @@ public class SwaggerConfig {
 	 * @date 2019-12-04
 	 */
 	private void typeConfig(Docket docket) {
+		docket.directModelSubstitute(Result.class, SwaggerModel.class);
 		docket.directModelSubstitute(LocalDate.class, String.class);
 		docket.additionalModels(new TypeResolver().resolve(SwaggerModel.class));
 	}
