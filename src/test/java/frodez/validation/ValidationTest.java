@@ -1,7 +1,7 @@
 package frodez.validation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import frodez.config.aop.validation.annotation.common.LegalEnum;
+import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.aop.validation.annotation.special.DateTime;
 import frodez.config.code.checker.CodeChecker;
 import frodez.config.validator.ValidationUtil;
@@ -111,7 +111,7 @@ public class ValidationTest {
 		@NotEmpty
 		private List<Integer> list;
 
-		@LegalEnum(value = OperateEnum.class, paramType = Byte.class)
+		@MapEnum(value = OperateEnum.class, paramType = Byte.class)
 		private Byte type;
 
 	}

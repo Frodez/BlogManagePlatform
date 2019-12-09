@@ -1,6 +1,6 @@
 package frodez.config.code.rule.hibernate;
 
-import frodez.config.aop.validation.annotation.common.LegalEnum;
+import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.code.rule.CodeCheckRule;
 import frodez.constant.annotations.decoration.EnumCheckable;
 import frodez.constant.errors.exception.CodeCheckException;
@@ -26,10 +26,10 @@ public class LegalEnumRule implements CodeCheckRule {
 
 	@Override
 	public void check(Field field) throws CodeCheckException {
-		LegalEnum annotation = field.getAnnotation(LegalEnum.class);
+		MapEnum annotation = field.getAnnotation(MapEnum.class);
 		if (annotation != null) {
 			if (!ClassUtils.isPrimitiveOrWrapper(field.getType())) {
-				throw new CodeCheckException(ReflectUtil.getFullFieldName(field), "不是基本类型或者其装箱类,不能使用@", LegalEnum.class.getCanonicalName(), "注解");
+				throw new CodeCheckException(ReflectUtil.getFullFieldName(field), "不是基本类型或者其装箱类,不能使用@", MapEnum.class.getCanonicalName(), "注解");
 			}
 			checkLegalEnum(annotation);
 		}
@@ -43,18 +43,18 @@ public class LegalEnumRule implements CodeCheckRule {
 	@Override
 	public void check(Method method) throws CodeCheckException {
 		for (Parameter parameter : method.getParameters()) {
-			LegalEnum annotation = parameter.getAnnotation(LegalEnum.class);
+			MapEnum annotation = parameter.getAnnotation(MapEnum.class);
 			if (annotation != null) {
 				if (!ClassUtils.isPrimitiveOrWrapper(parameter.getType())) {
 					throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method), "的参数", parameter.getName(), "不是基本类型或者其装箱类,不能使用@",
-						LegalEnum.class.getCanonicalName(), "注解");
+						MapEnum.class.getCanonicalName(), "注解");
 				}
 				checkLegalEnum(annotation);
 			}
 		}
 	}
 
-	private void checkLegalEnum(LegalEnum annotation) {
+	private void checkLegalEnum(MapEnum annotation) {
 		Class<?> enumClass = annotation.value();
 		if (legalEnumCheckCache.contains(enumClass)) {
 			return;

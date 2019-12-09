@@ -1,6 +1,6 @@
 package frodez.dao.result.user;
 
-import frodez.config.aop.validation.annotation.common.LegalEnum;
+import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.aop.validation.annotation.special.Mobile;
 import frodez.constant.enums.user.UserStatusEnum;
 import io.swagger.annotations.ApiModel;
@@ -74,7 +74,7 @@ public class UserInfo implements Serializable {
 	 * 用户状态 0:禁用 1:正常
 	 */
 	@NotNull
-	@LegalEnum(value = UserStatusEnum.class)
+	@MapEnum(value = UserStatusEnum.class)
 	private Byte status;
 
 	/**

@@ -4,7 +4,7 @@ import com.github.pagehelper.PageHelper;
 import frodez.config.aop.exception.annotation.CatchAndReturn;
 import frodez.config.aop.exception.annotation.CatchAndThrow;
 import frodez.config.aop.validation.annotation.Check;
-import frodez.config.aop.validation.annotation.common.LegalEnum;
+import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.task.TaskProperties;
 import frodez.constant.enums.task.StatusEnum;
 import frodez.constant.errors.code.ErrorCode;
@@ -327,7 +327,7 @@ public class BaseTaskService {
 	@Check
 	@CatchAndThrow(errorCode = ErrorCode.TASK_SERVICE_ERROR)
 	@Transactional
-	public Result changeStatus(@NotNull Long id, @LegalEnum(StatusEnum.class) Byte status) {
+	public Result changeStatus(@NotNull Long id, @MapEnum(StatusEnum.class) Byte status) {
 		Task task = taskMapper.selectByPrimaryKey(id);
 		if (task == null) {
 			return Result.fail("未找到该任务!");
