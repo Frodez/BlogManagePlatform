@@ -27,14 +27,14 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 @Component
 @Profile({ "dev", "test" })
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 1000)
-public class TokenPlugin implements OperationBuilderPlugin {
+public class DefaultTokenPlugin implements OperationBuilderPlugin {
 
 	@Autowired
 	private SecurityProperties securityProperties;
 
 	private boolean useCustomerizedPluggins = false;
 
-	public TokenPlugin(SwaggerProperties properties) {
+	public DefaultTokenPlugin(SwaggerProperties properties) {
 		this.useCustomerizedPluggins = properties.getUseCustomerizedPluggins();
 	}
 

@@ -39,12 +39,12 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 @Component
 @Profile({ "dev", "test" })
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 300)
-public class EnumPropertyPlugin implements ModelPropertyBuilderPlugin, ParameterBuilderPlugin {
+public class MapEnumPlugin implements ModelPropertyBuilderPlugin, ParameterBuilderPlugin {
 
 	private boolean useCustomerizedPluggins = false;
 
 	@Autowired
-	public EnumPropertyPlugin(SwaggerProperties properties) {
+	public MapEnumPlugin(SwaggerProperties properties) {
 		this.useCustomerizedPluggins = properties.getUseCustomerizedPluggins();
 	}
 

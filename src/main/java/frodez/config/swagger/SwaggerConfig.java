@@ -2,7 +2,7 @@ package frodez.config.swagger;
 
 import com.fasterxml.classmate.TypeResolver;
 import frodez.config.security.settings.SecurityProperties;
-import frodez.config.swagger.plugin.DefaultSuccessResolverPlugin.SwaggerModel;
+import frodez.config.swagger.plugin.SuccessPlugin.SwaggerModel;
 import frodez.config.swagger.util.SwaggerUtil;
 import frodez.constant.settings.PropertyKey;
 import frodez.util.beans.result.Result;

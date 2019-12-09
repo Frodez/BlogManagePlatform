@@ -38,12 +38,12 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 @Component
 @Profile({ "dev", "test" })
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 300)
-public class DefaultApiNamePlugin implements ApiListingBuilderPlugin {
+public class DefaultControllerPlugin implements ApiListingBuilderPlugin {
 
 	private boolean useCustomerizedPluggins = false;
 
 	@Autowired
-	public DefaultApiNamePlugin(SwaggerProperties properties) {
+	public DefaultControllerPlugin(SwaggerProperties properties) {
 		this.useCustomerizedPluggins = properties.getUseCustomerizedPluggins();
 	}
 
