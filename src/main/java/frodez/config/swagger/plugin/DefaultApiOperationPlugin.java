@@ -2,6 +2,7 @@ package frodez.config.swagger.plugin;
 
 import frodez.config.swagger.SwaggerProperties;
 import frodez.util.common.StrUtil;
+import frodez.util.reflect.ReflectUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.Set;
@@ -65,9 +66,9 @@ public class DefaultApiOperationPlugin implements OperationBuilderPlugin {
 		}
 		OperationBuilder builder = context.operationBuilder();
 		builder.summary(descriptions.resolve(info.name));
-		builder.consumes(Set.of(info.consumes));
-		builder.produces(Set.of(info.produces));
 		builder.tags(Set.of(info.controllerName));
+		ReflectUtil.trySet(OperationBuilder.class, "consumes", builder, Set.of(info.consumes));
+		ReflectUtil.trySet(OperationBuilder.class, "produces", builder, Set.of(info.produces));
 	}
 
 	private EndPointInfo resolveNameAttribute(OperationContext context) {
