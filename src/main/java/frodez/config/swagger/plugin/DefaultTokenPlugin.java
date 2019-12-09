@@ -52,9 +52,14 @@ public class DefaultTokenPlugin implements OperationBuilderPlugin {
 	}
 
 	private Parameter addTokenHeader() {
-		return new ParameterBuilder().name(securityProperties.getJwt().getHeader()).description(StrUtil.concat(
-			"value: token", "\nprefix: ", securityProperties.getJwt().getTokenPrefix(), "...")).required(true)
-			.parameterType("header").modelRef(new ModelRef("string")).build();
+		String description = StrUtil.concat("token前缀:\n", securityProperties.getJwt().getTokenPrefix());
+		ParameterBuilder builder = new ParameterBuilder();
+		builder.name(securityProperties.getJwt().getHeader());
+		builder.description(description);
+		builder.required(true);
+		builder.parameterType("header");
+		builder.modelRef(new ModelRef("string"));
+		return builder.build();
 	}
 
 }

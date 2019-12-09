@@ -2,6 +2,9 @@ package frodez.util.beans.param;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.pagehelper.IPage;
+import com.github.pagehelper.ISelect;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import frodez.constant.settings.DefDesc;
 import frodez.constant.settings.DefPage;
 import io.swagger.annotations.ApiModel;
@@ -76,7 +79,7 @@ public class QueryPage implements IPage, Serializable {
 	 */
 	@Getter
 	@NotNull
-	@Min(0)
+	@Min(1)
 	@Max(DefPage.MAX_PAGE_SIZE)
 	@ApiModelProperty(value = "单页容量,必须大于0且小于限定值", example = "20")
 	private Integer pageSize;
@@ -100,6 +103,16 @@ public class QueryPage implements IPage, Serializable {
 	 */
 	public RowBounds toRowBounds() {
 		return new RowBounds((pageNum - 1) * pageSize, pageSize);
+	}
+
+	/**
+	 * 开始分页查询
+	 * @author Frodez
+	 * @param <E>
+	 * @date 2019-12-09
+	 */
+	public <E> Page<E> start(ISelect select) {
+		return PageHelper.startPage(this).doSelectPage(select);
 	}
 
 }

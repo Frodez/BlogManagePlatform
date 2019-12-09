@@ -1,9 +1,7 @@
 package frodez.service.user.impl;
 
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import frodez.config.aop.exception.annotation.CatchAndReturn;
-import frodez.config.aop.exception.annotation.CatchAndThrow;
+import frodez.config.aop.exception.annotation.Error;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.auth.AuthorityManager;
 import frodez.config.security.auth.AuthoritySource;
@@ -68,6 +66,7 @@ import tk.mybatis.mapper.entity.Example;
  * @date 2018-11-14
  */
 @Service
+@Error(ErrorCode.AUTHORITY_SERVICE_ERROR)
 public class AuthorityService implements IAuthorityService {
 
 	@Autowired
@@ -98,7 +97,6 @@ public class AuthorityService implements IAuthorityService {
 	private AuthoritySource authoritySource;
 
 	@Check
-	@CatchAndReturn
 	@Override
 	public Result getUserInfo(@NotNull Long userId) {
 		UserInfo data = userIdCache.get(userId);
@@ -128,7 +126,6 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
-	@CatchAndReturn
 	@Override
 	public Result getUserInfo(@NotBlank String userName) {
 		UserInfo data = nameCache.get(userName);
@@ -160,17 +157,13 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
-	@CatchAndReturn
 	@Override
 	public Result getUserInfos(@Valid @NotNull QueryPage param) {
-		Page<User> page = PageHelper.startPage(param).doSelectPage(() -> {
-			userMapper.selectAll();
-		});
+		Page<User> page = param.start(() -> userMapper.selectAll());
 		return Result.page(page, getUserInfos(page.getResult()));
 	}
 
 	@Check
-	@CatchAndReturn
 	@Override
 	public Result getUserInfosByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens) {
 		Example example = new Example(User.class);
@@ -186,7 +179,6 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
-	@CatchAndReturn
 	@Override
 	public Result getUserInfosByNames(@NotEmpty List<String> userNames, boolean includeFobiddens) {
 		Example example = new Example(User.class);
@@ -202,7 +194,6 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
-	@CatchAndReturn
 	@Override
 	public Result refreshUserInfoByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens) {
 		Example example = new Example(User.class);
@@ -219,7 +210,6 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
-	@CatchAndReturn
 	@Override
 	public Result refreshUserInfoByNames(@NotEmpty List<String> userNames, boolean includeFobiddens) {
 		Example example = new Example(User.class);
@@ -286,7 +276,6 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
-	@CatchAndReturn
 	@Override
 	public Result getPermission(@NotNull Long permissionId) {
 		Permission permission = permissionMapper.selectByPrimaryKey(permissionId);
@@ -302,14 +291,12 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
-	@CatchAndReturn
 	@Override
 	public Result getPermissions(@Valid @NotNull QueryPage param) {
-		return Result.page(PageHelper.startPage(param).doSelectPage(() -> permissionMapper.selectAll()));
+		return Result.page(param.start(() -> permissionMapper.selectAll()));
 	}
 
 	@Check
-	@CatchAndReturn
 	@Override
 	public Result getRole(@NotNull Long roleId) {
 		Role role = roleMapper.selectByPrimaryKey(roleId);
@@ -326,35 +313,30 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
-	@CatchAndReturn
 	@Override
 	public Result getRoles(@Valid @NotNull QueryPage param) {
-		return Result.page(PageHelper.startPage(param).doSelectPage(() -> roleMapper.selectAll()));
+		return Result.page(param.start(() -> roleMapper.selectAll()));
 	}
 
 	@Check
-	@CatchAndReturn
 	@Override
 	public Result getRolePermissions(@Valid @NotNull QueryRolePermission param) {
-		return Result.page(PageHelper.startPage(param.getPage()).doSelectPage(() -> rolePermissionMapper.getPermissions(param.getRoleId())));
+		return Result.page(param.getPage().start(() -> rolePermissionMapper.getPermissions(param.getRoleId())));
 	}
 
 	@Check
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result addRole(@Valid @NotNull AddRole param) {
-		if (roleMapper.selectAll().stream().filter((iter) -> {
-			return iter.getName().equals(param.getName());
-		}).count() != 0) {
+		if (checkRoleName(param.getName())) {
 			return Result.fail("角色不能重名!");
 		}
 		Role role = new Role();
+		Date date = new Date();
 		BeanUtil.copy(param, role);
-		role.setCreateTime(new Date());
+		role.setCreateTime(date);
 		roleMapper.insertUseGeneratedKeys(role);
 		if (EmptyUtil.no(param.getPermissionIds())) {
-			Date date = new Date();
 			List<RolePermission> rolePermissions = param.getPermissionIds().stream().map((id) -> {
 				RolePermission item = new RolePermission();
 				item.setCreateTime(date);
@@ -368,7 +350,6 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result updateRole(@Valid @NotNull UpdateRole param) {
@@ -406,7 +387,6 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result addPermission(@Valid @NotNull AddPermission param) {
@@ -432,7 +412,6 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result updatePermission(@Valid @NotNull UpdatePermission param) {
@@ -500,7 +479,6 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result updateRolePermission(@Valid @NotNull UpdateRolePermission param) {
@@ -584,7 +562,6 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result removeRole(@NotNull Long roleId) {
@@ -610,7 +587,6 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Check
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result removePermission(@NotNull Long permissionId) {
@@ -633,7 +609,6 @@ public class AuthorityService implements IAuthorityService {
 		}
 	}
 
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result scanAndCreatePermissions() {

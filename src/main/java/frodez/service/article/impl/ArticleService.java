@@ -1,6 +1,5 @@
 package frodez.service.article.impl;
 
-import frodez.config.aop.exception.annotation.CatchAndReturn;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.util.UserUtil;
 import frodez.constant.enums.common.DeleteEnum;
@@ -28,7 +27,6 @@ public class ArticleService implements IArticleService {
 	private ArticleMapper articleMapper;
 
 	@Check
-	@CatchAndReturn
 	@Override
 	public Result getDetail(@NotNull Long articleId) {
 		Article article = articleMapper.selectByPrimaryKey(articleId);

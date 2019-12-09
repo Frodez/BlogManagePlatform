@@ -1,8 +1,6 @@
 package frodez.service.task.base;
 
-import com.github.pagehelper.PageHelper;
-import frodez.config.aop.exception.annotation.CatchAndReturn;
-import frodez.config.aop.exception.annotation.CatchAndThrow;
+import frodez.config.aop.exception.annotation.Error;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.task.TaskProperties;
@@ -41,6 +39,7 @@ import tk.mybatis.mapper.entity.Example;
 
 @Slf4j
 @Configuration
+@Error(ErrorCode.TASK_SERVICE_ERROR)
 @EnableScheduling
 public class BaseTaskService {
 
@@ -169,7 +168,6 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
-	@CatchAndReturn
 	public Result getAvailableTasks(@Valid @NotNull QueryPage param) {
 		List<AvailableTaskInfo> infos = StreamUtil.page(taskServiceInfos, param).collect(Collectors.toList());
 		return Result.page(param.getPageNum(), param.getPageSize(), infos.size(), infos);
@@ -181,7 +179,6 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
-	@CatchAndReturn
 	public Result getRunningTasksInfo(@Valid @NotNull QueryPage param) {
 		List<Task> tasks = StreamUtil.page(taskInfoMap.values(), param).collect(Collectors.toList());
 		return Result.page(param.getPageNum(), param.getPageSize(), tasks.size(), tasks);
@@ -193,11 +190,8 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
-	@CatchAndReturn
 	public Result getTasks(@Valid @NotNull QueryPage param) {
-		return Result.page(PageHelper.startPage(param).doSelectPage(() -> {
-			taskMapper.selectAll();
-		}));
+		return Result.page(param.start(() -> taskMapper.selectAll()));
 	}
 
 	/**
@@ -205,7 +199,6 @@ public class BaseTaskService {
 	 * @author Frodez
 	 * @date 2019-03-21
 	 */
-	@CatchAndReturn
 	public Result cancelAllTasks() {
 		int total = taskMap.size();
 		int alreadyCanceled = 0;
@@ -226,7 +219,6 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
-	@CatchAndThrow(errorCode = ErrorCode.TASK_SERVICE_ERROR)
 	@Transactional
 	public Result addTask(@Valid @NotNull AddTask param) {
 		if (isAvailable(param.getTarget())) {
@@ -269,7 +261,6 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
-	@CatchAndThrow(errorCode = ErrorCode.TASK_SERVICE_ERROR)
 	@Transactional
 	public Result deleteTask(@NotNull Long id) {
 		Task task = taskMapper.selectByPrimaryKey(id);
@@ -305,7 +296,6 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
-	@CatchAndReturn
 	public Result cancelTask(@NotNull Long id) {
 		ScheduledFuture<?> future = taskMap.get(id);
 		if (future == null) {
@@ -325,7 +315,6 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
-	@CatchAndThrow(errorCode = ErrorCode.TASK_SERVICE_ERROR)
 	@Transactional
 	public Result changeStatus(@NotNull Long id, @MapEnum(StatusEnum.class) Byte status) {
 		Task task = taskMapper.selectByPrimaryKey(id);

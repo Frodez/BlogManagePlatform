@@ -3,7 +3,11 @@ package frodez.util.common;
 import frodez.util.beans.param.QueryPage;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
@@ -63,8 +67,88 @@ public class StreamUtil {
 		return limit > 0 ? collection.stream().skip(offset).limit(limit) : collection.stream().limit(limit);
 	}
 
+	/**
+	 * HashMap stream collector
+	 * @author Frodez
+	 * @date 2019-12-09
+	 */
+	public static class MapBuilder<T, K, V> {
+
+		Function<T, K> keyMapper;
+
+		Function<T, V> valueMapper;
+
+		BinaryOperator<V> mergeFunction;
+
+		private MapBuilder() {
+		}
+
+		public static <T, K, V> MapBuilder<T, K, V> instance() {
+			return new MapBuilder<>();
+		}
+
+		/**
+		 * 配置keyMapper
+		 * @author Frodez
+		 * @date 2019-12-09
+		 */
+		public MapBuilder<T, K, V> key(Function<T, K> keyMapper) {
+			if (this.keyMapper != null) {
+				throw new IllegalStateException();
+			}
+			this.keyMapper = keyMapper;
+			return this;
+		}
+
+		/**
+		 * 配置valueMapper
+		 * @author Frodez
+		 * @date 2019-12-09
+		 */
+		public MapBuilder<T, K, V> value(Function<T, V> valueMapper) {
+			if (this.valueMapper != null) {
+				throw new IllegalStateException();
+			}
+			this.valueMapper = valueMapper;
+			return this;
+		}
+
+		/**
+		 * 配置mergeFunction
+		 * @author Frodez
+		 * @date 2019-12-09
+		 */
+		public MapBuilder<T, K, V> merge(BinaryOperator<V> mergeFunction) {
+			if (this.mergeFunction != null) {
+				throw new IllegalStateException();
+			}
+			this.mergeFunction = mergeFunction;
+			return this;
+		}
+
+		public Collector<T, ?, Map<K, V>> hashMap() {
+			Assert.notNull(keyMapper, "keyMapper must not be null");
+			Assert.notNull(valueMapper, "valueMapper must not be null");
+			if (mergeFunction == null) {
+				return Collectors.toMap(keyMapper, valueMapper);
+			} else {
+				return Collectors.toMap(keyMapper, valueMapper, mergeFunction);
+			}
+		}
+
+	}
+
 	public static void main(String[] args) {
+		var a = List.of(1, 3, 5, 66, 71, 34, 20, 130, 524, 623);
+		System.out.println(a.stream().collect(Collectors.toMap((item) -> item, (item) -> item)).toString());
+		MapBuilder<Integer, Integer, Integer> builder = MapBuilder.<Integer, Integer, Integer>instance();
+		builder.key((item) -> item);
+		builder.value((item) -> item);
+		System.out.println(a.stream().collect(builder.hashMap()).toString());
+		System.out.println("\n");
+
 		var stream = List.of(1, 3, 5, 66, 71, 34, 20, 130, 524, 623);
+
 		QueryPage queryPage = new QueryPage(2, 4);
 		RowBounds rowBounds = new RowBounds(1, 8);
 		StreamUtil.page(stream, 0, 3).forEach(System.out::println);

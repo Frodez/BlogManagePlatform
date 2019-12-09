@@ -1,6 +1,6 @@
 package frodez.service.user.impl;
 
-import frodez.config.aop.exception.annotation.CatchAndThrow;
+import frodez.config.aop.exception.annotation.Error;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.util.UserUtil;
 import frodez.constant.enums.user.UserStatusEnum;
@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2018-11-14
  */
 @Service
+@Error(ErrorCode.USER_SERVICE_ERROR)
 public class UserService implements IUserService {
 
 	@Autowired
@@ -37,7 +38,6 @@ public class UserService implements IUserService {
 	private ILoginService loginService;
 
 	@Check
-	@CatchAndThrow(errorCode = ErrorCode.USER_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result register(@Valid @NotNull Doregister param) {
@@ -60,7 +60,6 @@ public class UserService implements IUserService {
 	 * @author Frodez
 	 * @date 2019-03-15
 	 */
-	@CatchAndThrow(errorCode = ErrorCode.USER_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result logOff() {

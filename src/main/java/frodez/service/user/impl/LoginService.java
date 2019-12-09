@@ -1,6 +1,5 @@
 package frodez.service.user.impl;
 
-import frodez.config.aop.exception.annotation.CatchAndReturn;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.util.AuthorityUtil;
 import frodez.config.security.util.TokenUtil;
@@ -55,7 +54,6 @@ public class LoginService implements ILoginService {
 	private IAuthorityService authorityService;
 
 	@Check
-	@CatchAndReturn
 	@Override
 	public Result login(@Valid @NotNull DoLogin param) {
 		Result result = authorityService.getUserInfo(param.getUsername());
@@ -69,18 +67,16 @@ public class LoginService implements ILoginService {
 		if (tokenCache.existValue(userInfo)) {
 			return Result.fail("用户已登录");
 		}
-		List<String> authorities = userInfo.getPermissionList().stream().map(PermissionInfo::getName).collect(Collectors
-			.toList());
+		List<String> authorities = userInfo.getPermissionList().stream().map(PermissionInfo::getName).collect(Collectors.toList());
 		//realToken
 		String token = TokenUtil.generate(param.getUsername(), authorities);
 		tokenCache.save(token, userInfo);
-		SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
-			new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword())));
+		SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(param
+			.getUsername(), param.getPassword())));
 		return Result.success(token);
 	}
 
 	@Check
-	@CatchAndReturn
 	@Override
 	public Result refresh(@Valid @NotNull DoRefresh param) {
 		UserDetails userDetails = null;
@@ -106,8 +102,7 @@ public class LoginService implements ILoginService {
 		}
 		UserInfo userInfo = result.as(UserInfo.class);
 		//判断token对应账号信息和查询出的账号信息是否对应
-		if (!userInfo.getName().equals(tokenUserInfo.getName()) || !userInfo.getPassword().equals(tokenUserInfo
-			.getPassword())) {
+		if (!userInfo.getName().equals(tokenUserInfo.getName()) || !userInfo.getPassword().equals(tokenUserInfo.getPassword())) {
 			return Result.fail("用户名或密码错误");
 		}
 		//判断结束
@@ -117,17 +112,15 @@ public class LoginService implements ILoginService {
 		tokenCache.remove(param.getOldToken());
 		tokenCache.save(newToken, userInfo);
 		//登出
-		logoutHandler.logout(MVCUtil.request(), MVCUtil.response(), SecurityContextHolder.getContext()
-			.getAuthentication());
+		logoutHandler.logout(MVCUtil.request(), MVCUtil.response(), SecurityContextHolder.getContext().getAuthentication());
 		//登入
-		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-			AuthorityUtil.make(userInfo.getPermissionList()));
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, AuthorityUtil.make(userInfo
+			.getPermissionList()));
 		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(MVCUtil.request()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		return Result.success(newToken);
 	}
 
-	@CatchAndReturn
 	@Override
 	public Result logout() {
 		HttpServletRequest request = MVCUtil.request();

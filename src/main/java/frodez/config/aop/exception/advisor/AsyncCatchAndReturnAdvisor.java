@@ -1,5 +1,6 @@
 package frodez.config.aop.exception.advisor;
 
+import frodez.config.aop.exception.ExceptionProperties;
 import frodez.config.aop.exception.annotation.CatchAndReturn;
 import frodez.config.aop.util.AOPUtil;
 import frodez.util.beans.result.Result;
@@ -15,6 +16,7 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
@@ -69,9 +71,15 @@ public class AsyncCatchAndReturnAdvisor implements PointcutAdvisor {
 					 */
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
+						if (ExceptionProperties.autoConfig) {
+							if (AOPUtil.isAsyncResultAsReturn(method) && method.getAnnotation(Transactional.class) == null) {
+								return true;
+							} else {
+								return false;
+							}
+						}
 						//这里可以进行运行前检查
-						return method.isAnnotationPresent(CatchAndReturn.class) && AOPUtil.isAsyncResultAsReturn(
-							method);
+						return method.isAnnotationPresent(CatchAndReturn.class) && AOPUtil.isAsyncResultAsReturn(method);
 					}
 
 					/**
