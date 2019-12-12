@@ -4,6 +4,8 @@ import frodez.config.security.settings.SecurityProperties;
 import frodez.constant.enums.user.PermissionTypeEnum;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.model.user.Permission;
+import frodez.util.common.StreamUtil;
+import frodez.util.common.StreamUtil.MapBuilder;
 import frodez.util.spring.ContextUtil;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.DependsOn;
@@ -77,39 +81,34 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 		if (defaultDeniedRoles != null || allCache != null || urlCache != null || urlTypeCache != null) {
 			return;
 		}
-		defaultDeniedRoles = List.of(new SecurityConfig(ContextUtil.bean(SecurityProperties.class).getAuth()
-			.getDeniedRole()));
+		defaultDeniedRoles = List.of(new SecurityConfig(ContextUtil.bean(SecurityProperties.class).getAuth().getDeniedRole()));
 		List<Permission> permissions = ContextUtil.bean(PermissionMapper.class).selectAll();
-		allCache = permissions.stream().map((iter) -> {
-			return new SecurityConfig(iter.getName());
-		}).collect(Collectors.toList());
-		urlCache = permissions.stream().collect(Collectors.toMap(Permission::getUrl, iter -> {
+		allCache = StreamUtil.list(permissions, (iter) -> new SecurityConfig(iter.getName()));
+		var urlCacheMapBuiler = MapBuilder.<Permission, String, Collection<ConfigAttribute>>instance();
+		urlCacheMapBuiler.key(Permission::getUrl);
+		urlCacheMapBuiler.value(iter -> {
 			Collection<ConfigAttribute> list = new ArrayList<>();
 			list.add(new SecurityConfig(iter.getName()));
 			return list;
-		}, (Collection<ConfigAttribute> a, Collection<ConfigAttribute> b) -> {
+		});
+		urlCacheMapBuiler.merge((Collection<ConfigAttribute> a, Collection<ConfigAttribute> b) -> {
 			a.addAll(b);
 			return a;
-		}));
+		});
+		urlCache = permissions.stream().collect(urlCacheMapBuiler.hashMap());
 		urlTypeCache = new HashMap<>();
 		List<String> urls = permissions.stream().map(Permission::getUrl).distinct().collect(Collectors.toList());
 		for (String url : urls) {
 			Map<PermissionTypeEnum, Collection<ConfigAttribute>> typeMap = new EnumMap<>(PermissionTypeEnum.class);
+			Function<Permission, ConfigAttribute> mapper = (iter) -> new SecurityConfig(iter.getName());
 			for (PermissionTypeEnum type : PermissionTypeEnum.values()) {
 				if (type != PermissionTypeEnum.ALL) {
-					Collection<ConfigAttribute> configs = permissions.stream().filter((iter) -> {
-						return iter.getUrl().equals(url) && iter.getType().equals(type.getVal());
-					}).map((iter) -> {
-						return new SecurityConfig(iter.getName());
-					}).collect(Collectors.toList());
-					typeMap.put(type, configs);
+					Predicate<Permission> filter = (iter) -> iter.getUrl().equals(url) && iter.getType().equals(type.getVal());
+					typeMap.put(type, permissions.stream().filter(filter).map(mapper).collect(Collectors.toList()));
 				}
 			}
-			List<SecurityConfig> allConfigs = permissions.stream().filter((iter) -> {
-				return iter.getUrl().equals(url) && iter.getType().equals(PermissionTypeEnum.ALL.getVal());
-			}).map((iter) -> {
-				return new SecurityConfig(iter.getName());
-			}).collect(Collectors.toList());
+			Predicate<Permission> filter = (iter) -> iter.getUrl().equals(url) && PermissionTypeEnum.ALL.getVal().equals(iter.getType());
+			List<ConfigAttribute> allConfigs = permissions.stream().filter(filter).map(mapper).collect(Collectors.toList());
 			for (Entry<PermissionTypeEnum, Collection<ConfigAttribute>> entry : typeMap.entrySet()) {
 				Collection<ConfigAttribute> configs = entry.getValue();
 				configs.addAll(allConfigs);

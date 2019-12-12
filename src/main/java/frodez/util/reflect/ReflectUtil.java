@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.cglib.reflect.FastClass;
@@ -15,7 +16,7 @@ import org.springframework.util.Assert;
 
 /**
  * 反射工具类<br>
- * 建议不要在项目初始化阶段使用,而用于日常业务或者已经初始化完毕后。<br>
+ * 警告:对需要动态修改类的情况不适用。<br>
  * @author Frodez
  * @date 2019-01-13
  */
@@ -33,8 +34,19 @@ public class ReflectUtil {
 	 */
 	@SneakyThrows
 	@SuppressWarnings("unchecked")
-	public <T> T newInstance(Class<T> klass) {
+	public static <T> T instance(Class<T> klass) {
 		return (T) getFastClass(klass).newInstance();
+	}
+
+	/**
+	 * 对象实例化
+	 * @author Frodez
+	 * @date 2019-06-19
+	 */
+	@SneakyThrows
+	public static <T> Supplier<T> supplier(Class<T> klass) {
+		Assert.notNull(klass, "klass must not be null");
+		return () -> instance(klass);
 	}
 
 	/**

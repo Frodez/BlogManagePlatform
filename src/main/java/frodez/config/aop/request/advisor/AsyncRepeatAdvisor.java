@@ -19,6 +19,7 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -119,7 +120,7 @@ public class AsyncRepeatAdvisor implements PointcutAdvisor {
 					 */
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
-						if (method.getAnnotation(RepeatLock.class) == null) {
+						if (AnnotationUtils.findAnnotation(method, RepeatLock.class) == null) {
 							return false;
 						}
 						if (!AOPUtil.isAsyncResultAsReturn(method)) {

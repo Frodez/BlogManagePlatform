@@ -18,6 +18,7 @@ import org.springframework.aop.ClassFilter;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,7 +80,7 @@ public class CatchAndThrowAdvisor implements PointcutAdvisor {
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
 						if (ExceptionProperties.autoConfig) {
-							if (method.getAnnotation(Transactional.class) != null) {
+							if (AnnotationUtils.findAnnotation(method, Transactional.class) != null) {
 								String methodName = ReflectUtil.getFullMethodName(method);
 								errorCodeCache.put(methodName, resolveErrorCode(method, targetClass));
 								return true;
@@ -88,7 +89,7 @@ public class CatchAndThrowAdvisor implements PointcutAdvisor {
 							}
 						}
 						//这里可以进行运行前检查
-						CatchAndThrow annotation = method.getAnnotation(CatchAndThrow.class);
+						CatchAndThrow annotation = AnnotationUtils.findAnnotation(method, CatchAndThrow.class);
 						if (annotation == null) {
 							return false;
 						}
@@ -98,11 +99,11 @@ public class CatchAndThrowAdvisor implements PointcutAdvisor {
 					}
 
 					private ErrorCode resolveErrorCode(Method method, Class<?> targetClass) {
-						Error error = method.getAnnotation(Error.class);
+						Error error = AnnotationUtils.findAnnotation(method, Error.class);
 						if (error != null) {
 							return error.value();
 						}
-						error = targetClass.getAnnotation(Error.class);
+						error = AnnotationUtils.findAnnotation(targetClass, Error.class);
 						if (error != null) {
 							return error.value();
 						}

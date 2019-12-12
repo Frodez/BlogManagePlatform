@@ -1,6 +1,8 @@
 package frodez.config.security.util;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTCreator.Builder;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import frodez.config.security.settings.SecurityProperties;
@@ -28,6 +30,16 @@ public class TokenUtil {
 	 * 算法
 	 */
 	private static Algorithm algorithm;
+
+	/**
+	 * 验证过期
+	 */
+	private static JWTVerifier verifier;
+
+	/**
+	 * 不验证过期
+	 */
+	private static JWTVerifier expiredVerifier;
 
 	/**
 	 * 签发者
@@ -75,12 +87,16 @@ public class TokenUtil {
 		header = properties.getJwt().getHeader();
 		tokenPrefix = properties.getJwt().getTokenPrefix();
 		tokenPrefixLength = tokenPrefix.length();
+		verifier = JWT.require(algorithm).withIssuer(issuer).build();
+		expiredVerifier = JWT.require(algorithm).acceptExpiresAt(0).withIssuer(issuer).build();
 		Assert.notNull(algorithm, "algorithm must not be null");
 		Assert.notNull(issuer, "issuer must not be null");
 		Assert.notNull(expiration, "expiration must not be null");
 		Assert.notNull(claim, "claim must not be null");
 		Assert.notNull(header, "header must not be null");
 		Assert.notNull(tokenPrefix, "tokenPrefix must not be null");
+		Assert.notNull(verifier, "verifier must not be null");
+		Assert.notNull(expiredVerifier, "expireAbleVerifier must not be null");
 	}
 
 	/**
@@ -91,13 +107,15 @@ public class TokenUtil {
 	 */
 	public static String generate(UserDetails user) {
 		long now = System.currentTimeMillis();
+		Builder builder = JWT.create();
+		builder.withIssuer(issuer);
+		builder.withIssuedAt(new Date(now));
+		builder.withSubject(user.getUsername());
+		builder.withArrayClaim(claim, AuthorityUtil.get(user));
 		if (expired) {
-			return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withExpiresAt(new Date(now + expiration))
-				.withSubject(user.getUsername()).withArrayClaim(claim, AuthorityUtil.get(user)).sign(algorithm);
-		} else {
-			return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withSubject(user.getUsername())
-				.withArrayClaim(claim, AuthorityUtil.get(user)).sign(algorithm);
+			builder.withExpiresAt(new Date(now + expiration));
 		}
+		return builder.sign(algorithm);
 	}
 
 	/**
@@ -108,13 +126,15 @@ public class TokenUtil {
 	 */
 	public static String generate(String username, List<String> authorities) {
 		long now = System.currentTimeMillis();
+		Builder builder = JWT.create();
+		builder.withIssuer(issuer);
+		builder.withIssuedAt(new Date(now));
+		builder.withSubject(username);
+		builder.withArrayClaim(claim, authorities.toArray(String[]::new));
 		if (expired) {
-			return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withExpiresAt(new Date(now + expiration))
-				.withSubject(username).withArrayClaim(claim, authorities.toArray(String[]::new)).sign(algorithm);
-		} else {
-			return JWT.create().withIssuer(issuer).withIssuedAt(new Date(now)).withSubject(username).withArrayClaim(
-				claim, authorities.toArray(String[]::new)).sign(algorithm);
+			builder.withExpiresAt(new Date(now + expiration));
 		}
+		return builder.sign(algorithm);
 	}
 
 	/**
@@ -127,21 +147,21 @@ public class TokenUtil {
 		DecodedJWT jwt = null;
 		if (expired) {
 			//前面已经将exp置为合适的过期时间了,这里只需要判断其是否超过当前时间即可.
-			jwt = JWT.require(algorithm).acceptExpiresAt(0).withIssuer(issuer).build().verify(token);
+			jwt = expiredVerifier.verify(token);
 		} else {
-			jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
+			jwt = verifier.verify(token);
 		}
 		return new User(jwt.getSubject(), "N/A", AuthorityUtil.make(jwt.getClaim(claim).asArray(String.class)));
 	}
 
 	/**
-	 * 验证token,且不考虑过期
+	 * 验证token,且一定考虑过期
 	 * @author Frodez
 	 * @param token
 	 * @date 2018-11-21
 	 */
 	public static UserDetails verifyWithNoExpired(String token) {
-		DecodedJWT jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
+		DecodedJWT jwt = verifier.verify(token);
 		return new User(jwt.getSubject(), "N/A", AuthorityUtil.make(jwt.getClaim(claim).asArray(String.class)));
 	}
 

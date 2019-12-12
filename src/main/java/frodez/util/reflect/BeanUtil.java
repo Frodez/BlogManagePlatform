@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
@@ -38,8 +39,8 @@ public class BeanUtil {
 	private static final Map<Class<?>, List<FastMethod>> NOT_NULL_FIELD_SETTER_CACHE = new ConcurrentHashMap<>();
 
 	private static BeanCopier getCopier(Object source, Object target) {
-		return COPIER_CACHE.computeIfAbsent(StrUtil.concat(source.getClass().getName(), target.getClass().getName()),
-			i -> BeanCopier.create(source.getClass(), target.getClass(), false));
+		return COPIER_CACHE.computeIfAbsent(StrUtil.concat(source.getClass().getName(), target.getClass().getName()), i -> BeanCopier.create(source
+			.getClass(), target.getClass(), false));
 	}
 
 	/**
@@ -54,20 +55,27 @@ public class BeanUtil {
 	}
 
 	/**
+	 * copy对象属性<br>
+	 * 建议对数据库insert时使用本方法，update时使用cover方法。<br>
+	 * @see frodez.util.reflect.BeanUtil#cover(Object, Object)
+	 * @author Frodez
+	 * @param supplier 对象提供者
+	 * @date 2019-01-15
+	 */
+	public static <T> T copy(Object source, Supplier<T> supplier) {
+		T target = supplier.get();
+		getCopier(source, target).copy(source, target, null);
+		return target;
+	}
+
+	/**
 	 * 批量copy对象属性<br>
-	 * <strong>只有当除了直接copy外不做任何额外处理的情况下,才能使用本方法</strong><br>
-	 * <strong>本方法性能会弱于普通的stream.map.collect操作,原因在于生成新实例的开销。性能差距大概在25%左右，但胜在方便。</strong>
 	 * @author Frodez
 	 * @date 2019-06-19
 	 */
-	public static <E, T> List<T> copies(List<E> sources, Class<T> klass) {
+	public static <E, T> List<T> copies(List<E> sources, Supplier<T> supplier) {
 		Assert.notNull(sources, "sources must not be null");
-		Assert.notNull(klass, "klass must not be null");
-		return sources.stream().map((iter) -> {
-			T item = ReflectUtil.newInstance(klass);
-			copy(iter, item);
-			return item;
-		}).collect(Collectors.toList());
+		return sources.stream().map((iter) -> copy(iter, supplier)).collect(Collectors.toList());
 	}
 
 	/**
@@ -123,8 +131,7 @@ public class BeanUtil {
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> map(Object bean) {
 		Assert.notNull(bean, "bean must not be null");
-		Map<String, Object> map = new HashMap<>(BeanMap.create(bean));
-		return map;
+		return new HashMap<>(BeanMap.create(bean));
 	}
 
 	/**
@@ -136,7 +143,7 @@ public class BeanUtil {
 	@SneakyThrows
 	public static <T> T as(Map<String, Object> map, Class<T> klass) {
 		Assert.notNull(map, "map must not be null");
-		T bean = ReflectUtil.newInstance(klass);
+		T bean = ReflectUtil.instance(klass);
 		BeanMap.create(bean).putAll(map);
 		return bean;
 	}
@@ -162,12 +169,11 @@ public class BeanUtil {
 	}
 
 	private static boolean isSetter(Method method) {
-		return method.getName().startsWith("set") && method.getReturnType() == void.class && method
-			.getParameterCount() == 1 && Modifier.PUBLIC == method.getModifiers();
+		return method.getName().startsWith("set") && method.getReturnType() == void.class && method.getParameterCount() == 1
+			&& Modifier.PUBLIC == method.getModifiers();
 	}
 
-	private static boolean isPrivateAndNotNullField(Field field, Object bean) throws IllegalArgumentException,
-		IllegalAccessException {
+	private static boolean isPrivateAndNotNullField(Field field, Object bean) throws IllegalArgumentException, IllegalAccessException {
 		return Modifier.PRIVATE == field.getModifiers() && field.trySetAccessible() && field.get(bean) != null;
 	}
 
@@ -235,11 +241,10 @@ public class BeanUtil {
 	@SneakyThrows
 	public static List<FastMethod> getDefaultNotNullSetters(Class<?> klass) {
 		Assert.notNull(klass, "klass must not be null");
-		return Collections.unmodifiableList(defaultNotNullSetters(ReflectUtil.newInstance(klass)));
+		return Collections.unmodifiableList(defaultNotNullSetters(ReflectUtil.instance(klass)));
 	}
 
-	private static List<FastMethod> defaultNotNullSetters(Object bean) throws IllegalArgumentException,
-		IllegalAccessException {
+	private static List<FastMethod> defaultNotNullSetters(Object bean) throws IllegalArgumentException, IllegalAccessException {
 		Class<?> klass = bean.getClass();
 		List<FastMethod> methods = NOT_NULL_FIELD_SETTER_CACHE.get(klass);
 		if (methods == null) {
@@ -280,7 +285,7 @@ public class BeanUtil {
 	 */
 	@SneakyThrows
 	public static <T> T clearInstance(Class<T> klass) {
-		T bean = ReflectUtil.newInstance(klass);
+		T bean = ReflectUtil.instance(klass);
 		List<FastMethod> methods = defaultNotNullSetters(bean);
 		int length = methods.size();
 		for (int i = 0; i < length; i++) {

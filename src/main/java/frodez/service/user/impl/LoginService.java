@@ -1,6 +1,5 @@
 package frodez.service.user.impl;
 
-import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.util.AuthorityUtil;
 import frodez.config.security.util.TokenUtil;
 import frodez.dao.param.user.DoLogin;
@@ -11,15 +10,14 @@ import frodez.service.cache.vm.facade.TokenCache;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.ILoginService;
 import frodez.util.beans.result.Result;
+import frodez.util.common.StreamUtil;
 import frodez.util.spring.MVCUtil;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,9 +51,8 @@ public class LoginService implements ILoginService {
 	@Autowired
 	private IAuthorityService authorityService;
 
-	@Check
 	@Override
-	public Result login(@Valid @NotNull DoLogin param) {
+	public Result login(DoLogin param) {
 		Result result = authorityService.getUserInfo(param.getUsername());
 		if (result.unable()) {
 			return result;
@@ -67,18 +64,18 @@ public class LoginService implements ILoginService {
 		if (tokenCache.existValue(userInfo)) {
 			return Result.fail("用户已登录");
 		}
-		List<String> authorities = userInfo.getPermissionList().stream().map(PermissionInfo::getName).collect(Collectors.toList());
+		List<String> authorities = StreamUtil.list(userInfo.getPermissionList(), PermissionInfo::getName);
 		//realToken
 		String token = TokenUtil.generate(param.getUsername(), authorities);
 		tokenCache.save(token, userInfo);
-		SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(param
-			.getUsername(), param.getPassword())));
+		Authentication authentication = new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword());
+		authentication = authenticationManager.authenticate(authentication);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 		return Result.success(token);
 	}
 
-	@Check
 	@Override
-	public Result refresh(@Valid @NotNull DoRefresh param) {
+	public Result refresh(DoRefresh param) {
 		UserDetails userDetails = null;
 		//判断token是否能通过验证(不需要验证超时)
 		try {

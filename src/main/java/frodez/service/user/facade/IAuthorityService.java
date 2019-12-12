@@ -1,5 +1,6 @@
 package frodez.service.user.facade;
 
+import frodez.config.aop.validation.annotation.Check;
 import frodez.constant.annotations.decoration.ServiceOnly;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.AddRole;
@@ -10,6 +11,10 @@ import frodez.dao.param.user.UpdateRolePermission;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * 权限信息服务
@@ -23,135 +28,154 @@ public interface IAuthorityService {
 	 * @author Frodez
 	 * @date 2019-03-06
 	 */
-	Result getUserInfo(Long userId);
+	@Check
+	Result getUserInfo(@NotNull Long userId);
 
 	/**
 	 * 根据用户名获取用户基本信息
 	 * @author Frodez
 	 * @date 2018-11-14
 	 */
-	Result getUserInfo(String userName);
+	@Check
+	Result getUserInfo(@NotBlank String userName);
 
 	/**
 	 * 分页查询用户基本信息
 	 * @author Frodez
 	 * @date 2019-03-19
 	 */
-	Result getUserInfos(QueryPage param);
+	@Check
+	Result getUserInfos(@Valid @NotNull QueryPage param);
 
 	/**
 	 * 根据用户ID批量获取用户基本信息
 	 * @author Frodez
 	 * @date 2019-03-17
 	 */
-	Result getUserInfosByIds(List<Long> userIds, boolean includeFobiddens);
+	@Check
+	Result getUserInfosByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens);
 
 	/**
 	 * 根据用户名批量获取用户基本信息
 	 * @author Frodez
 	 * @date 2019-03-17
 	 */
-	Result getUserInfosByNames(List<String> userNames, boolean includeFobiddens);
+	@Check
+	Result getUserInfosByNames(@NotEmpty List<String> userNames, boolean includeFobiddens);
 
 	/**
 	 * 根据用户ID更新用户基本信息
 	 * @author Frodez
 	 * @date 2019-03-16
 	 */
+	@Check
 	@ServiceOnly
-	Result refreshUserInfoByIds(List<Long> userIds, boolean includeFobiddens);
+	Result refreshUserInfoByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens);
 
 	/**
 	 * 根据用户名更新用户基本信息
 	 * @author Frodez
 	 * @date 2019-03-16
 	 */
+	@Check
 	@ServiceOnly
-	Result refreshUserInfoByNames(List<String> userNames, boolean includeFobiddens);
+	Result refreshUserInfoByNames(@NotEmpty List<String> userNames, boolean includeFobiddens);
 
 	/**
 	 * 获取权限信息
 	 * @author Frodez
 	 * @date 2019-03-19
 	 */
-	Result getPermission(Long permissionId);
+	@Check
+	Result getPermission(@NotNull Long permissionId);
 
 	/**
 	 * 分页查询权限信息
 	 * @author Frodez
 	 * @date 2018-03-06
 	 */
-	Result getPermissions(QueryPage param);
+	@Check
+	Result getPermissions(@Valid @NotNull QueryPage param);
 
 	/**
 	 * 获取角色信息
 	 * @author Frodez
 	 * @date 2019-03-19
 	 */
-	Result getRole(Long roleId);
+	@Check
+	Result getRole(@NotNull Long roleId);
 
 	/**
 	 * 分页查询角色信息
 	 * @author Frodez
 	 * @date 2019-03-06
 	 */
-	Result getRoles(QueryPage param);
+	@Check
+	Result getRoles(@Valid @NotNull QueryPage param);
 
 	/**
 	 * 根据角色ID获取对应权限信息
 	 * @author Frodez
 	 * @date 2019-03-06
 	 */
-	Result getRolePermissions(QueryRolePermission param);
+	@Check
+	Result getRolePermissions(@Valid @NotNull QueryRolePermission param);
 
 	/**
 	 * 添加新角色
 	 * @author Frodez
 	 * @date 2019-03-15
 	 */
-	Result addRole(AddRole param);
+	@Check
+	Result addRole(@Valid @NotNull AddRole param);
 
 	/**
 	 * 修改角色
 	 * @author Frodez
 	 * @date 2019-03-17
 	 */
-	Result updateRole(UpdateRole param);
+	@Check
+	Result updateRole(@Valid @NotNull UpdateRole param);
 
 	/**
 	 * 添加新权限
 	 * @author Frodez
 	 * @date 2019-03-15
 	 */
-	Result addPermission(AddPermission param);
+	@Check
+	Result addPermission(@Valid @NotNull AddPermission param);
 
 	/**
 	 * 修改权限
 	 * @author Frodez
 	 * @date 2019-03-17
 	 */
-	Result updatePermission(UpdatePermission param);
+	@Check
+	Result updatePermission(@Valid @NotNull UpdatePermission param);
 
 	/**
 	 * 修改角色权限
 	 * @author Frodez
 	 * @date 2019-03-15
 	 */
-	Result updateRolePermission(UpdateRolePermission param);
+	@Check
+	Result updateRolePermission(@Valid @NotNull UpdateRolePermission param);
 
 	/**
 	 * 删除角色
 	 * @author Frodez
 	 * @date 2019-03-18
 	 */
-	Result removeRole(Long roleId);
+	@Check
+	Result removeRole(@NotNull Long roleId);
 
 	/**
 	 * 删除权限
 	 * @author Frodez
 	 * @date 2019-03-18
 	 */
-	Result removePermission(Long permissionId);
+	@Check
+	Result removePermission(@NotNull Long permissionId);
 
 	/**
 	 * 扫描系统中所有端点并添加权限

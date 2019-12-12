@@ -32,8 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			throw new UsernameNotFoundException(result.getMessage());
 		}
 		UserInfo userInfo = result.as(UserInfo.class);
-		return new User(userInfo.getName(), userInfo.getPassword(), AuthorityUtil.make(userInfo
-			.getPermissionList()));
+		return new User(userInfo.getName(), userInfo.getPassword(), AuthorityUtil.make(userInfo.getPermissionList()));
 	}
 
 }

@@ -16,6 +16,7 @@ import org.springframework.aop.ClassFilter;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -112,7 +113,7 @@ public class AsyncMethodLogAdvisor implements PointcutAdvisor {
 					 */
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
-						if (method.getAnnotation(MethodLog.class) == null) {
+						if (AnnotationUtils.findAnnotation(method, MethodLog.class) == null) {
 							return false;
 						}
 						Class<?> returnType = method.getReturnType();
@@ -120,8 +121,8 @@ public class AsyncMethodLogAdvisor implements PointcutAdvisor {
 							return false;
 						}
 						if (returnType == Void.class && method.getParameterCount() == 0) {
-							throw new CodeCheckException("不能对void返回类型且无参数的方法", ReflectUtil.getFullMethodName(method),
-								"使用@", MethodLog.class.getCanonicalName(), "注解!");
+							throw new CodeCheckException("不能对void返回类型且无参数的方法", ReflectUtil.getFullMethodName(method), "使用@", MethodLog.class
+								.getCanonicalName(), "注解!");
 						}
 						return true;
 					}

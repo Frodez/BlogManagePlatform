@@ -2,11 +2,10 @@ package frodez.util.spring;
 
 import frodez.constant.settings.DefStr;
 import frodez.util.common.StrUtil;
+import frodez.util.common.StreamUtil;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.SpringApplication;
@@ -117,16 +116,14 @@ public class ContextUtil implements ApplicationContextAware {
 	 */
 	@SneakyThrows
 	public static List<Class<?>> classes(String pattern) {
-		ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
-		MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
-		String packageSearchPath = StrUtil.concat(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, ClassUtils
-			.convertClassNameToResourcePath(SystemPropertyUtils.resolvePlaceholders(pattern)), DefStr.CLASS_SUFFIX);
-		List<Resource> resources = Arrays.asList(resourcePatternResolver.getResources(packageSearchPath)).stream()
-			.filter(Resource::isReadable).collect(Collectors.toList());
+		ResourcePatternResolver patternResolver = new PathMatchingResourcePatternResolver();
+		MetadataReaderFactory readerFactory = new CachingMetadataReaderFactory(patternResolver);
+		String packagePath = ClassUtils.convertClassNameToResourcePath(SystemPropertyUtils.resolvePlaceholders(pattern));
+		packagePath = StrUtil.concat(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, packagePath, DefStr.CLASS_SUFFIX);
+		List<Resource> resources = StreamUtil.filterList(patternResolver.getResources(packagePath), Resource::isReadable);
 		List<Class<?>> classes = new ArrayList<>();
 		for (Resource resource : resources) {
-			classes.add(ClassUtils.forName(metadataReaderFactory.getMetadataReader(resource).getClassMetadata()
-				.getClassName(), null));
+			classes.add(ClassUtils.forName(readerFactory.getMetadataReader(resource).getClassMetadata().getClassName(), null));
 		}
 		return classes;
 	}

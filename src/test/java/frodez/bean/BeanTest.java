@@ -109,7 +109,7 @@ public class BeanTest {
 
 				@Override
 				public void run() {
-					BeanUtil.copies(roles, Role.class);
+					BeanUtil.copies(roles, Role::new);
 				}
 			}.run();
 		}
@@ -123,8 +123,7 @@ public class BeanTest {
 				public void run() {
 					List<Role> copies = new ArrayList<>(total);
 					for (int i = 0; i < total; ++i) {
-						Role copy = new Role();
-						BeanUtil.copy(example, copy);
+						Role copy = BeanUtil.copy(example, Role::new);
 						copies.add(copy);
 					}
 				}

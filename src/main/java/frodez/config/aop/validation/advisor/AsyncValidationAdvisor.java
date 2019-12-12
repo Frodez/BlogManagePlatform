@@ -14,6 +14,7 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -44,8 +45,7 @@ public class AsyncValidationAdvisor implements PointcutAdvisor {
 		 * @date 2019-05-10
 		 */
 		return (MethodInterceptor) invocation -> {
-			String msg = ValidationUtil.validateParam(invocation.getThis(), invocation.getMethod(), invocation
-				.getArguments());
+			String msg = ValidationUtil.validateParam(invocation.getThis(), invocation.getMethod(), invocation.getArguments());
 			return msg == null ? invocation.proceed() : Result.errorRequest(msg).async();
 		};
 	}
@@ -97,7 +97,7 @@ public class AsyncValidationAdvisor implements PointcutAdvisor {
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
 						//这里可以进行运行前检查
-						if (method.getAnnotation(Check.class) == null || !AOPUtil.isAsyncResultAsReturn(method)) {
+						if (AnnotationUtils.findAnnotation(method, Check.class) == null || !AOPUtil.isAsyncResultAsReturn(method)) {
 							return false;
 						}
 						codeChecker.checkMethod(method);

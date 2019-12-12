@@ -1,9 +1,8 @@
 package frodez.config.security.util;
 
 import frodez.dao.result.user.PermissionInfo;
+import frodez.util.common.StreamUtil;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,8 +21,7 @@ public class AuthorityUtil {
 	 * @date 2018-11-21
 	 */
 	public static List<GrantedAuthority> make(List<PermissionInfo> authorities) {
-		return authorities.stream().map(authority -> new SimpleGrantedAuthority(authority.getName())).collect(Collectors
-			.toList());
+		return StreamUtil.list(authorities, authority -> new SimpleGrantedAuthority(authority.getName()));
 	}
 
 	/**
@@ -33,7 +31,7 @@ public class AuthorityUtil {
 	 * @date 2018-11-21
 	 */
 	public static List<GrantedAuthority> make(String... authorities) {
-		return Stream.of(authorities).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+		return StreamUtil.list(authorities, SimpleGrantedAuthority::new);
 	}
 
 	/**

@@ -71,12 +71,9 @@ public class MVCUtil {
 	 * @date 2019-06-05
 	 */
 	public static Stream<RequestMappingHandlerMapping> requestMappingHandlerMappingStream() {
-		return BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false)
-			.values().stream().filter((iter) -> {
-				return iter instanceof RequestMappingHandlerMapping;
-			}).map((iter) -> {
-				return (RequestMappingHandlerMapping) iter;
-			});
+		Collection<HandlerMapping> values = BeanFactoryUtils.beansOfTypeIncludingAncestors(ContextUtil.context(), HandlerMapping.class, true, false)
+			.values();
+		return values.stream().filter((iter) -> iter instanceof RequestMappingHandlerMapping).map((iter) -> (RequestMappingHandlerMapping) iter);
 	}
 
 }
