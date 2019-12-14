@@ -1,8 +1,10 @@
 package frodez.util.common;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import lombok.experimental.UtilityClass;
+import org.springframework.util.Assert;
 
 /**
  * 判空工具类<br>
@@ -355,6 +357,85 @@ public class EmptyUtil {
 	 */
 	public static boolean no(CharSequence charSequence) {
 		return charSequence != null && charSequence.length() != 0;
+	}
+
+	/**
+	 * 将数组中的null元素剔除
+	 * @author Frodez
+	 * @date 2019-12-14
+	 */
+	public static Object[] trim(Object[] objects) {
+		Assert.notNull(objects, "objects must not be null");
+		int size = 0;
+		for (int i = 0; i < objects.length; i++) {
+			if (objects[i] != null) {
+				size++;
+			}
+		}
+		if (size == 0) {
+			return new Object[0];
+		}
+		Object[] result = new Object[size];
+		for (int i = 0, j = 0; i < objects.length; i++) {
+			if (objects[i] != null) {
+				result[j] = objects[i];
+				j++;
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 将数组中的null元素剔除
+	 * @author Frodez
+	 * @date 2019-12-14
+	 */
+	public static CharSequence[] trim(CharSequence[] objects) {
+		Assert.notNull(objects, "objects must not be null");
+		int size = 0;
+		for (int i = 0; i < objects.length; i++) {
+			if (EmptyUtil.no(objects[i])) {
+				size++;
+			}
+		}
+		if (size == 0) {
+			return new CharSequence[0];
+		}
+		CharSequence[] result = new CharSequence[size];
+		for (int i = 0, j = 0; i < objects.length; i++) {
+			if (EmptyUtil.no(objects[i])) {
+				result[j] = objects[i];
+				j++;
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 将List中的null元素剔除
+	 * @author Frodez
+	 * @date 2019-12-14
+	 */
+	public static Object[] trim(List<Object> objects) {
+		Assert.notNull(objects, "objects must not be null");
+		int size = 0;
+		for (Object object : objects) {
+			if (object != null) {
+				size++;
+			}
+		}
+		if (size == 0) {
+			return new Object[0];
+		}
+		Object[] result = new Object[size];
+		int j = 0;
+		for (Object object : objects) {
+			if (object != null) {
+				result[j] = object;
+				j++;
+			}
+		}
+		return result;
 	}
 
 }

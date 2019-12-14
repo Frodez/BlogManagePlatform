@@ -17,6 +17,7 @@ import org.springframework.aop.ClassFilter;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -101,13 +102,12 @@ public class LimitUserAdvisor implements PointcutAdvisor {
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
 						//这里可以进行运行前检查
-						Limit annotation = method.getAnnotation(Limit.class);
+						Limit annotation = AnnotationUtils.findAnnotation(method, Limit.class);
 						if (annotation == null) {
 							return false;
 						}
 						if (annotation.value() <= 0) {
-							throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method),
-								"的每秒每token限制请求数必须大于0!");
+							throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method), "的每秒每token限制请求数必须大于0!");
 						}
 						if (annotation.timeout() <= 0) {
 							throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method), "的超时时间必须大于0!");
@@ -115,8 +115,7 @@ public class LimitUserAdvisor implements PointcutAdvisor {
 						if (!AOPUtil.isResultAsReturn(method)) {
 							return false;
 						}
-						Pair<RateLimiter, Long> pair = new Pair<>(RateLimiter.create(annotation.value()), annotation
-							.timeout());
+						Pair<RateLimiter, Long> pair = new Pair<>(RateLimiter.create(annotation.value()), annotation.timeout());
 						limitCache.put(ReflectUtil.getFullMethodName(method), pair);
 						return true;
 					}

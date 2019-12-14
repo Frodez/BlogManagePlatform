@@ -13,6 +13,7 @@ import org.springframework.aop.ClassFilter;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -106,7 +107,7 @@ public class DurationLogAdvisor implements PointcutAdvisor {
 					 */
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
-						DurationLog annotation = method.getAnnotation(DurationLog.class);
+						DurationLog annotation = AnnotationUtils.findAnnotation(method, DurationLog.class);
 						if (annotation == null) {
 							return false;
 						}

@@ -15,6 +15,7 @@ import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -97,12 +98,12 @@ public class ParamLogAdvisor implements PointcutAdvisor {
 					 */
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
-						if (method.getAnnotation(ParamLog.class) == null) {
+						if (AnnotationUtils.findAnnotation(method, ParamLog.class) == null) {
 							return false;
 						}
 						if (method.getParameterCount() == 0) {
-							throw new CodeCheckException("不能对无参数的方法", ReflectUtil.getFullMethodName(method), "使用@",
-								ParamLog.class.getCanonicalName(), "注解!");
+							throw new CodeCheckException("不能对无参数的方法", ReflectUtil.getFullMethodName(method), "使用@", ParamLog.class.getCanonicalName(),
+								"注解!");
 						}
 						return true;
 					}

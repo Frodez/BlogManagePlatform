@@ -42,7 +42,7 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 @Component
 @Profile({ "dev", "test" })
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 300)
-public class DefaultSuccessResolverPlugin implements OperationBuilderPlugin, OperationModelsProviderPlugin {
+public class SuccessPlugin implements OperationBuilderPlugin, OperationModelsProviderPlugin {
 
 	private final TypeNameExtractor typeNameExtractor;
 
@@ -56,7 +56,7 @@ public class DefaultSuccessResolverPlugin implements OperationBuilderPlugin, Ope
 
 	private ResolvedType okResult;
 
-	public DefaultSuccessResolverPlugin(TypeNameExtractor typeNameExtractor, TypeResolver typeResolver, SwaggerProperties properties) {
+	public SuccessPlugin(TypeNameExtractor typeNameExtractor, TypeResolver typeResolver, SwaggerProperties properties) {
 		this.typeNameExtractor = typeNameExtractor;
 		this.typeResolver = typeResolver;
 		this.useCustomerizedPluggins = properties.getUseCustomerizedPluggins();

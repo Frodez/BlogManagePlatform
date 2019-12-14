@@ -48,7 +48,7 @@ public class UserUtil {
 
 	/**
 	 * 根据用户id查询用户信息,以UserInfo形式返回,功能同UserUtil.find(userId)
-	 * @see frodez.config.security.login.UserUtil#find(Long)
+	 * @see frodez.config.security.util.UserUtil#find(Long)
 	 * @author Frodez
 	 * @date 2019-03-27
 	 */
@@ -62,7 +62,7 @@ public class UserUtil {
 
 	/**
 	 * 根据用户名查询用户信息,以UserInfo形式返回,功能同UserUtil.find(userName)
-	 * @see frodez.config.security.login.UserUtil#find(String)
+	 * @see frodez.config.security.util.UserUtil#find(String)
 	 * @author Frodez
 	 * @date 2019-03-27
 	 */
@@ -76,7 +76,7 @@ public class UserUtil {
 
 	/**
 	 * 根据用户id查询用户信息,以Result形式返回,功能同UserUtil.get(userId)
-	 * @see frodez.config.security.login.UserUtil#bean(Long)
+	 * @see frodez.config.security.util.UserUtil#get(Long)
 	 * @author Frodez
 	 * @date 2019-03-27
 	 */
@@ -86,7 +86,7 @@ public class UserUtil {
 
 	/**
 	 * 根据用户名查询用户信息,以Result形式返回,功能同UserUtil.get(userName)
-	 * @see frodez.config.security.login.UserUtil#bean(String)
+	 * @see frodez.config.security.util.UserUtil#get(String)
 	 * @author Frodez
 	 * @date 2019-03-27
 	 */

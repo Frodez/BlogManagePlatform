@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import lombok.experimental.UtilityClass;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -39,6 +40,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 
+@UtilityClass
 public class JDTUtil {
 
 	public static Hashtable<String, String> defaultOptions() {
@@ -104,8 +106,16 @@ public class JDTUtil {
 		if (JDTUtil.hasAnnotation(typeDeclaration, annotationClass)) {
 			return;
 		}
-		if (properties == null) {
+		if (EmptyUtil.yes(properties)) {
 			addMarkerAnnotation(unit, typeDeclaration.modifiers(), annotationClass.getSimpleName());
+		} else if (properties.size() == 1) {
+			Entry<String, Object> entry = properties.entrySet().iterator().next();
+			String key = entry.getKey();
+			if ("value".equals(key)) {
+				addSingleMemberAnnotation(unit, typeDeclaration.modifiers(), annotationClass.getSimpleName(), entry.getValue());
+			} else {
+				addNormalAnnotation(unit, typeDeclaration.modifiers(), annotationClass.getSimpleName(), properties);
+			}
 		} else {
 			addNormalAnnotation(unit, typeDeclaration.modifiers(), annotationClass.getSimpleName(), properties);
 		}
@@ -128,10 +138,10 @@ public class JDTUtil {
 		if (EmptyUtil.yes(properties)) {
 			addMarkerAnnotation(unit, field.modifiers(), annotationClass.getSimpleName());
 		} else if (properties.size() == 1) {
-			String key = properties.entrySet().iterator().next().getKey();
+			Entry<String, Object> entry = properties.entrySet().iterator().next();
+			String key = entry.getKey();
 			if ("value".equals(key)) {
-				Object value = properties.entrySet().iterator().next().getValue();
-				addSingleMemberAnnotation(unit, field.modifiers(), annotationClass.getSimpleName(), value);
+				addSingleMemberAnnotation(unit, field.modifiers(), annotationClass.getSimpleName(), entry.getValue());
 			} else {
 				addNormalAnnotation(unit, field.modifiers(), annotationClass.getSimpleName(), properties);
 			}
@@ -170,43 +180,6 @@ public class JDTUtil {
 		attachAnnotation(list, singleMemberAnnotation);
 	}
 
-	@SuppressWarnings("unchecked")
-	private static Expression getExpression(AST ast, Object value) {
-		Expression expression = null;
-		if (value == null) {
-			expression = ast.newNullLiteral();
-		}
-		if (value.getClass().isArray()) {
-			ArrayInitializer arrayInitializer = ast.newArrayInitializer();
-			for (Object object : (Object[]) value) {
-				arrayInitializer.expressions().add(getExpression(ast, object));
-			}
-			expression = arrayInitializer;
-		}
-		if (value instanceof Boolean) {
-			expression = ast.newBooleanLiteral((Boolean) value);
-		}
-		if (value instanceof Number) {
-			expression = ast.newNumberLiteral(value.toString());
-		}
-		if (value.getClass() == char.class) {
-			CharacterLiteral characterLiteral = ast.newCharacterLiteral();
-			characterLiteral.setCharValue((char) value);
-			expression = characterLiteral;
-		}
-		if (value instanceof String) {
-			StringLiteral stringLiteral = ast.newStringLiteral();
-			stringLiteral.setLiteralValue((String) value);
-			expression = stringLiteral;
-		}
-		if (value instanceof Class) {
-			TypeLiteral typeLiteral = ast.newTypeLiteral();
-			typeLiteral.setType(ast.newSimpleType(ast.newName(value.getClass().getName())));
-			expression = typeLiteral;
-		}
-		return expression;
-	}
-
 	private static void attachAnnotation(List<Object> list, org.eclipse.jdt.core.dom.Annotation annotation) {
 		Iterator<Object> iterator = list.iterator();
 		int index = 0;
@@ -219,17 +192,45 @@ public class JDTUtil {
 		list.add(index, annotation);
 	}
 
+	@SuppressWarnings("unchecked")
+	private static Expression getExpression(AST ast, Object value) {
+		Expression expression = null;
+		if (value == null) {
+			expression = ast.newNullLiteral();
+		} else if (value.getClass().isArray()) {
+			ArrayInitializer arrayInitializer = ast.newArrayInitializer();
+			for (Object object : (Object[]) value) {
+				arrayInitializer.expressions().add(getExpression(ast, object));
+			}
+			expression = arrayInitializer;
+		} else if (value instanceof Boolean) {
+			expression = ast.newBooleanLiteral((Boolean) value);
+		} else if (value instanceof Number) {
+			expression = ast.newNumberLiteral(value.toString());
+		} else if (value.getClass() == char.class) {
+			CharacterLiteral characterLiteral = ast.newCharacterLiteral();
+			characterLiteral.setCharValue((char) value);
+			expression = characterLiteral;
+		} else if (value instanceof String) {
+			StringLiteral stringLiteral = ast.newStringLiteral();
+			stringLiteral.setLiteralValue((String) value);
+			expression = stringLiteral;
+		} else if (value instanceof Class) {
+			TypeLiteral typeLiteral = ast.newTypeLiteral();
+			typeLiteral.setType(ast.newSimpleType(ast.newName(value.getClass().getName())));
+			expression = typeLiteral;
+		}
+		return expression;
+	}
+
 	public static boolean belongTo(Type type, Class<?> klass) {
 		if (type == null || klass == null) {
 			throw new IllegalArgumentException();
-		}
-		if (type.isArrayType()) {
+		} else if (type.isArrayType()) {
 			return belongTo(((ArrayType) type).getElementType(), klass);
-		}
-		if (type.isPrimitiveType()) {
+		} else if (type.isPrimitiveType()) {
 			return ((PrimitiveType) type).getPrimitiveTypeCode().toString().equalsIgnoreCase(klass.getSimpleName());
-		}
-		if (type.isSimpleType()) {
+		} else if (type.isSimpleType()) {
 			SimpleType simpleType = (SimpleType) type;
 			if (simpleType.getName().isQualifiedName()) {
 				return simpleType.getName().getFullyQualifiedName().equals(klass.getName());

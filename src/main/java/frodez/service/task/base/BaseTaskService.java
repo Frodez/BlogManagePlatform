@@ -1,8 +1,6 @@
 package frodez.service.task.base;
 
-import com.github.pagehelper.PageHelper;
-import frodez.config.aop.exception.annotation.CatchAndReturn;
-import frodez.config.aop.exception.annotation.CatchAndThrow;
+import frodez.config.aop.exception.annotation.Error;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.task.TaskProperties;
@@ -33,6 +31,7 @@ import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
@@ -41,6 +40,7 @@ import tk.mybatis.mapper.entity.Example;
 
 @Slf4j
 @Configuration
+@Error(ErrorCode.TASK_SERVICE_ERROR)
 @EnableScheduling
 public class BaseTaskService {
 
@@ -76,15 +76,15 @@ public class BaseTaskService {
 	@PostConstruct
 	private void init() {
 		try {
-			taskServiceInfos = ContextUtil.beans(ITask.class).entrySet().stream().map((entry) -> {
+			taskServiceInfos = StreamUtil.list(ContextUtil.beans(ITask.class).entrySet(), (entry) -> {
 				AvailableTaskInfo info = new AvailableTaskInfo();
 				info.setName(entry.getKey());
 				info.setDescription(entry.getValue().getDescription());
 				info.setPermitForceInterrupt(!canForcelyIntterrupt(entry.getValue()));
 				return info;
-			}).collect(Collectors.toList());
+			});
 			Example example = new Example(Task.class);
-			example.createCriteria().andNotIn("target", taskServiceInfos.stream().map(AvailableTaskInfo::getName).collect(Collectors.toList()));
+			example.createCriteria().andNotIn("target", StreamUtil.list(taskServiceInfos, AvailableTaskInfo::getName));
 			taskMapper.deleteByExample(example);
 			example.clear();
 			example.createCriteria().andIsNotNull("target").andEqualTo("status", StatusEnum.ACTIVE.getVal());
@@ -134,8 +134,13 @@ public class BaseTaskService {
 	 */
 	private boolean isTransactional(Runnable runnable) {
 		try {
-			return runnable.getClass().getAnnotation(Transactional.class) != null || runnable.getClass().getMethod("run").getAnnotation(
-				Transactional.class) != null;
+			if (AnnotationUtils.findAnnotation(runnable.getClass(), Transactional.class) != null) {
+				return true;
+			}
+			if (AnnotationUtils.findAnnotation(runnable.getClass().getMethod("run"), Transactional.class) != null) {
+				return true;
+			}
+			return false;
 		} catch (NoSuchMethodException e) {
 			return false;
 		} catch (SecurityException e) {
@@ -158,9 +163,7 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	private boolean isAvailable(String target) {
-		return taskServiceInfos.stream().filter((iter) -> {
-			return iter.getName().equals(target);
-		}).count() != 0;
+		return taskServiceInfos.stream().filter((iter) -> iter.getName().equals(target)).count() != 0;
 	}
 
 	/**
@@ -169,7 +172,6 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
-	@CatchAndReturn
 	public Result getAvailableTasks(@Valid @NotNull QueryPage param) {
 		List<AvailableTaskInfo> infos = StreamUtil.page(taskServiceInfos, param).collect(Collectors.toList());
 		return Result.page(param.getPageNum(), param.getPageSize(), infos.size(), infos);
@@ -181,7 +183,6 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
-	@CatchAndReturn
 	public Result getRunningTasksInfo(@Valid @NotNull QueryPage param) {
 		List<Task> tasks = StreamUtil.page(taskInfoMap.values(), param).collect(Collectors.toList());
 		return Result.page(param.getPageNum(), param.getPageSize(), tasks.size(), tasks);
@@ -193,11 +194,8 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
-	@CatchAndReturn
 	public Result getTasks(@Valid @NotNull QueryPage param) {
-		return Result.page(PageHelper.startPage(param).doSelectPage(() -> {
-			taskMapper.selectAll();
-		}));
+		return Result.page(param.start(() -> taskMapper.selectAll()));
 	}
 
 	/**
@@ -205,7 +203,6 @@ public class BaseTaskService {
 	 * @author Frodez
 	 * @date 2019-03-21
 	 */
-	@CatchAndReturn
 	public Result cancelAllTasks() {
 		int total = taskMap.size();
 		int alreadyCanceled = 0;
@@ -226,7 +223,6 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
-	@CatchAndThrow(errorCode = ErrorCode.TASK_SERVICE_ERROR)
 	@Transactional
 	public Result addTask(@Valid @NotNull AddTask param) {
 		if (isAvailable(param.getTarget())) {
@@ -245,8 +241,7 @@ public class BaseTaskService {
 		if (taskMapper.selectCount(null) >= properties.getMaxSize()) {
 			return Result.fail("已达可用任务最大数量!");
 		}
-		Task task = new Task();
-		BeanUtil.copy(param, task);
+		Task task = BeanUtil.copy(param, Task::new);
 		task.setCreateTime(new Date());
 		task.setStatus(param.getStartNow());
 		taskMapper.insertUseGeneratedKeys(task);
@@ -269,7 +264,6 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
-	@CatchAndThrow(errorCode = ErrorCode.TASK_SERVICE_ERROR)
 	@Transactional
 	public Result deleteTask(@NotNull Long id) {
 		Task task = taskMapper.selectByPrimaryKey(id);
@@ -305,7 +299,6 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
-	@CatchAndReturn
 	public Result cancelTask(@NotNull Long id) {
 		ScheduledFuture<?> future = taskMap.get(id);
 		if (future == null) {
@@ -325,7 +318,6 @@ public class BaseTaskService {
 	 * @date 2019-03-21
 	 */
 	@Check
-	@CatchAndThrow(errorCode = ErrorCode.TASK_SERVICE_ERROR)
 	@Transactional
 	public Result changeStatus(@NotNull Long id, @MapEnum(StatusEnum.class) Byte status) {
 		Task task = taskMapper.selectByPrimaryKey(id);

@@ -15,27 +15,27 @@ public class DefPage {
 	/**
 	 * 默认页码数
 	 */
-	public static final int PAGE_NUM = 0;
+	public static final int NUM = 0;
 
 	/**
 	 * 默认单页容量
 	 */
-	public static final int PAGE_SIZE = 20;
+	public static final int SIZE = 20;
 
 	/**
 	 * 默认最大单页容量
 	 */
-	public static final int MAX_PAGE_SIZE = 1000;
+	public static final int MAX_SIZE = 1000;
 
 	/**
 	 * 默认RowBounds
 	 */
-	public static final RowBounds ROW_BOUNDS = new RowBounds(PAGE_NUM, PAGE_SIZE);
+	public static final RowBounds ROW_BOUNDS = new RowBounds(NUM, SIZE);
 
 	/**
 	 * 默认QueryPage<br>
 	 * 等同于 new QueryPage();<br>
 	 */
-	public static final QueryPage QUERY_PAGE = new QueryPage(PAGE_NUM, PAGE_SIZE);
+	public static final QueryPage QUERY_PAGE = new QueryPage(NUM, SIZE);
 
 }

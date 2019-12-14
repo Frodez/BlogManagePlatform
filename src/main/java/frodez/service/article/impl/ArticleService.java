@@ -1,7 +1,5 @@
 package frodez.service.article.impl;
 
-import frodez.config.aop.exception.annotation.CatchAndReturn;
-import frodez.config.aop.validation.annotation.Check;
 import frodez.config.security.util.UserUtil;
 import frodez.constant.enums.common.DeleteEnum;
 import frodez.dao.mapper.article.ArticleMapper;
@@ -12,7 +10,6 @@ import frodez.service.article.facade.IArticleService;
 import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
 import java.util.List;
-import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +24,8 @@ public class ArticleService implements IArticleService {
 	@Autowired
 	private ArticleMapper articleMapper;
 
-	@Check
-	@CatchAndReturn
 	@Override
-	public Result getDetail(@NotNull Long articleId) {
+	public Result getDetail(Long articleId) {
 		Article article = articleMapper.selectByPrimaryKey(articleId);
 		if (article == null) {
 			return Result.fail("未查询到该文章信息");

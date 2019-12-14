@@ -45,7 +45,7 @@ public class FreemarkerRender {
 		loaderPath = properties.getTemplateLoaderPath()[0];
 		suffix = properties.getSuffix();
 		for (RenderMode mode : RenderMode.values()) {
-			reverterMap.put(mode, ReflectUtil.newInstance(mode.getReverter()));
+			reverterMap.put(mode, ReflectUtil.instance(mode.getReverter()));
 		}
 		Assert.notNull(configuration, "configuration must not be null");
 		Assert.notNull(loaderPath, "loaderPath must not be null");

@@ -7,13 +7,16 @@ import frodez.util.spring.ContextUtil;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import javax.annotation.PostConstruct;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.MessageInterpolator;
 import javax.validation.Path;
+import javax.validation.Path.Node;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import org.hibernate.validator.HibernateValidator;
@@ -50,8 +53,6 @@ public class ValidationUtil {
 		MessageInterpolator interpolator = new ResourceBundleMessageInterpolator(new PlatformResourceBundleLocator(properties
 			.getMessageConfigPath()));
 		configuration.messageInterpolator(interpolator);
-		//允许覆写接口方法约束必须为true
-		configuration.allowOverridingMethodAlterParameterConstraint(true);
 		//配置快速失败
 		configuration.failFast(properties.getFailFast());
 		failFast = properties.getFailFast();
@@ -82,7 +83,7 @@ public class ValidationUtil {
 		if (set.isEmpty()) {
 			return null;
 		}
-		return failFast ? getErrorMessage(set.iterator().next()) : getErrorMessages(set);
+		return failFast ? getErrorMessage(set.iterator().next()) : getErrorMessage(set);
 	}
 
 	/**
@@ -111,7 +112,7 @@ public class ValidationUtil {
 		if (set.isEmpty()) {
 			return null;
 		}
-		return failFast ? getErrorMessage(set.iterator().next()) : getErrorMessages(set);
+		return failFast ? getErrorMessage(set.iterator().next()) : getErrorMessage(set);
 	}
 
 	/**
@@ -119,10 +120,9 @@ public class ValidationUtil {
 	 * @author Frodez
 	 * @date 2019-11-27
 	 */
-	private static String getErrorMessages(Set<ConstraintViolation<Object>> violations) {
-		List<String> messages = violations.stream().map(ValidationUtil::getErrorMessage).filter((message) -> {
-			return message != null;
-		}).collect(Collectors.toList());
+	private static String getErrorMessage(Set<ConstraintViolation<Object>> violations) {
+		List<String> messages = violations.stream().map(ValidationUtil::getErrorMessage).filter((message) -> message != null).collect(Collectors
+			.toList());
 		return String.join(";\n", messages);
 	}
 
@@ -142,21 +142,27 @@ public class ValidationUtil {
 	 * @date 2019-06-11
 	 */
 	private static String getErrorSource(ConstraintViolation<Object> violation) {
-		List<String> nodes = StreamSupport.stream(violation.getPropertyPath().spliterator(), false).filter((node) -> {
-			switch (node.getKind()) {
-				case PROPERTY :
-					return true;
-				case PARAMETER :
-					return true;
-				case CROSS_PARAMETER :
-					return true;
-				case CONTAINER_ELEMENT :
-					return true;
-				default :
-					return false;
-			}
-		}).map(Path.Node::toString).collect(Collectors.toList());
+		Stream<Node> stream = StreamSupport.stream(violation.getPropertyPath().spliterator(), false);
+		List<String> nodes = stream.filter(isErrorSouce).map(Path.Node::toString).collect(Collectors.toList());
 		return nodes.isEmpty() ? null : String.join(DefStr.POINT_SEPERATOR, nodes);
 	}
+
+	/**
+	 * 判断是否为所需的错误信息节点
+	 */
+	private static Predicate<Node> isErrorSouce = (node) -> {
+		switch (node.getKind()) {
+			case PROPERTY :
+				return true;
+			case PARAMETER :
+				return true;
+			case CROSS_PARAMETER :
+				return true;
+			case CONTAINER_ELEMENT :
+				return true;
+			default :
+				return false;
+		}
+	};
 
 }

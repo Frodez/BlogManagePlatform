@@ -22,6 +22,7 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -124,7 +125,7 @@ public class TimeoutAdvisor implements PointcutAdvisor {
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
 						//这里可以进行运行前检查
-						TimeoutLock annotation = method.getAnnotation(TimeoutLock.class);
+						TimeoutLock annotation = AnnotationUtils.findAnnotation(method, TimeoutLock.class);
 						if (annotation == null) {
 							return false;
 						}

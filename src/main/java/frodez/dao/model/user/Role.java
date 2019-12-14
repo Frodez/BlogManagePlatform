@@ -24,49 +24,49 @@ import org.springframework.lang.Nullable;
 @Table(name = "tb_role")
 @ApiModel(description = "用户角色返回数据")
 public class Role implements Serializable {
-    
-    private static final long serialVersionUID = 1L;
 
-    /** 
-     * ID(不能为空)
-     */
-    @Id
-    @NotNull
-    @Column(name = "id")
-    @ApiModelProperty("ID")
-    private Long id;
+	private static final long serialVersionUID = 1L;
 
-    /** 
-     * 创建时间(不能为空)
-     */
-    @NotNull
-    @Column(name = "create_time")
-    @ApiModelProperty("创建时间")
-    private Date createTime;
+	/**
+	 * ID(不能为空)
+	 */
+	@Id
+	@NotNull
+	@Column(name = "id")
+	@ApiModelProperty("ID")
+	private Long id;
 
-    /** 
-     * 角色名称(不能为空)
-     */
-    @NotBlank
-    @Length(max = 255)
-    @Column(name = "name", length = 255)
-    @ApiModelProperty("角色名称")
-    private String name;
+	/**
+	 * 创建时间(不能为空)
+	 */
+	@NotNull
+	@Column(name = "create_time")
+	@ApiModelProperty("创建时间")
+	private Date createTime;
 
-    /** 
-     * 角色等级  0-9  0最高,9最低(不能为空,默认值:0)
-     */
-    @NotNull
-    @Column(name = "level")
-    @ApiModelProperty(value = "角色等级  0-9  0最高,9最低", example = "0")
-    private Byte level = 0;
+	/**
+	 * 角色名称(不能为空)
+	 */
+	@NotBlank
+	@Length(max = 255)
+	@Column(name = "name", length = 255)
+	@ApiModelProperty("角色名称")
+	private String name;
 
-    /** 
-     * 描述
-     */
-    @Nullable
-    @Length(max = 1000)
-    @Column(name = "description", length = 1000)
-    @ApiModelProperty("描述")
-    private String description;
+	/**
+	 * 角色等级 0-9 0最高,9最低(不能为空,默认值:0)
+	 */
+	@NotNull
+	@Column(name = "level")
+	@ApiModelProperty(value = "角色等级  0-9  0最高,9最低")
+	private Byte level = 0;
+
+	/**
+	 * 描述
+	 */
+	@Nullable
+	@Length(max = 1000)
+	@Column(name = "description", length = 1000)
+	@ApiModelProperty("描述")
+	private String description;
 }

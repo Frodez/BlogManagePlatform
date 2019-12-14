@@ -1,9 +1,9 @@
 package frodez.service.user.impl;
 
-import frodez.config.aop.exception.annotation.CatchAndReturn;
-import frodez.config.aop.validation.annotation.Check;
+import frodez.config.aop.exception.annotation.Error;
 import frodez.config.security.util.AuthorityUtil;
 import frodez.config.security.util.TokenUtil;
+import frodez.constant.errors.code.ErrorCode;
 import frodez.dao.param.user.DoLogin;
 import frodez.dao.param.user.DoRefresh;
 import frodez.dao.result.user.PermissionInfo;
@@ -12,15 +12,14 @@ import frodez.service.cache.vm.facade.TokenCache;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.ILoginService;
 import frodez.util.beans.result.Result;
+import frodez.util.common.StreamUtil;
 import frodez.util.spring.MVCUtil;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,6 +33,7 @@ import org.springframework.stereotype.Service;
  * @date 2018-11-14
  */
 @Service
+@Error(ErrorCode.LOGIN_SERVICE_ERROR)
 public class LoginService implements ILoginService {
 
 	/**
@@ -54,10 +54,8 @@ public class LoginService implements ILoginService {
 	@Autowired
 	private IAuthorityService authorityService;
 
-	@Check
-	@CatchAndReturn
 	@Override
-	public Result login(@Valid @NotNull DoLogin param) {
+	public Result login(DoLogin param) {
 		Result result = authorityService.getUserInfo(param.getUsername());
 		if (result.unable()) {
 			return result;
@@ -69,20 +67,18 @@ public class LoginService implements ILoginService {
 		if (tokenCache.existValue(userInfo)) {
 			return Result.fail("用户已登录");
 		}
-		List<String> authorities = userInfo.getPermissionList().stream().map(PermissionInfo::getName).collect(Collectors
-			.toList());
+		List<String> authorities = StreamUtil.list(userInfo.getPermissionList(), PermissionInfo::getName);
 		//realToken
 		String token = TokenUtil.generate(param.getUsername(), authorities);
 		tokenCache.save(token, userInfo);
-		SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
-			new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword())));
+		Authentication authentication = new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword());
+		authentication = authenticationManager.authenticate(authentication);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 		return Result.success(token);
 	}
 
-	@Check
-	@CatchAndReturn
 	@Override
-	public Result refresh(@Valid @NotNull DoRefresh param) {
+	public Result refresh(DoRefresh param) {
 		UserDetails userDetails = null;
 		//判断token是否能通过验证(不需要验证超时)
 		try {
@@ -106,8 +102,7 @@ public class LoginService implements ILoginService {
 		}
 		UserInfo userInfo = result.as(UserInfo.class);
 		//判断token对应账号信息和查询出的账号信息是否对应
-		if (!userInfo.getName().equals(tokenUserInfo.getName()) || !userInfo.getPassword().equals(tokenUserInfo
-			.getPassword())) {
+		if (!userInfo.getName().equals(tokenUserInfo.getName()) || !userInfo.getPassword().equals(tokenUserInfo.getPassword())) {
 			return Result.fail("用户名或密码错误");
 		}
 		//判断结束
@@ -117,17 +112,15 @@ public class LoginService implements ILoginService {
 		tokenCache.remove(param.getOldToken());
 		tokenCache.save(newToken, userInfo);
 		//登出
-		logoutHandler.logout(MVCUtil.request(), MVCUtil.response(), SecurityContextHolder.getContext()
-			.getAuthentication());
+		logoutHandler.logout(MVCUtil.request(), MVCUtil.response(), SecurityContextHolder.getContext().getAuthentication());
 		//登入
-		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-			AuthorityUtil.make(userInfo.getPermissionList()));
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, AuthorityUtil.make(userInfo
+			.getPermissionList()));
 		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(MVCUtil.request()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		return Result.success(newToken);
 	}
 
-	@CatchAndReturn
 	@Override
 	public Result logout() {
 		HttpServletRequest request = MVCUtil.request();

@@ -27,14 +27,14 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 @Component
 @Profile({ "dev", "test" })
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 1000)
-public class TokenPlugin implements OperationBuilderPlugin {
+public class DefaultTokenPlugin implements OperationBuilderPlugin {
 
 	@Autowired
 	private SecurityProperties securityProperties;
 
 	private boolean useCustomerizedPluggins = false;
 
-	public TokenPlugin(SwaggerProperties properties) {
+	public DefaultTokenPlugin(SwaggerProperties properties) {
 		this.useCustomerizedPluggins = properties.getUseCustomerizedPluggins();
 	}
 
@@ -52,9 +52,14 @@ public class TokenPlugin implements OperationBuilderPlugin {
 	}
 
 	private Parameter addTokenHeader() {
-		return new ParameterBuilder().name(securityProperties.getJwt().getHeader()).description(StrUtil.concat(
-			"value: token", "\nprefix: ", securityProperties.getJwt().getTokenPrefix(), "...")).required(true)
-			.parameterType("header").modelRef(new ModelRef("string")).build();
+		String description = StrUtil.concat("token前缀:\n", securityProperties.getJwt().getTokenPrefix());
+		ParameterBuilder builder = new ParameterBuilder();
+		builder.name(securityProperties.getJwt().getHeader());
+		builder.description(description);
+		builder.required(true);
+		builder.parameterType("header");
+		builder.modelRef(new ModelRef("string"));
+		return builder.build();
 	}
 
 }

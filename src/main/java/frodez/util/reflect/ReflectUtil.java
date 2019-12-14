@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.cglib.reflect.FastClass;
@@ -15,7 +16,7 @@ import org.springframework.util.Assert;
 
 /**
  * 反射工具类<br>
- * 建议不要在项目初始化阶段使用,而用于日常业务或者已经初始化完毕后。<br>
+ * 警告:对需要动态修改类的情况不适用。<br>
  * @author Frodez
  * @date 2019-01-13
  */
@@ -33,8 +34,19 @@ public class ReflectUtil {
 	 */
 	@SneakyThrows
 	@SuppressWarnings("unchecked")
-	public <T> T newInstance(Class<T> klass) {
+	public static <T> T instance(Class<T> klass) {
 		return (T) getFastClass(klass).newInstance();
+	}
+
+	/**
+	 * 对象实例化
+	 * @author Frodez
+	 * @date 2019-06-19
+	 */
+	@SneakyThrows
+	public static <T> Supplier<T> supplier(Class<T> klass) {
+		Assert.notNull(klass, "klass must not be null");
+		return () -> instance(klass);
 	}
 
 	/**
@@ -138,7 +150,7 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-12-08
 	 */
-	public void trySet(Class<?> klass, String fieldName, Object target, Object value) {
+	public static void trySet(Class<?> klass, String fieldName, Object target, Object value) {
 		trySet(klass, fieldName, target, value, true);
 	}
 
@@ -149,7 +161,7 @@ public class ReflectUtil {
 	 * @date 2019-12-08
 	 */
 	@SneakyThrows
-	public void trySet(Class<?> klass, String fieldName, Object target, Object value, boolean reviveAccessible) {
+	public static void trySet(Class<?> klass, String fieldName, Object target, Object value, boolean reviveAccessible) {
 		Assert.notNull(klass, "klass must not be null");
 		Assert.notNull(fieldName, "fieldName must not be null");
 		Assert.notNull(target, "target must not be null");
@@ -171,7 +183,7 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-12-08
 	 */
-	public void trySet(Field field, Object target, Object value) {
+	public static void trySet(Field field, Object target, Object value) {
 		trySet(field, target, value, true);
 	}
 
@@ -182,7 +194,7 @@ public class ReflectUtil {
 	 * @date 2019-12-08
 	 */
 	@SneakyThrows
-	public void trySet(Field field, Object target, Object value, boolean reviveAccessible) {
+	public static void trySet(Field field, Object target, Object value, boolean reviveAccessible) {
 		Assert.notNull(field, "field must not be null");
 		Assert.notNull(target, "target must not be null");
 		Assert.notNull(value, "value must not be null");
@@ -202,7 +214,7 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-12-08
 	 */
-	public Object tryGet(Class<?> klass, String fieldName, Object target) {
+	public static Object tryGet(Class<?> klass, String fieldName, Object target) {
 		return tryGet(klass, fieldName, target, true);
 	}
 
@@ -213,7 +225,7 @@ public class ReflectUtil {
 	 * @date 2019-12-08
 	 */
 	@SneakyThrows
-	public Object tryGet(Class<?> klass, String fieldName, Object target, boolean reviveAccessible) {
+	public static Object tryGet(Class<?> klass, String fieldName, Object target, boolean reviveAccessible) {
 		Assert.notNull(klass, "klass must not be null");
 		Assert.notNull(fieldName, "fieldName must not be null");
 		Assert.notNull(target, "target must not be null");
@@ -235,7 +247,7 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-12-08
 	 */
-	public Object tryGet(Field field, Object target) {
+	public static Object tryGet(Field field, Object target) {
 		return tryGet(field, target, true);
 	}
 
@@ -246,7 +258,7 @@ public class ReflectUtil {
 	 * @date 2019-12-08
 	 */
 	@SneakyThrows
-	public Object tryGet(Field field, Object target, boolean reviveAccessible) {
+	public static Object tryGet(Field field, Object target, boolean reviveAccessible) {
 		Assert.notNull(field, "field must not be null");
 		Assert.notNull(target, "target must not be null");
 		if (reviveAccessible) {

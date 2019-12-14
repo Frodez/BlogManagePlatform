@@ -71,7 +71,7 @@ import org.springframework.util.concurrent.ListenableFuture;
  * </pre>
  *
  * <strong>此参数的泛型版本见frodez.config.swagger.plugin.DefaultSuccessResolverPlugin.SwaggerModel</strong>
- * @see frodez.config.swagger.plugin.DefaultSuccessResolverPlugin.SwaggerModel
+ * @see frodez.config.swagger.plugin.SuccessPlugin.SwaggerModel
  * @author Frodez
  * @date 2018-11-13
  */

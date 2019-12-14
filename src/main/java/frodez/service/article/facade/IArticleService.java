@@ -1,6 +1,8 @@
 package frodez.service.article.facade;
 
+import frodez.config.aop.validation.annotation.Check;
 import frodez.util.beans.result.Result;
+import javax.validation.constraints.NotNull;
 
 /**
  * 文章信息服务
@@ -9,6 +11,7 @@ import frodez.util.beans.result.Result;
  */
 public interface IArticleService {
 
-	Result getDetail(Long articleId);
+	@Check
+	Result getDetail(@NotNull Long articleId);
 
 }

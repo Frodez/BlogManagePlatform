@@ -107,6 +107,16 @@ public class StrUtil {
 	}
 
 	/**
+	 * 优化式join,专门处理null和空字符串
+	 * @author Frodez
+	 * @date 2019-12-14
+	 */
+	public static String join(CharSequence delimiter, CharSequence... elements) {
+		CharSequence[] strings = EmptyUtil.trim(elements);
+		return strings.length == 0 ? null : String.join(delimiter, strings);
+	}
+
+	/**
 	 * 首字母大写
 	 * @author Frodez
 	 * @date 2019-04-15

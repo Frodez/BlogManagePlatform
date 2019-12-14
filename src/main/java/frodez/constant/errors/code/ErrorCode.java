@@ -13,6 +13,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
+	LOGIN_SERVICE_ERROR("用户登录服务失败!"),
+
 	USER_SERVICE_ERROR("用户信息服务失败!"),
 
 	AUTHORITY_SERVICE_ERROR("权限信息服务失败!"),

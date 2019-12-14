@@ -1,10 +1,7 @@
 package frodez.service.user.impl;
 
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import frodez.config.aop.exception.annotation.CatchAndReturn;
-import frodez.config.aop.exception.annotation.CatchAndThrow;
-import frodez.config.aop.validation.annotation.Check;
+import frodez.config.aop.exception.annotation.Error;
 import frodez.config.security.auth.AuthorityManager;
 import frodez.config.security.auth.AuthoritySource;
 import frodez.config.security.util.Matcher;
@@ -38,8 +35,10 @@ import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.pair.Pair;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
+import frodez.util.common.BoolUtil;
 import frodez.util.common.EmptyUtil;
 import frodez.util.common.StrUtil;
+import frodez.util.common.StreamUtil;
 import frodez.util.reflect.BeanUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.MVCUtil;
@@ -50,12 +49,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,6 +65,7 @@ import tk.mybatis.mapper.entity.Example;
  * @date 2018-11-14
  */
 @Service
+@Error(ErrorCode.AUTHORITY_SERVICE_ERROR)
 public class AuthorityService implements IAuthorityService {
 
 	@Autowired
@@ -97,10 +95,8 @@ public class AuthorityService implements IAuthorityService {
 	@Autowired
 	private AuthoritySource authoritySource;
 
-	@Check
-	@CatchAndReturn
 	@Override
-	public Result getUserInfo(@NotNull Long userId) {
+	public Result getUserInfo(Long userId) {
 		UserInfo data = userIdCache.get(userId);
 		if (data != null) {
 			return Result.success(data);
@@ -117,8 +113,7 @@ public class AuthorityService implements IAuthorityService {
 			return Result.fail("未查询到用户角色信息!");
 		}
 		List<PermissionInfo> permissionList = rolePermissionMapper.getPermissions(user.getRoleId());
-		data = new UserInfo();
-		BeanUtil.copy(user, data);
+		data = BeanUtil.copy(user, UserInfo::new);
 		data.setRoleName(role.getName());
 		data.setRoleLevel(role.getLevel());
 		data.setRoleDescription(role.getDescription());
@@ -127,10 +122,8 @@ public class AuthorityService implements IAuthorityService {
 		return Result.success(data);
 	}
 
-	@Check
-	@CatchAndReturn
 	@Override
-	public Result getUserInfo(@NotBlank String userName) {
+	public Result getUserInfo(String userName) {
 		UserInfo data = nameCache.get(userName);
 		if (data != null) {
 			return Result.success(data);
@@ -149,8 +142,7 @@ public class AuthorityService implements IAuthorityService {
 			return Result.fail("未查询到用户角色信息!");
 		}
 		List<PermissionInfo> permissionList = rolePermissionMapper.getPermissions(user.getRoleId());
-		data = new UserInfo();
-		BeanUtil.copy(user, data);
+		data = BeanUtil.copy(user, UserInfo::new);
 		data.setRoleName(role.getName());
 		data.setRoleLevel(role.getLevel());
 		data.setRoleDescription(role.getDescription());
@@ -159,20 +151,14 @@ public class AuthorityService implements IAuthorityService {
 		return Result.success(data);
 	}
 
-	@Check
-	@CatchAndReturn
 	@Override
-	public Result getUserInfos(@Valid @NotNull QueryPage param) {
-		Page<User> page = PageHelper.startPage(param).doSelectPage(() -> {
-			userMapper.selectAll();
-		});
+	public Result getUserInfos(QueryPage param) {
+		Page<User> page = param.start(() -> userMapper.selectAll());
 		return Result.page(page, getUserInfos(page.getResult()));
 	}
 
-	@Check
-	@CatchAndReturn
 	@Override
-	public Result getUserInfosByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens) {
+	public Result getUserInfosByIds(List<Long> userIds, boolean includeFobiddens) {
 		Example example = new Example(User.class);
 		example.createCriteria().andIn("id", userIds);
 		if (!includeFobiddens) {
@@ -185,10 +171,8 @@ public class AuthorityService implements IAuthorityService {
 		return Result.success(getUserInfos(users));
 	}
 
-	@Check
-	@CatchAndReturn
 	@Override
-	public Result getUserInfosByNames(@NotEmpty List<String> userNames, boolean includeFobiddens) {
+	public Result getUserInfosByNames(List<String> userNames, boolean includeFobiddens) {
 		Example example = new Example(User.class);
 		example.createCriteria().andIn("name", userNames);
 		if (!includeFobiddens) {
@@ -201,10 +185,8 @@ public class AuthorityService implements IAuthorityService {
 		return Result.success(getUserInfos(users));
 	}
 
-	@Check
-	@CatchAndReturn
 	@Override
-	public Result refreshUserInfoByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens) {
+	public Result refreshUserInfoByIds(List<Long> userIds, boolean includeFobiddens) {
 		Example example = new Example(User.class);
 		example.createCriteria().andIn("id", userIds);
 		if (!includeFobiddens) {
@@ -218,10 +200,8 @@ public class AuthorityService implements IAuthorityService {
 		return Result.success();
 	}
 
-	@Check
-	@CatchAndReturn
 	@Override
-	public Result refreshUserInfoByNames(@NotEmpty List<String> userNames, boolean includeFobiddens) {
+	public Result refreshUserInfoByNames(List<String> userNames, boolean includeFobiddens) {
 		Example example = new Example(User.class);
 		example.createCriteria().andIn("name", userNames);
 		if (!includeFobiddens) {
@@ -238,33 +218,26 @@ public class AuthorityService implements IAuthorityService {
 	private List<UserInfo> getUserInfos(List<User> users) {
 		List<Long> roleIds = users.stream().map(User::getRoleId).collect(Collectors.toList());
 		Example example = new Example(Permission.class);
-		example.createCriteria().andIn("id", rolePermissionMapper.batchGetPermissions(roleIds).stream().map(Pair::getValue).collect(Collectors
-			.toList()));
+		example.createCriteria().andIn("id", StreamUtil.list(rolePermissionMapper.batchGetPermissions(roleIds), Pair::getValue));
 		List<Permission> permissions = permissionMapper.selectByExample(example);
 		example = new Example(Role.class);
 		example.createCriteria().andIn("id", roleIds);
-		Map<Long, Role> roleMap = roleMapper.selectByExample(example).stream().collect(Collectors.toMap(Role::getId, (iter) -> {
-			return iter;
-		}));
+		Map<Long, Role> roleMap = StreamUtil.hashMap(roleMapper.selectByExample(example), Role::getId, (iter) -> iter);
 		Map<Long, List<PermissionInfo>> rolePermissionsMap = new HashMap<>();
 		for (Long roleId : roleIds) {
-			rolePermissionsMap.put(roleId, permissions.stream().filter((iter) -> {
-				return roleId.equals(iter.getId());
-			}).map((iter) -> {
-				PermissionInfo info = new PermissionInfo();
-				BeanUtil.copy(iter, info);
-				return info;
-			}).collect(Collectors.toList()));
+			Predicate<Permission> predicate = (iter) -> roleId.equals(iter.getId());
+			Function<Permission, PermissionInfo> function = (iter) -> BeanUtil.copy(iter, PermissionInfo::new);
+			List<PermissionInfo> info = permissions.stream().filter(predicate).map(function).collect(Collectors.toList());
+			rolePermissionsMap.put(roleId, info);
 		}
-		List<UserInfo> userInfos = users.stream().map((user) -> {
-			UserInfo info = new UserInfo();
-			BeanUtil.copy(user, info);
+		List<UserInfo> userInfos = StreamUtil.list(users, (user) -> {
+			UserInfo info = BeanUtil.copy(user, UserInfo::new);
 			info.setRoleName(roleMap.get(user.getRoleId()).getName());
 			info.setRoleLevel(roleMap.get(user.getRoleId()).getLevel());
 			info.setRoleDescription(roleMap.get(user.getRoleId()).getDescription());
 			info.setPermissionList(rolePermissionsMap.get(user.getRoleId()));
 			return info;
-		}).collect(Collectors.toList());
+		});
 		return userInfos;
 	}
 
@@ -276,102 +249,80 @@ public class AuthorityService implements IAuthorityService {
 		stream.forEach((item) -> {
 			userIdCache.save(item.getId(), item);
 			nameCache.save(item.getName(), item);
-			String token = tokenCache.getTokenByCondition((iter) -> {
-				return iter.getId().equals(item.getId());
-			});
+			String token = tokenCache.getTokenByCondition((iter) -> iter.getId().equals(item.getId()));
 			if (token != null) {
 				tokenCache.save(token, item);
 			}
 		});
 	}
 
-	@Check
-	@CatchAndReturn
 	@Override
-	public Result getPermission(@NotNull Long permissionId) {
+	public Result getPermission(Long permissionId) {
 		Permission permission = permissionMapper.selectByPrimaryKey(permissionId);
 		if (permission == null) {
 			return Result.fail("未找到该权限!");
 		}
-		PermissionDetail data = new PermissionDetail();
-		BeanUtil.copy(permission, data);
+		PermissionDetail data = BeanUtil.copy(permission, PermissionDetail::new);
 		Example example = new Example(RolePermission.class);
 		example.createCriteria().andEqualTo("permissionId", permissionId);
-		data.setRoleIds(rolePermissionMapper.selectByExample(example).stream().map(RolePermission::getRoleId).collect(Collectors.toList()));
+		data.setRoleIds(StreamUtil.list(rolePermissionMapper.selectByExample(example), RolePermission::getRoleId));
 		return Result.success(data);
 	}
 
-	@Check
-	@CatchAndReturn
 	@Override
-	public Result getPermissions(@Valid @NotNull QueryPage param) {
-		return Result.page(PageHelper.startPage(param).doSelectPage(() -> permissionMapper.selectAll()));
+	public Result getPermissions(QueryPage param) {
+		return Result.page(param.start(() -> permissionMapper.selectAll()));
 	}
 
-	@Check
-	@CatchAndReturn
 	@Override
-	public Result getRole(@NotNull Long roleId) {
+	public Result getRole(Long roleId) {
 		Role role = roleMapper.selectByPrimaryKey(roleId);
 		if (role == null) {
 			return Result.fail("未找到该角色!");
 		}
-		RoleDetail data = new RoleDetail();
-		BeanUtil.copy(role, data);
+		RoleDetail data = BeanUtil.copy(role, RoleDetail::new);
 		Example example = new Example(RolePermission.class);
 		example.createCriteria().andEqualTo("roleId", roleId);
-		data.setPermissionIds(rolePermissionMapper.selectByExample(example).stream().map(RolePermission::getPermissionId).collect(Collectors
-			.toList()));
+		data.setPermissionIds(StreamUtil.list(rolePermissionMapper.selectByExample(example), RolePermission::getPermissionId));
 		return Result.success(data);
 	}
 
-	@Check
-	@CatchAndReturn
 	@Override
-	public Result getRoles(@Valid @NotNull QueryPage param) {
-		return Result.page(PageHelper.startPage(param).doSelectPage(() -> roleMapper.selectAll()));
+	public Result getRoles(QueryPage param) {
+		return Result.page(param.start(() -> roleMapper.selectAll()));
 	}
 
-	@Check
-	@CatchAndReturn
 	@Override
-	public Result getRolePermissions(@Valid @NotNull QueryRolePermission param) {
-		return Result.page(PageHelper.startPage(param.getPage()).doSelectPage(() -> rolePermissionMapper.getPermissions(param.getRoleId())));
+	public Result getRolePermissions(QueryRolePermission param) {
+		return Result.page(param.getPage().start(() -> rolePermissionMapper.getPermissions(param.getRoleId())));
 	}
 
-	@Check
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
-	public Result addRole(@Valid @NotNull AddRole param) {
-		if (roleMapper.selectAll().stream().filter((iter) -> {
-			return iter.getName().equals(param.getName());
-		}).count() != 0) {
+	public Result addRole(AddRole param) {
+		if (checkRoleName(param.getName())) {
 			return Result.fail("角色不能重名!");
 		}
-		Role role = new Role();
-		BeanUtil.copy(param, role);
-		role.setCreateTime(new Date());
+		Date date = new Date();
+		Role role = BeanUtil.copy(param, Role::new);
+		role.setCreateTime(date);
 		roleMapper.insertUseGeneratedKeys(role);
 		if (EmptyUtil.no(param.getPermissionIds())) {
-			Date date = new Date();
-			List<RolePermission> rolePermissions = param.getPermissionIds().stream().map((id) -> {
+			List<RolePermission> rolePermissions = StreamUtil.list(param.getPermissionIds(), (id) -> {
 				RolePermission item = new RolePermission();
 				item.setCreateTime(date);
 				item.setRoleId(role.getId());
 				item.setPermissionId(id);
 				return item;
-			}).collect(Collectors.toList());
+			});
 			rolePermissionMapper.insertList(rolePermissions);
 		}
 		return Result.success();
 	}
 
-	@Check
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
-	public Result updateRole(@Valid @NotNull UpdateRole param) {
+	public Result updateRole(UpdateRole param) {
 		Role role = roleMapper.selectByPrimaryKey(param.getId());
 		if (role == null) {
 			return Result.fail("未找到该角色!");
@@ -389,9 +340,7 @@ public class AuthorityService implements IAuthorityService {
 	 * @date 2019-03-17
 	 */
 	private boolean checkRoleName(String name) {
-		return roleMapper.selectAll().stream().filter((iter) -> {
-			return iter.getName().equals(name);
-		}).count() != 0;
+		return roleMapper.selectAll().stream().filter((iter) -> iter.getName().equals(name)).count() != 0;
 	}
 
 	/**
@@ -400,16 +349,12 @@ public class AuthorityService implements IAuthorityService {
 	 * @date 2019-03-17
 	 */
 	private boolean checkPermissionName(String name) {
-		return permissionMapper.selectAll().stream().filter((iter) -> {
-			return iter.getName().equals(name);
-		}).count() != 0;
+		return permissionMapper.selectAll().stream().filter((iter) -> iter.getName().equals(name)).count() != 0;
 	}
 
-	@Check
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
-	public Result addPermission(@Valid @NotNull AddPermission param) {
+	public Result addPermission(AddPermission param) {
 		try {
 			if (checkPermissionName(param.getName())) {
 				return Result.fail("权限不能重名!");
@@ -420,8 +365,7 @@ public class AuthorityService implements IAuthorityService {
 			if (!checkPermissionUrl(PermissionTypeEnum.of(param.getType()), param.getUrl())) {
 				return Result.fail("系统不存在与此匹配的url!");
 			}
-			Permission permission = new Permission();
-			BeanUtil.copy(param, permission);
+			Permission permission = BeanUtil.copy(param, Permission::new);
 			permission.setCreateTime(new Date());
 			permissionMapper.insert(permission);
 			return Result.success();
@@ -431,13 +375,11 @@ public class AuthorityService implements IAuthorityService {
 		}
 	}
 
-	@Check
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
-	public Result updatePermission(@Valid @NotNull UpdatePermission param) {
+	public Result updatePermission(UpdatePermission param) {
 		try {
-			if (param.getType() == null && param.getUrl() != null || param.getType() != null && param.getUrl() == null) {
+			if (BoolUtil.xor(param.getType(), param.getUrl())) {
 				return Result.errorRequest("类型和url必须同时存在!");
 			}
 			if (param.getUrl() != null && Matcher.isPermitAllPath(param.getUrl())) {
@@ -499,11 +441,9 @@ public class AuthorityService implements IAuthorityService {
 		}
 	}
 
-	@Check
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
-	public Result updateRolePermission(@Valid @NotNull UpdateRolePermission param) {
+	public Result updateRolePermission(UpdateRolePermission param) {
 		try {
 			if (ModifyEnum.UPDATE.getVal() != param.getOperationType() && EmptyUtil.yes(param.getPermissionIds())) {
 				return Result.errorRequest("不能对角色新增或者删除一个空的权限!");
@@ -558,13 +498,13 @@ public class AuthorityService implements IAuthorityService {
 					rolePermissionMapper.deleteByExample(example);
 					if (EmptyUtil.no(param.getPermissionIds())) {
 						Date date = new Date();
-						List<RolePermission> rolePermissions = param.getPermissionIds().stream().map((iter) -> {
+						List<RolePermission> rolePermissions = StreamUtil.list(param.getPermissionIds(), (iter) -> {
 							RolePermission item = new RolePermission();
 							item.setCreateTime(date);
 							item.setPermissionId(iter);
 							item.setRoleId(param.getRoleId());
 							return item;
-						}).collect(Collectors.toList());
+						});
 						rolePermissionMapper.insertList(rolePermissions);
 					}
 					break;
@@ -583,11 +523,9 @@ public class AuthorityService implements IAuthorityService {
 		}
 	}
 
-	@Check
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
-	public Result removeRole(@NotNull Long roleId) {
+	public Result removeRole(Long roleId) {
 		try {
 			Role role = roleMapper.selectByPrimaryKey(roleId);
 			if (role == null) {
@@ -609,11 +547,9 @@ public class AuthorityService implements IAuthorityService {
 		}
 	}
 
-	@Check
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
-	public Result removePermission(@NotNull Long permissionId) {
+	public Result removePermission(Long permissionId) {
 		try {
 			Permission permission = permissionMapper.selectByPrimaryKey(permissionId);
 			if (permission == null) {
@@ -633,7 +569,6 @@ public class AuthorityService implements IAuthorityService {
 		}
 	}
 
-	@CatchAndThrow(errorCode = ErrorCode.AUTHORITY_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result scanAndCreatePermissions() {

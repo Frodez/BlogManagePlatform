@@ -4,7 +4,7 @@ import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;
 import frodez.config.swagger.annotation.Success;
 import frodez.config.swagger.annotation.Success.Container;
-import frodez.config.swagger.plugin.DefaultSuccessResolverPlugin.SwaggerModel;
+import frodez.config.swagger.plugin.SuccessPlugin.SwaggerModel;
 import frodez.util.beans.result.PageData;
 import frodez.util.beans.result.Result.ResultEnum;
 import java.util.Collection;

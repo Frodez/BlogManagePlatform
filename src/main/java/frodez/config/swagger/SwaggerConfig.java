@@ -2,7 +2,7 @@ package frodez.config.swagger;
 
 import com.fasterxml.classmate.TypeResolver;
 import frodez.config.security.settings.SecurityProperties;
-import frodez.config.swagger.plugin.DefaultSuccessResolverPlugin.SwaggerModel;
+import frodez.config.swagger.plugin.SuccessPlugin.SwaggerModel;
 import frodez.config.swagger.util.SwaggerUtil;
 import frodez.constant.settings.PropertyKey;
 import frodez.util.beans.result.Result;
@@ -108,6 +108,7 @@ public class SwaggerConfig {
 	 * @date 2019-12-04
 	 */
 	private void typeConfig(Docket docket) {
+		docket.directModelSubstitute(Result.class, SwaggerModel.class);
 		docket.directModelSubstitute(LocalDate.class, String.class);
 		docket.additionalModels(new TypeResolver().resolve(SwaggerModel.class));
 	}

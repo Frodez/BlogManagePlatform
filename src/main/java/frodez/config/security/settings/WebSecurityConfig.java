@@ -77,17 +77,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		if (serverProperties.getSsl().isEnabled()) {
 			http.requiresChannel().anyRequest().requiresSecure();
 		}
-		http.cors().and().csrf().disable().exceptionHandling()
-			// 无权限时导向noAuthPoint
-			.authenticationEntryPoint(authentication).and().exceptionHandling().accessDeniedHandler(accessDenied).and()
-			.sessionManagement()
-			// 不创建session
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-			// 不控制的地址
-			.antMatchers(permitAllPathList.toArray(new String[permitAllPathList.size()])).permitAll().antMatchers(
-				HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated()
-			// 在密码验证过滤器前执行jwt过滤器
-			.and().addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).headers().cacheControl(); // 禁止缓存
+		http.cors();
+		http.csrf().disable();
+		// 无权限时导向noAuthPoint
+		http.exceptionHandling().authenticationEntryPoint(authentication);
+		http.exceptionHandling().accessDeniedHandler(accessDenied);
+		// 不创建session
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		//地址配置
+		var registry = http.authorizeRequests();
+		// 不控制的地址
+		registry.antMatchers(permitAllPathList.toArray(new String[permitAllPathList.size()])).permitAll();
+		registry.antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+		// 在密码验证过滤器前执行jwt过滤器
+		registry.anyRequest().authenticated();
+		// 禁止缓存
+		http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).headers().cacheControl();
 	}
 
 	/**

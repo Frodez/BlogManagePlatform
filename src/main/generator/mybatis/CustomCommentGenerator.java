@@ -218,14 +218,16 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 	}
 
 	private void resolveApiModelProperty(Field field, IntrospectedTable table, IntrospectedColumn column) {
-		String defaultValue = column.getDefaultValue();
 		String remark = column.getRemarks();
 		String apiModelProperty;
-		if (EmptyUtil.no(defaultValue)) {
-			apiModelProperty = "@ApiModelProperty(value = \"" + remark + "\"" + ", example = \"" + defaultValue + "\")";
-		} else {
-			apiModelProperty = "@ApiModelProperty(\"" + remark + "\")";
-		}
+		//swagger插件处理defaultValue
+		//      String defaultValue = column.getDefaultValue();
+		//		if (EmptyUtil.no(defaultValue)) {
+		//			apiModelProperty = "@ApiModelProperty(value = \"" + remark + "\"" + ", example = \"" + defaultValue + "\")";
+		//		} else {
+		//			apiModelProperty = "@ApiModelProperty(\"" + remark + "\")";
+		//		}
+		apiModelProperty = "@ApiModelProperty(\"" + remark + "\")";
 		field.addAnnotation(apiModelProperty);
 	}
 

@@ -1,7 +1,6 @@
 package frodez.service.user.impl;
 
-import frodez.config.aop.exception.annotation.CatchAndThrow;
-import frodez.config.aop.validation.annotation.Check;
+import frodez.config.aop.exception.annotation.Error;
 import frodez.config.security.util.UserUtil;
 import frodez.constant.enums.user.UserStatusEnum;
 import frodez.constant.errors.code.ErrorCode;
@@ -12,8 +11,6 @@ import frodez.service.user.facade.ILoginService;
 import frodez.service.user.facade.IUserService;
 import frodez.util.beans.result.Result;
 import java.util.Date;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2018-11-14
  */
 @Service
+@Error(ErrorCode.USER_SERVICE_ERROR)
 public class UserService implements IUserService {
 
 	@Autowired
@@ -36,11 +34,9 @@ public class UserService implements IUserService {
 	@Autowired
 	private ILoginService loginService;
 
-	@Check
-	@CatchAndThrow(errorCode = ErrorCode.USER_SERVICE_ERROR)
 	@Transactional
 	@Override
-	public Result register(@Valid @NotNull Doregister param) {
+	public Result register(Doregister param) {
 		User user = new User();
 		user.setCreateTime(new Date());
 		user.setName(param.getName());
@@ -60,7 +56,6 @@ public class UserService implements IUserService {
 	 * @author Frodez
 	 * @date 2019-03-15
 	 */
-	@CatchAndThrow(errorCode = ErrorCode.USER_SERVICE_ERROR)
 	@Transactional
 	@Override
 	public Result logOff() {

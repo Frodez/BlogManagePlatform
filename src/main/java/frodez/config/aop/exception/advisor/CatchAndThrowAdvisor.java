@@ -1,8 +1,11 @@
 package frodez.config.aop.exception.advisor;
 
+import frodez.config.aop.exception.ExceptionProperties;
 import frodez.config.aop.exception.annotation.CatchAndThrow;
+import frodez.config.aop.exception.annotation.Error;
 import frodez.constant.errors.code.ErrorCode;
 import frodez.constant.errors.code.ServiceException;
+import frodez.constant.errors.exception.CodeCheckException;
 import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.reflect.Method;
@@ -15,8 +18,10 @@ import org.springframework.aop.ClassFilter;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
@@ -74,14 +79,39 @@ public class CatchAndThrowAdvisor implements PointcutAdvisor {
 					 */
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
+						if (ExceptionProperties.autoConfig) {
+							if (AnnotationUtils.findAnnotation(targetClass, Error.class) == null) {
+								return false;
+							}
+							if (AnnotationUtils.findAnnotation(method, Transactional.class) != null) {
+								String methodName = ReflectUtil.getFullMethodName(method);
+								errorCodeCache.put(methodName, resolveErrorCode(method, targetClass));
+								return true;
+							} else {
+								return false;
+							}
+						}
 						//这里可以进行运行前检查
-						CatchAndThrow annotation = method.getAnnotation(CatchAndThrow.class);
+						CatchAndThrow annotation = AnnotationUtils.findAnnotation(method, CatchAndThrow.class);
 						if (annotation == null) {
 							return false;
 						}
 						String methodName = ReflectUtil.getFullMethodName(method);
-						errorCodeCache.put(methodName, annotation.errorCode());
+						errorCodeCache.put(methodName, resolveErrorCode(method, targetClass));
 						return true;
+					}
+
+					private ErrorCode resolveErrorCode(Method method, Class<?> targetClass) {
+						Error error = AnnotationUtils.findAnnotation(method, Error.class);
+						if (error != null) {
+							return error.value();
+						}
+						error = AnnotationUtils.findAnnotation(targetClass, Error.class);
+						if (error != null) {
+							return error.value();
+						}
+						String string = StrUtil.concat("方法", ReflectUtil.getFullMethodName(method), "或者类", targetClass.getName(), "上必须存在@Error注解!");
+						throw new CodeCheckException(string);
 					}
 
 					/**

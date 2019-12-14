@@ -1,5 +1,6 @@
 package frodez.service.user.facade;
 
+import frodez.config.aop.validation.annotation.Check;
 import frodez.dao.param.user.Doregister;
 import frodez.util.beans.result.Result;
 import javax.validation.Valid;
@@ -17,6 +18,7 @@ public interface IUserService {
 	 * @author Frodez
 	 * @date 2019-02-02
 	 */
+	@Check
 	Result register(@Valid @NotNull Doregister param);
 
 	/**

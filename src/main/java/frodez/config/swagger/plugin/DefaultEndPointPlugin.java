@@ -37,14 +37,14 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 @Component
 @Profile({ "dev", "test" })
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 300)
-public class DefaultApiOperationPlugin implements OperationBuilderPlugin {
+public class DefaultEndPointPlugin implements OperationBuilderPlugin {
 
 	private final DescriptionResolver descriptions;
 
 	private boolean useCustomerizedPluggins = false;
 
 	@Autowired
-	public DefaultApiOperationPlugin(DescriptionResolver descriptions, SwaggerProperties properties) {
+	public DefaultEndPointPlugin(DescriptionResolver descriptions, SwaggerProperties properties) {
 		this.descriptions = descriptions;
 		this.useCustomerizedPluggins = properties.getUseCustomerizedPluggins();
 	}

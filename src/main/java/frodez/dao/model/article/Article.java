@@ -24,91 +24,91 @@ import org.springframework.lang.Nullable;
 @Table(name = "tb_article")
 @ApiModel(description = "文章返回数据")
 public class Article implements Serializable {
-    
-    private static final long serialVersionUID = 1L;
 
-    /** 
-     * ID(不能为空)
-     */
-    @Id
-    @NotNull
-    @Column(name = "id")
-    @ApiModelProperty("ID")
-    private Long id;
+	private static final long serialVersionUID = 1L;
 
-    /** 
-     * 创建时间(不能为空)
-     */
-    @NotNull
-    @Column(name = "create_time")
-    @ApiModelProperty("创建时间")
-    private Date createTime;
+	/**
+	 * ID(不能为空)
+	 */
+	@Id
+	@NotNull
+	@Column(name = "id")
+	@ApiModelProperty("ID")
+	private Long id;
 
-    /** 
-     * 修改时间(不能为空)
-     */
-    @NotNull
-    @Column(name = "update_time")
-    @ApiModelProperty("修改时间")
-    private Date updateTime;
+	/**
+	 * 创建时间(不能为空)
+	 */
+	@NotNull
+	@Column(name = "create_time")
+	@ApiModelProperty("创建时间")
+	private Date createTime;
 
-    /** 
-     * 作者ID(不能为空)
-     */
-    @NotNull
-    @Column(name = "user_id")
-    @ApiModelProperty("作者ID")
-    private Long userId;
+	/**
+	 * 修改时间(不能为空)
+	 */
+	@NotNull
+	@Column(name = "update_time")
+	@ApiModelProperty("修改时间")
+	private Date updateTime;
 
-    /** 
-     * 可见角色最低等级(不能为空)
-     */
-    @NotNull
-    @Column(name = "permit_level")
-    @ApiModelProperty("可见角色最低等级")
-    private Byte permitLevel;
+	/**
+	 * 作者ID(不能为空)
+	 */
+	@NotNull
+	@Column(name = "user_id")
+	@ApiModelProperty("作者ID")
+	private Long userId;
 
-    /** 
-     * 是否被删除  1:未删除  2:已删除(不能为空,默认值:1)
-     */
-    @NotNull
-    @Column(name = "is_delete")
-    @ApiModelProperty(value = "是否被删除  1:未删除  2:已删除", example = "1")
-    private Byte isDelete = 1;
+	/**
+	 * 可见角色最低等级(不能为空)
+	 */
+	@NotNull
+	@Column(name = "permit_level")
+	@ApiModelProperty("可见角色最低等级")
+	private Byte permitLevel;
 
-    /** 
-     * 标题(不能为空)
-     */
-    @NotBlank
-    @Length(max = 127)
-    @Column(name = "title", length = 127)
-    @ApiModelProperty("标题")
-    private String title;
+	/**
+	 * 是否被删除 1:未删除 2:已删除(不能为空,默认值:1)
+	 */
+	@NotNull
+	@Column(name = "is_delete")
+	@ApiModelProperty(value = "是否被删除  1:未删除  2:已删除")
+	private Byte isDelete = 1;
 
-    /** 
-     * 简介
-     */
-    @Nullable
-    @Length(max = 255)
-    @Column(name = "description", length = 255)
-    @ApiModelProperty("简介")
-    private String description;
+	/**
+	 * 标题(不能为空)
+	 */
+	@NotBlank
+	@Length(max = 127)
+	@Column(name = "title", length = 127)
+	@ApiModelProperty("标题")
+	private String title;
 
-    /** 
-     * 标签
-     */
-    @Nullable
-    @Length(max = 255)
-    @Column(name = "tag", length = 255)
-    @ApiModelProperty("标签")
-    private String tag;
+	/**
+	 * 简介
+	 */
+	@Nullable
+	@Length(max = 255)
+	@Column(name = "description", length = 255)
+	@ApiModelProperty("简介")
+	private String description;
 
-    /** 
-     * 内容(不能为空)
-     */
-    @NotBlank
-    @Length(max = 65535)
-    @Column(name = "content", length = 65535)
-    @ApiModelProperty("内容")
-    private String content;
+	/**
+	 * 标签
+	 */
+	@Nullable
+	@Length(max = 255)
+	@Column(name = "tag", length = 255)
+	@ApiModelProperty("标签")
+	private String tag;
+
+	/**
+	 * 内容(不能为空)
+	 */
+	@NotBlank
+	@Length(max = 65535)
+	@Column(name = "content", length = 65535)
+	@ApiModelProperty("内容")
+	private String content;
 }
