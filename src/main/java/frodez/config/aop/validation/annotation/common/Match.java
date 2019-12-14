@@ -35,7 +35,7 @@ public @interface Match {
 	 * @author Frodez
 	 * @date 2019-04-13
 	 */
-	String regex();
+	String value();
 
 	/**
 	 * 正则表达式的模式
@@ -74,7 +74,7 @@ public @interface Match {
 		 */
 		@Override
 		public void initialize(Match enumValue) {
-			regex = enumValue.regex();
+			regex = enumValue.value();
 			flag = RegexUtil.transfer(enumValue.flags());
 		}
 

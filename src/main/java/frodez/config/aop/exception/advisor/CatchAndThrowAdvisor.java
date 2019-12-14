@@ -80,6 +80,9 @@ public class CatchAndThrowAdvisor implements PointcutAdvisor {
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
 						if (ExceptionProperties.autoConfig) {
+							if (AnnotationUtils.findAnnotation(targetClass, Error.class) == null) {
+								return false;
+							}
 							if (AnnotationUtils.findAnnotation(method, Transactional.class) != null) {
 								String methodName = ReflectUtil.getFullMethodName(method);
 								errorCodeCache.put(methodName, resolveErrorCode(method, targetClass));

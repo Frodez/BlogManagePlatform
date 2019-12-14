@@ -2,6 +2,7 @@ package frodez.service.user.facade;
 
 import frodez.config.aop.validation.annotation.Check;
 import frodez.constant.annotations.decoration.ServiceOnly;
+import frodez.constant.settings.DefPage;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.AddRole;
 import frodez.dao.param.user.QueryRolePermission;
@@ -15,6 +16,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * 权限信息服务
@@ -53,7 +55,7 @@ public interface IAuthorityService {
 	 * @date 2019-03-17
 	 */
 	@Check
-	Result getUserInfosByIds(@NotEmpty List<Long> userIds, boolean includeFobiddens);
+	Result getUserInfosByIds(@NotEmpty @Size(max = DefPage.MAX_SIZE) List<Long> userIds, boolean includeFobiddens);
 
 	/**
 	 * 根据用户名批量获取用户基本信息
@@ -61,7 +63,7 @@ public interface IAuthorityService {
 	 * @date 2019-03-17
 	 */
 	@Check
-	Result getUserInfosByNames(@NotEmpty List<String> userNames, boolean includeFobiddens);
+	Result getUserInfosByNames(@NotEmpty @Size(max = DefPage.MAX_SIZE) List<String> userNames, boolean includeFobiddens);
 
 	/**
 	 * 根据用户ID更新用户基本信息

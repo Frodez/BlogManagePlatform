@@ -111,7 +111,6 @@ public class UserInfo implements Serializable {
 	/**
 	 * 权限列表
 	 */
-	@ApiModelProperty(value = "权限列表")
 	private List<PermissionInfo> permissionList;
 
 }

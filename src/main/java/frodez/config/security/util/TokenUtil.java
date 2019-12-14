@@ -121,7 +121,6 @@ public class TokenUtil {
 	/**
 	 * 生成token
 	 * @author Frodez
-	 * @param UserDetails 用户信息
 	 * @date 2018-11-21
 	 */
 	public static String generate(String username, List<String> authorities) {
@@ -157,7 +156,6 @@ public class TokenUtil {
 	/**
 	 * 验证token,且一定考虑过期
 	 * @author Frodez
-	 * @param token
 	 * @date 2018-11-21
 	 */
 	public static UserDetails verifyWithNoExpired(String token) {

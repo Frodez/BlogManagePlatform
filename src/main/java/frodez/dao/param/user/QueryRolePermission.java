@@ -1,7 +1,6 @@
 package frodez.dao.param.user;
 
 import frodez.config.aop.validation.annotation.ValidateBean;
-import frodez.constant.settings.DefDesc;
 import frodez.util.beans.param.QueryPage;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -36,7 +35,6 @@ public class QueryRolePermission implements Serializable {
 	 * 分页查询参数
 	 */
 	@Valid
-	@ApiModelProperty(DefDesc.Message.PAGE_QUERY)
 	private QueryPage page;
 
 }

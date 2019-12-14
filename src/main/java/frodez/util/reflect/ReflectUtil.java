@@ -150,7 +150,7 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-12-08
 	 */
-	public void trySet(Class<?> klass, String fieldName, Object target, Object value) {
+	public static void trySet(Class<?> klass, String fieldName, Object target, Object value) {
 		trySet(klass, fieldName, target, value, true);
 	}
 
@@ -161,7 +161,7 @@ public class ReflectUtil {
 	 * @date 2019-12-08
 	 */
 	@SneakyThrows
-	public void trySet(Class<?> klass, String fieldName, Object target, Object value, boolean reviveAccessible) {
+	public static void trySet(Class<?> klass, String fieldName, Object target, Object value, boolean reviveAccessible) {
 		Assert.notNull(klass, "klass must not be null");
 		Assert.notNull(fieldName, "fieldName must not be null");
 		Assert.notNull(target, "target must not be null");
@@ -183,7 +183,7 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-12-08
 	 */
-	public void trySet(Field field, Object target, Object value) {
+	public static void trySet(Field field, Object target, Object value) {
 		trySet(field, target, value, true);
 	}
 
@@ -194,7 +194,7 @@ public class ReflectUtil {
 	 * @date 2019-12-08
 	 */
 	@SneakyThrows
-	public void trySet(Field field, Object target, Object value, boolean reviveAccessible) {
+	public static void trySet(Field field, Object target, Object value, boolean reviveAccessible) {
 		Assert.notNull(field, "field must not be null");
 		Assert.notNull(target, "target must not be null");
 		Assert.notNull(value, "value must not be null");
@@ -214,7 +214,7 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-12-08
 	 */
-	public Object tryGet(Class<?> klass, String fieldName, Object target) {
+	public static Object tryGet(Class<?> klass, String fieldName, Object target) {
 		return tryGet(klass, fieldName, target, true);
 	}
 
@@ -225,7 +225,7 @@ public class ReflectUtil {
 	 * @date 2019-12-08
 	 */
 	@SneakyThrows
-	public Object tryGet(Class<?> klass, String fieldName, Object target, boolean reviveAccessible) {
+	public static Object tryGet(Class<?> klass, String fieldName, Object target, boolean reviveAccessible) {
 		Assert.notNull(klass, "klass must not be null");
 		Assert.notNull(fieldName, "fieldName must not be null");
 		Assert.notNull(target, "target must not be null");
@@ -247,7 +247,7 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-12-08
 	 */
-	public Object tryGet(Field field, Object target) {
+	public static Object tryGet(Field field, Object target) {
 		return tryGet(field, target, true);
 	}
 
@@ -258,7 +258,7 @@ public class ReflectUtil {
 	 * @date 2019-12-08
 	 */
 	@SneakyThrows
-	public Object tryGet(Field field, Object target, boolean reviveAccessible) {
+	public static Object tryGet(Field field, Object target, boolean reviveAccessible) {
 		Assert.notNull(field, "field must not be null");
 		Assert.notNull(target, "target must not be null");
 		if (reviveAccessible) {

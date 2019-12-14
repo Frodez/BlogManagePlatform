@@ -1,7 +1,9 @@
 package frodez.config.aop.validation.annotation.common;
 
 import frodez.config.validator.ValidationUtil;
+import frodez.constant.annotations.info.Description;
 import frodez.constant.settings.DefEnum;
+import frodez.constant.settings.DefStr;
 import frodez.util.common.PrimitiveUtil;
 import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
@@ -10,11 +12,16 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
 import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
+import org.springframework.cglib.reflect.FastMethod;
+import springfox.documentation.service.AllowableListValues;
 
 /**
  * 枚举类型映射注解 <br>
@@ -75,6 +82,38 @@ public @interface MapEnum {
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
+
+	@UtilityClass
+	public static class MapEnumHelper {
+
+		@SneakyThrows
+		public static String getDescs(Class<?> klass, String descMethod) {
+			FastMethod method = ReflectUtil.getFastMethod(klass, descMethod);
+			String descs = method.invoke(null, ReflectUtil.EMPTY_ARRAY_OBJECTS).toString();
+			String result = String.join(" ", getName(klass), descs);
+			return result;
+		}
+
+		public static String getName(Class<?> klass) {
+			Description description = klass.getAnnotation(Description.class);
+			return description == null ? DefStr.EMPTY : description.name();
+		}
+
+		@SneakyThrows
+		public static AllowableListValues getAllowableValues(Class<?> klass) {
+			FastMethod method = ReflectUtil.getFastMethod(klass, DefEnum.VALS_METHOD_NAME);
+			List<?> object = (List<?>) method.invoke(null, ReflectUtil.EMPTY_ARRAY_OBJECTS);
+			return new AllowableListValues(object.stream().map((item) -> item.toString()).collect(Collectors.toList()), object.get(0).getClass()
+				.getSimpleName());
+		}
+
+		@SneakyThrows
+		public static Object getDefaultValue(Class<?> klass) {
+			FastMethod method = ReflectUtil.getFastMethod(klass, DefEnum.DEFAULT_VALUE_METHOD_NAME);
+			return method.invoke(null, ReflectUtil.EMPTY_ARRAY_OBJECTS);
+		}
+
+	}
 
 	/**
 	 * 枚举验证器

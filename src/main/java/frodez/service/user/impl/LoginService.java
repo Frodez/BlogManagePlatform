@@ -1,7 +1,9 @@
 package frodez.service.user.impl;
 
+import frodez.config.aop.exception.annotation.Error;
 import frodez.config.security.util.AuthorityUtil;
 import frodez.config.security.util.TokenUtil;
+import frodez.constant.errors.code.ErrorCode;
 import frodez.dao.param.user.DoLogin;
 import frodez.dao.param.user.DoRefresh;
 import frodez.dao.result.user.PermissionInfo;
@@ -31,6 +33,7 @@ import org.springframework.stereotype.Service;
  * @date 2018-11-14
  */
 @Service
+@Error(ErrorCode.LOGIN_SERVICE_ERROR)
 public class LoginService implements ILoginService {
 
 	/**
