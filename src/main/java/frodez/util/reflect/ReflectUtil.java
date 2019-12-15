@@ -12,6 +12,7 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.cglib.reflect.FastClass;
 import org.springframework.cglib.reflect.FastMethod;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
@@ -150,7 +151,7 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-12-08
 	 */
-	public static void trySet(Class<?> klass, String fieldName, Object target, Object value) {
+	public static void trySet(Class<?> klass, String fieldName, @Nullable Object target, Object value) {
 		trySet(klass, fieldName, target, value, true);
 	}
 
@@ -161,19 +162,18 @@ public class ReflectUtil {
 	 * @date 2019-12-08
 	 */
 	@SneakyThrows
-	public static void trySet(Class<?> klass, String fieldName, Object target, Object value, boolean reviveAccessible) {
+	public static void trySet(Class<?> klass, String fieldName, Object target, @Nullable Object value, boolean reviveAccessible) {
 		Assert.notNull(klass, "klass must not be null");
 		Assert.notNull(fieldName, "fieldName must not be null");
 		Assert.notNull(target, "target must not be null");
-		Assert.notNull(value, "value must not be null");
 		Field field = klass.getDeclaredField(fieldName);
 		if (reviveAccessible) {
 			boolean accessible = field.canAccess(target);
-			field.trySetAccessible();
+			field.setAccessible(true);
 			field.set(target, value);
 			field.setAccessible(accessible);
 		} else {
-			field.trySetAccessible();
+			field.setAccessible(true);
 			field.set(target, value);
 		}
 	}
@@ -183,7 +183,7 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-12-08
 	 */
-	public static void trySet(Field field, Object target, Object value) {
+	public static void trySet(Field field, Object target, @Nullable Object value) {
 		trySet(field, target, value, true);
 	}
 
@@ -194,17 +194,16 @@ public class ReflectUtil {
 	 * @date 2019-12-08
 	 */
 	@SneakyThrows
-	public static void trySet(Field field, Object target, Object value, boolean reviveAccessible) {
+	public static void trySet(Field field, Object target, @Nullable Object value, boolean reviveAccessible) {
 		Assert.notNull(field, "field must not be null");
 		Assert.notNull(target, "target must not be null");
-		Assert.notNull(value, "value must not be null");
 		if (reviveAccessible) {
 			boolean accessible = field.canAccess(target);
-			field.trySetAccessible();
+			field.setAccessible(true);
 			field.set(target, value);
 			field.setAccessible(accessible);
 		} else {
-			field.trySetAccessible();
+			field.setAccessible(true);
 			field.set(target, value);
 		}
 	}
@@ -232,12 +231,12 @@ public class ReflectUtil {
 		Field field = klass.getDeclaredField(fieldName);
 		if (reviveAccessible) {
 			boolean accessible = field.canAccess(target);
-			field.trySetAccessible();
+			field.setAccessible(true);
 			Object result = field.get(target);
 			field.setAccessible(accessible);
 			return result;
 		} else {
-			field.trySetAccessible();
+			field.setAccessible(true);
 			return field.get(target);
 		}
 	}
@@ -263,12 +262,12 @@ public class ReflectUtil {
 		Assert.notNull(target, "target must not be null");
 		if (reviveAccessible) {
 			boolean accessible = field.canAccess(target);
-			field.trySetAccessible();
+			field.setAccessible(true);
 			Object result = field.get(target);
 			field.setAccessible(accessible);
 			return result;
 		} else {
-			field.trySetAccessible();
+			field.setAccessible(true);
 			return field.get(target);
 		}
 	}

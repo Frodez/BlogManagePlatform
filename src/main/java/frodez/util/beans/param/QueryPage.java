@@ -72,7 +72,7 @@ public class QueryPage implements IPage, Serializable {
 	@Getter
 	@NotNull
 	@Min(0)
-	@ApiModelProperty(value = "页码数", example = "5")
+	@ApiModelProperty(value = "页码数")
 	private Integer pageNum;
 
 	/**
@@ -82,7 +82,7 @@ public class QueryPage implements IPage, Serializable {
 	@NotNull
 	@Min(1)
 	@Max(DefPage.MAX_SIZE)
-	@ApiModelProperty(value = "单页容量", example = "20")
+	@ApiModelProperty(value = "单页容量")
 	private Integer pageSize;
 
 	/**

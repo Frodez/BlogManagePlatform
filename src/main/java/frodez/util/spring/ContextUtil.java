@@ -14,7 +14,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -116,16 +115,24 @@ public class ContextUtil implements ApplicationContextAware {
 	 */
 	@SneakyThrows
 	public static List<Class<?>> classes(String pattern) {
-		ResourcePatternResolver patternResolver = new PathMatchingResourcePatternResolver();
-		MetadataReaderFactory readerFactory = new CachingMetadataReaderFactory(patternResolver);
-		String packagePath = ClassUtils.convertClassNameToResourcePath(SystemPropertyUtils.resolvePlaceholders(pattern));
-		packagePath = StrUtil.concat(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, packagePath, DefStr.CLASS_SUFFIX);
-		List<Resource> resources = StreamUtil.filterList(patternResolver.getResources(packagePath), Resource::isReadable);
+		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+		List<Resource> resources = StreamUtil.filterList(resolver.getResources(getPackagePath(pattern)), Resource::isReadable);
 		List<Class<?>> classes = new ArrayList<>();
+		MetadataReaderFactory readerFactory = bean(MetadataReaderFactory.class);
 		for (Resource resource : resources) {
 			classes.add(ClassUtils.forName(readerFactory.getMetadataReader(resource).getClassMetadata().getClassName(), null));
 		}
 		return classes;
+	}
+
+	/**
+	 * 转换成包名,ant风格
+	 * @author Frodez
+	 * @date 2019-12-14
+	 */
+	public static String getPackagePath(String pattern) {
+		String packagePath = ClassUtils.convertClassNameToResourcePath(SystemPropertyUtils.resolvePlaceholders(pattern));
+		return StrUtil.concat(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX, packagePath, DefStr.CLASS_SUFFIX);
 	}
 
 }

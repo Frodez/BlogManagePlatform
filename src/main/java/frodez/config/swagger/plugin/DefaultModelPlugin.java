@@ -4,11 +4,15 @@ import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.aop.validation.annotation.common.MapEnum.MapEnumHelper;
 import frodez.config.aop.validation.annotation.common.Match;
+import frodez.config.aop.validation.annotation.special.IdCard;
+import frodez.config.aop.validation.annotation.special.Mobile;
 import frodez.config.swagger.SwaggerProperties;
 import frodez.constant.settings.DefStr;
+import frodez.util.common.EmptyUtil;
 import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -98,6 +102,10 @@ public class DefaultModelPlugin implements ModelPropertyBuilderPlugin {
 		Object retVal = ReflectUtil.tryGet(field, ReflectUtil.instance(modelClass));
 		if (retVal != null) {
 			ModelPropertyBuilder builder = context.getBuilder();
+			ApiModelProperty modelProperty = field.getAnnotation(ApiModelProperty.class);
+			if (modelProperty != null && EmptyUtil.no(modelProperty.example())) {
+				return;
+			}
 			builder.example(retVal);
 			builder.defaultValue(String.valueOf(retVal));
 		}
@@ -131,6 +139,14 @@ public class DefaultModelPlugin implements ModelPropertyBuilderPlugin {
 			description = String.join(",", description, resolve);
 		}
 		resolve = resolveEmail(field);
+		if (resolve != null) {
+			description = String.join(",", description, resolve);
+		}
+		resolve = resolveIDCard(field);
+		if (resolve != null) {
+			description = String.join(",", description, resolve);
+		}
+		resolve = resolveMobile(field);
 		if (resolve != null) {
 			description = String.join(",", description, resolve);
 		}
@@ -264,6 +280,14 @@ public class DefaultModelPlugin implements ModelPropertyBuilderPlugin {
 
 	private String resolveEmail(Field field) {
 		return field.isAnnotationPresent(Email.class) ? "必须为合法的email" : null;
+	}
+
+	private String resolveIDCard(Field field) {
+		return field.isAnnotationPresent(IdCard.class) ? "必须为合法的身份证号" : null;
+	}
+
+	private String resolveMobile(Field field) {
+		return field.isAnnotationPresent(Mobile.class) ? "必须为合法的手机号" : null;
 	}
 
 }

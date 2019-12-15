@@ -54,7 +54,7 @@ public class RoleDetail implements Serializable {
 	@Min(0)
 	@Max(9)
 	@NotNull
-	@ApiModelProperty(value = "角色等级  0-9  0最高,9最低", example = "0")
+	@ApiModelProperty(value = "角色等级  0-9  0最高,9最低")
 	private Byte level = 0;
 
 	/**

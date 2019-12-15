@@ -83,6 +83,11 @@ public @interface MapEnum {
 
 	Class<? extends Payload>[] payload() default {};
 
+	/**
+	 * MapEnumHelper工具类,仅供MapEnum相关功能使用!!!
+	 * @author Frodez
+	 * @date 2019-12-15
+	 */
 	@UtilityClass
 	public static class MapEnumHelper {
 
