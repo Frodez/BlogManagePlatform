@@ -1,7 +1,6 @@
 package frodez.config.swagger.plugin;
 
 import static springfox.documentation.schema.ResolvedTypes.modelRefFactory;
-import static springfox.documentation.spi.schema.contexts.ModelContext.returnValue;
 
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;
@@ -111,8 +110,7 @@ public class SuccessPlugin implements OperationBuilderPlugin, OperationModelsPro
 	}
 
 	private ModelReference resolveModel(OperationContext context, Success success) {
-		ModelContext modelContext = returnValue(context.getGroupName(), success.value(), context.getDocumentationType(), context
-			.getAlternateTypeProvider(), context.getGenericsNamingStrategy(), context.getIgnorableParameterTypes());
+		ModelContext modelContext = SwaggerUtil.resolveModelContext(context, success.value());
 		ResolvedType type = context.alternateFor(SwaggerUtil.resolvedType(typeResolver, success));
 		return modelRefFactory(modelContext, typeNameExtractor).apply(type);
 	}

@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.annotation.AsyncResult;
@@ -669,22 +670,23 @@ public final class Result implements Serializable {
 	 * @author Frodez
 	 * @date 2019-12-03
 	 */
+	@UtilityClass
 	private static class ResultHelper {
 
 		/**
 		 * 默认类型实例
 		 */
-		private static transient final EnumMap<ResultEnum, Result> DEFAULT_CACHE = new EnumMap<>(ResultEnum.class);
+		static transient final EnumMap<ResultEnum, Result> DEFAULT_CACHE = new EnumMap<>(ResultEnum.class);
 
 		/**
 		 * jackson writer
 		 */
-		private static transient ObjectWriter writer;
+		static transient ObjectWriter writer;
 
 		/**
 		 * jackson writer
 		 */
-		private static transient ObjectReader reader;
+		static transient ObjectReader reader;
 
 		static {
 			writer = JSONUtil.mapper().writerFor(Result.class);

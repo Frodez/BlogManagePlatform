@@ -1,12 +1,16 @@
 package frodez.config.swagger.util;
 
+import static springfox.documentation.spi.schema.contexts.ModelContext.returnValue;
+
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;
+import com.google.common.collect.ImmutableSet;
 import frodez.config.swagger.annotation.Success;
 import frodez.config.swagger.annotation.Success.Container;
 import frodez.config.swagger.plugin.SuccessPlugin.SwaggerModel;
 import frodez.util.beans.result.PageData;
 import frodez.util.beans.result.Result.ResultEnum;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +20,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.Assert;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.schema.AlternateTypeProvider;
+import springfox.documentation.spi.schema.GenericTypeNamingStrategy;
+import springfox.documentation.spi.schema.contexts.ModelContext;
+import springfox.documentation.spi.service.contexts.OperationContext;
 
 /**
  * swagger工具类
@@ -28,6 +37,20 @@ public class SwaggerUtil {
 	private static Function<? super ResultEnum, ? extends String> mapper = (iter) -> {
 		return iter.getDesc() + ",自定义状态码:" + iter.getVal();
 	};
+
+	/**
+	 * 从OperationContext转换出ModelContext
+	 * @author Frodez
+	 * @date 2019-12-15
+	 */
+	public static ModelContext resolveModelContext(OperationContext context, Type type) {
+		String group = context.getGroupName();
+		DocumentationType documentation = context.getDocumentationType();
+		AlternateTypeProvider provider = context.getAlternateTypeProvider();
+		GenericTypeNamingStrategy strategy = context.getGenericsNamingStrategy();
+		@SuppressWarnings("rawtypes") ImmutableSet<Class> types = context.getIgnorableParameterTypes();
+		return returnValue(group, type, documentation, provider, strategy, types);
+	}
 
 	/**
 	 * 生成说明
