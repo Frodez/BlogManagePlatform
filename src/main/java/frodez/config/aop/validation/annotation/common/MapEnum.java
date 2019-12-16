@@ -6,6 +6,7 @@ import frodez.constant.settings.DefEnum;
 import frodez.constant.settings.DefStr;
 import frodez.util.common.PrimitiveUtil;
 import frodez.util.common.StrUtil;
+import frodez.util.common.StreamUtil;
 import frodez.util.reflect.ReflectUtil;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -13,7 +14,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -30,8 +30,10 @@ import springfox.documentation.service.AllowableListValues;
  * <strong>建议:枚举类上增加@EnumCheckable注解,以增强可读性</strong><br>
  * <strong>枚举类示例代码请参见@EnumCheckable注解的javadoc.</strong><br>
  * 注解使用范例:<br>
- * <span>@MapEnum(message = "状态非法!", type = UserStatusEnum.class, method = "of", descMethod = "getDescs")</span><br>
- * private Byte status;<br>
+ * <code>
+ * &#64;MapEnum(message = "状态非法!", value = UserStatusEnum.class, method = "of", descMethod = "getDescs")<br>
+ * private Byte status;
+ * </code><br>
  * 以下为注解参数说明:<br>
  * message: String类型,代表验证失败时的返回信息<br>
  * type: Class类型,代表对应的枚举类.<br>
@@ -83,14 +85,19 @@ public @interface MapEnum {
 
 	Class<? extends Payload>[] payload() default {};
 
+	/**
+	 * MapEnumHelper工具类,仅供MapEnum相关功能使用!!!
+	 * @author Frodez
+	 * @date 2019-12-15
+	 */
 	@UtilityClass
 	public static class MapEnumHelper {
 
 		@SneakyThrows
 		public static String getDescs(Class<?> klass, String descMethod) {
 			FastMethod method = ReflectUtil.getFastMethod(klass, descMethod);
-			String descs = method.invoke(null, ReflectUtil.EMPTY_ARRAY_OBJECTS).toString();
-			String result = String.join(" ", getName(klass), descs);
+			Object descs = method.invoke(null, ReflectUtil.EMPTY_ARRAY);
+			String result = String.join(" ", getName(klass), descs.toString());
 			return result;
 		}
 
@@ -102,15 +109,15 @@ public @interface MapEnum {
 		@SneakyThrows
 		public static AllowableListValues getAllowableValues(Class<?> klass) {
 			FastMethod method = ReflectUtil.getFastMethod(klass, DefEnum.VALS_METHOD_NAME);
-			List<?> object = (List<?>) method.invoke(null, ReflectUtil.EMPTY_ARRAY_OBJECTS);
-			return new AllowableListValues(object.stream().map((item) -> item.toString()).collect(Collectors.toList()), object.get(0).getClass()
-				.getSimpleName());
+			List<?> object = (List<?>) method.invoke(null, ReflectUtil.EMPTY_ARRAY);
+			String type = object.get(0).getClass().getSimpleName();
+			return new AllowableListValues(StreamUtil.list(object, (item) -> item.toString()), type);
 		}
 
 		@SneakyThrows
 		public static Object getDefaultValue(Class<?> klass) {
 			FastMethod method = ReflectUtil.getFastMethod(klass, DefEnum.DEFAULT_VALUE_METHOD_NAME);
-			return method.invoke(null, ReflectUtil.EMPTY_ARRAY_OBJECTS);
+			return method.invoke(null, ReflectUtil.EMPTY_ARRAY);
 		}
 
 	}
@@ -171,8 +178,9 @@ public @interface MapEnum {
 			if (ReflectUtil.getFastMethod(klass, method, paramType).invoke(null, params) != null) {
 				return true;
 			} else {
-				ValidationUtil.changeMessage(context, StrUtil.concat(value.toString(), "不符合要求,有效值为", ReflectUtil.getFastMethod(klass, descMethod)
-					.invoke(null, ReflectUtil.EMPTY_ARRAY_OBJECTS).toString()));
+				Object valids = ReflectUtil.getFastMethod(klass, descMethod).invoke(null, ReflectUtil.EMPTY_ARRAY);
+				String message = StrUtil.concat(value.toString(), "不符合要求,有效值为", valids.toString());
+				ValidationUtil.changeMessage(context, message);
 				return false;
 			}
 		}

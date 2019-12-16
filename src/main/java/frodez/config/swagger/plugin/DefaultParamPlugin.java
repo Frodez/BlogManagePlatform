@@ -6,11 +6,14 @@ import static springfox.documentation.swagger.common.SwaggerPluginSupport.SWAGGE
 
 import com.fasterxml.classmate.ResolvedType;
 import frodez.config.aop.validation.annotation.common.MapEnum;
+import frodez.config.aop.validation.annotation.common.MapEnum.MapEnumHelper;
 import frodez.config.swagger.SwaggerProperties;
+import frodez.constant.settings.DefStr;
 import frodez.util.common.StrUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiParam;
 import java.util.Set;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +30,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.builders.ParameterBuilder;
+import springfox.documentation.schema.Example;
 import springfox.documentation.service.ResolvedMethodParameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.schema.EnumTypeDeterminer;
 import springfox.documentation.spi.service.ParameterBuilderPlugin;
-import springfox.documentation.spi.service.contexts.OperationContext;
 import springfox.documentation.spi.service.contexts.ParameterContext;
 import springfox.documentation.spring.web.DescriptionResolver;
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
@@ -68,73 +71,55 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 
 	@Override
 	public void apply(ParameterContext context) {
-		context.parameterBuilder().parameterType(resolveParameterType(context));
-		ResolvedMethodParameter methodParameter = context.resolvedMethodParameter();
-		if (methodParameter.hasParameterAnnotation(ApiParam.class)) {
+		resolveParameterType(context);
+		if (context.resolvedMethodParameter().hasParameterAnnotation(ApiParam.class)) {
 			return;
 		}
-		Class<?> parameterClass = methodParameter.getParameterType().getErasedType();
-		ApiModel apiModel = parameterClass.getAnnotation(ApiModel.class);
-		if (apiModel == null) {
-			if (!BeanUtils.isSimpleProperty(parameterClass)) {
-				warn(context, parameterClass);
-			}
-			return;
-		}
-		setDefaultApiParam(context, apiModel);
+		resolveMapEnum(context);
+		resolveApiParam(context);
 	}
 
-	private static void warn(ParameterContext context, Class<?> parameterClass) {
-		String pattern = context.getOperationContext().requestMappingPattern();
-		String parameterName = parameterClass.getCanonicalName();
-		log.warn(StrUtil.concat(pattern, "的参数", parameterName, "既未配置@", param, "注解,也未配置@", model, "注解"));
-	}
-
-	private void setDefaultApiParam(ParameterContext context, ApiModel annotation) {
-		ParameterBuilder builder = context.parameterBuilder();
-		builder.name(annotation.description());
-		builder.description(descriptions.resolve(annotation.description()));
-		builder.allowMultiple(false);
-		builder.allowEmptyValue(false);
-		builder.hidden(false);
-		builder.collectionFormat("");
-		builder.order(SWAGGER_PLUGIN_ORDER);
-	}
-
-	private String resolveParameterType(ParameterContext context) {
+	private void resolveParameterType(ParameterContext context) {
 		ResolvedMethodParameter parameter = context.resolvedMethodParameter();
 		ResolvedType type = context.alternateFor(parameter.getParameterType());
 		//Multi-part file trumps any other annotations
 		if (isFileType(type) || isListOfFiles(type)) {
-			return "form";
+			context.parameterBuilder().parameterType("form");
 		}
 		if (parameter.hasParameterAnnotation(PathVariable.class)) {
-			return "path";
+			context.parameterBuilder().parameterType("path");
 		}
 		if (parameter.hasParameterAnnotation(RequestBody.class)) {
-			return "body";
+			context.parameterBuilder().parameterType("body");
 		}
 		if (parameter.hasParameterAnnotation(RequestPart.class)) {
-			return "formData";
+			context.parameterBuilder().parameterType("formData");
 		}
 		if (parameter.hasParameterAnnotation(RequestParam.class)) {
-			OperationContext operationContext = context.getOperationContext();
-			return determineScalarParameterType(operationContext.consumes(), operationContext.httpMethod());
+			Set<? extends MediaType> consumes = context.getOperationContext().consumes();
+			HttpMethod method = context.getOperationContext().httpMethod();
+			if (consumes.contains(MediaType.APPLICATION_FORM_URLENCODED) && method == HttpMethod.POST) {
+				context.parameterBuilder().parameterType("form");
+			} else if (consumes.contains(MediaType.MULTIPART_FORM_DATA) && method == HttpMethod.POST) {
+				context.parameterBuilder().parameterType("formData");
+			} else {
+				context.parameterBuilder().parameterType("query");
+			}
 		}
 		if (parameter.hasParameterAnnotation(RequestHeader.class)) {
-			return "header";
+			context.parameterBuilder().parameterType("header");
 		}
 		if (parameter.hasParameterAnnotation(ModelAttribute.class)) {
 			log.warn(StrUtil.concat("@ModelAttribute annotated parameters should have already been expanded via ",
 				"the ExpandedParameterBuilderPlugin"));
 		}
 		if (parameter.hasParameterAnnotation(ApiParam.class)) {
-			return "query";
+			context.parameterBuilder().parameterType("query");
 		}
 		if (parameter.hasParameterAnnotation(MapEnum.class)) {
-			return "query";
+			context.parameterBuilder().parameterType("query");
 		}
-		return "body";
+		context.parameterBuilder().parameterType("body");
 	}
 
 	private boolean isListOfFiles(ResolvedType parameterType) {
@@ -145,14 +130,43 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 		return MultipartFile.class.isAssignableFrom(parameterType.getErasedType());
 	}
 
-	private String determineScalarParameterType(Set<? extends MediaType> consumes, HttpMethod method) {
-		String parameterType = "query";
-		if (consumes.contains(MediaType.APPLICATION_FORM_URLENCODED) && method == HttpMethod.POST) {
-			parameterType = "form";
-		} else if (consumes.contains(MediaType.MULTIPART_FORM_DATA) && method == HttpMethod.POST) {
-			parameterType = "formData";
+	private void resolveApiParam(ParameterContext context) {
+		Class<?> parameterClass = context.resolvedMethodParameter().getParameterType().getErasedType();
+		ApiModel apiModel = parameterClass.getAnnotation(ApiModel.class);
+		if (apiModel == null) {
+			if (!BeanUtils.isSimpleProperty(parameterClass)) {
+				warn(context, parameterClass);
+			}
+			return;
 		}
-		return parameterType;
+		ParameterBuilder builder = context.parameterBuilder();
+		builder.name(apiModel.description());
+		builder.description(descriptions.resolve(apiModel.description()));
+		builder.allowMultiple(false);
+		builder.allowEmptyValue(false);
+		builder.hidden(false);
+		builder.collectionFormat("");
+		builder.order(SWAGGER_PLUGIN_ORDER);
+	}
+
+	private static void warn(ParameterContext context, Class<?> parameterClass) {
+		String pattern = context.getOperationContext().requestMappingPattern();
+		String parameterName = parameterClass.getCanonicalName();
+		log.warn(StrUtil.concat(pattern, "的参数", parameterName, "既未配置@", param, "注解,也未配置@", model, "注解"));
+	}
+
+	@SneakyThrows
+	private void resolveMapEnum(ParameterContext context) {
+		MapEnum enumParam = context.resolvedMethodParameter().findAnnotation(MapEnum.class).orNull();
+		if (enumParam != null) {
+			String descs = MapEnumHelper.getDescs(enumParam.value(), enumParam.descMethod());
+			Object defaultValue = MapEnumHelper.getDefaultValue(enumParam.value());
+			ParameterBuilder builder = context.parameterBuilder();
+			builder.description(descs);
+			builder.scalarExample(new Example(defaultValue == null ? DefStr.EMPTY : defaultValue.toString()));
+			builder.allowableValues(MapEnumHelper.getAllowableValues(enumParam.value()));
+			builder.defaultValue(defaultValue == null ? DefStr.EMPTY : defaultValue.toString());
+		}
 	}
 
 }

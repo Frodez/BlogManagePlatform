@@ -5,9 +5,13 @@ import frodez.config.security.settings.SecurityProperties;
 import frodez.config.swagger.plugin.SuccessPlugin.SwaggerModel;
 import frodez.config.swagger.util.SwaggerUtil;
 import frodez.constant.settings.PropertyKey;
+import frodez.util.beans.param.QueryPage;
+import frodez.util.beans.result.PageData;
 import frodez.util.beans.result.Result;
 import frodez.util.spring.PropertyUtil;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -108,9 +112,16 @@ public class SwaggerConfig {
 	 * @date 2019-12-04
 	 */
 	private void typeConfig(Docket docket) {
+		//将模型重定向
 		docket.directModelSubstitute(Result.class, SwaggerModel.class);
 		docket.directModelSubstitute(LocalDate.class, String.class);
-		docket.additionalModels(new TypeResolver().resolve(SwaggerModel.class));
+		docket.directModelSubstitute(LocalDateTime.class, String.class);
+		docket.directModelSubstitute(LocalTime.class, String.class);
+		TypeResolver resolver = new TypeResolver();
+		//有扫描包之外的模型,则在此配置
+		docket.additionalModels(resolver.resolve(QueryPage.class));
+		docket.additionalModels(resolver.resolve(PageData.class));
+		docket.additionalModels(resolver.resolve(SwaggerModel.class));
 	}
 
 	/**
