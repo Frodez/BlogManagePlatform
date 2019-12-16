@@ -24,7 +24,7 @@ import org.springframework.util.Assert;
 @UtilityClass
 public class ReflectUtil {
 
-	public static final Object[] EMPTY_ARRAY_OBJECTS = new Object[] { null };
+	public static final Object[] EMPTY_ARRAY = new Object[] { null };
 
 	private static final Map<Class<?>, Pair<FastClass, FastMethod[]>> CGLIB_CACHE = new ConcurrentHashMap<>();
 

@@ -164,7 +164,7 @@ public class BeanUtil {
 		List<FastMethod> methods = setters(bean.getClass());
 		int length = methods.size();
 		for (int i = 0; i < length; i++) {
-			methods.get(i).invoke(bean, ReflectUtil.EMPTY_ARRAY_OBJECTS);
+			methods.get(i).invoke(bean, ReflectUtil.EMPTY_ARRAY);
 		}
 	}
 
@@ -289,7 +289,7 @@ public class BeanUtil {
 		List<FastMethod> methods = defaultNotNullSetters(bean);
 		int length = methods.size();
 		for (int i = 0; i < length; i++) {
-			methods.get(i).invoke(bean, ReflectUtil.EMPTY_ARRAY_OBJECTS);
+			methods.get(i).invoke(bean, ReflectUtil.EMPTY_ARRAY);
 		}
 		return bean;
 	}

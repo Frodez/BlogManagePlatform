@@ -64,9 +64,9 @@ public class ValidationUtil {
 	 * @author Frodez
 	 * @date 2019-05-16
 	 */
-	public static ConstraintValidatorContext changeMessage(ConstraintValidatorContext context, String message) {
+	public static void changeMessage(ConstraintValidatorContext context, String message) {
 		context.disableDefaultConstraintViolation();
-		return context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+		context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
 	}
 
 	/**
