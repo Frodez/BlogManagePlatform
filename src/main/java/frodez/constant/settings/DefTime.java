@@ -40,6 +40,11 @@ public class DefTime {
 	public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
 	/**
+	 * 默认精细时间格式
+	 */
+	public static final String PRECISIVE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
+
+	/**
 	 * 默认日期类型格式化器
 	 */
 	public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DefTime.DATE_PATTERN);
@@ -53,5 +58,10 @@ public class DefTime {
 	 * 默认日期——时间类型格式化器
 	 */
 	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DefTime.DATE_TIME_PATTERN);
+
+	/**
+	 * 默认精细时间类型格式化器
+	 */
+	public static final DateTimeFormatter PRECISIVE_FORMATTER = DateTimeFormatter.ofPattern(DefTime.PRECISIVE_PATTERN);
 
 }

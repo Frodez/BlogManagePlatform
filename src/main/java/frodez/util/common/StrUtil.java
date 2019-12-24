@@ -4,7 +4,10 @@ import frodez.constant.settings.DefStr;
 import java.lang.reflect.Method;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -30,7 +33,6 @@ public class StrUtil {
 	}
 
 	public static void main(String[] args) {
-
 	}
 
 	/**
@@ -107,13 +109,14 @@ public class StrUtil {
 	}
 
 	/**
-	 * 优化式join,专门处理null和空字符串
+	 * 优雅join,专门处理null和空字符串<br>
+	 * <strong>如果不需要处理null和空字符串,请不要用本方法!!!</strong>
 	 * @author Frodez
 	 * @date 2019-12-14
 	 */
 	public static String join(CharSequence delimiter, CharSequence... elements) {
 		CharSequence[] strings = EmptyUtil.trim(elements);
-		return strings.length == 0 ? null : String.join(delimiter, strings);
+		return strings.length == 0 ? DefStr.EMPTY : String.join(delimiter, strings);
 	}
 
 	/**
@@ -160,23 +163,185 @@ public class StrUtil {
 		if (string == null || delimiter == null) {
 			throw new IllegalArgumentException("when string is null, delimiter can't be null either.");
 		}
-		String[] tokens = string.split(delimiter);
-		int tokensLength = tokens.length;
-		if (tokensLength <= 1) {
+		int from = string.indexOf(delimiter);
+		if (from < 0) {
+			//未找到分隔符,直接将原字符串首字母小写。
 			return new StringBuilder(string.length()).append(Character.toLowerCase(string.charAt(0))).append(string.substring(1)).toString();
 		}
-		char[] upperStarters = new char[tokensLength - 1];
-		for (int i = 1; i < tokensLength; i++) {
-			upperStarters[i - 1] = Character.toUpperCase(tokens[i].charAt(0));
-			tokens[i] = tokens[i].substring(1);
-		}
+		StringArray tokens = split(from, delimiter, string);
 		StringBuilder builder = new StringBuilder(string.length());
-		builder.append(Character.toLowerCase(tokens[0].charAt(0)));
-		builder.append(tokens[0].substring(1));
-		for (int i = 1; i < tokensLength; i++) {
-			builder.append(upperStarters[i]).append(tokens[i]);
+		//将首字母小写
+		String item = tokens.elements[0];
+		builder.append(Character.toUpperCase(item.charAt(0)));
+		builder.append(item.substring(1));
+		for (int i = 1; i < tokens.head; i++) {
+			item = tokens.elements[i];
+			//将之后的每个分词的字母大写
+			builder.append(Character.toUpperCase(item.charAt(0)));
+			builder.append(item.substring(1));
 		}
 		return builder.toString();
+	}
+
+	/**
+	 * 不使用正则表达式的spilt
+	 * @author Frodez
+	 * @date 2019-12-24
+	 */
+	public static String[] split(String delimiter, String string) {
+		int from = string.indexOf(delimiter);
+		if (from < 0) {
+			//未找到
+			return new String[] { string };
+		}
+		//如果找到,则分割
+		return split(from, delimiter, string).finish();
+	}
+
+	/**
+	 * 不使用正则表达式的spilt
+	 * @param from 第一个分隔符的起始点
+	 * @author Frodez
+	 * @date 2019-12-24
+	 */
+	private static StringArray split(int from, String delimiter, String string) {
+		int total = string.length();
+		int skip = delimiter.length();
+		//可能的长度
+		StringArray builder = new StringArray(total / (skip << 2));
+		//加入第一段
+		builder.append(string.substring(0, from));
+		//上个分隔符的结束处
+		from = from + skip;
+		while (true) {
+			//下个分隔符的起始处
+			int next = string.indexOf(delimiter, from);
+			if (next < 0) {
+				//如果未找到下个分隔符
+				builder.append(string.substring(from, total));
+				break;
+			} else if (next == from + 1) {
+				//如果下个分隔符紧跟着上个分隔符,则直接跳过
+				from = from + skip;
+			} else {
+				//说明两个分隔符之间有字符
+				builder.append(string.substring(from, next));
+				from = next + skip;
+			}
+		}
+		return builder;
+	}
+
+	/**
+	 * 可变长字符数组
+	 * @author Frodez
+	 * @date 2019-12-24
+	 */
+	private class StringArray {
+
+		//设置一个稍小的值,毕竟用不到那么多
+		private static final int MAX_ARRAY_SIZE = 65536;
+
+		/**
+		 * 数据
+		 */
+		private String[] elements;
+
+		/**
+		 * 总容量
+		 */
+		private int length;
+
+		/**
+		 * 当前头部位置(elements[head]为null)
+		 */
+		private int head;
+
+		/**
+		 * 按照设置初始化
+		 * @param initialLength 基础容量
+		 */
+		public StringArray(int initialLength) {
+			length = initialLength;
+			elements = new String[length];
+			head = 0;
+		}
+
+		/**
+		 * 添加数据
+		 * @author Frodez
+		 * @date 2019-12-24
+		 */
+		public void append(String data) {
+			if (data == null) {
+				throw new NullPointerException();
+			}
+			if (head == length) {
+				elements = grow();
+			}
+			elements[head++] = data;
+		}
+
+		private String[] grow() {
+			if (length > MAX_ARRAY_SIZE) {
+				throw new RuntimeException("size must be no more than" + MAX_ARRAY_SIZE);
+			}
+			length = length << 1;
+			return Arrays.copyOf(elements, length);
+		}
+
+		/**
+		 * 转换为数组
+		 * @author Frodez
+		 * @date 2019-12-24
+		 */
+		public String[] finish() {
+			return length == head ? elements : Arrays.copyOf(elements, head);
+		}
+
+	}
+
+	/**
+	 * 不使用正则表达式的spilt
+	 * @author Frodez
+	 * @date 2019-12-24
+	 */
+	public static List<String> splitList(String string, String regex, int limit) {
+		char ch = 0;
+		int off = 0;
+		int next = 0;
+		boolean limited = limit > 0;
+		ArrayList<String> list = new ArrayList<>();
+		while ((next = string.indexOf(ch, off)) != -1) {
+			if (!limited || list.size() < limit - 1) {
+				list.add(string.substring(off, next));
+				off = next + 1;
+			} else { // last one
+				//assert (list.size() == limit - 1);
+				int last = string.length();
+				list.add(string.substring(off, last));
+				off = last;
+				break;
+			}
+		}
+		// If no match was found, return this
+		if (off == 0) {
+			return List.of(string);
+		}
+
+		// Add remaining segment
+		if (!limited || list.size() < limit) {
+			list.add(string.substring(off, string.length()));
+		}
+
+		// Construct result
+		int resultSize = list.size();
+		if (limit == 0) {
+			while (resultSize > 0 && list.get(resultSize - 1).isEmpty()) {
+				resultSize--;
+			}
+		}
+		return list.subList(0, resultSize);
 	}
 
 	/**

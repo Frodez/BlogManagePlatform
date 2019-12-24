@@ -29,6 +29,24 @@ public class DateUtil {
 	}
 
 	/**
+	 * 获取当前时间的yyyy-MM-dd HH:mm:ss格式字符串
+	 * @author Frodez
+	 * @date 2019-12-24
+	 */
+	public static String nowStr() {
+		return LocalDateTime.now().format(DefTime.DATE_TIME_FORMATTER);
+	}
+
+	/**
+	 * 获取当前时间的yyyy-MM-dd HH:mm:ss.SSS格式字符串
+	 * @author Frodez
+	 * @date 2019-12-24
+	 */
+	public static String precisiveStr() {
+		return LocalDateTime.now().format(DefTime.PRECISIVE_FORMATTER);
+	}
+
+	/**
 	 * 获取当前时间的yyyy-MM-dd格式字符串
 	 * @author Frodez
 	 * @date 2019-01-28
@@ -53,8 +71,7 @@ public class DateUtil {
 	 * @date 2019-02-17
 	 */
 	public static Date date(String date) {
-		return Date.from(LocalDate.parse(date, DefTime.DATE_FORMATTER).atStartOfDay().toInstant(
-			DefTime.DEFAULT_OFFSET));
+		return Date.from(LocalDate.parse(date, DefTime.DATE_FORMATTER).atStartOfDay().toInstant(DefTime.DEFAULT_OFFSET));
 	}
 
 	/**
@@ -80,8 +97,7 @@ public class DateUtil {
 	 * @date 2019-02-17
 	 */
 	public static Date time(String date) {
-		return Date.from(LocalTime.parse(date, DefTime.TIME_FORMATTER).atDate(LocalDate.now()).toInstant(
-			DefTime.DEFAULT_OFFSET));
+		return Date.from(LocalTime.parse(date, DefTime.TIME_FORMATTER).atDate(LocalDate.now()).toInstant(DefTime.DEFAULT_OFFSET));
 	}
 
 	/**
@@ -107,8 +123,7 @@ public class DateUtil {
 	 * @date 2019-02-17
 	 */
 	public static Date dateTime(String date) {
-		return Date.from(LocalDateTime.parse(date, DefTime.DATE_TIME_FORMATTER).atOffset(DefTime.DEFAULT_OFFSET)
-			.toInstant());
+		return Date.from(LocalDateTime.parse(date, DefTime.DATE_TIME_FORMATTER).atOffset(DefTime.DEFAULT_OFFSET).toInstant());
 	}
 
 	/**
@@ -121,6 +136,32 @@ public class DateUtil {
 		Assert.notNull(date, "date must not be null");
 		try {
 			LocalDateTime.parse(date, DefTime.DATE_TIME_FORMATTER);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * 格式化日期(yyyy-MM-dd HH:mm:ss.SSS格式)
+	 * @see frodez.constant.settings.DefTime#PRECISIVE_PATTERN
+	 * @author Frodez
+	 * @date 2019-02-17
+	 */
+	public static Date precisiveTime(String date) {
+		return Date.from(LocalDateTime.parse(date, DefTime.PRECISIVE_FORMATTER).atOffset(DefTime.DEFAULT_OFFSET).toInstant());
+	}
+
+	/**
+	 * 是正确的yyyy-MM-dd HH:mm:ss.SSS格式日期
+	 * @see frodez.constant.settings.DefTime#PRECISIVE_PATTERN
+	 * @author Frodez
+	 * @date 2019-03-01
+	 */
+	public static boolean isPrecisiveTime(String date) {
+		Assert.notNull(date, "date must not be null");
+		try {
+			LocalDateTime.parse(date, DefTime.PRECISIVE_FORMATTER);
 			return true;
 		} catch (Exception e) {
 			return false;
