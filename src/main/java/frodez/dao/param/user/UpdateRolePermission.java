@@ -2,7 +2,7 @@ package frodez.dao.param.user;
 
 import frodez.config.aop.validation.annotation.ValidateBean;
 import frodez.config.aop.validation.annotation.common.MapEnum;
-import frodez.constant.enums.common.ModifyEnum;
+import frodez.constant.enums.common.ModifyType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -37,7 +37,7 @@ public class UpdateRolePermission implements Serializable {
 	 * 操作类型 1:新增 2:删除 3:修改
 	 */
 	@NotNull
-	@MapEnum(ModifyEnum.class)
+	@MapEnum(ModifyType.class)
 	private Byte operationType;
 
 	/**

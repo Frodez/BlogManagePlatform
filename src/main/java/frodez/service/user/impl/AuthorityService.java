@@ -5,9 +5,9 @@ import frodez.config.aop.exception.annotation.Error;
 import frodez.config.security.auth.AuthorityManager;
 import frodez.config.security.auth.AuthoritySource;
 import frodez.config.security.util.Matcher;
-import frodez.constant.enums.common.ModifyEnum;
-import frodez.constant.enums.user.PermissionTypeEnum;
-import frodez.constant.enums.user.UserStatusEnum;
+import frodez.constant.enums.common.ModifyType;
+import frodez.constant.enums.user.PermissionType;
+import frodez.constant.enums.user.UserStatus;
 import frodez.constant.errors.code.ErrorCode;
 import frodez.constant.settings.PropertyKey;
 import frodez.dao.mapper.user.PermissionMapper;
@@ -105,7 +105,7 @@ public class AuthorityService implements IAuthorityService {
 		if (user == null) {
 			return Result.fail("未查询到用户信息!");
 		}
-		if (UserStatusEnum.FORBIDDEN.getVal().equals(user.getStatus())) {
+		if (UserStatus.FORBIDDEN.getVal().equals(user.getStatus())) {
 			return Result.fail("用户已禁用!");
 		}
 		Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
@@ -134,7 +134,7 @@ public class AuthorityService implements IAuthorityService {
 		if (user == null) {
 			return Result.fail("未查询到用户信息!");
 		}
-		if (UserStatusEnum.FORBIDDEN.getVal().equals(user.getStatus())) {
+		if (UserStatus.FORBIDDEN.getVal().equals(user.getStatus())) {
 			return Result.fail("用户已禁用!");
 		}
 		Role role = roleMapper.selectByPrimaryKey(user.getRoleId());
@@ -162,7 +162,7 @@ public class AuthorityService implements IAuthorityService {
 		Example example = new Example(User.class);
 		example.createCriteria().andIn("id", userIds);
 		if (!includeFobiddens) {
-			example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
+			example.and().andEqualTo("status", UserStatus.NORMAL.getVal());
 		}
 		List<User> users = userMapper.selectByExample(example);
 		if (users.size() != userIds.size()) {
@@ -176,7 +176,7 @@ public class AuthorityService implements IAuthorityService {
 		Example example = new Example(User.class);
 		example.createCriteria().andIn("name", userNames);
 		if (!includeFobiddens) {
-			example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
+			example.and().andEqualTo("status", UserStatus.NORMAL.getVal());
 		}
 		List<User> users = userMapper.selectByExample(example);
 		if (users.size() != userNames.size()) {
@@ -190,7 +190,7 @@ public class AuthorityService implements IAuthorityService {
 		Example example = new Example(User.class);
 		example.createCriteria().andIn("id", userIds);
 		if (!includeFobiddens) {
-			example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
+			example.and().andEqualTo("status", UserStatus.NORMAL.getVal());
 		}
 		List<User> users = userMapper.selectByExample(example);
 		if (users.size() != userIds.size()) {
@@ -205,7 +205,7 @@ public class AuthorityService implements IAuthorityService {
 		Example example = new Example(User.class);
 		example.createCriteria().andIn("name", userNames);
 		if (!includeFobiddens) {
-			example.and().andEqualTo("status", UserStatusEnum.NORMAL.getVal());
+			example.and().andEqualTo("status", UserStatus.NORMAL.getVal());
 		}
 		List<User> users = userMapper.selectByExample(example);
 		if (users.size() != userNames.size()) {
@@ -362,7 +362,7 @@ public class AuthorityService implements IAuthorityService {
 			if (Matcher.isPermitAllPath(param.getUrl())) {
 				return Result.fail("免验证路径不能配备权限!");
 			}
-			if (!checkPermissionUrl(PermissionTypeEnum.of(param.getType()), param.getUrl())) {
+			if (!checkPermissionUrl(PermissionType.of(param.getType()), param.getUrl())) {
 				return Result.fail("系统不存在与此匹配的url!");
 			}
 			Permission permission = BeanUtil.copy(param, Permission::new);
@@ -385,7 +385,7 @@ public class AuthorityService implements IAuthorityService {
 			if (param.getUrl() != null && Matcher.isPermitAllPath(param.getUrl())) {
 				return Result.fail("免验证路径不能配备权限!");
 			}
-			if (!checkPermissionUrl(PermissionTypeEnum.of(param.getType()), param.getUrl())) {
+			if (!checkPermissionUrl(PermissionType.of(param.getType()), param.getUrl())) {
 				return Result.fail("系统不存在与此匹配的url!");
 			}
 			Permission permission = permissionMapper.selectByPrimaryKey(param.getId());
@@ -408,7 +408,7 @@ public class AuthorityService implements IAuthorityService {
 	 * @author Frodez
 	 * @date 2019-03-17
 	 */
-	private boolean checkPermissionUrl(PermissionTypeEnum type, String url) {
+	private boolean checkPermissionUrl(PermissionType type, String url) {
 		switch (type) {
 			case GET : {
 				return MVCUtil.endPoints().get(RequestMethod.GET).stream().filter((iter) -> {
@@ -445,14 +445,14 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result updateRolePermission(UpdateRolePermission param) {
 		try {
-			if (ModifyEnum.UPDATE.getVal() != param.getOperationType() && EmptyUtil.yes(param.getPermissionIds())) {
+			if (ModifyType.UPDATE.getVal() != param.getOperationType() && EmptyUtil.yes(param.getPermissionIds())) {
 				return Result.errorRequest("不能对角色新增或者删除一个空的权限!");
 			}
 			Role role = roleMapper.selectByPrimaryKey(param.getRoleId());
 			if (role == null) {
 				return Result.fail("找不到该角色!");
 			}
-			switch (ModifyEnum.of(param.getOperationType())) {
+			switch (ModifyType.of(param.getOperationType())) {
 				case INSERT : {
 					Example example = new Example(Permission.class);
 					example.createCriteria().andIn("id", param.getPermissionIds());
@@ -585,7 +585,7 @@ public class AuthorityService implements IAuthorityService {
 				}
 				requestUrl = requestUrl.substring(PropertyUtil.get(PropertyKey.Web.BASE_PATH).length());
 				String requestType = entry.getKey().getMethodsCondition().getMethods().stream().map(RequestMethod::name).findFirst().orElse(
-					PermissionTypeEnum.ALL.name());
+					PermissionType.ALL.name());
 				String permissionName = ReflectUtil.getShortMethodName(entry.getValue().getMethod());
 				Permission permission = new Permission();
 				permission.setCreateTime(date);
@@ -593,15 +593,15 @@ public class AuthorityService implements IAuthorityService {
 				permission.setName(permissionName);
 				permission.setDescription(permissionName);
 				if (requestType.equals("GET")) {
-					permission.setType(PermissionTypeEnum.GET.getVal());
+					permission.setType(PermissionType.GET.getVal());
 				} else if (requestType.equals("POST")) {
-					permission.setType(PermissionTypeEnum.POST.getVal());
+					permission.setType(PermissionType.POST.getVal());
 				} else if (requestType.equals("DELETE")) {
-					permission.setType(PermissionTypeEnum.DELETE.getVal());
+					permission.setType(PermissionType.DELETE.getVal());
 				} else if (requestType.equals("PUT")) {
-					permission.setType(PermissionTypeEnum.PUT.getVal());
+					permission.setType(PermissionType.PUT.getVal());
 				} else {
-					permission.setType(PermissionTypeEnum.ALL.getVal());
+					permission.setType(PermissionType.ALL.getVal());
 				}
 				permissionList.add(permission);
 			});

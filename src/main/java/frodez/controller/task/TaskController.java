@@ -3,7 +3,7 @@ package frodez.controller.task;
 import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.swagger.annotation.Success;
 import frodez.config.swagger.annotation.Success.Container;
-import frodez.constant.enums.task.StatusEnum;
+import frodez.constant.enums.task.TaskStatus;
 import frodez.dao.model.task.Task;
 import frodez.dao.param.task.AddTask;
 import frodez.dao.result.task.AvailableTaskInfo;
@@ -65,7 +65,7 @@ public class TaskController {
 	}
 
 	@PostMapping(value = "/change", name = "更改定时任务活跃状态接口")
-	public Result changeStatus(@ApiParam("任务ID") Long id, @MapEnum(StatusEnum.class) Byte status) {
+	public Result changeStatus(@ApiParam("任务ID") Long id, @MapEnum(TaskStatus.class) Byte status) {
 		return taskService.changeStatus(id, status);
 	}
 

@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -113,17 +114,43 @@ public class Matcher {
 
 	/**
 	 * 判断路径是否需要验证<br>
+	 * 相比于isPermitAllPath方法,将不需要验证的路径全部缓存,加快速度。<br>
+	 * <strong> 可以使用本方法的情况下应该使用本方法!<br>
+	 * true为需要验证,false为不需要验证<br>
+	 * </strong>
+	 * @author Frodez
+	 * @date 2019-01-06
+	 */
+	public static boolean needVerify(HttpServletRequest request) {
+		return needVerifyPaths.contains(request.getRequestURI());
+	}
+
+	/**
+	 * 判断路径是否需要验证<br>
+	 * 相比于isPermitAllPath方法,将不需要验证的路径全部缓存,加快速度。<br>
 	 * 路径获取方式:<br>
 	 * <code>
 	 * HttpServletRequest request = ...;
 	 * String uri = request.getRequestURI();
 	 * </code><br>
-	 * <strong>true为需要验证,false为不需要验证</strong><br>
+	 * <strong> 可以使用本方法的情况下应该使用本方法!<br>
+	 * true为需要验证,false为不需要验证<br>
+	 * </strong>
 	 * @author Frodez
 	 * @date 2019-01-06
 	 */
 	public static boolean needVerify(String uri) {
 		return needVerifyPaths.contains(uri);
+	}
+
+	/**
+	 * 判断是否为免验证路径<br>
+	 * <strong>true为需要验证,false为不需要验证</strong><br>
+	 * @author Frodez
+	 * @date 2019-03-10
+	 */
+	public static boolean isPermitAllPath(HttpServletRequest request) {
+		return isPermitAllPath(request.getRequestURI());
 	}
 
 	/**

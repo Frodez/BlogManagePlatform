@@ -1,9 +1,12 @@
-package frodez.constant.enums.user;
+package frodez.constant.enums.common;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import frodez.constant.annotations.decoration.EnumCheckable;
 import frodez.constant.annotations.info.Description;
+import frodez.constant.settings.DefStr;
 import frodez.util.common.StrUtil;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -12,35 +15,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 权限类型枚举
+ * 删除状态枚举
  * @author Frodez
  * @date 2018-12-04
  */
 @EnumCheckable
-@Description(name = "权限类型枚举")
+@Description(name = "删除状态枚举")
 @AllArgsConstructor
-public enum PermissionTypeEnum {
+public enum DeleteStatus {
 
 	/**
-	 * 0:所有类型请求
+	 * 未删除
 	 */
-	ALL((byte) 0, "所有类型请求"),
+	NO((byte) 1, "未删除"),
 	/**
-	 * 1:GET类型请求
+	 * 已删除
 	 */
-	GET((byte) 1, "GET类型请求"),
-	/**
-	 * 2:POST类型请求
-	 */
-	POST((byte) 2, "POST类型请求"),
-	/**
-	 * 3:DELETE类型请求
-	 */
-	DELETE((byte) 3, "DELETE类型请求"),
-	/**
-	 * 4:PUT类型请求
-	 */
-	PUT((byte) 4, "PUT类型请求");
+	YES((byte) 2, "已删除");
 
 	/**
 	 * 值
@@ -66,15 +57,16 @@ public enum PermissionTypeEnum {
 	@Getter
 	private static List<String> descs;
 
-	private static final Map<Byte, PermissionTypeEnum> enumMap;
+	private static final Map<Byte, DeleteStatus> enumMap;
 
 	static {
-		vals = Arrays.stream(PermissionTypeEnum.values()).map(PermissionTypeEnum::getVal).collect(Collectors.toUnmodifiableList());
-		descs = Arrays.stream(PermissionTypeEnum.values()).map((iter) -> {
-			return StrUtil.concat(iter.val.toString(), ":", iter.desc);
+		vals = new ArrayList<>();
+		vals = Arrays.stream(DeleteStatus.values()).map(DeleteStatus::getVal).collect(Collectors.toUnmodifiableList());
+		descs = Arrays.stream(DeleteStatus.values()).map((iter) -> {
+			return StrUtil.concat(iter.val.toString(), DefStr.SEPERATOR, iter.desc);
 		}).collect(Collectors.toUnmodifiableList());
-		var builder = ImmutableMap.<Byte, PermissionTypeEnum>builder();
-		for (PermissionTypeEnum iter : PermissionTypeEnum.values()) {
+		Builder<Byte, DeleteStatus> builder = ImmutableMap.<Byte, DeleteStatus>builder();
+		for (DeleteStatus iter : DeleteStatus.values()) {
 			builder.put(iter.val, iter);
 		}
 		enumMap = builder.build();
@@ -85,7 +77,7 @@ public enum PermissionTypeEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static PermissionTypeEnum of(Byte value) {
+	public static DeleteStatus of(Byte value) {
 		return enumMap.get(value);
 	}
 
@@ -94,8 +86,8 @@ public enum PermissionTypeEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static PermissionTypeEnum defaultEnum() {
-		return PermissionTypeEnum.ALL;
+	public static DeleteStatus defaultEnum() {
+		return DeleteStatus.NO;
 	}
 
 	/**

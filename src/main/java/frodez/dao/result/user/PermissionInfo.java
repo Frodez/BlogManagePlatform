@@ -1,7 +1,7 @@
 package frodez.dao.result.user;
 
 import frodez.config.aop.validation.annotation.common.MapEnum;
-import frodez.constant.enums.user.PermissionTypeEnum;
+import frodez.constant.enums.user.PermissionType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -32,7 +32,7 @@ public class PermissionInfo implements Serializable {
 	 * 类型 1:GET 2:POST 3:DELETE 4:PUT
 	 */
 	@NotNull
-	@MapEnum(value = PermissionTypeEnum.class)
+	@MapEnum(value = PermissionType.class)
 	private Byte type;
 
 	/**

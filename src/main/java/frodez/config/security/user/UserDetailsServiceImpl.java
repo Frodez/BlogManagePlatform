@@ -3,7 +3,6 @@ package frodez.config.security.user;
 import frodez.config.security.util.AuthorityUtil;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.user.facade.IAuthorityService;
-import frodez.util.beans.result.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,13 +25,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	private IAuthorityService authorityService;
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Result result = authorityService.getUserInfo(username);
-		if (result.unable()) {
-			throw new UsernameNotFoundException(result.getMessage());
-		}
-		UserInfo userInfo = result.as(UserInfo.class);
-		return new User(userInfo.getName(), userInfo.getPassword(), AuthorityUtil.make(userInfo.getPermissionList()));
+	public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+		UserInfo info = authorityService.getUserInfo(name).orThrowMessage(UsernameNotFoundException::new).as(UserInfo.class);
+		//这里必须设置权限
+		//详情见frodez.config.security.filter.TokenFilter.doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+		//和frodez.config.security.auth.AuthorityManager.decide(Authentication auth, Object object, Collection<ConfigAttribute> permissions)方法
+		return new User(info.getName(), info.getPassword(), AuthorityUtil.make(info));
 	}
 
 }

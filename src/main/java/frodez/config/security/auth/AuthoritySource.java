@@ -1,12 +1,15 @@
 package frodez.config.security.auth;
 
 import frodez.config.security.settings.SecurityProperties;
-import frodez.constant.enums.user.PermissionTypeEnum;
+import frodez.constant.enums.user.PermissionType;
+import frodez.constant.settings.PropertyKey;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.model.user.Permission;
+import frodez.util.common.StrUtil;
 import frodez.util.common.StreamUtil;
 import frodez.util.common.StreamUtil.MapBuilder;
 import frodez.util.spring.ContextUtil;
+import frodez.util.spring.PropertyUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -15,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.DependsOn;
@@ -33,7 +35,7 @@ import org.springframework.util.Assert;
  * @date 2018-12-04
  */
 @Component
-@DependsOn("contextUtil")
+@DependsOn({ "contextUtil", "propertyUtil" })
 public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 
 	/**
@@ -54,7 +56,7 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	/**
 	 * 权限缓存(按url和请求方式区分)
 	 */
-	private Map<String, Map<PermissionTypeEnum, Collection<ConfigAttribute>>> urlTypeCache;
+	private Map<String, Map<PermissionType, Collection<ConfigAttribute>>> urlTypeCache;
 
 	/**
 	 * 更新权限信息
@@ -81,11 +83,19 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 		if (defaultDeniedRoles != null || allCache != null || urlCache != null || urlTypeCache != null) {
 			return;
 		}
+		//设置默认无权限角色
 		defaultDeniedRoles = List.of(new SecurityConfig(ContextUtil.bean(SecurityProperties.class).getAuth().getDeniedRole()));
+		//设置所有权限的缓存
 		List<Permission> permissions = ContextUtil.bean(PermissionMapper.class).selectAll();
 		allCache = StreamUtil.list(permissions, (iter) -> new SecurityConfig(iter.getName()));
+		//设置按url区分的权限缓存
+		String basePath = PropertyUtil.get(PropertyKey.Web.BASE_PATH);
+		permissions.forEach((iter) -> {
+			String url = StrUtil.concat(basePath, iter.getUrl());
+			iter.setUrl(url);
+		});
 		var urlCacheMapBuiler = MapBuilder.<Permission, String, Collection<ConfigAttribute>>instance();
-		urlCacheMapBuiler.key(Permission::getUrl);
+		urlCacheMapBuiler.key((iter) -> iter.getUrl());
 		urlCacheMapBuiler.value(iter -> {
 			Collection<ConfigAttribute> list = new ArrayList<>();
 			list.add(new SecurityConfig(iter.getName()));
@@ -96,24 +106,30 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 			return a;
 		});
 		urlCache = permissions.stream().collect(urlCacheMapBuiler.hashMap());
+		//设置按url和请求方式区分的权限缓存
 		urlTypeCache = new HashMap<>();
-		List<String> urls = permissions.stream().map(Permission::getUrl).distinct().collect(Collectors.toList());
+		List<String> urls = permissions.stream().map((iter) -> iter.getUrl()).distinct().collect(Collectors.toList());
 		for (String url : urls) {
-			Map<PermissionTypeEnum, Collection<ConfigAttribute>> typeMap = new EnumMap<>(PermissionTypeEnum.class);
+			//按请求方式区分
+			Map<PermissionType, Collection<ConfigAttribute>> typeMap = new EnumMap<>(PermissionType.class);
 			Function<Permission, ConfigAttribute> mapper = (iter) -> new SecurityConfig(iter.getName());
-			for (PermissionTypeEnum type : PermissionTypeEnum.values()) {
-				if (type != PermissionTypeEnum.ALL) {
-					Predicate<Permission> filter = (iter) -> iter.getUrl().equals(url) && iter.getType().equals(type.getVal());
-					typeMap.put(type, permissions.stream().filter(filter).map(mapper).collect(Collectors.toList()));
+			//将非ALL类型的请求方式先行处理
+			for (PermissionType type : PermissionType.values()) {
+				if (type != PermissionType.ALL) {
+					List<ConfigAttribute> typeConfigs = permissions.stream().filter((iter) -> iter.getUrl().equals(url) && iter.getType().equals(type
+						.getVal())).map(mapper).collect(Collectors.toList());
+					typeMap.put(type, typeConfigs);
 				}
 			}
-			Predicate<Permission> filter = (iter) -> iter.getUrl().equals(url) && PermissionTypeEnum.ALL.getVal().equals(iter.getType());
-			List<ConfigAttribute> allConfigs = permissions.stream().filter(filter).map(mapper).collect(Collectors.toList());
-			for (Entry<PermissionTypeEnum, Collection<ConfigAttribute>> entry : typeMap.entrySet()) {
+			//然后处理ALL类型的请求方式,把ALL类型的请求方式转换为其他所有类型的请求方式直接填入
+			List<ConfigAttribute> allConfigs = permissions.stream().filter((iter) -> iter.getUrl().equals(url) && PermissionType.ALL.getVal().equals(
+				iter.getType())).map(mapper).collect(Collectors.toList());
+			for (Entry<PermissionType, Collection<ConfigAttribute>> entry : typeMap.entrySet()) {
 				Collection<ConfigAttribute> configs = entry.getValue();
 				configs.addAll(allConfigs);
 				entry.setValue(configs.stream().distinct().collect(Collectors.toList()));
 			}
+			//加入按url和请求方式区分的权限缓存
 			urlTypeCache.put(url, typeMap);
 		}
 		Assert.notNull(defaultDeniedRoles, "defaultDeniedRoles must not be null");
@@ -136,16 +152,16 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 			// 根据不同请求方式获取对应权限
 			switch (HttpMethod.resolve(invocation.getHttpRequest().getMethod())) {
 				case GET : {
-					return urlTypeCache.get(url).get(PermissionTypeEnum.GET);
+					return urlTypeCache.get(url).get(PermissionType.GET);
 				}
 				case POST : {
-					return urlTypeCache.get(url).get(PermissionTypeEnum.POST);
+					return urlTypeCache.get(url).get(PermissionType.POST);
 				}
 				case DELETE : {
-					return urlTypeCache.get(url).get(PermissionTypeEnum.DELETE);
+					return urlTypeCache.get(url).get(PermissionType.DELETE);
 				}
 				case PUT : {
-					return urlTypeCache.get(url).get(PermissionTypeEnum.PUT);
+					return urlTypeCache.get(url).get(PermissionType.PUT);
 				}
 				default : {
 					return urlCache.get(url);

@@ -4,7 +4,7 @@ import frodez.config.aop.exception.annotation.Error;
 import frodez.config.aop.validation.annotation.Check;
 import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.task.TaskProperties;
-import frodez.constant.enums.task.StatusEnum;
+import frodez.constant.enums.task.TaskStatus;
 import frodez.constant.errors.code.ErrorCode;
 import frodez.constant.settings.DefStr;
 import frodez.dao.mapper.task.TaskMapper;
@@ -87,7 +87,7 @@ public class BaseTaskService {
 			example.createCriteria().andNotIn("target", StreamUtil.list(taskServiceInfos, AvailableTaskInfo::getName));
 			taskMapper.deleteByExample(example);
 			example.clear();
-			example.createCriteria().andIsNotNull("target").andEqualTo("status", StatusEnum.ACTIVE.getVal());
+			example.createCriteria().andIsNotNull("target").andEqualTo("status", TaskStatus.ACTIVE.getVal());
 			example.orderBy("id");
 			List<Task> tasks = taskMapper.selectByExampleAndRowBounds(example, new QueryPage(properties.getMaxSize()).toRowBounds());
 			tasks.parallelStream().forEach((task) -> {
@@ -245,7 +245,7 @@ public class BaseTaskService {
 		task.setCreateTime(new Date());
 		task.setStatus(param.getStartNow());
 		taskMapper.insertUseGeneratedKeys(task);
-		switch (StatusEnum.of(param.getStartNow())) {
+		switch (TaskStatus.of(param.getStartNow())) {
 			case ACTIVE : {
 				taskMap.put(task.getId(), scheduler.schedule(runnable, trigger));
 				taskInfoMap.put(task.getId(), task);
@@ -319,7 +319,7 @@ public class BaseTaskService {
 	 */
 	@Check
 	@Transactional
-	public Result changeStatus(@NotNull Long id, @MapEnum(StatusEnum.class) Byte status) {
+	public Result changeStatus(@NotNull Long id, @MapEnum(TaskStatus.class) Byte status) {
 		Task task = taskMapper.selectByPrimaryKey(id);
 		if (task == null) {
 			return Result.fail("未找到该任务!");

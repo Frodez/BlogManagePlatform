@@ -2,7 +2,7 @@ package frodez.dao.param.task;
 
 import frodez.config.aop.validation.annotation.ValidateBean;
 import frodez.config.aop.validation.annotation.common.MapEnum;
-import frodez.constant.enums.task.StartNowEnum;
+import frodez.constant.enums.task.TaskStartType;
 import io.swagger.annotations.ApiModel;
 import java.io.Serializable;
 import javax.validation.constraints.NotBlank;
@@ -54,7 +54,7 @@ public class AddTask implements Serializable {
 	 * 是否立刻启动 1:立刻启动 2:暂不启动
 	 */
 	@NotNull
-	@MapEnum(StartNowEnum.class)
+	@MapEnum(TaskStartType.class)
 	private Byte startNow;
 
 }

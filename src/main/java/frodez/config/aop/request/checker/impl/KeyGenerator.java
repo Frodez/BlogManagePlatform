@@ -13,7 +13,7 @@ public class KeyGenerator {
 
 	public static String servletKey(String sault, HttpServletRequest request) {
 		String key = StrUtil.concat(sault, DefStr.SEPERATOR, request.getRequestURI());
-		if (Matcher.needVerify(request.getRequestURI())) {
+		if (Matcher.needVerify(request)) {
 			// 需验证接口使用token判断,同一token不能重复请求
 			String fullToken = TokenUtil.getFullToken(request);
 			if (fullToken == null) {

@@ -5,7 +5,7 @@ import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.aop.validation.annotation.special.DateTime;
 import frodez.config.code.checker.CodeChecker;
 import frodez.config.validator.ValidationUtil;
-import frodez.constant.enums.common.OperateEnum;
+import frodez.constant.enums.common.OperateType;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.QueryRolePermission;
 import frodez.service.user.facade.IAuthorityService;
@@ -111,7 +111,7 @@ public class ValidationTest {
 		@NotEmpty
 		private List<Integer> list;
 
-		@MapEnum(value = OperateEnum.class, paramType = Byte.class)
+		@MapEnum(value = OperateType.class, paramType = Byte.class)
 		private Byte type;
 
 	}

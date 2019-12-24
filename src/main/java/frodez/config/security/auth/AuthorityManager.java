@@ -63,10 +63,14 @@ public class AuthorityManager implements AccessDecisionManager {
 	@Override
 	public void decide(Authentication auth, Object object, Collection<ConfigAttribute> permissions) throws AccessDeniedException,
 		InsufficientAuthenticationException {
-		if (!Matcher.needVerify(((FilterInvocation) object).getHttpRequest().getRequestURI())) {
-			// 如果是免验证路径,则直接放行
+		FilterInvocation invocation = (FilterInvocation) object;
+		if (!Matcher.needVerify(invocation.getHttpRequest())) {
+			// 如果是免验证路径,则直接放行,因为免验证路径下为了防止报错,设置了一个默认的无访问权限
 			return;
 		}
+		//如果用户不带有权限,说明用户信息可能有问题,必须直接驳回
+		//详情见frodez.config.security.filter.TokenFilter.doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+		//和frodez.config.security.user.UserDetailsServiceImpl.loadUserByUsername(String username)方法
 		if (EmptyUtil.yes(auth.getAuthorities())) {
 			throw new AccessDeniedException("无访问权限!");
 		}

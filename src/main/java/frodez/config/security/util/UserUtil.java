@@ -40,7 +40,7 @@ public class UserUtil {
 	 */
 	public static UserInfo get() {
 		HttpServletRequest request = MVCUtil.request();
-		if (!Matcher.needVerify(request.getRequestURI())) {
+		if (!Matcher.needVerify(request)) {
 			throw new RuntimeException("不能在免验证URI中获取token信息!");
 		}
 		return tokenCache.get(TokenUtil.getRealToken(request));

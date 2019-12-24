@@ -1,6 +1,7 @@
 package frodez.config.security.util;
 
 import frodez.dao.result.user.PermissionInfo;
+import frodez.dao.result.user.UserInfo;
 import frodez.util.common.StreamUtil;
 import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +14,16 @@ import org.springframework.security.core.userdetails.UserDetails;
  * @date 2018-11-14
  */
 public class AuthorityUtil {
+
+	/**
+	 * 生成权限信息
+	 * @author Frodez
+	 * @param authorities 权限信息
+	 * @date 2018-11-21
+	 */
+	public static List<GrantedAuthority> make(UserInfo info) {
+		return StreamUtil.list(info.getPermissionList(), authority -> new SimpleGrantedAuthority(authority.getName()));
+	}
 
 	/**
 	 * 生成权限信息

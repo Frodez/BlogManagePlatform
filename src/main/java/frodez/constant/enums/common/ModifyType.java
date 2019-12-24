@@ -13,15 +13,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 操作类型枚举
- * @see ModifyEnum
+ * 修改操作类型枚举
+ * @see OperateType
  * @author Frodez
  * @date 2019-03-17
  */
+@Description(name = "修改操作类型枚举")
 @EnumCheckable
-@Description(name = "操作类型枚举")
 @AllArgsConstructor
-public enum OperateEnum {
+public enum ModifyType {
 
 	/**
 	 * 新增
@@ -34,11 +34,7 @@ public enum OperateEnum {
 	/**
 	 * 修改
 	 */
-	UPDATE((byte) 3, "修改"),
-	/**
-	 * 查询
-	 */
-	SELECT((byte) 4, "查询");
+	UPDATE((byte) 3, "修改");
 
 	/**
 	 * 值
@@ -64,15 +60,15 @@ public enum OperateEnum {
 	@Getter
 	private static List<String> descs;
 
-	private static final Map<Byte, OperateEnum> enumMap;
+	private static final Map<Byte, ModifyType> enumMap;
 
 	static {
-		vals = Arrays.stream(OperateEnum.values()).map(OperateEnum::getVal).collect(Collectors.toUnmodifiableList());
-		descs = Arrays.stream(OperateEnum.values()).map((iter) -> {
+		vals = Arrays.stream(ModifyType.values()).map(ModifyType::getVal).collect(Collectors.toUnmodifiableList());
+		descs = Arrays.stream(ModifyType.values()).map((iter) -> {
 			return StrUtil.concat(iter.val.toString(), DefStr.SEPERATOR, iter.desc);
 		}).collect(Collectors.toUnmodifiableList());
-		var builder = ImmutableMap.<Byte, OperateEnum>builder();
-		for (OperateEnum iter : OperateEnum.values()) {
+		var builder = ImmutableMap.<Byte, ModifyType>builder();
+		for (ModifyType iter : ModifyType.values()) {
 			builder.put(iter.val, iter);
 		}
 		enumMap = builder.build();
@@ -83,7 +79,7 @@ public enum OperateEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static OperateEnum of(Byte value) {
+	public static ModifyType of(Byte value) {
 		return enumMap.get(value);
 	}
 
@@ -92,7 +88,7 @@ public enum OperateEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static OperateEnum defaultEnum() {
+	public static ModifyType defaultEnum() {
 		return null;
 	}
 

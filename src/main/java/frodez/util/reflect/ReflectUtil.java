@@ -55,14 +55,35 @@ public class ReflectUtil {
 	 * @date 2019-04-12
 	 */
 	public static FastClass getFastClass(Class<?> klass) {
+		return getFastClass(klass, false);
+	}
+
+	/**
+	 * 获取FastClass,并初始化所有FastMethod。类型会被缓存。
+	 * @author Frodez
+	 * @date 2019-04-12
+	 */
+	public static FastClass getFastClass(Class<?> klass, boolean initialized) {
 		Assert.notNull(klass, "klass must not be null");
 		Table table = CGLIB_CACHE.get(klass);
 		if (table == null) {
 			table = new Table(klass);
+			if (initialized) {
+				table.init();
+			}
 			CGLIB_CACHE.put(klass, table);
 			return table.fastClass;
 		}
 		return table.fastClass;
+	}
+
+	/**
+	 * 获取method
+	 * @author Frodez
+	 * @date 2019-12-18
+	 */
+	public static Method getMethod(Class<?> klass, String method, Class<?>... params) {
+		return getFastMethod(klass, method, params).getJavaMethod();
 	}
 
 	/**
@@ -94,6 +115,13 @@ public class ReflectUtil {
 		public Table(Class<?> klass) {
 			this.fastClass = FastClass.create(klass);
 			methods = new FastMethod[fastClass.getMaxIndex() + 1];
+		}
+
+		public void init() {
+			for (Method method : fastClass.getClass().getMethods()) {
+				int index = fastClass.getIndex(method.getName(), method.getParameterTypes());
+				methods[index] = fastClass.getMethod(method);
+			}
 		}
 
 		@SneakyThrows

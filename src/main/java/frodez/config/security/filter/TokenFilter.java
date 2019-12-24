@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -26,9 +26,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class TokenFilter extends OncePerRequestFilter {
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-		throws ServletException, IOException {
-		if (Matcher.needVerify(request.getRequestURI())) {
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException,
+		IOException {
+		if (Matcher.needVerify(request)) {
 			String authToken = TokenUtil.getRealToken(request);
 			if (authToken != null) {
 				// 将携带的token还原成用户信息
@@ -41,9 +41,10 @@ public class TokenFilter extends OncePerRequestFilter {
 					return;
 				}
 				if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user,
-						null, user.getAuthorities());
-					authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+					//这里要设置权限,和frodez.config.security.user.UserDetailsServiceImpl.loadUserByUsername(String username)
+					//和frodez.config.security.auth.AuthorityManager.decide(Authentication auth, Object object, Collection<ConfigAttribute> permissions)对应
+					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+					authentication.setDetails(new WebAuthenticationDetails(request));
 					SecurityContextHolder.getContext().setAuthentication(authentication);
 				}
 			}

@@ -1,4 +1,4 @@
-package frodez.constant.enums.user;
+package frodez.constant.enums.task;
 
 import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
@@ -13,23 +13,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 用户状态枚举
+ * 任务状态枚举
  * @author Frodez
- * @date 2018-11-14
+ * @date 2019-03-20
  */
 @EnumCheckable
-@Description(name = "用户状态枚举")
+@Description(name = "任务状态枚举")
 @AllArgsConstructor
-public enum UserStatusEnum {
+public enum TaskStatus {
 
 	/**
-	 * 0:禁用
+	 * 1:活跃中
 	 */
-	FORBIDDEN((byte) 0, "禁用"),
+	ACTIVE((byte) 1, "活跃中"),
 	/**
-	 * 1:正常
+	 * 2:不活跃
 	 */
-	NORMAL((byte) 1, "正常");
+	PAUSED((byte) 2, "不活跃");
 
 	/**
 	 * 值
@@ -55,21 +55,21 @@ public enum UserStatusEnum {
 	@Getter
 	private static List<String> descs;
 
-	private static final Map<Byte, UserStatusEnum> enumMap;
+	private static Map<Byte, TaskStatus> enumMap;
 
 	static {
-		vals = Arrays.stream(UserStatusEnum.values()).map(UserStatusEnum::getVal).collect(Collectors.toUnmodifiableList());
-		descs = Arrays.stream(UserStatusEnum.values()).map((iter) -> {
+		vals = Arrays.stream(TaskStatus.values()).map(TaskStatus::getVal).collect(Collectors.toUnmodifiableList());
+		descs = Arrays.stream(TaskStatus.values()).map((iter) -> {
 			return StrUtil.concat(iter.val.toString(), DefStr.SEPERATOR, iter.desc);
 		}).collect(Collectors.toUnmodifiableList());
-		var builder = ImmutableMap.<Byte, UserStatusEnum>builder();
-		for (UserStatusEnum iter : UserStatusEnum.values()) {
+		var builder = ImmutableMap.<Byte, TaskStatus>builder();
+		for (TaskStatus iter : TaskStatus.values()) {
 			builder.put(iter.val, iter);
 		}
 		enumMap = builder.build();
 	}
 
-	public static UserStatusEnum of(Byte value) {
+	public static TaskStatus of(Byte value) {
 		return enumMap.get(value);
 	}
 
@@ -78,8 +78,8 @@ public enum UserStatusEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static UserStatusEnum defaultEnum() {
-		return UserStatusEnum.NORMAL;
+	public static TaskStatus defaultEnum() {
+		return TaskStatus.ACTIVE;
 	}
 
 	/**
