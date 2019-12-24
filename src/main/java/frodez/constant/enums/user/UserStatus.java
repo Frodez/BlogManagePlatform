@@ -1,12 +1,10 @@
-package frodez.constant.enums.common;
+package frodez.constant.enums.user;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 import frodez.constant.annotations.decoration.EnumCheckable;
 import frodez.constant.annotations.info.Description;
 import frodez.constant.settings.DefStr;
 import frodez.util.common.StrUtil;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -15,23 +13,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 删除状态枚举
+ * 用户状态枚举
  * @author Frodez
- * @date 2018-12-04
+ * @date 2018-11-14
  */
 @EnumCheckable
-@Description(name = "删除状态枚举")
+@Description(name = "用户状态枚举")
 @AllArgsConstructor
-public enum DeleteEnum {
+public enum UserStatus {
 
 	/**
-	 * 未删除
+	 * 0:禁用
 	 */
-	NO((byte) 1, "未删除"),
+	FORBIDDEN((byte) 0, "禁用"),
 	/**
-	 * 已删除
+	 * 1:正常
 	 */
-	YES((byte) 2, "已删除");
+	NORMAL((byte) 1, "正常");
 
 	/**
 	 * 值
@@ -57,27 +55,21 @@ public enum DeleteEnum {
 	@Getter
 	private static List<String> descs;
 
-	private static final Map<Byte, DeleteEnum> enumMap;
+	private static final Map<Byte, UserStatus> enumMap;
 
 	static {
-		vals = new ArrayList<>();
-		vals = Arrays.stream(DeleteEnum.values()).map(DeleteEnum::getVal).collect(Collectors.toUnmodifiableList());
-		descs = Arrays.stream(DeleteEnum.values()).map((iter) -> {
+		vals = Arrays.stream(UserStatus.values()).map(UserStatus::getVal).collect(Collectors.toUnmodifiableList());
+		descs = Arrays.stream(UserStatus.values()).map((iter) -> {
 			return StrUtil.concat(iter.val.toString(), DefStr.SEPERATOR, iter.desc);
 		}).collect(Collectors.toUnmodifiableList());
-		Builder<Byte, DeleteEnum> builder = ImmutableMap.<Byte, DeleteEnum>builder();
-		for (DeleteEnum iter : DeleteEnum.values()) {
+		var builder = ImmutableMap.<Byte, UserStatus>builder();
+		for (UserStatus iter : UserStatus.values()) {
 			builder.put(iter.val, iter);
 		}
 		enumMap = builder.build();
 	}
 
-	/**
-	 * 转化
-	 * @author Frodez
-	 * @date 2019-05-17
-	 */
-	public static DeleteEnum of(Byte value) {
+	public static UserStatus of(Byte value) {
 		return enumMap.get(value);
 	}
 
@@ -86,8 +78,8 @@ public enum DeleteEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static DeleteEnum defaultEnum() {
-		return DeleteEnum.NO;
+	public static UserStatus defaultEnum() {
+		return UserStatus.NORMAL;
 	}
 
 	/**

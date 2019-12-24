@@ -1,9 +1,8 @@
-package frodez.constant.enums.common;
+package frodez.constant.enums.user;
 
 import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
 import frodez.constant.annotations.info.Description;
-import frodez.constant.settings.DefStr;
 import frodez.util.common.StrUtil;
 import java.util.Arrays;
 import java.util.List;
@@ -13,28 +12,35 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 修改操作类型枚举
- * @see OperateEnum
+ * 权限类型枚举
  * @author Frodez
- * @date 2019-03-17
+ * @date 2018-12-04
  */
-@Description(name = "修改操作类型枚举")
 @EnumCheckable
+@Description(name = "权限类型枚举")
 @AllArgsConstructor
-public enum ModifyEnum {
+public enum PermissionType {
 
 	/**
-	 * 新增
+	 * 0:所有类型请求
 	 */
-	INSERT((byte) 1, "新增"),
+	ALL((byte) 0, "所有类型请求"),
 	/**
-	 * 删除
+	 * 1:GET类型请求
 	 */
-	DELETE((byte) 2, "删除"),
+	GET((byte) 1, "GET类型请求"),
 	/**
-	 * 修改
+	 * 2:POST类型请求
 	 */
-	UPDATE((byte) 3, "修改");
+	POST((byte) 2, "POST类型请求"),
+	/**
+	 * 3:DELETE类型请求
+	 */
+	DELETE((byte) 3, "DELETE类型请求"),
+	/**
+	 * 4:PUT类型请求
+	 */
+	PUT((byte) 4, "PUT类型请求");
 
 	/**
 	 * 值
@@ -60,15 +66,15 @@ public enum ModifyEnum {
 	@Getter
 	private static List<String> descs;
 
-	private static final Map<Byte, ModifyEnum> enumMap;
+	private static final Map<Byte, PermissionType> enumMap;
 
 	static {
-		vals = Arrays.stream(ModifyEnum.values()).map(ModifyEnum::getVal).collect(Collectors.toUnmodifiableList());
-		descs = Arrays.stream(ModifyEnum.values()).map((iter) -> {
-			return StrUtil.concat(iter.val.toString(), DefStr.SEPERATOR, iter.desc);
+		vals = Arrays.stream(PermissionType.values()).map(PermissionType::getVal).collect(Collectors.toUnmodifiableList());
+		descs = Arrays.stream(PermissionType.values()).map((iter) -> {
+			return StrUtil.concat(iter.val.toString(), ":", iter.desc);
 		}).collect(Collectors.toUnmodifiableList());
-		var builder = ImmutableMap.<Byte, ModifyEnum>builder();
-		for (ModifyEnum iter : ModifyEnum.values()) {
+		var builder = ImmutableMap.<Byte, PermissionType>builder();
+		for (PermissionType iter : PermissionType.values()) {
 			builder.put(iter.val, iter);
 		}
 		enumMap = builder.build();
@@ -79,7 +85,7 @@ public enum ModifyEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static ModifyEnum of(Byte value) {
+	public static PermissionType of(Byte value) {
 		return enumMap.get(value);
 	}
 
@@ -88,8 +94,8 @@ public enum ModifyEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static ModifyEnum defaultEnum() {
-		return null;
+	public static PermissionType defaultEnum() {
+		return PermissionType.ALL;
 	}
 
 	/**
@@ -98,7 +104,7 @@ public enum ModifyEnum {
 	 * @date 2019-05-17
 	 */
 	public static Byte defaultValue() {
-		return null;
+		return defaultEnum().val;
 	}
 
 }

@@ -48,25 +48,21 @@ public class SecurityFilter extends AbstractSecurityInterceptor implements Filte
 		return securitySource;
 	}
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-		ServletException {
-		invoke(new FilterInvocation(request, response, chain));
-	}
-
 	/**
 	 * 自定义权限拦截
 	 * @author Frodez
 	 * @date 2018-12-21
 	 */
-	public void invoke(FilterInvocation fi) throws IOException, ServletException {
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		// fi里面有一个被拦截的url
 		// 里面调用SecuritySource的getAttributes(Object object)这个方法获取fi对应的所有权限
 		// 再调用AuthorityManager的decide方法来校验用户的权限是否足够
-		InterceptorStatusToken token = super.beforeInvocation(fi);
+		FilterInvocation invocation = new FilterInvocation(request, response, chain);
+		InterceptorStatusToken token = super.beforeInvocation(invocation);
 		try {
 			// 执行下一个拦截器
-			fi.getChain().doFilter(fi.getRequest(), fi.getResponse());
+			invocation.getChain().doFilter(invocation.getRequest(), invocation.getResponse());
 		} finally {
 			super.afterInvocation(token, null);
 		}

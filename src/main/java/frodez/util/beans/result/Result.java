@@ -15,6 +15,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -448,14 +449,42 @@ public final class Result implements Serializable {
 	}
 
 	/**
+	 * 判断是否可用,如果不可用,则抛出Exception
+	 * @author Frodez
+	 * @param <E>
+	 * @throws Exception
+	 * @date 2019-12-07
+	 */
+	public <E extends Throwable> Result orThrow(Function<Result, ? extends E> function) throws E {
+		if (code != ResultEnum.SUCCESS.val) {
+			throw function.apply(this);
+		}
+		return this;
+	}
+
+	/**
 	 * 判断是否可用,如果不可用,则抛出ServiceException
 	 * @see frodez.constant.errors.code.ServiceException.ServiceException
 	 * @author Frodez
 	 * @date 2019-12-07
 	 */
-	public Result ableOrThrow() {
+	public Result orThrowMessage() {
 		if (code != ResultEnum.SUCCESS.val) {
-			throw new ServiceException(this);
+			throw new ServiceException(this.message);
+		}
+		return this;
+	}
+
+	/**
+	 * 判断是否可用,如果不可用,则抛出Exception
+	 * @author Frodez
+	 * @param <E>
+	 * @throws Exception
+	 * @date 2019-12-07
+	 */
+	public <E extends Throwable> Result orThrowMessage(Function<String, ? extends E> function) throws E {
+		if (code != ResultEnum.SUCCESS.val) {
+			throw function.apply(this.message);
 		}
 		return this;
 	}
@@ -497,7 +526,8 @@ public final class Result implements Serializable {
 	}
 
 	/**
-	 * 获取json字符串(数组形式)
+	 * 获取json字符串(数组形式)<br>
+	 * <strong>禁止对jsonBytes做任何修改!!!</strong>
 	 * @author Frodez
 	 * @date 2019-05-24
 	 */
@@ -509,6 +539,7 @@ public final class Result implements Serializable {
 	/**
 	 * 获取result的json字符串缓存(数组形式)<br>
 	 * 仅当为默认Result时使用.其他时候为空.<br>
+	 * <strong>禁止对cacheBytes做任何修改!!!</strong>
 	 * @author Frodez
 	 * @date 2018-11-27
 	 */
@@ -654,6 +685,10 @@ public final class Result implements Serializable {
 	public class ResultParseException extends RuntimeException {
 
 		private static final long serialVersionUID = 1L;
+
+		public ResultParseException(String message) {
+			super(message, null, false, false);
+		}
 
 		public ResultParseException(String... message) {
 			super(StrUtil.concat(message), null, false, false);

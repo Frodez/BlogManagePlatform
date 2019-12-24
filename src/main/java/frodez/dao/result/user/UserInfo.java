@@ -2,7 +2,7 @@ package frodez.dao.result.user;
 
 import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.aop.validation.annotation.special.Mobile;
-import frodez.constant.enums.user.UserStatusEnum;
+import frodez.constant.enums.user.UserStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -74,7 +74,7 @@ public class UserInfo implements Serializable {
 	 * 用户状态 0:禁用 1:正常
 	 */
 	@NotNull
-	@MapEnum(value = UserStatusEnum.class)
+	@MapEnum(value = UserStatus.class)
 	private Byte status;
 
 	/**

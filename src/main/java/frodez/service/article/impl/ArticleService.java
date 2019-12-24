@@ -1,7 +1,7 @@
 package frodez.service.article.impl;
 
 import frodez.config.security.util.UserUtil;
-import frodez.constant.enums.common.DeleteEnum;
+import frodez.constant.enums.common.DeleteStatus;
 import frodez.dao.mapper.article.ArticleMapper;
 import frodez.dao.model.article.Article;
 import frodez.dao.result.article.ArticleInfo;
@@ -33,7 +33,7 @@ public class ArticleService implements IArticleService {
 		if (UserUtil.get().getRoleLevel() > article.getPermitLevel()) {
 			return Result.noAccess();
 		}
-		if (DeleteEnum.YES.getVal().equals(article.getIsDelete())) {
+		if (DeleteStatus.YES.getVal().equals(article.getIsDelete())) {
 			return Result.fail("文章已删除");
 		}
 		UserInfo userInfo = UserUtil.get(article.getUserId());

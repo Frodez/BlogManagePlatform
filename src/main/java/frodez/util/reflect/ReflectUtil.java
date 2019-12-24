@@ -1,7 +1,6 @@
 package frodez.util.reflect;
 
 import frodez.constant.settings.DefStr;
-import frodez.util.beans.pair.Pair;
 import frodez.util.common.StrUtil;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -26,7 +25,7 @@ public class ReflectUtil {
 
 	public static final Object[] EMPTY_ARRAY = new Object[] { null };
 
-	private static final Map<Class<?>, Pair<FastClass, FastMethod[]>> CGLIB_CACHE = new ConcurrentHashMap<>();
+	private static final Map<Class<?>, Table> CGLIB_CACHE = new ConcurrentHashMap<>();
 
 	/**
 	 * 对象实例化
@@ -56,18 +55,35 @@ public class ReflectUtil {
 	 * @date 2019-04-12
 	 */
 	public static FastClass getFastClass(Class<?> klass) {
+		return getFastClass(klass, false);
+	}
+
+	/**
+	 * 获取FastClass,并初始化所有FastMethod。类型会被缓存。
+	 * @author Frodez
+	 * @date 2019-04-12
+	 */
+	public static FastClass getFastClass(Class<?> klass, boolean initialized) {
 		Assert.notNull(klass, "klass must not be null");
-		Pair<FastClass, FastMethod[]> pair = CGLIB_CACHE.get(klass);
-		if (pair == null) {
-			FastClass fastClass = FastClass.create(klass);
-			FastMethod[] methods = new FastMethod[fastClass.getMaxIndex() + 1];
-			pair = new Pair<>();
-			pair.setKey(fastClass);
-			pair.setValue(methods);
-			CGLIB_CACHE.put(klass, pair);
-			return fastClass;
+		Table table = CGLIB_CACHE.get(klass);
+		if (table == null) {
+			table = new Table(klass);
+			if (initialized) {
+				table.init();
+			}
+			CGLIB_CACHE.put(klass, table);
+			return table.fastClass;
 		}
-		return pair.getKey();
+		return table.fastClass;
+	}
+
+	/**
+	 * 获取method
+	 * @author Frodez
+	 * @date 2019-12-18
+	 */
+	public static Method getMethod(Class<?> klass, String method, Class<?>... params) {
+		return getFastMethod(klass, method, params).getJavaMethod();
 	}
 
 	/**
@@ -80,34 +96,48 @@ public class ReflectUtil {
 	public static FastMethod getFastMethod(Class<?> klass, String method, Class<?>... params) {
 		Assert.notNull(klass, "klass must not be null");
 		Assert.notNull(method, "method must not be null");
-		Pair<FastClass, FastMethod[]> pair = CGLIB_CACHE.get(klass);
-		if (pair == null) {
-			FastClass fastClass = FastClass.create(klass);
-			FastMethod[] methods = new FastMethod[fastClass.getMaxIndex() + 1];
-			int index = fastClass.getIndex(method, params);
+		Table table = CGLIB_CACHE.get(klass);
+		if (table == null) {
+			table = new Table(klass);
+			FastMethod fastMethod = table.method(method, params);
+			CGLIB_CACHE.put(klass, table);
+			return fastMethod;
+		}
+		return table.method(method, params);
+	}
+
+	private class Table {
+
+		FastClass fastClass;
+
+		FastMethod[] methods;
+
+		public Table(Class<?> klass) {
+			this.fastClass = FastClass.create(klass);
+			methods = new FastMethod[fastClass.getMaxIndex() + 1];
+		}
+
+		public void init() {
+			for (Method method : fastClass.getClass().getMethods()) {
+				int index = fastClass.getIndex(method.getName(), method.getParameterTypes());
+				methods[index] = fastClass.getMethod(method);
+			}
+		}
+
+		@SneakyThrows
+		FastMethod method(String name, Class<?>... params) {
+			int index = fastClass.getIndex(name, params);
 			if (index < 0) {
 				throw new NoSuchMethodException();
 			}
-			FastMethod fastMethod = fastClass.getMethod(method, params);
-			methods[fastMethod.getIndex()] = fastMethod;
-			pair = new Pair<>();
-			pair.setKey(fastClass);
-			pair.setValue(methods);
-			CGLIB_CACHE.put(klass, pair);
-			return fastMethod;
+			FastMethod method = methods[index];
+			if (method == null) {
+				method = fastClass.getMethod(name, params);
+				methods[index] = method;
+			}
+			return method;
 		}
-		FastClass fastClass = pair.getKey();
-		int index = fastClass.getIndex(method, params);
-		if (index < 0) {
-			throw new NoSuchMethodException();
-		}
-		FastMethod[] methods = pair.getValue();
-		FastMethod fastMethod = methods[index];
-		if (fastMethod == null) {
-			fastMethod = fastClass.getMethod(method, params);
-			methods[index] = fastMethod;
-		}
-		return fastMethod;
+
 	}
 
 	/**

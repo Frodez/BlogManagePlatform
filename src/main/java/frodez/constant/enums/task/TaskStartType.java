@@ -20,7 +20,7 @@ import lombok.Getter;
 @EnumCheckable
 @Description(name = "任务启动状态枚举")
 @AllArgsConstructor
-public enum StartNowEnum {
+public enum TaskStartType {
 
 	/**
 	 * 1:立刻启动
@@ -55,21 +55,21 @@ public enum StartNowEnum {
 	@Getter
 	private static List<String> descs;
 
-	private static Map<Byte, StartNowEnum> enumMap;
+	private static Map<Byte, TaskStartType> enumMap;
 
 	static {
-		vals = Arrays.stream(StartNowEnum.values()).map(StartNowEnum::getVal).collect(Collectors.toUnmodifiableList());
-		descs = Arrays.stream(StartNowEnum.values()).map((iter) -> {
+		vals = Arrays.stream(TaskStartType.values()).map(TaskStartType::getVal).collect(Collectors.toUnmodifiableList());
+		descs = Arrays.stream(TaskStartType.values()).map((iter) -> {
 			return StrUtil.concat(iter.val.toString(), DefStr.SEPERATOR, iter.desc);
 		}).collect(Collectors.toUnmodifiableList());
-		var builder = ImmutableMap.<Byte, StartNowEnum>builder();
-		for (StartNowEnum iter : StartNowEnum.values()) {
+		var builder = ImmutableMap.<Byte, TaskStartType>builder();
+		for (TaskStartType iter : TaskStartType.values()) {
 			builder.put(iter.val, iter);
 		}
 		enumMap = builder.build();
 	}
 
-	public static StartNowEnum of(Byte value) {
+	public static TaskStartType of(Byte value) {
 		return enumMap.get(value);
 	}
 
@@ -78,7 +78,7 @@ public enum StartNowEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static StartNowEnum defaultEnum() {
+	public static TaskStartType defaultEnum() {
 		return null;
 	}
 

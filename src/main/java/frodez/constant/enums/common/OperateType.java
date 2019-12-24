@@ -1,4 +1,4 @@
-package frodez.constant.enums.task;
+package frodez.constant.enums.common;
 
 import com.google.common.collect.ImmutableMap;
 import frodez.constant.annotations.decoration.EnumCheckable;
@@ -13,23 +13,32 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 任务状态枚举
+ * 操作类型枚举
+ * @see ModifyType
  * @author Frodez
- * @date 2019-03-20
+ * @date 2019-03-17
  */
 @EnumCheckable
-@Description(name = "任务状态枚举")
+@Description(name = "操作类型枚举")
 @AllArgsConstructor
-public enum StatusEnum {
+public enum OperateType {
 
 	/**
-	 * 1:活跃中
+	 * 新增
 	 */
-	ACTIVE((byte) 1, "活跃中"),
+	INSERT((byte) 1, "新增"),
 	/**
-	 * 2:不活跃
+	 * 删除
 	 */
-	PAUSED((byte) 2, "不活跃");
+	DELETE((byte) 2, "删除"),
+	/**
+	 * 修改
+	 */
+	UPDATE((byte) 3, "修改"),
+	/**
+	 * 查询
+	 */
+	SELECT((byte) 4, "查询");
 
 	/**
 	 * 值
@@ -55,21 +64,26 @@ public enum StatusEnum {
 	@Getter
 	private static List<String> descs;
 
-	private static Map<Byte, StatusEnum> enumMap;
+	private static final Map<Byte, OperateType> enumMap;
 
 	static {
-		vals = Arrays.stream(StatusEnum.values()).map(StatusEnum::getVal).collect(Collectors.toUnmodifiableList());
-		descs = Arrays.stream(StatusEnum.values()).map((iter) -> {
+		vals = Arrays.stream(OperateType.values()).map(OperateType::getVal).collect(Collectors.toUnmodifiableList());
+		descs = Arrays.stream(OperateType.values()).map((iter) -> {
 			return StrUtil.concat(iter.val.toString(), DefStr.SEPERATOR, iter.desc);
 		}).collect(Collectors.toUnmodifiableList());
-		var builder = ImmutableMap.<Byte, StatusEnum>builder();
-		for (StatusEnum iter : StatusEnum.values()) {
+		var builder = ImmutableMap.<Byte, OperateType>builder();
+		for (OperateType iter : OperateType.values()) {
 			builder.put(iter.val, iter);
 		}
 		enumMap = builder.build();
 	}
 
-	public static StatusEnum of(Byte value) {
+	/**
+	 * 转化
+	 * @author Frodez
+	 * @date 2019-05-17
+	 */
+	public static OperateType of(Byte value) {
 		return enumMap.get(value);
 	}
 
@@ -78,8 +92,8 @@ public enum StatusEnum {
 	 * @author Frodez
 	 * @date 2019-05-17
 	 */
-	public static StatusEnum defaultEnum() {
-		return StatusEnum.ACTIVE;
+	public static OperateType defaultEnum() {
+		return null;
 	}
 
 	/**
@@ -88,7 +102,7 @@ public enum StatusEnum {
 	 * @date 2019-05-17
 	 */
 	public static Byte defaultValue() {
-		return defaultEnum().val;
+		return null;
 	}
 
 }

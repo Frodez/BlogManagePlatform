@@ -2,7 +2,7 @@ package security;
 
 import frodez.BlogManagePlatformApplication;
 import frodez.config.security.util.Matcher;
-import frodez.constant.enums.user.PermissionTypeEnum;
+import frodez.constant.enums.user.PermissionType;
 import frodez.constant.settings.PropertyKey;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.model.user.Permission;
@@ -49,7 +49,7 @@ public class InitPermissionService {
 			requestUrl = requestUrl.substring(PropertyUtil.get(PropertyKey.Web.BASE_PATH).length());
 			//获得请求类型
 			String requestType = entry.getKey().getMethodsCondition().getMethods().stream().map(RequestMethod::name)
-				.findFirst().orElse(PermissionTypeEnum.ALL.name());
+				.findFirst().orElse(PermissionType.ALL.name());
 			String permissionName = ReflectUtil.getShortMethodName(entry.getValue().getMethod());
 			Permission permission = new Permission();
 			permission.setCreateTime(date);
@@ -57,15 +57,15 @@ public class InitPermissionService {
 			permission.setName(permissionName);
 			permission.setDescription(permissionName);
 			if (requestType.equals("GET")) {
-				permission.setType(PermissionTypeEnum.GET.getVal());
+				permission.setType(PermissionType.GET.getVal());
 			} else if (requestType.equals("POST")) {
-				permission.setType(PermissionTypeEnum.POST.getVal());
+				permission.setType(PermissionType.POST.getVal());
 			} else if (requestType.equals("DELETE")) {
-				permission.setType(PermissionTypeEnum.DELETE.getVal());
+				permission.setType(PermissionType.DELETE.getVal());
 			} else if (requestType.equals("PUT")) {
-				permission.setType(PermissionTypeEnum.PUT.getVal());
+				permission.setType(PermissionType.PUT.getVal());
 			} else {
-				permission.setType(PermissionTypeEnum.ALL.getVal());
+				permission.setType(PermissionType.ALL.getVal());
 			}
 			permissionList.add(permission);
 		});

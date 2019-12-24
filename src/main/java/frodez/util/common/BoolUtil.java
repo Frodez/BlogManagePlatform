@@ -44,7 +44,7 @@ public class BoolUtil {
 
 	/**
 	 * 与<br>
-	 * 以0为false,1为true,真值表如下:<br>
+	 * 以null为false,exist为true,真值表如下:<br>
 	 * 输入 输出<br>
 	 * A B R<br>
 	 * 0 0 0<br>
@@ -60,7 +60,7 @@ public class BoolUtil {
 
 	/**
 	 * 与非<br>
-	 * 以0为false,1为true,真值表如下:<br>
+	 * 以null为false,exist为true,真值表如下:<br>
 	 * 输入 输出<br>
 	 * A B R<br>
 	 * 0 0 1<br>
@@ -108,7 +108,7 @@ public class BoolUtil {
 
 	/**
 	 * 或<br>
-	 * 以0为false,1为true,真值表如下:<br>
+	 * 以null为false,exist为true,真值表如下:<br>
 	 * 输入 输出<br>
 	 * A B R<br>
 	 * 0 0 0<br>
@@ -124,7 +124,7 @@ public class BoolUtil {
 
 	/**
 	 * 或非<br>
-	 * 以0为false,1为true,真值表如下:<br>
+	 * 以null为false,exist为true,真值表如下:<br>
 	 * 输入 输出<br>
 	 * A B R<br>
 	 * 0 0 1<br>
@@ -172,7 +172,7 @@ public class BoolUtil {
 
 	/**
 	 * 异或<br>
-	 * 以0为false,1为true,真值表如下:<br>
+	 * 以null为false,exist为true,真值表如下:<br>
 	 * 输入 输出<br>
 	 * A B R<br>
 	 * 0 0 0<br>
@@ -188,7 +188,7 @@ public class BoolUtil {
 
 	/**
 	 * 异或非<br>
-	 * 以0为false,1为true,真值表如下:<br>
+	 * 以null为false,exist为true,真值表如下:<br>
 	 * 输入 输出<br>
 	 * A B R<br>
 	 * 0 0 1<br>
@@ -200,26 +200,6 @@ public class BoolUtil {
 	 */
 	public static boolean xnor(Object a, Object b) {
 		return !xor(a != null, b != null);
-	}
-
-	public static void say(Object object) {
-		System.out.println("say(Object)" + object);
-	}
-
-	public static void say(Boolean object) {
-		System.out.println("say(Boolean)" + object);
-	}
-
-	public static void say(boolean object) {
-		System.out.println("say(boolean)" + object);
-	}
-
-	public static void main(String[] args) {
-		say(true);
-		say(Boolean.TRUE);
-		say("true");
-		say(new Object());
-		say(null);
 	}
 
 }

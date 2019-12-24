@@ -2,7 +2,7 @@ package frodez.service.user.impl;
 
 import frodez.config.aop.exception.annotation.Error;
 import frodez.config.security.util.UserUtil;
-import frodez.constant.enums.user.UserStatusEnum;
+import frodez.constant.enums.user.UserStatus;
 import frodez.constant.errors.code.ErrorCode;
 import frodez.dao.mapper.user.UserMapper;
 import frodez.dao.model.user.User;
@@ -44,7 +44,7 @@ public class UserService implements IUserService {
 		user.setNickname(param.getNickname());
 		user.setEmail(param.getEmail());
 		user.setPhone(param.getPhone());
-		user.setStatus(UserStatusEnum.NORMAL.getVal());
+		user.setStatus(UserStatus.NORMAL.getVal());
 		//暂时写死
 		user.setRoleId(1L);
 		userMapper.insert(user);
@@ -60,7 +60,7 @@ public class UserService implements IUserService {
 	@Override
 	public Result logOff() {
 		userMapper.deleteByPrimaryKey(UserUtil.get().getId());
-		loginService.logout().ableOrThrow();
+		loginService.logout().orThrowMessage();
 		return Result.success();
 	}
 
