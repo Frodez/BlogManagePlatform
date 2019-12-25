@@ -1,16 +1,21 @@
-package frodez.service.cache.vm.facade;
+package frodez.service.cache.facade;
 
 import frodez.dao.result.user.UserInfo;
-import frodez.service.cache.base.ICache;
 
-public interface UserIdCache extends ICache<Long, UserInfo> {
+public interface UserIdCache {
+
+	/**
+	 * 获取缓存大小
+	 * @author Frodez
+	 * @date 2019-12-25
+	 */
+	long size();
 
 	/**
 	 * 判断userId是否存在于缓存
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	@Override
 	boolean existKey(Long userId);
 
 	/**
@@ -18,7 +23,6 @@ public interface UserIdCache extends ICache<Long, UserInfo> {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	@Override
 	boolean existValue(UserInfo userInfo);
 
 	/**
@@ -26,7 +30,6 @@ public interface UserIdCache extends ICache<Long, UserInfo> {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	@Override
 	void save(Long userId, UserInfo userInfo);
 
 	/**
@@ -34,7 +37,6 @@ public interface UserIdCache extends ICache<Long, UserInfo> {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	@Override
 	UserInfo get(Long userId);
 
 	/**
@@ -42,7 +44,6 @@ public interface UserIdCache extends ICache<Long, UserInfo> {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	@Override
 	void remove(Long userId);
 
 }

@@ -31,6 +31,10 @@ public class AuthorityManager implements AccessDecisionManager {
 
 	private ConfigAttribute defaultDeniedRole;
 
+	private void clear() {
+		defaultDeniedRole = null;
+	}
+
 	@PostConstruct
 	private void init() {
 		SecurityProperties properties = ContextUtil.bean(SecurityProperties.class);
@@ -45,7 +49,7 @@ public class AuthorityManager implements AccessDecisionManager {
 	 */
 	public void refresh() {
 		synchronized (this) {
-			defaultDeniedRole = null;
+			clear();
 			init();
 		}
 	}

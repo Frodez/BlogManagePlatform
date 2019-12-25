@@ -365,7 +365,27 @@ public class EmptyUtil {
 	 * @date 2019-12-14
 	 */
 	public static Object[] trim(Object[] objects) {
+		return trim(false, objects);
+	}
+
+	/**
+	 * 将数组中的null元素剔除
+	 * @author Frodez
+	 * @date 2019-12-14
+	 */
+	public static Object[] trim(boolean strictMode, Object[] objects) {
 		Assert.notNull(objects, "objects must not be null");
+		if (!strictMode) {
+			int last = objects.length - 1;
+			for (; last >= 0; last--) {
+				if (objects[last] != null) {
+					break;
+				}
+			}
+			Object[] result = new Object[last + 1];
+			System.arraycopy(objects, 0, result, 0, last + 1);
+			return result;
+		}
 		int size = 0;
 		for (int i = 0; i < objects.length; i++) {
 			if (objects[i] != null) {
@@ -391,7 +411,27 @@ public class EmptyUtil {
 	 * @date 2019-12-14
 	 */
 	public static CharSequence[] trim(CharSequence[] objects) {
+		return trim(false, objects);
+	}
+
+	/**
+	 * 将数组中的null元素剔除
+	 * @author Frodez
+	 * @date 2019-12-14
+	 */
+	public static CharSequence[] trim(boolean strictMode, CharSequence[] objects) {
 		Assert.notNull(objects, "objects must not be null");
+		if (!strictMode) {
+			int last = objects.length - 1;
+			for (; last >= 0; last--) {
+				if (EmptyUtil.yes(objects[last])) {
+					break;
+				}
+			}
+			CharSequence[] result = new CharSequence[last + 1];
+			System.arraycopy(objects, 0, result, 0, last + 1);
+			return result;
+		}
 		int size = 0;
 		for (int i = 0; i < objects.length; i++) {
 			if (EmptyUtil.no(objects[i])) {

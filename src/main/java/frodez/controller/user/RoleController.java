@@ -48,6 +48,11 @@ public class RoleController {
 		return authorityService.updateRolePermission(param);
 	}
 
+	@PostMapping(value = "/frontend/updatePermission", name = "修改角色页面资源权限接口")
+	public Result updateRolePagePermission(@RequestBody UpdateRolePermission param) {
+		return authorityService.updateRolePagePermission(param);
+	}
+
 	@DeleteMapping(name = "删除角色接口")
 	public Result removeRole(@ApiParam("角色ID") Long id) {
 		return authorityService.removeRole(id);

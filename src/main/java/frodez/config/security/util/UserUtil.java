@@ -1,7 +1,7 @@
 package frodez.config.security.util;
 
 import frodez.dao.result.user.UserInfo;
-import frodez.service.cache.vm.facade.TokenCache;
+import frodez.service.cache.facade.TokenCache;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.result.Result;
 import frodez.util.spring.ContextUtil;
@@ -28,7 +28,7 @@ public class UserUtil {
 	@PostConstruct
 	private void init() {
 		authorityService = ContextUtil.bean(IAuthorityService.class);
-		tokenCache = ContextUtil.bean(TokenCache.class);
+		tokenCache = ContextUtil.bean("tokenRedisCache", TokenCache.class);
 		Assert.notNull(authorityService, "authorityService must not be null");
 		Assert.notNull(tokenCache, "tokenCache must not be null");
 	}

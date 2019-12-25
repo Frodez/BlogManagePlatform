@@ -10,28 +10,35 @@ import frodez.constant.enums.user.PermissionType;
 import frodez.constant.enums.user.UserStatus;
 import frodez.constant.errors.code.ErrorCode;
 import frodez.constant.settings.PropertyKey;
+import frodez.dao.mapper.user.PagePermissionMapper;
 import frodez.dao.mapper.user.PermissionMapper;
 import frodez.dao.mapper.user.RoleMapper;
+import frodez.dao.mapper.user.RolePagePermissionMapper;
 import frodez.dao.mapper.user.RolePermissionMapper;
 import frodez.dao.mapper.user.UserMapper;
+import frodez.dao.model.user.PagePermission;
 import frodez.dao.model.user.Permission;
 import frodez.dao.model.user.Role;
+import frodez.dao.model.user.RolePagePermission;
 import frodez.dao.model.user.RolePermission;
 import frodez.dao.model.user.User;
+import frodez.dao.param.user.AddPagePermission;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.AddRole;
 import frodez.dao.param.user.QueryRolePermission;
+import frodez.dao.param.user.UpdatePagePermission;
 import frodez.dao.param.user.UpdatePermission;
 import frodez.dao.param.user.UpdateRole;
 import frodez.dao.param.user.UpdateRolePermission;
+import frodez.dao.result.user.PagePermissionDetail;
 import frodez.dao.result.user.PagePermissionInfo;
 import frodez.dao.result.user.PermissionDetail;
 import frodez.dao.result.user.PermissionInfo;
 import frodez.dao.result.user.RoleDetail;
 import frodez.dao.result.user.UserInfo;
-import frodez.service.cache.vm.facade.NameCache;
-import frodez.service.cache.vm.facade.TokenCache;
-import frodez.service.cache.vm.facade.UserIdCache;
+import frodez.service.cache.facade.NameCache;
+import frodez.service.cache.facade.TokenCache;
+import frodez.service.cache.facade.UserIdCache;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
@@ -52,6 +59,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -67,12 +75,15 @@ import tk.mybatis.mapper.entity.Example;
 public class AuthorityService implements IAuthorityService {
 
 	@Autowired
+	@Qualifier("userIdRedisCache")
 	private UserIdCache userIdCache;
 
 	@Autowired
+	@Qualifier("tokenRedisCache")
 	private TokenCache tokenCache;
 
 	@Autowired
+	@Qualifier("nameRedisCache")
 	private NameCache nameCache;
 
 	@Autowired
@@ -80,6 +91,12 @@ public class AuthorityService implements IAuthorityService {
 
 	@Autowired
 	private RolePermissionMapper rolePermissionMapper;
+
+	@Autowired
+	private PagePermissionMapper pagePermissionMapper;
+
+	@Autowired
+	private RolePagePermissionMapper rolePagePermissionMapper;
 
 	@Autowired
 	private UserMapper userMapper;
@@ -252,7 +269,7 @@ public class AuthorityService implements IAuthorityService {
 		stream.forEach((item) -> {
 			userIdCache.save(item.getId(), item);
 			nameCache.save(item.getName(), item);
-			String token = tokenCache.getTokenByCondition((iter) -> iter.getId().equals(item.getId()));
+			String token = tokenCache.getTokenById(item.getId());
 			if (token != null) {
 				tokenCache.save(token, item);
 			}
@@ -277,6 +294,23 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	@Override
+	public Result getPagePermission(Long pagePermissionId) {
+		PagePermission pagePermission = pagePermissionMapper.selectByPrimaryKey(pagePermissionId);
+		if (pagePermission == null) {
+			return Result.fail("未找到该页面资源权限!");
+		}
+		PagePermissionDetail data = BeanUtil.copy(pagePermission, PagePermissionDetail::new);
+		List<Long> roleIds = rolePagePermissionMapper.partialEqual("role_id", "page_permission_id", pagePermissionId);
+		data.setRoles(roleMapper.selectByIds(roleIds));
+		return Result.success(data);
+	}
+
+	@Override
+	public Result getPagePermissions(QueryPage param) {
+		return Result.page(param.start(() -> pagePermissionMapper.selectAll()));
+	}
+
+	@Override
 	public Result getRole(Long roleId) {
 		Role role = roleMapper.selectByPrimaryKey(roleId);
 		if (role == null) {
@@ -296,6 +330,11 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result getRolePermissions(QueryRolePermission param) {
 		return Result.page(param.getPage().start(() -> rolePermissionMapper.getPermissions(param.getRoleId())));
+	}
+
+	@Override
+	public Result getRolePagePermissions(QueryRolePermission param) {
+		return Result.page(param.getPage().start(() -> rolePermissionMapper.getPagePermissions(param.getRoleId())));
 	}
 
 	@Transactional
@@ -353,6 +392,15 @@ public class AuthorityService implements IAuthorityService {
 		return permissionMapper.partialNoCondition("name").stream().filter((iter) -> iter.equals(name)).count() != 0;
 	}
 
+	/**
+	 * 检查页面资源权限名称是否重名,true为存在重名,false为不存在重名
+	 * @author Frodez
+	 * @date 2019-03-17
+	 */
+	private boolean checkPagePermissionName(String name) {
+		return pagePermissionMapper.partialNoCondition("name").stream().filter((iter) -> iter.equals(name)).count() != 0;
+	}
+
 	@Transactional
 	@Override
 	public Result addPermission(AddPermission param) {
@@ -402,6 +450,28 @@ public class AuthorityService implements IAuthorityService {
 			authorityManager.refresh();
 			authoritySource.refresh();
 		}
+	}
+
+	@Transactional
+	@Override
+	public Result addPagePermission(AddPagePermission param) {
+		if (checkPagePermissionName(param.getName())) {
+			return Result.fail("页面资源权限不能重名!");
+		}
+		PagePermission pagePermission = BeanUtil.copy(param, PagePermission::new);
+		pagePermission.setCreateTime(new Date());
+		pagePermissionMapper.insert(pagePermission);
+		return Result.success();
+	}
+
+	@Transactional
+	@Override
+	public Result updatePagePermission(UpdatePagePermission param) {
+		if (checkPagePermissionName(param.getName())) {
+			return Result.fail("页面资源权限不能重名!");
+		}
+		pagePermissionMapper.updateByPrimaryKeySelective(BeanUtil.initialize(param, PagePermission.class));
+		return Result.success();
 	}
 
 	/**
@@ -517,6 +587,74 @@ public class AuthorityService implements IAuthorityService {
 
 	@Transactional
 	@Override
+	public Result updateRolePagePermission(UpdateRolePermission param) {
+		if (!ModifyType.UPDATE.getVal().equals(param.getOperationType()) && EmptyUtil.yes(param.getPermissionIds())) {
+			return Result.errorRequest("不能对角色新增或者删除一个空的页面资源权限!");
+		}
+		Role role = roleMapper.selectByPrimaryKey(param.getRoleId());
+		if (role == null) {
+			return Result.fail("找不到该角色!");
+		}
+		switch (ModifyType.of(param.getOperationType())) {
+			case INSERT : {
+				if (pagePermissionMapper.countByIds(param.getPermissionIds()) != param.getPermissionIds().size()) {
+					return Result.fail("存在错误的页面资源权限!");
+				}
+				Example example = new Example(RolePagePermission.class);
+				example.createCriteria().andIn("pagePermissionId", param.getPermissionIds()).andEqualTo("roleId", param.getRoleId());
+				if (rolePagePermissionMapper.selectCountByExample(example) != 0) {
+					return Result.fail("不能添加已拥有的页面资源权限!");
+				}
+				Date date = new Date();
+				List<RolePagePermission> rolePermissions = param.getPermissionIds().stream().map((iter) -> {
+					RolePagePermission item = new RolePagePermission();
+					item.setCreateTime(date);
+					item.setPagePermissionId(iter);
+					item.setRoleId(param.getRoleId());
+					return item;
+				}).collect(Collectors.toList());
+				rolePagePermissionMapper.insertList(rolePermissions);
+				break;
+			}
+			case DELETE : {
+				Example example = new Example(RolePagePermission.class);
+				example.createCriteria().andIn("pagePermissionId", param.getPermissionIds()).andEqualTo("roleId", param.getRoleId());
+				if (rolePagePermissionMapper.selectCountByExample(example) != param.getPermissionIds().size()) {
+					return Result.fail("存在错误的页面资源权限!");
+				}
+				rolePagePermissionMapper.deleteByExample(example);
+				break;
+			}
+			case UPDATE : {
+				if (EmptyUtil.no(param.getPermissionIds())) {
+					if (pagePermissionMapper.countByIds(param.getPermissionIds()) != param.getPermissionIds().size()) {
+						return Result.fail("存在错误的页面资源权限!");
+					}
+				}
+				rolePagePermissionMapper.deleteEqual("role_id", param.getRoleId());
+				if (EmptyUtil.no(param.getPermissionIds())) {
+					Date date = new Date();
+					List<RolePagePermission> rolePermissions = param.getPermissionIds().stream().map((iter) -> {
+						RolePagePermission item = new RolePagePermission();
+						item.setCreateTime(date);
+						item.setPagePermissionId(iter);
+						item.setRoleId(param.getRoleId());
+						return item;
+					}).collect(Collectors.toList());
+					rolePagePermissionMapper.insertList(rolePermissions);
+				}
+				break;
+			}
+			default : {
+				break;
+			}
+		}
+		refreshUserInfo(getUserInfos(userMapper.selectEqual("role_id", param.getRoleId())));
+		return Result.success();
+	}
+
+	@Transactional
+	@Override
 	public Result removeRole(Long roleId) {
 		try {
 			Role role = roleMapper.selectByPrimaryKey(roleId);
@@ -528,6 +666,7 @@ public class AuthorityService implements IAuthorityService {
 			}
 			roleMapper.deleteByPrimaryKey(roleId);
 			rolePermissionMapper.deleteEqual("role_id", roleId);
+			rolePagePermissionMapper.deleteEqual("role_id", roleId);
 			return Result.success();
 		} finally {
 			authorityManager.refresh();
@@ -543,18 +682,29 @@ public class AuthorityService implements IAuthorityService {
 			if (permission == null) {
 				return Result.fail("找不到该权限!");
 			}
-			Example example = new Example(RolePermission.class);
-			example.createCriteria().andEqualTo("permissionId", permissionId);
-			if (rolePermissionMapper.selectCountByExample(example) != 0) {
+			if (rolePermissionMapper.countEqual("permission_id", permissionId) != 0) {
 				return Result.fail("仍存在使用该权限的角色,请更改该角色权限后再删除!");
 			}
-			rolePermissionMapper.deleteByExample(example);
 			permissionMapper.deleteByPrimaryKey(permissionId);
 			return Result.success();
 		} finally {
 			authorityManager.refresh();
 			authoritySource.refresh();
 		}
+	}
+
+	@Transactional
+	@Override
+	public Result removePagePermission(Long pagePermissionId) {
+		PagePermission pagePermission = pagePermissionMapper.selectByPrimaryKey(pagePermissionId);
+		if (pagePermission == null) {
+			return Result.fail("找不到该页面资源权限!");
+		}
+		if (rolePagePermissionMapper.countEqual("page_permission_id", pagePermissionId) != 0) {
+			return Result.fail("仍存在使用该权限的角色,请更改该角色权限后再删除!");
+		}
+		pagePermissionMapper.deleteByPrimaryKey(pagePermissionId);
+		return Result.success();
 	}
 
 	@Transactional

@@ -8,7 +8,7 @@ import frodez.dao.param.user.DoLogin;
 import frodez.dao.param.user.DoRefresh;
 import frodez.dao.result.user.PermissionInfo;
 import frodez.dao.result.user.UserInfo;
-import frodez.service.cache.vm.facade.TokenCache;
+import frodez.service.cache.facade.TokenCache;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.ILoginService;
 import frodez.util.beans.result.Result;
@@ -17,6 +17,7 @@ import frodez.util.spring.MVCUtil;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -49,6 +50,7 @@ public class LoginService implements ILoginService {
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
+	@Qualifier("tokenRedisCache")
 	private TokenCache tokenCache;
 
 	@Autowired
@@ -64,7 +66,7 @@ public class LoginService implements ILoginService {
 		if (!passwordEncoder.matches(param.getPassword(), userInfo.getPassword())) {
 			return Result.fail("用户名或密码错误");
 		}
-		if (tokenCache.existValue(userInfo)) {
+		if (tokenCache.existId(userInfo.getId())) {
 			return Result.fail("用户已登录");
 		}
 		List<String> authorities = StreamUtil.list(userInfo.getPermissionList(), PermissionInfo::getName);
@@ -125,7 +127,7 @@ public class LoginService implements ILoginService {
 	public Result logout() {
 		HttpServletRequest request = MVCUtil.request();
 		String token = TokenUtil.getRealToken(request);
-		if (!tokenCache.existKey(token)) {
+		if (!tokenCache.existToken(token)) {
 			return Result.fail("用户已下线");
 		}
 		tokenCache.remove(token);

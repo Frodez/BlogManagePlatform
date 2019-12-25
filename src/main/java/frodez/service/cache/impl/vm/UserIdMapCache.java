@@ -1,12 +1,12 @@
-package frodez.service.cache.vm.impl;
+package frodez.service.cache.impl.vm;
 
 import frodez.dao.result.user.UserInfo;
-import frodez.service.cache.vm.facade.UserIdCache;
+import frodez.service.cache.facade.UserIdCache;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("userIdMapCache")
 public class UserIdMapCache implements UserIdCache {
 
 	/**
@@ -15,7 +15,7 @@ public class UserIdMapCache implements UserIdCache {
 	private Map<Long, UserInfo> cache = new ConcurrentHashMap<>();
 
 	@Override
-	public int size() {
+	public long size() {
 		return cache.size();
 	}
 
