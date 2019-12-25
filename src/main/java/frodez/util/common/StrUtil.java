@@ -255,16 +255,6 @@ public class StrUtil {
 			return new String[] { string };
 		}
 		//如果找到,则分割
-		return split(from, delimiter, string).finish();
-	}
-
-	/**
-	 * 不使用正则表达式的spilt
-	 * @param from 第一个分隔符的起始点
-	 * @author Frodez
-	 * @date 2019-12-24
-	 */
-	private static StringArray split(int from, String delimiter, String string) {
 		int skip = delimiter.length();
 		//可能的长度
 		StringArray builder = new StringArray(string.length() / (skip << 2));
@@ -289,7 +279,7 @@ public class StrUtil {
 				from = next + skip;
 			}
 		}
-		return builder;
+		return builder.finish();
 	}
 
 	/**
