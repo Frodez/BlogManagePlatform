@@ -3,24 +3,58 @@
 <mapper namespace="frodez.dao.mapper.user.RolePermissionMapper">
 
 	<select id="getPermissions" resultType="frodez.dao.result.user.PermissionInfo">
-		SELECT tb_permission.id AS id, tb_permission.type AS type,
-		tb_permission.`name` AS `name`, tb_permission.url AS url,
-		tb_permission.description AS description
+		SELECT 
+			tb_permission.id AS id, 
+			tb_permission.type AS type,
+			tb_permission.`name` AS `name`, 
+			tb_permission.url AS url,
+			tb_permission.description AS description
 		FROM
-		tb_permission INNER JOIN tb_role_permission ON
-		tb_role_permission.permission_id = tb_permission.id AND
-		tb_role_permission.role_id = #{roleId}
+			tb_permission 
+			INNER JOIN tb_role_permission ON tb_role_permission.permission_id = tb_permission.id 
+			AND tb_role_permission.role_id = #{roleId}
 	</select>
 
-	<select id="batchGetPermissions" resultType="frodez.util.beans.pair.Pair">
+	<select id="batchGetPermissions" resultType="frodez.dao.result.user.PermissionInfo">
 		SELECT
-		tb_role_permission.role_id AS `KEY`,
-		tb_role_permission.permission_id AS `VALUE`
+			tb_permission.id AS id,
+			tb_permission.type AS type,
+			tb_permission.`name` AS `name`,
+			tb_permission.url AS url,
+			tb_permission.description AS description
 		FROM
-		tb_role_permission
-		INNER JOIN tb_permission ON tb_role_permission.permission_id = tb_permission.id
+			tb_permission
+			INNER JOIN tb_role_permission ON tb_permission.id = tb_role_permission.permission_id
+			INNER JOIN tb_role ON tb_role_permission.role_id = tb_role.id
 		WHERE
-		tb_role_permission.role_id in
+			tb_role.id IN 
+		<foreach collection="roleIds" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</select>
+	
+	<select id="getPagePermissions" resultType="frodez.dao.result.user.PagePermissionInfo">
+		SELECT 
+			tb_page_permission.id AS id,
+			tb_page_permission.`name` AS `name`,
+			tb_page_permission.description AS description
+		FROM
+			tb_page_permission 
+			INNER JOIN tb_role_page_permission ON tb_role_page_permission.page_permission_id = tb_page_permission.id 
+			AND tb_role_page_permission.role_id = #{roleId}
+	</select>
+
+	<select id="batchGetPagePermissions" resultType="frodez.dao.result.user.PagePermissionInfo">
+		SELECT
+			tb_page_permission.id AS id,
+			tb_page_permission.`name` AS `name`,
+			tb_page_permission.description AS description
+		FROM
+			tb_page_permission
+			INNER JOIN tb_role_page_permission ON tb_page_permission.id = tb_role_page_permission.page_permission_id
+			INNER JOIN tb_role ON tb_role_page_permission.role_id = tb_role.id
+		WHERE
+			tb_role.id IN 
 		<foreach collection="roleIds" item="item" index="index" open="(" close=")" separator=",">
 			#{item}
 		</foreach>

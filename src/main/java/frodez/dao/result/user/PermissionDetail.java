@@ -2,6 +2,7 @@ package frodez.dao.result.user;
 
 import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.constant.enums.user.PermissionType;
+import frodez.dao.model.user.Role;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -71,9 +72,9 @@ public class PermissionDetail implements Serializable {
 	private String description;
 
 	/**
-	 * 拥有该权限的角色ID
+	 * 拥有该权限的角色
 	 */
-	@ApiModelProperty("拥有该权限的角色ID")
-	private List<Long> roleIds;
+	@ApiModelProperty("拥有该权限的角色")
+	private List<Role> roles;
 
 }

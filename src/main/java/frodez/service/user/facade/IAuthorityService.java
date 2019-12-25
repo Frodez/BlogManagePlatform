@@ -1,14 +1,22 @@
 package frodez.service.user.facade;
 
 import frodez.config.aop.validation.annotation.Check;
+import frodez.config.swagger.annotation.Success;
+import frodez.config.swagger.annotation.Success.Container;
 import frodez.constant.annotations.decoration.ServiceOnly;
 import frodez.constant.settings.DefPage;
+import frodez.dao.model.user.Permission;
+import frodez.dao.model.user.Role;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.AddRole;
 import frodez.dao.param.user.QueryRolePermission;
 import frodez.dao.param.user.UpdatePermission;
 import frodez.dao.param.user.UpdateRole;
 import frodez.dao.param.user.UpdateRolePermission;
+import frodez.dao.result.user.PermissionDetail;
+import frodez.dao.result.user.PermissionInfo;
+import frodez.dao.result.user.RoleDetail;
+import frodez.dao.result.user.UserInfo;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import java.util.List;
@@ -31,6 +39,7 @@ public interface IAuthorityService {
 	 * @date 2019-03-06
 	 */
 	@Check
+	@Success(UserInfo.class)
 	Result getUserInfo(@NotNull Long userId);
 
 	/**
@@ -39,6 +48,7 @@ public interface IAuthorityService {
 	 * @date 2018-11-14
 	 */
 	@Check
+	@Success(UserInfo.class)
 	Result getUserInfo(@NotBlank String userName);
 
 	/**
@@ -47,6 +57,7 @@ public interface IAuthorityService {
 	 * @date 2019-03-19
 	 */
 	@Check
+	@Success(value = UserInfo.class, containerType = Container.PAGE)
 	Result getUserInfos(@Valid @NotNull QueryPage param);
 
 	/**
@@ -55,6 +66,7 @@ public interface IAuthorityService {
 	 * @date 2019-03-17
 	 */
 	@Check
+	@Success(value = UserInfo.class, containerType = Container.LIST)
 	Result getUserInfosByIds(@NotEmpty @Size(max = DefPage.MAX_SIZE) List<Long> userIds, boolean includeFobiddens);
 
 	/**
@@ -63,6 +75,7 @@ public interface IAuthorityService {
 	 * @date 2019-03-17
 	 */
 	@Check
+	@Success(value = UserInfo.class, containerType = Container.LIST)
 	Result getUserInfosByNames(@NotEmpty @Size(max = DefPage.MAX_SIZE) List<String> userNames, boolean includeFobiddens);
 
 	/**
@@ -89,6 +102,7 @@ public interface IAuthorityService {
 	 * @date 2019-03-19
 	 */
 	@Check
+	@Success(PermissionDetail.class)
 	Result getPermission(@NotNull Long permissionId);
 
 	/**
@@ -97,6 +111,7 @@ public interface IAuthorityService {
 	 * @date 2018-03-06
 	 */
 	@Check
+	@Success(value = Permission.class, containerType = Container.PAGE)
 	Result getPermissions(@Valid @NotNull QueryPage param);
 
 	/**
@@ -105,6 +120,7 @@ public interface IAuthorityService {
 	 * @date 2019-03-19
 	 */
 	@Check
+	@Success(RoleDetail.class)
 	Result getRole(@NotNull Long roleId);
 
 	/**
@@ -113,6 +129,7 @@ public interface IAuthorityService {
 	 * @date 2019-03-06
 	 */
 	@Check
+	@Success(value = Role.class, containerType = Container.PAGE)
 	Result getRoles(@Valid @NotNull QueryPage param);
 
 	/**
@@ -121,6 +138,7 @@ public interface IAuthorityService {
 	 * @date 2019-03-06
 	 */
 	@Check
+	@Success(value = PermissionInfo.class, containerType = Container.PAGE)
 	Result getRolePermissions(@Valid @NotNull QueryRolePermission param);
 
 	/**

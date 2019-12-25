@@ -7,10 +7,12 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.List;
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -111,6 +113,13 @@ public class UserInfo implements Serializable {
 	/**
 	 * 权限列表
 	 */
-	private List<PermissionInfo> permissionList;
+	@NotEmpty
+	private List<@Valid PermissionInfo> permissionList;
+
+	/**
+	 * 页面资源权限列表
+	 */
+	@NotEmpty
+	private List<@Valid PagePermissionInfo> pagePermissionList;
 
 }

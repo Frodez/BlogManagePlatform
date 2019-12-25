@@ -1,6 +1,5 @@
 package mybatis;
 
-import java.util.Collections;
 import org.mybatis.generator.api.XmlFormatter;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
@@ -41,8 +40,8 @@ public class CustomXmlFormatter implements XmlFormatter {
 
 		private static String generaterContent(Document document) {
 			return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".concat(lineSeparator).concat(
-				"<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">")
-				.concat(lineSeparator).concat(getFormattedContent(document.getRootElement(), 0));
+				"<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">").concat(
+					lineSeparator).concat(getFormattedContent(document.getRootElement(), 0));
 		}
 
 		private static String getFormattedContent(XmlElement element, int indentLevel) {
@@ -50,10 +49,13 @@ public class CustomXmlFormatter implements XmlFormatter {
 			xmlIndent(sb, indentLevel);
 			sb.append('<');
 			sb.append(element.getName());
-			Collections.sort(element.getAttributes());
 			for (Attribute att : element.getAttributes()) {
 				sb.append(' ');
-				sb.append(att.getFormattedContent());
+				sb.append(att.getName());
+				sb.append('=');
+				sb.append('"');
+				sb.append(att.getValue());
+				sb.append('"');
 			}
 			if (element.getElements().size() > 0) {
 				sb.append(">");

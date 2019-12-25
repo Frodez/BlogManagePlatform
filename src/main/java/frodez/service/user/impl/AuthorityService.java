@@ -24,6 +24,7 @@ import frodez.dao.param.user.QueryRolePermission;
 import frodez.dao.param.user.UpdatePermission;
 import frodez.dao.param.user.UpdateRole;
 import frodez.dao.param.user.UpdateRolePermission;
+import frodez.dao.result.user.PagePermissionInfo;
 import frodez.dao.result.user.PermissionDetail;
 import frodez.dao.result.user.PermissionInfo;
 import frodez.dao.result.user.RoleDetail;
@@ -32,7 +33,6 @@ import frodez.service.cache.vm.facade.NameCache;
 import frodez.service.cache.vm.facade.TokenCache;
 import frodez.service.cache.vm.facade.UserIdCache;
 import frodez.service.user.facade.IAuthorityService;
-import frodez.util.beans.pair.Pair;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.common.BoolUtil;
@@ -49,8 +49,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,11 +111,13 @@ public class AuthorityService implements IAuthorityService {
 			return Result.fail("未查询到用户角色信息!");
 		}
 		List<PermissionInfo> permissionList = rolePermissionMapper.getPermissions(user.getRoleId());
+		List<PagePermissionInfo> pagePermissionList = rolePermissionMapper.getPagePermissions(user.getRoleId());
 		data = BeanUtil.copy(user, UserInfo::new);
 		data.setRoleName(role.getName());
 		data.setRoleLevel(role.getLevel());
 		data.setRoleDescription(role.getDescription());
 		data.setPermissionList(permissionList);
+		data.setPagePermissionList(pagePermissionList);
 		userIdCache.save(userId, data);
 		return Result.success(data);
 	}
@@ -128,9 +128,7 @@ public class AuthorityService implements IAuthorityService {
 		if (data != null) {
 			return Result.success(data);
 		}
-		Example example = new Example(User.class);
-		example.createCriteria().andEqualTo("name", userName);
-		User user = userMapper.selectOneByExample(example);
+		User user = userMapper.selectOneEqual("name", userName);
 		if (user == null) {
 			return Result.fail("未查询到用户信息!");
 		}
@@ -142,11 +140,13 @@ public class AuthorityService implements IAuthorityService {
 			return Result.fail("未查询到用户角色信息!");
 		}
 		List<PermissionInfo> permissionList = rolePermissionMapper.getPermissions(user.getRoleId());
+		List<PagePermissionInfo> pagePermissionList = rolePermissionMapper.getPagePermissions(user.getRoleId());
 		data = BeanUtil.copy(user, UserInfo::new);
 		data.setRoleName(role.getName());
 		data.setRoleLevel(role.getLevel());
 		data.setRoleDescription(role.getDescription());
 		data.setPermissionList(permissionList);
+		data.setPagePermissionList(pagePermissionList);
 		nameCache.save(userName, data);
 		return Result.success(data);
 	}
@@ -216,19 +216,21 @@ public class AuthorityService implements IAuthorityService {
 	}
 
 	private List<UserInfo> getUserInfos(List<User> users) {
+		//获得角色ID
 		List<Long> roleIds = users.stream().map(User::getRoleId).collect(Collectors.toList());
-		Example example = new Example(Permission.class);
-		example.createCriteria().andIn("id", StreamUtil.list(rolePermissionMapper.batchGetPermissions(roleIds), Pair::getValue));
-		List<Permission> permissions = permissionMapper.selectByExample(example);
-		example = new Example(Role.class);
-		example.createCriteria().andIn("id", roleIds);
-		Map<Long, Role> roleMap = StreamUtil.hashMap(roleMapper.selectByExample(example), Role::getId, (iter) -> iter);
+		//根据角色ID获取权限
+		List<PermissionInfo> permissionInfos = rolePermissionMapper.batchGetPermissions(roleIds);
+		//根据角色ID获取页面资源权限
+		List<PagePermissionInfo> pagePermissionInfos = rolePermissionMapper.batchGetPagePermissions(roleIds);
+		//根据角色ID获取角色
+		Map<Long, Role> roleMap = StreamUtil.hashMap(roleMapper.selectByIds(roleIds), Role::getId, (iter) -> iter);
 		Map<Long, List<PermissionInfo>> rolePermissionsMap = new HashMap<>();
+		Map<Long, List<PagePermissionInfo>> rolePagePermissionsMap = new HashMap<>();
 		for (Long roleId : roleIds) {
-			Predicate<Permission> predicate = (iter) -> roleId.equals(iter.getId());
-			Function<Permission, PermissionInfo> function = (iter) -> BeanUtil.copy(iter, PermissionInfo::new);
-			List<PermissionInfo> info = permissions.stream().filter(predicate).map(function).collect(Collectors.toList());
-			rolePermissionsMap.put(roleId, info);
+			List<PermissionInfo> permissions = StreamUtil.filterList(permissionInfos, (iter) -> roleId.equals(iter.getId()));
+			rolePermissionsMap.put(roleId, permissions);
+			List<PagePermissionInfo> pagePermissions = StreamUtil.filterList(pagePermissionInfos, (iter) -> roleId.equals(iter.getId()));
+			rolePagePermissionsMap.put(roleId, pagePermissions);
 		}
 		List<UserInfo> userInfos = StreamUtil.list(users, (user) -> {
 			UserInfo info = BeanUtil.copy(user, UserInfo::new);
@@ -236,6 +238,7 @@ public class AuthorityService implements IAuthorityService {
 			info.setRoleLevel(roleMap.get(user.getRoleId()).getLevel());
 			info.setRoleDescription(roleMap.get(user.getRoleId()).getDescription());
 			info.setPermissionList(rolePermissionsMap.get(user.getRoleId()));
+			info.setPagePermissionList(rolePagePermissionsMap.get(user.getRoleId()));
 			return info;
 		});
 		return userInfos;
@@ -263,9 +266,8 @@ public class AuthorityService implements IAuthorityService {
 			return Result.fail("未找到该权限!");
 		}
 		PermissionDetail data = BeanUtil.copy(permission, PermissionDetail::new);
-		Example example = new Example(RolePermission.class);
-		example.createCriteria().andEqualTo("permissionId", permissionId);
-		data.setRoleIds(StreamUtil.list(rolePermissionMapper.selectByExample(example), RolePermission::getRoleId));
+		List<Long> roleIds = rolePermissionMapper.partialEqual("role_id", "permission_id", permissionId);
+		data.setRoles(roleMapper.selectByIds(roleIds));
 		return Result.success(data);
 	}
 
@@ -281,9 +283,8 @@ public class AuthorityService implements IAuthorityService {
 			return Result.fail("未找到该角色!");
 		}
 		RoleDetail data = BeanUtil.copy(role, RoleDetail::new);
-		Example example = new Example(RolePermission.class);
-		example.createCriteria().andEqualTo("roleId", roleId);
-		data.setPermissionIds(StreamUtil.list(rolePermissionMapper.selectByExample(example), RolePermission::getPermissionId));
+		List<Long> permissionIds = rolePermissionMapper.partialEqual("permission_id", "role_id", roleId);
+		data.setPermissions(permissionMapper.selectByIds(permissionIds));
 		return Result.success(data);
 	}
 
@@ -340,7 +341,7 @@ public class AuthorityService implements IAuthorityService {
 	 * @date 2019-03-17
 	 */
 	private boolean checkRoleName(String name) {
-		return roleMapper.selectAll().stream().filter((iter) -> iter.getName().equals(name)).count() != 0;
+		return roleMapper.partialNoCondition("name").stream().filter((iter) -> iter.equals(name)).count() != 0;
 	}
 
 	/**
@@ -349,7 +350,7 @@ public class AuthorityService implements IAuthorityService {
 	 * @date 2019-03-17
 	 */
 	private boolean checkPermissionName(String name) {
-		return permissionMapper.selectAll().stream().filter((iter) -> iter.getName().equals(name)).count() != 0;
+		return permissionMapper.partialNoCondition("name").stream().filter((iter) -> iter.equals(name)).count() != 0;
 	}
 
 	@Transactional
@@ -445,7 +446,7 @@ public class AuthorityService implements IAuthorityService {
 	@Override
 	public Result updateRolePermission(UpdateRolePermission param) {
 		try {
-			if (ModifyType.UPDATE.getVal() != param.getOperationType() && EmptyUtil.yes(param.getPermissionIds())) {
+			if (!ModifyType.UPDATE.getVal().equals(param.getOperationType()) && EmptyUtil.yes(param.getPermissionIds())) {
 				return Result.errorRequest("不能对角色新增或者删除一个空的权限!");
 			}
 			Role role = roleMapper.selectByPrimaryKey(param.getRoleId());
@@ -454,13 +455,10 @@ public class AuthorityService implements IAuthorityService {
 			}
 			switch (ModifyType.of(param.getOperationType())) {
 				case INSERT : {
-					Example example = new Example(Permission.class);
-					example.createCriteria().andIn("id", param.getPermissionIds());
-					List<Long> permissionIds = permissionMapper.selectByExample(example).stream().map(Permission::getId).collect(Collectors.toList());
-					if (permissionIds.size() != param.getPermissionIds().size()) {
+					if (permissionMapper.countByIds(param.getPermissionIds()) != param.getPermissionIds().size()) {
 						return Result.fail("存在错误的权限!");
 					}
-					example = new Example(RolePermission.class);
+					Example example = new Example(RolePermission.class);
 					example.createCriteria().andIn("permissionId", param.getPermissionIds()).andEqualTo("roleId", param.getRoleId());
 					if (rolePermissionMapper.selectCountByExample(example) != 0) {
 						return Result.fail("不能添加已拥有的权限!");
@@ -487,15 +485,11 @@ public class AuthorityService implements IAuthorityService {
 				}
 				case UPDATE : {
 					if (EmptyUtil.no(param.getPermissionIds())) {
-						Example example = new Example(Permission.class);
-						example.createCriteria().andIn("id", param.getPermissionIds());
-						if (permissionMapper.selectCountByExample(example) != param.getPermissionIds().size()) {
+						if (permissionMapper.countByIds(param.getPermissionIds()) != param.getPermissionIds().size()) {
 							return Result.fail("存在错误的权限!");
 						}
 					}
-					Example example = new Example(RolePermission.class);
-					example.createCriteria().andEqualTo("roleId", param.getRoleId());
-					rolePermissionMapper.deleteByExample(example);
+					rolePermissionMapper.deleteEqual("role_id", param.getRoleId());
 					if (EmptyUtil.no(param.getPermissionIds())) {
 						Date date = new Date();
 						List<RolePermission> rolePermissions = StreamUtil.list(param.getPermissionIds(), (iter) -> {
@@ -513,9 +507,7 @@ public class AuthorityService implements IAuthorityService {
 					break;
 				}
 			}
-			Example example = new Example(User.class);
-			example.createCriteria().andEqualTo("roleId", param.getRoleId());
-			refreshUserInfo(getUserInfos(userMapper.selectByExample(example)));
+			refreshUserInfo(getUserInfos(userMapper.selectEqual("role_id", param.getRoleId())));
 			return Result.success();
 		} finally {
 			authorityManager.refresh();
@@ -531,15 +523,11 @@ public class AuthorityService implements IAuthorityService {
 			if (role == null) {
 				return Result.fail("找不到该角色!");
 			}
-			Example example = new Example(User.class);
-			example.createCriteria().andEqualTo("roleId", roleId);
-			if (userMapper.selectCountByExample(example) != 0) {
+			if (userMapper.countEqual("role_id", roleId) != 0) {
 				return Result.fail("仍存在使用该角色的用户,请更改该用户角色后再删除!");
 			}
 			roleMapper.deleteByPrimaryKey(roleId);
-			example = new Example(RolePermission.class);
-			example.createCriteria().andEqualTo("roleId", roleId);
-			rolePermissionMapper.deleteByExample(example);
+			rolePermissionMapper.deleteEqual("role_id", roleId);
 			return Result.success();
 		} finally {
 			authorityManager.refresh();

@@ -2,8 +2,8 @@ package frodez.dao.mapper.user;
 
 import frodez.config.mybatis.DataMapper;
 import frodez.dao.model.user.RolePermission;
+import frodez.dao.result.user.PagePermissionInfo;
 import frodez.dao.result.user.PermissionInfo;
-import frodez.util.beans.pair.Pair;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -30,6 +30,22 @@ public interface RolePermissionMapper extends DataMapper<RolePermission> {
 	 * @param roleId 角色ID
 	 * @date 2018-11-14
 	 */
-	List<Pair<Long, Long>> batchGetPermissions(@Param("roleIds") List<Long> roleIds);
+	List<PermissionInfo> batchGetPermissions(@Param("roleIds") List<Long> roleIds);
+
+	/**
+	 * 根据角色ID获取页面资源权限信息
+	 * @author Frodez
+	 * @param roleId 角色ID
+	 * @date 2018-11-14
+	 */
+	List<PagePermissionInfo> getPagePermissions(@Param("roleId") Long roleId);
+
+	/**
+	 * 根据角色ID获取页面资源权限信息
+	 * @author Frodez
+	 * @param roleId 角色ID
+	 * @date 2018-11-14
+	 */
+	List<PagePermissionInfo> batchGetPagePermissions(@Param("roleIds") List<Long> roleIds);
 
 }

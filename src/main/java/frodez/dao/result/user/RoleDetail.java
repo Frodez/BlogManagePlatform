@@ -1,5 +1,6 @@
 package frodez.dao.result.user;
 
+import frodez.dao.model.user.Permission;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -65,9 +66,9 @@ public class RoleDetail implements Serializable {
 	private String description;
 
 	/**
-	 * 角色拥有的权限ID
+	 * 角色拥有的权限
 	 */
-	@ApiModelProperty("角色拥有的权限ID")
-	private List<Long> permissionIds;
+	@ApiModelProperty("角色拥有的权限")
+	private List<Permission> permissions;
 
 }
