@@ -238,7 +238,7 @@ public class BaseTaskService {
 		} catch (IllegalArgumentException e) {
 			return Result.fail("时间表达式错误!");
 		}
-		if (taskMapper.selectCount(null) >= properties.getMaxSize()) {
+		if (taskMapper.countAll() >= properties.getMaxSize()) {
 			return Result.fail("已达可用任务最大数量!");
 		}
 		Task task = BeanUtil.copy(param, Task::new);

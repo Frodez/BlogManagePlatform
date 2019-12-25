@@ -30,12 +30,11 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	/**
 	 * 配置生成的Mapper接口
 	 * @param i
-	 * @param klass
 	 * @param table
 	 * @author Frodez
 	 * @date 2018-12-13
 	 */
-	private void configImportAndJavaDoc(Interface i, TopLevelClass klass, IntrospectedTable table) {
+	private void configImportAndJavaDoc(Interface i, IntrospectedTable table) {
 		// 获取实体类
 		FullyQualifiedJavaType entity = new FullyQualifiedJavaType(table.getBaseRecordType());
 		// import接口
@@ -61,13 +60,11 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	private void makeSerializable(TopLevelClass klass, IntrospectedTable table) {
 		klass.addImportedType(new FullyQualifiedJavaType("java.io.Serializable"));
 		klass.addSuperInterface(new FullyQualifiedJavaType("java.io.Serializable"));
-		Field field = new Field();
+		Field field = new Field("serialVersionUID", new FullyQualifiedJavaType("long"));
 		field.setFinal(true);
 		field.setInitializationString("1L");
-		field.setName("serialVersionUID");
 		field.addJavaDocLine("");
 		field.setStatic(true);
-		field.setType(new FullyQualifiedJavaType("long"));
 		field.setVisibility(JavaVisibility.PRIVATE);
 		if (table.getTargetRuntime() == TargetRuntime.MYBATIS3_DSQL) {
 			context.getCommentGenerator().addFieldAnnotation(field, table, klass.getImportedTypes());
@@ -78,8 +75,8 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	}
 
 	@Override
-	public boolean clientGenerated(Interface i, TopLevelClass klass, IntrospectedTable table) {
-		configImportAndJavaDoc(i, klass, table);
+	public boolean clientGenerated(Interface i, IntrospectedTable table) {
+		configImportAndJavaDoc(i, table);
 		return true;
 	}
 
@@ -109,59 +106,19 @@ public class CustomSettingsPlugin extends PluginAdapter {
 
 	// 不生成setter
 	@Override
-	public boolean modelSetterMethodGenerated(Method method, TopLevelClass klass, IntrospectedColumn column,
-		IntrospectedTable table, ModelClassType modelClassType) {
+	public boolean modelSetterMethodGenerated(Method method, TopLevelClass klass, IntrospectedColumn column, IntrospectedTable table,
+		ModelClassType modelClassType) {
 		return false;
 	}
 
 	// 不生成getter
 	@Override
-	public boolean modelGetterMethodGenerated(Method method, TopLevelClass klass, IntrospectedColumn column,
-		IntrospectedTable table, ModelClassType modelClassType) {
+	public boolean modelGetterMethodGenerated(Method method, TopLevelClass klass, IntrospectedColumn column, IntrospectedTable table,
+		ModelClassType modelClassType) {
 		return false;
 	}
 
 	// 下面所有return false的方法都不生成。这些都是基础的CURD方法，使用通用Mapper实现
-	@Override
-	public boolean clientDeleteByPrimaryKeyMethodGenerated(Method method, TopLevelClass klass,
-		IntrospectedTable table) {
-		return false;
-	}
-
-	@Override
-	public boolean clientInsertMethodGenerated(Method method, TopLevelClass klass, IntrospectedTable table) {
-		return false;
-	}
-
-	@Override
-	public boolean clientInsertSelectiveMethodGenerated(Method method, TopLevelClass klass, IntrospectedTable table) {
-		return false;
-	}
-
-	@Override
-	public boolean clientSelectByPrimaryKeyMethodGenerated(Method method, TopLevelClass klass,
-		IntrospectedTable table) {
-		return false;
-	}
-
-	@Override
-	public boolean clientUpdateByPrimaryKeySelectiveMethodGenerated(Method method, TopLevelClass klass,
-		IntrospectedTable table) {
-		return false;
-	}
-
-	@Override
-	public boolean clientUpdateByPrimaryKeyWithBLOBsMethodGenerated(Method method, TopLevelClass klass,
-		IntrospectedTable table) {
-		return false;
-	}
-
-	@Override
-	public boolean clientUpdateByPrimaryKeyWithoutBLOBsMethodGenerated(Method method, TopLevelClass klass,
-		IntrospectedTable table) {
-		return false;
-	}
-
 	@Override
 	public boolean clientDeleteByPrimaryKeyMethodGenerated(Method method, Interface i, IntrospectedTable table) {
 		return false;
@@ -183,30 +140,22 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	}
 
 	@Override
-	public boolean clientSelectAllMethodGenerated(Method method, TopLevelClass klass, IntrospectedTable table) {
-		return false;
-	}
-
-	@Override
 	public boolean clientSelectByPrimaryKeyMethodGenerated(Method method, Interface i, IntrospectedTable table) {
 		return false;
 	}
 
 	@Override
-	public boolean clientUpdateByPrimaryKeySelectiveMethodGenerated(Method method, Interface i,
-		IntrospectedTable table) {
+	public boolean clientUpdateByPrimaryKeySelectiveMethodGenerated(Method method, Interface i, IntrospectedTable table) {
 		return false;
 	}
 
 	@Override
-	public boolean clientUpdateByPrimaryKeyWithBLOBsMethodGenerated(Method method, Interface i,
-		IntrospectedTable table) {
+	public boolean clientUpdateByPrimaryKeyWithBLOBsMethodGenerated(Method method, Interface i, IntrospectedTable table) {
 		return false;
 	}
 
 	@Override
-	public boolean clientUpdateByPrimaryKeyWithoutBLOBsMethodGenerated(Method method, Interface i,
-		IntrospectedTable table) {
+	public boolean clientUpdateByPrimaryKeyWithoutBLOBsMethodGenerated(Method method, Interface i, IntrospectedTable table) {
 		return false;
 	}
 
@@ -271,8 +220,7 @@ public class CustomSettingsPlugin extends PluginAdapter {
 	}
 
 	@Override
-	public boolean providerUpdateByPrimaryKeySelectiveMethodGenerated(Method method, TopLevelClass klass,
-		IntrospectedTable table) {
+	public boolean providerUpdateByPrimaryKeySelectiveMethodGenerated(Method method, TopLevelClass klass, IntrospectedTable table) {
 		return false;
 	}
 
