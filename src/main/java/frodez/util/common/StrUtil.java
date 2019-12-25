@@ -1,13 +1,10 @@
 package frodez.util.common;
 
 import frodez.constant.settings.DefStr;
-import java.lang.reflect.Method;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -18,19 +15,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class StrUtil {
 
-	private static byte code = 0;
-
 	private static final CharsetEncoder ASCII_ENCODER = StandardCharsets.US_ASCII.newEncoder();
-
-	static {
-		try {
-			Method method = String.class.getDeclaredMethod("coder", new Class<?>[0]);
-			method.setAccessible(true);
-			code = (byte) method.invoke(new String());
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-	}
 
 	public static void main(String[] args) {
 	}
@@ -74,7 +59,6 @@ public class StrUtil {
 			//如果字符串数组某处为null,会自动抛出异常
 			size = size + strings[i].length();
 		}
-		size = size << code;
 		StringBuilder builder = new StringBuilder(size);
 		for (int i = 0; i < strings.length; i++) {
 			String string = strings[i];
@@ -104,7 +88,6 @@ public class StrUtil {
 			//如果字符串数组某处为null,会自动抛出异常
 			size = size + string.length();
 		}
-		size = size << code;
 		StringBuilder builder = new StringBuilder(size);
 		for (String string : strings) {
 			if (string.isEmpty()) {
@@ -216,7 +199,7 @@ public class StrUtil {
 		if (string == null || delimiter == null) {
 			throw new IllegalArgumentException("when string is null, delimiter can't be null either.");
 		}
-		StringBuilder builder = new StringBuilder(string.length() << code);
+		StringBuilder builder = new StringBuilder(string.length());
 		int from = builder.indexOf(delimiter);
 		if (from < 0) {
 			//未找到分隔符,直接将原字符串首字母小写。
@@ -349,49 +332,6 @@ public class StrUtil {
 			return length == head ? elements : Arrays.copyOf(elements, head);
 		}
 
-	}
-
-	/**
-	 * 不使用正则表达式的spilt
-	 * @author Frodez
-	 * @date 2019-12-24
-	 */
-	public static List<String> splitList(String string, String regex, int limit) {
-		char ch = 0;
-		int off = 0;
-		int next = 0;
-		boolean limited = limit > 0;
-		ArrayList<String> list = new ArrayList<>();
-		while ((next = string.indexOf(ch, off)) != -1) {
-			if (!limited || list.size() < limit - 1) {
-				list.add(string.substring(off, next));
-				off = next + 1;
-			} else { // last one
-				//assert (list.size() == limit - 1);
-				int last = string.length();
-				list.add(string.substring(off, last));
-				off = last;
-				break;
-			}
-		}
-		// If no match was found, return this
-		if (off == 0) {
-			return List.of(string);
-		}
-
-		// Add remaining segment
-		if (!limited || list.size() < limit) {
-			list.add(string.substring(off, string.length()));
-		}
-
-		// Construct result
-		int resultSize = list.size();
-		if (limit == 0) {
-			while (resultSize > 0 && list.get(resultSize - 1).isEmpty()) {
-				resultSize--;
-			}
-		}
-		return list.subList(0, resultSize);
 	}
 
 	/**
