@@ -1,16 +1,21 @@
-package frodez.service.cache.vm.facade;
+package frodez.service.cache.facade;
 
 import frodez.dao.result.user.UserInfo;
-import frodez.service.cache.base.ICache;
 
-public interface NameCache extends ICache<String, UserInfo> {
+public interface NameCache {
+
+	/**
+	 * 获取缓存大小
+	 * @author Frodez
+	 * @date 2019-12-25
+	 */
+	long size();
 
 	/**
 	 * 判断name是否存在于缓存
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	@Override
 	boolean existKey(String name);
 
 	/**
@@ -18,7 +23,6 @@ public interface NameCache extends ICache<String, UserInfo> {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	@Override
 	boolean existValue(UserInfo userInfo);
 
 	/**
@@ -26,7 +30,6 @@ public interface NameCache extends ICache<String, UserInfo> {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	@Override
 	void save(String name, UserInfo userInfo);
 
 	/**
@@ -34,7 +37,6 @@ public interface NameCache extends ICache<String, UserInfo> {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	@Override
 	UserInfo get(String name);
 
 	/**
@@ -42,7 +44,6 @@ public interface NameCache extends ICache<String, UserInfo> {
 	 * @author Frodez
 	 * @date 2019-02-27
 	 */
-	@Override
 	void remove(String name);
 
 }

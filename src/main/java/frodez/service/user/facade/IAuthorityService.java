@@ -5,14 +5,19 @@ import frodez.config.swagger.annotation.Success;
 import frodez.config.swagger.annotation.Success.Container;
 import frodez.constant.annotations.decoration.ServiceOnly;
 import frodez.constant.settings.DefPage;
+import frodez.dao.model.user.PagePermission;
 import frodez.dao.model.user.Permission;
 import frodez.dao.model.user.Role;
+import frodez.dao.param.user.AddPagePermission;
 import frodez.dao.param.user.AddPermission;
 import frodez.dao.param.user.AddRole;
 import frodez.dao.param.user.QueryRolePermission;
+import frodez.dao.param.user.UpdatePagePermission;
 import frodez.dao.param.user.UpdatePermission;
 import frodez.dao.param.user.UpdateRole;
 import frodez.dao.param.user.UpdateRolePermission;
+import frodez.dao.result.user.PagePermissionDetail;
+import frodez.dao.result.user.PagePermissionInfo;
 import frodez.dao.result.user.PermissionDetail;
 import frodez.dao.result.user.PermissionInfo;
 import frodez.dao.result.user.RoleDetail;
@@ -115,6 +120,24 @@ public interface IAuthorityService {
 	Result getPermissions(@Valid @NotNull QueryPage param);
 
 	/**
+	 * 获取页面资源权限信息
+	 * @author Frodez
+	 * @date 2019-03-19
+	 */
+	@Check
+	@Success(PagePermissionDetail.class)
+	Result getPagePermission(@NotNull Long pagePermissionId);
+
+	/**
+	 * 获取页面资源权限信息
+	 * @author Frodez
+	 * @date 2019-03-19
+	 */
+	@Check
+	@Success(value = PagePermission.class, containerType = Container.PAGE)
+	Result getPagePermissions(@Valid @NotNull QueryPage param);
+
+	/**
 	 * 获取角色信息
 	 * @author Frodez
 	 * @date 2019-03-19
@@ -131,6 +154,15 @@ public interface IAuthorityService {
 	@Check
 	@Success(value = Role.class, containerType = Container.PAGE)
 	Result getRoles(@Valid @NotNull QueryPage param);
+
+	/**
+	 * 根据角色ID获取对应权限信息
+	 * @author Frodez
+	 * @date 2019-03-06
+	 */
+	@Check
+	@Success(value = PagePermissionInfo.class, containerType = Container.PAGE)
+	Result getRolePagePermissions(@Valid @NotNull QueryRolePermission param);
 
 	/**
 	 * 根据角色ID获取对应权限信息
@@ -174,12 +206,36 @@ public interface IAuthorityService {
 	Result updatePermission(@Valid @NotNull UpdatePermission param);
 
 	/**
+	 * 添加新页面资源权限
+	 * @author Frodez
+	 * @date 2019-03-15
+	 */
+	@Check
+	Result addPagePermission(@Valid @NotNull AddPagePermission param);
+
+	/**
+	 * 修改页面资源权限
+	 * @author Frodez
+	 * @date 2019-03-17
+	 */
+	@Check
+	Result updatePagePermission(@Valid @NotNull UpdatePagePermission param);
+
+	/**
 	 * 修改角色权限
 	 * @author Frodez
 	 * @date 2019-03-15
 	 */
 	@Check
 	Result updateRolePermission(@Valid @NotNull UpdateRolePermission param);
+
+	/**
+	 * 修改角色页面资源权限
+	 * @author Frodez
+	 * @date 2019-03-15
+	 */
+	@Check
+	Result updateRolePagePermission(@Valid @NotNull UpdateRolePermission param);
 
 	/**
 	 * 删除角色
@@ -196,6 +252,14 @@ public interface IAuthorityService {
 	 */
 	@Check
 	Result removePermission(@NotNull Long permissionId);
+
+	/**
+	 * 删除页面资源权限
+	 * @author Frodez
+	 * @date 2019-03-18
+	 */
+	@Check
+	Result removePagePermission(@NotNull Long pagePermissionId);
 
 	/**
 	 * 扫描系统中所有端点并添加权限

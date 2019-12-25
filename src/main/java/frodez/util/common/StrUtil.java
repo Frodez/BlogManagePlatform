@@ -54,13 +54,17 @@ public class StrUtil {
 		if (EmptyUtil.yes(strings)) {
 			throw new IllegalArgumentException("it isn't suitable for empty string.");
 		}
+		int length = strings.length;
+		if (length == 1) {
+			return strings[0];
+		}
 		int size = 0;
 		for (int i = 0; i < strings.length; i++) {
 			//如果字符串数组某处为null,会自动抛出异常
 			size = size + strings[i].length();
 		}
 		StringBuilder builder = new StringBuilder(size);
-		for (int i = 0; i < strings.length; i++) {
+		for (int i = 0; i < length; i++) {
 			String string = strings[i];
 			if (string.isEmpty()) {
 				continue;
@@ -82,6 +86,9 @@ public class StrUtil {
 	public static String concat(Collection<String> strings) {
 		if (EmptyUtil.yes(strings)) {
 			throw new IllegalArgumentException("it isn't suitable for empty string.");
+		}
+		if (strings.size() == 1) {
+			return strings.iterator().next();
 		}
 		int size = 0;
 		for (String string : strings) {
@@ -105,7 +112,7 @@ public class StrUtil {
 	 * @date 2019-12-14
 	 */
 	public static String join(CharSequence delimiter, CharSequence... elements) {
-		CharSequence[] strings = EmptyUtil.trim(elements);
+		CharSequence[] strings = EmptyUtil.trim(true, elements);
 		return strings.length == 0 ? DefStr.EMPTY : String.join(delimiter, strings);
 	}
 

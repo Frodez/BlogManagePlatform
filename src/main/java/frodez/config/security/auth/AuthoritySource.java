@@ -65,12 +65,16 @@ public class AuthoritySource implements FilterInvocationSecurityMetadataSource {
 	 */
 	public void refresh() {
 		synchronized (this) {
-			defaultDeniedRoles = null;
-			allCache = null;
-			urlCache = null;
-			urlTypeCache = null;
+			clear();
 			init();
 		}
+	}
+
+	private void clear() {
+		defaultDeniedRoles = null;
+		allCache = null;
+		urlCache = null;
+		urlTypeCache = null;
 	}
 
 	/**

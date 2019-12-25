@@ -13,4 +13,32 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class CacheKey {
 
+	public static class Checker {
+
+		public static final String AUTO = "Checker.key.auto";
+
+		public static final String MANUAL = "Checker.key.manual";
+
+	}
+
+	public static class NameCache {
+
+		public static final String KEY = "NameCache.key";
+
+	}
+
+	public static class TokenCache {
+
+		public static final String KEY = "TokenCache.key";
+
+		public static final String ID = "TokenCache.id";
+
+	}
+
+	public static class UserIdCache {
+
+		public static final String KEY = "UserIdCache.key";
+
+	}
+
 }

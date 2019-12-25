@@ -85,15 +85,19 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 		//Multi-part file trumps any other annotations
 		if (isFileType(type) || isListOfFiles(type)) {
 			context.parameterBuilder().parameterType("form");
+			return;
 		}
 		if (parameter.hasParameterAnnotation(PathVariable.class)) {
 			context.parameterBuilder().parameterType("path");
+			return;
 		}
 		if (parameter.hasParameterAnnotation(RequestBody.class)) {
 			context.parameterBuilder().parameterType("body");
+			return;
 		}
 		if (parameter.hasParameterAnnotation(RequestPart.class)) {
 			context.parameterBuilder().parameterType("formData");
+			return;
 		}
 		if (parameter.hasParameterAnnotation(RequestParam.class)) {
 			Set<? extends MediaType> consumes = context.getOperationContext().consumes();
@@ -105,9 +109,11 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 			} else {
 				context.parameterBuilder().parameterType("query");
 			}
+			return;
 		}
 		if (parameter.hasParameterAnnotation(RequestHeader.class)) {
 			context.parameterBuilder().parameterType("header");
+			return;
 		}
 		if (parameter.hasParameterAnnotation(ModelAttribute.class)) {
 			log.warn(StrUtil.concat("@ModelAttribute annotated parameters should have already been expanded via ",
@@ -115,9 +121,11 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 		}
 		if (parameter.hasParameterAnnotation(ApiParam.class)) {
 			context.parameterBuilder().parameterType("query");
+			return;
 		}
 		if (parameter.hasParameterAnnotation(MapEnum.class)) {
 			context.parameterBuilder().parameterType("query");
+			return;
 		}
 		context.parameterBuilder().parameterType("body");
 	}
