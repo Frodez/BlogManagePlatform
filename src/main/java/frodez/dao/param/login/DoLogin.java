@@ -1,4 +1,4 @@
-package frodez.dao.param.user;
+package frodez.dao.param.login;
 
 import frodez.config.aop.validation.annotation.ValidateBean;
 import io.swagger.annotations.ApiModel;
@@ -9,18 +9,15 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 /**
- * 用户重新登录请求参数
+ * 用户登录请求参数
  * @author Frodez
- * @date 2019-02-27
+ * @date 2018-12-02
  */
 @Data
 @ValidateBean
-@ApiModel(description = "用户重新登录请求参数")
-public class DoRefresh implements Serializable {
+@ApiModel(description = "用户登录请求参数")
+public class DoLogin implements Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -32,10 +29,11 @@ public class DoRefresh implements Serializable {
 	private String username;
 
 	/**
-	 * 原token
+	 * 密码
 	 */
 	@NotBlank
-	@ApiModelProperty("原token")
-	private String oldToken;
+	@Length(min = 8, max = 30)
+	@ApiModelProperty("密码")
+	private String password;
 
 }

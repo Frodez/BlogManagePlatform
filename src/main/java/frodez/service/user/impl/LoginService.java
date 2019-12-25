@@ -4,8 +4,9 @@ import frodez.config.aop.exception.annotation.Error;
 import frodez.config.security.util.AuthorityUtil;
 import frodez.config.security.util.TokenUtil;
 import frodez.constant.errors.code.ErrorCode;
-import frodez.dao.param.user.DoLogin;
-import frodez.dao.param.user.DoRefresh;
+import frodez.dao.param.login.DoLogin;
+import frodez.dao.param.login.DoRefresh;
+import frodez.dao.result.login.RefreshInfo;
 import frodez.dao.result.user.PermissionInfo;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.cache.facade.TokenCache;
@@ -120,7 +121,10 @@ public class LoginService implements ILoginService {
 			.getPermissionList()));
 		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(MVCUtil.request()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		return Result.success(newToken);
+		RefreshInfo data = new RefreshInfo();
+		data.setNewToken(newToken);
+		data.setRedirect(param.getRedirect());
+		return Result.success(data);
 	}
 
 	@Override

@@ -1,9 +1,10 @@
-package frodez.controller.user;
+package frodez.controller.login;
 
 import frodez.config.aop.request.annotation.TimeoutLock;
 import frodez.config.swagger.annotation.Success;
-import frodez.dao.param.user.DoLogin;
-import frodez.dao.param.user.DoRefresh;
+import frodez.dao.param.login.DoLogin;
+import frodez.dao.param.login.DoRefresh;
+import frodez.dao.result.login.RefreshInfo;
 import frodez.dao.result.user.UserInfo;
 import frodez.service.user.facade.IAuthorityService;
 import frodez.service.user.facade.ILoginService;
@@ -32,12 +33,14 @@ public class LoginController {
 	private IAuthorityService authorityService;
 
 	@TimeoutLock(3000)
+	@Success(String.class)
 	@PostMapping(value = "/auth", name = "登录接口")
 	public Result auth(@RequestBody DoLogin param) {
 		return loginService.login(param);
 	}
 
 	@TimeoutLock(3000)
+	@Success(RefreshInfo.class)
 	@PostMapping(value = "/refresh", name = "重新登录接口")
 	public Result refresh(@RequestBody DoRefresh param) {
 		return loginService.refresh(param);
