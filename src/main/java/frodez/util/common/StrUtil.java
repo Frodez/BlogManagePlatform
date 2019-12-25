@@ -1,13 +1,10 @@
 package frodez.util.common;
 
 import frodez.constant.settings.DefStr;
-import java.lang.reflect.Method;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -18,19 +15,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class StrUtil {
 
-	private static byte code = 0;
-
 	private static final CharsetEncoder ASCII_ENCODER = StandardCharsets.US_ASCII.newEncoder();
-
-	static {
-		try {
-			Method method = String.class.getDeclaredMethod("coder", new Class<?>[0]);
-			method.setAccessible(true);
-			code = (byte) method.invoke(new String());
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-	}
 
 	public static void main(String[] args) {
 	}
@@ -74,10 +59,13 @@ public class StrUtil {
 			//如果字符串数组某处为null,会自动抛出异常
 			size = size + strings[i].length();
 		}
-		size = size << code;
 		StringBuilder builder = new StringBuilder(size);
 		for (int i = 0; i < strings.length; i++) {
-			builder.append(strings[i]);
+			String string = strings[i];
+			if (string.isEmpty()) {
+				continue;
+			}
+			builder.append(string);
 		}
 		return builder.toString();
 	}
@@ -100,9 +88,11 @@ public class StrUtil {
 			//如果字符串数组某处为null,会自动抛出异常
 			size = size + string.length();
 		}
-		size = size << code;
 		StringBuilder builder = new StringBuilder(size);
 		for (String string : strings) {
+			if (string.isEmpty()) {
+				continue;
+			}
 			builder.append(string);
 		}
 		return builder.toString();
@@ -128,7 +118,9 @@ public class StrUtil {
 		if (EmptyUtil.yes(string)) {
 			throw new IllegalArgumentException("it isn't suitable for empty string.");
 		}
-		return new StringBuilder(string.length()).append(Character.toUpperCase(string.charAt(0))).append(string.substring(1)).toString();
+		StringBuilder builder = new StringBuilder(string.length());
+		upper(builder, string, 0);
+		return builder.toString();
 	}
 
 	/**
@@ -140,7 +132,51 @@ public class StrUtil {
 		if (EmptyUtil.yes(string)) {
 			throw new IllegalArgumentException("it isn't suitable for empty string.");
 		}
-		return new StringBuilder(string.length()).append(Character.toLowerCase(string.charAt(0))).append(string.substring(1)).toString();
+		StringBuilder builder = new StringBuilder(string.length());
+		lower(builder, string, 0);
+		return builder.toString();
+	}
+
+	private void upper(StringBuilder builder, String string, int start) {
+		int end = string.length();
+		if (start == end) {
+			return;
+		}
+		builder.append(Character.toUpperCase(string.charAt(0)));
+		if (start + 1 < end) {
+			builder.append(string.substring(start + 1));
+		}
+	}
+
+	private void upper(StringBuilder builder, String string, int start, int end) {
+		if (start == end) {
+			return;
+		}
+		builder.append(Character.toUpperCase(string.charAt(0)));
+		if (start + 1 < end) {
+			builder.append(string.substring(start + 1, end));
+		}
+	}
+
+	private void lower(StringBuilder builder, String string, int start) {
+		int end = string.length();
+		if (start == end) {
+			return;
+		}
+		builder.append(Character.toLowerCase(string.charAt(0)));
+		if (start + 1 < end) {
+			builder.append(string.substring(start + 1));
+		}
+	}
+
+	private void lower(StringBuilder builder, String string, int start, int end) {
+		if (start == end) {
+			return;
+		}
+		builder.append(Character.toLowerCase(string.charAt(0)));
+		if (start + 1 < end) {
+			builder.append(string.substring(start + 1, end));
+		}
 	}
 
 	/**
@@ -163,22 +199,29 @@ public class StrUtil {
 		if (string == null || delimiter == null) {
 			throw new IllegalArgumentException("when string is null, delimiter can't be null either.");
 		}
-		int from = string.indexOf(delimiter);
+		StringBuilder builder = new StringBuilder(string.length());
+		int from = builder.indexOf(delimiter);
 		if (from < 0) {
 			//未找到分隔符,直接将原字符串首字母小写。
-			return new StringBuilder(string.length()).append(Character.toLowerCase(string.charAt(0))).append(string.substring(1)).toString();
+			lower(builder, string, 0);
+			return builder.toString();
 		}
-		StringArray tokens = split(from, delimiter, string);
-		StringBuilder builder = new StringBuilder(string.length());
-		//将首字母小写
-		String item = tokens.elements[0];
-		builder.append(Character.toUpperCase(item.charAt(0)));
-		builder.append(item.substring(1));
-		for (int i = 1; i < tokens.head; i++) {
-			item = tokens.elements[i];
-			//将之后的每个分词的字母大写
-			builder.append(Character.toUpperCase(item.charAt(0)));
-			builder.append(item.substring(1));
+		lower(builder, string, 0, from);
+		int skip = delimiter.length();
+		//上个分隔符的结束处
+		from = from + skip;
+		while (true) {
+			//下个分隔符的起始处
+			int next = string.indexOf(delimiter, from);
+			if (next < 0) {
+				//如果未找到下个分隔符
+				upper(builder, string, from);
+				break;
+			} else {
+				//如果找到了
+				upper(builder, string, from, next);
+				from = next + skip;
+			}
 		}
 		return builder.toString();
 	}
@@ -195,20 +238,9 @@ public class StrUtil {
 			return new String[] { string };
 		}
 		//如果找到,则分割
-		return split(from, delimiter, string).finish();
-	}
-
-	/**
-	 * 不使用正则表达式的spilt
-	 * @param from 第一个分隔符的起始点
-	 * @author Frodez
-	 * @date 2019-12-24
-	 */
-	private static StringArray split(int from, String delimiter, String string) {
-		int total = string.length();
 		int skip = delimiter.length();
 		//可能的长度
-		StringArray builder = new StringArray(total / (skip << 2));
+		StringArray builder = new StringArray(string.length() / (skip << 2));
 		//加入第一段
 		builder.append(string.substring(0, from));
 		//上个分隔符的结束处
@@ -218,18 +250,19 @@ public class StrUtil {
 			int next = string.indexOf(delimiter, from);
 			if (next < 0) {
 				//如果未找到下个分隔符
-				builder.append(string.substring(from, total));
+				if (from != string.length()) {
+					builder.append(string.substring(from));
+				}
 				break;
-			} else if (next == from + 1) {
-				//如果下个分隔符紧跟着上个分隔符,则直接跳过
-				from = from + skip;
 			} else {
 				//说明两个分隔符之间有字符
-				builder.append(string.substring(from, next));
+				if (next != from) {
+					builder.append(string.substring(from, next));
+				}
 				from = next + skip;
 			}
 		}
-		return builder;
+		return builder.finish();
 	}
 
 	/**
@@ -299,49 +332,6 @@ public class StrUtil {
 			return length == head ? elements : Arrays.copyOf(elements, head);
 		}
 
-	}
-
-	/**
-	 * 不使用正则表达式的spilt
-	 * @author Frodez
-	 * @date 2019-12-24
-	 */
-	public static List<String> splitList(String string, String regex, int limit) {
-		char ch = 0;
-		int off = 0;
-		int next = 0;
-		boolean limited = limit > 0;
-		ArrayList<String> list = new ArrayList<>();
-		while ((next = string.indexOf(ch, off)) != -1) {
-			if (!limited || list.size() < limit - 1) {
-				list.add(string.substring(off, next));
-				off = next + 1;
-			} else { // last one
-				//assert (list.size() == limit - 1);
-				int last = string.length();
-				list.add(string.substring(off, last));
-				off = last;
-				break;
-			}
-		}
-		// If no match was found, return this
-		if (off == 0) {
-			return List.of(string);
-		}
-
-		// Add remaining segment
-		if (!limited || list.size() < limit) {
-			list.add(string.substring(off, string.length()));
-		}
-
-		// Construct result
-		int resultSize = list.size();
-		if (limit == 0) {
-			while (resultSize > 0 && list.get(resultSize - 1).isEmpty()) {
-				resultSize--;
-			}
-		}
-		return list.subList(0, resultSize);
 	}
 
 	/**
