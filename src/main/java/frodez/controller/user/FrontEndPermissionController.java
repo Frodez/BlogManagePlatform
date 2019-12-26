@@ -34,19 +34,19 @@ public class FrontEndPermissionController {
 
 	@GetMapping(name = "查询页面资源权限信息接口")
 	@Success(PagePermissionDetail.class)
-	public Result getPermission(@ApiParam("页面资源权限ID") Long id) {
+	public Result getPagePermission(@ApiParam("页面资源权限ID") Long id) {
 		return authorityService.getPagePermission(id);
 	}
 
 	@GetMapping(value = "/page", name = "分页查询页面资源权限信息接口")
 	@Success(value = PagePermission.class, containerType = Container.PAGE)
-	public Result getPermissions(@RequestBody QueryPage param) {
+	public Result getPagePermissions(@RequestBody QueryPage param) {
 		return authorityService.getPagePermissions(param);
 	}
 
 	@GetMapping(value = "/byRoleId", name = "根据角色ID获取页面资源权限信息接口")
 	@Success(value = PagePermissionInfo.class, containerType = Container.PAGE)
-	public Result getRolePermissions(@RequestBody QueryRolePermission param) {
+	public Result getRolePagePermissions(@RequestBody QueryRolePermission param) {
 		return authorityService.getRolePagePermissions(param);
 	}
 

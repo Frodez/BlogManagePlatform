@@ -68,7 +68,7 @@ public class SwaggerConfig {
 	 * @date 2019-01-06
 	 */
 	@Bean
-	public Docket petApi() {
+	public Docket enable() {
 		Docket docket = baseConfig();
 		infoConfig(docket);
 		typeConfig(docket);
