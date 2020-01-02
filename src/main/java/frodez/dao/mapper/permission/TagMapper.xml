@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="frodez.dao.mapper.permission.TagMapper">
+    
+    <select id="getByRoleId" resultType="frodez.dao.model.table.permission.Tag">
+    SELECT
+		tb_tag.id AS id,
+		tb_tag.create_time AS createTime,
+		tb_tag.permission_name AS permissionName,
+		tb_tag.type AS type,
+		tb_tag.default_level AS defaultLevel,
+		tb_tag.description AS description,
+		tb_tag.setting AS setting 
+	FROM
+		tb_tag
+		INNER JOIN tb_role_tag ON tb_tag.id = tb_role_tag.tag_id 
+	WHERE
+		tb_role_tag.role_id = #{roleId}
+    </select>
+    
+    <select id="getIdsByRoleId" resultType="java.lang.Long">
+    SELECT
+		tb_tag.id AS id
+	FROM
+		tb_tag
+		INNER JOIN tb_role_tag ON tb_tag.id = tb_role_tag.tag_id 
+	WHERE
+		tb_role_tag.role_id = #{roleId}
+    </select>
+    
+    <select id="batchGetByRoleId" resultType="java.util.HashMap">
+    SELECT
+    	tb_role_tag.role_id AS 'key.roleId',
+		tb_tag.id AS 'value.id',
+		tb_tag.create_time AS 'value.createTime',
+		tb_tag.permission_name AS 'value.permissionName',
+		tb_tag.type AS 'value.type',
+		tb_tag.default_level AS 'value.defaultLevel',
+		tb_tag.description AS 'value.description',
+		tb_tag.setting AS 'value.setting' 
+	FROM
+		tb_tag
+		INNER JOIN tb_role_tag ON tb_tag.id = tb_role_tag.tag_id 
+	WHERE
+		tb_role_tag.role_id IN
+	<foreach collection="roleIds" item="item" index="index" open="(" close=")" separator=",">
+		#{item}
+	</foreach>
+    </select>
+    
+</mapper>

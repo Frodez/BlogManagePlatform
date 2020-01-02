@@ -52,6 +52,10 @@ public @interface MapEnum {
 
 	String message() default "";
 
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
+
 	/**
 	 * 适用的枚举类
 	 * @author Frodez
@@ -80,10 +84,6 @@ public @interface MapEnum {
 	 * @date 2019-04-13
 	 */
 	Class<?> paramType() default Byte.class;
-
-	Class<?>[] groups() default {};
-
-	Class<? extends Payload>[] payload() default {};
 
 	/**
 	 * MapEnumHelper工具类,仅供MapEnum相关功能使用!!!

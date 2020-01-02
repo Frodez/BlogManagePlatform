@@ -13,6 +13,24 @@ import org.springframework.util.Assert;
 public class PrimitiveUtil {
 
 	/**
+	 * 判断是否为基本类型或者其装箱类
+	 * @author Frodez
+	 * @date 2019-12-28
+	 */
+	public static boolean isBaseType(Class<?> klass) {
+		Assert.notNull(klass, "klass must not be null");
+		if (klass.isPrimitive()) {
+			return true;
+		}
+		if (klass == Boolean.class || klass == Byte.class || klass == Short.class || klass == Character.class || klass == Integer.class
+			|| klass == Long.class || klass == Float.class || klass == Double.class) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * 将两个数转换为指定的类型然后进行比较<br>
 	 * 涉及类型:byte, short, int, long以及对应装箱类
 	 * @author Frodez

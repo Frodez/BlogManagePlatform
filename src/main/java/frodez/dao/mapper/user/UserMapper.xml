@@ -2,4 +2,86 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="frodez.dao.mapper.user.UserMapper">
 
+	<select id="getBaseInfoById" resultType="frodez.dao.model.result.user.UserBaseInfo">
+	SELECT
+		tb_user.id AS id,
+		tb_user.create_time AS createTime,
+		tb_user.`name` AS `name`,
+		tb_user.nickname AS nickname,
+		tb_user.email AS email,
+		tb_user.phone AS phone,
+		tb_user.`status` AS `status`,
+		tb_user.role_id AS roleId 
+	FROM
+		tb_user
+		<where>
+			tb_user.id = #{userId}
+			<if test="includeForbidden==false">
+			tb_user.status = 1
+			</if>
+		</where>
+	</select>
+	
+	<select id="getBaseInfoByName" resultType="frodez.dao.model.result.user.UserBaseInfo">
+	SELECT
+		tb_user.id AS id,
+		tb_user.create_time AS createTime,
+		tb_user.`name` AS `name`,
+		tb_user.nickname AS nickname,
+		tb_user.email AS email,
+		tb_user.phone AS phone,
+		tb_user.`status` AS `status`,
+		tb_user.role_id AS roleId 
+	FROM
+		tb_user
+		<where>
+			tb_user.`name` = #{userName}
+			<if test="includeForbidden==false">
+			tb_user.status = 1
+			</if>
+		</where>
+	</select>
+	
+	<select id="batchGetBaseInfoById" resultType="frodez.dao.model.result.user.UserBaseInfo">
+	SELECT
+		tb_user.id AS id,
+		tb_user.create_time AS createTime,
+		tb_user.`name` AS `name`,
+		tb_user.nickname AS nickname,
+		tb_user.email AS email,
+		tb_user.phone AS phone,
+		tb_user.`status` AS `status`,
+		tb_user.role_id AS roleId 
+	FROM
+		tb_user
+		<where>
+			tb_user.id IN
+			<foreach collection="userIds" item="item" index="index" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+			<if test="includeForbidden==false">
+			tb_user.status = 1
+			</if>
+		</where>
+	</select>
+	
+	<select id="pageBaseInfo" resultType="frodez.dao.model.result.user.UserBaseInfo">
+	SELECT
+		tb_user.id AS id,
+		tb_user.create_time AS createTime,
+		tb_user.`name` AS `name`,
+		tb_user.nickname AS nickname,
+		tb_user.email AS email,
+		tb_user.phone AS phone,
+		tb_user.`status` AS `status`,
+		tb_user.role_id AS roleId 
+	FROM
+		tb_user
+		<where>
+			<if test="includeForbidden==false">
+			tb_user.status = 1
+			</if>
+		</where>
+	</select>
+
 </mapper>

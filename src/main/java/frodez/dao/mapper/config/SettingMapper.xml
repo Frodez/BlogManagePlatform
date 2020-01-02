@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="frodez.dao.mapper.config.SettingMapper">
+    
+    <select id="getSettingRoles" resultType="java.util.HashMap">
+    SELECT
+		tb_setting.`name` AS `key`,
+		tb_role_setting.role_id AS `value` 
+	FROM
+		tb_setting
+		INNER JOIN tb_role_setting ON tb_setting.id = tb_role_setting.setting_id
+		INNER JOIN tb_role ON tb_role_setting.role_id = tb_role.id
+    </select>
+    
+    <select id="getRoleSettings" resultType="frodez.dao.model.table.config.Setting">
+    SELECT
+		tb_setting.id AS id,
+		tb_setting.create_time AS createTime,
+		tb_setting.`name` AS `name`,
+		tb_setting.default_level AS defaultLevel,
+		tb_setting.description AS description 
+	FROM
+		tb_setting
+		INNER JOIN tb_role_setting ON tb_setting.id = tb_role_setting.setting_id 
+	WHERE
+		tb_role_setting.role_id = #{roleId}
+    </select>
+    
+</mapper>

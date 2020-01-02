@@ -17,6 +17,7 @@ import org.hibernate.validator.constraints.Length;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.Field;
+import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.internal.DefaultCommentGenerator;
 import org.springframework.lang.Nullable;
@@ -40,14 +41,22 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 		resolveEntityAnnotation(klass, table);
 	}
 
+	private void addImport(TopLevelClass klass, Class<?> importClass) {
+		FullyQualifiedJavaType type = new FullyQualifiedJavaType(importClass.getCanonicalName());
+		boolean exist = klass.getImportedTypes().contains(type);
+		if (!exist) {
+			klass.addImportedType(type);
+		}
+	}
+
 	private void resolveImports(TopLevelClass klass, IntrospectedTable table) {
-		klass.addImportedType(Data.class.getCanonicalName());
-		klass.addImportedType(Id.class.getCanonicalName());
-		klass.addImportedType(Table.class.getCanonicalName());
-		klass.addImportedType(Column.class.getCanonicalName());
-		klass.addImportedType(Entity.class.getCanonicalName());
-		klass.addImportedType(ApiModel.class.getCanonicalName());
-		klass.addImportedType(ApiModelProperty.class.getCanonicalName());
+		addImport(klass, Data.class);
+		addImport(klass, Id.class);
+		addImport(klass, Table.class);
+		addImport(klass, Column.class);
+		addImport(klass, Entity.class);
+		addImport(klass, ApiModel.class);
+		addImport(klass, ApiModelProperty.class);
 		boolean hasNullable = false;
 		boolean hasNotNull = false;
 		boolean hasNotBlank = false;
@@ -69,16 +78,16 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 			}
 		}
 		if (hasNullable) {
-			klass.addImportedType(Nullable.class.getCanonicalName());
+			addImport(klass, Nullable.class);
 		}
 		if (hasNotNull) {
-			klass.addImportedType(NotNull.class.getCanonicalName());
+			addImport(klass, NotNull.class);
 		}
 		if (hasNotBlank) {
-			klass.addImportedType(NotBlank.class.getCanonicalName());
+			addImport(klass, NotBlank.class);
 		}
 		if (hasLength) {
-			klass.addImportedType(Length.class.getCanonicalName());
+			addImport(klass, Length.class);
 		}
 	}
 
@@ -97,7 +106,10 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
 		klass.addAnnotation("@Entity");
 		String description = tableRemark;
 		if (description.endsWith("表")) {
-			description = description.substring(0, description.length() - 1).concat("返回数据");
+			description = description.substring(0, description.length() - 1);
+			if (!description.endsWith("信息")) {
+				description = description.concat("信息");
+			}
 		}
 		klass.addAnnotation("@Table(name = \"" + table.getFullyQualifiedTable() + "\")");
 		klass.addAnnotation("@ApiModel(description = \"" + description + "\")");

@@ -2,6 +2,8 @@ package frodez.util.reflect;
 
 import frodez.constant.settings.DefStr;
 import frodez.util.common.StrUtil;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -26,6 +28,10 @@ public class ReflectUtil {
 	public static final Object[] EMPTY_ARRAY = new Object[] { null };
 
 	private static final Map<Class<?>, Table> CGLIB_CACHE = new ConcurrentHashMap<>();
+
+	private static final Map<String, MethodHandle> GETTER_CACHE = new ConcurrentHashMap<>();
+
+	private static final Map<String, MethodHandle> SETTER_CACHE = new ConcurrentHashMap<>();
 
 	/**
 	 * 对象实例化
@@ -177,129 +183,91 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * 给类的字段赋值,赋值后还原accessible设置
+	 * 设置目标实体的指定字段的值
+	 * @param isExact value的类型是否匹配,如果匹配请选择true,速度更快
 	 * @author Frodez
-	 * @date 2019-12-08
-	 */
-	public static void trySet(Class<?> klass, String fieldName, @Nullable Object target, Object value) {
-		trySet(klass, fieldName, target, value, true);
-	}
-
-	/**
-	 * 给类的字段赋值
-	 * @param reviveAccessible 赋值后是否还原accessible设置
-	 * @author Frodez
-	 * @date 2019-12-08
+	 * @date 2019-12-29
 	 */
 	@SneakyThrows
-	public static void trySet(Class<?> klass, String fieldName, Object target, @Nullable Object value, boolean reviveAccessible) {
+	public static void trySet(Class<?> klass, String fieldName, Object target, @Nullable Object value) {
 		Assert.notNull(klass, "klass must not be null");
 		Assert.notNull(fieldName, "fieldName must not be null");
 		Assert.notNull(target, "target must not be null");
 		Field field = klass.getDeclaredField(fieldName);
-		if (reviveAccessible) {
-			boolean accessible = field.canAccess(target);
-			field.setAccessible(true);
-			field.set(target, value);
-			field.setAccessible(accessible);
-		} else {
-			field.setAccessible(true);
-			field.set(target, value);
+		if (field == null) {
+			throw new IllegalArgumentException(klass.getCanonicalName() + "没有字段" + fieldName);
 		}
+		field.trySetAccessible();
+		String identifier = StrUtil.concat(klass.getCanonicalName(), DefStr.POINT_SEPERATOR, fieldName);
+		MethodHandle handle = SETTER_CACHE.get(identifier);
+		if (handle == null) {
+			handle = MethodHandles.lookup().unreflectSetter(field);
+			SETTER_CACHE.put(identifier, handle);
+		}
+		handle.invoke(target, value);
 	}
 
 	/**
-	 * 给类的字段赋值,赋值后还原accessible设置
+	 * 设置目标实体的指定字段的值
+	 * @param isExact value的类型是否匹配,如果匹配请选择true,速度更快
 	 * @author Frodez
-	 * @date 2019-12-08
+	 * @date 2019-12-29
 	 */
+	@SneakyThrows
 	public static void trySet(Field field, Object target, @Nullable Object value) {
-		trySet(field, target, value, true);
-	}
-
-	/**
-	 * 给类的字段赋值
-	 * @param reviveAccessible 赋值后是否还原accessible设置
-	 * @author Frodez
-	 * @date 2019-12-08
-	 */
-	@SneakyThrows
-	public static void trySet(Field field, Object target, @Nullable Object value, boolean reviveAccessible) {
 		Assert.notNull(field, "field must not be null");
 		Assert.notNull(target, "target must not be null");
-		if (reviveAccessible) {
-			boolean accessible = field.canAccess(target);
-			field.setAccessible(true);
-			field.set(target, value);
-			field.setAccessible(accessible);
-		} else {
-			field.setAccessible(true);
-			field.set(target, value);
+		field.trySetAccessible();
+		String identifier = StrUtil.concat(field.getDeclaringClass().getCanonicalName(), DefStr.POINT_SEPERATOR, field.getName());
+		MethodHandle handle = SETTER_CACHE.get(identifier);
+		if (handle == null) {
+			handle = MethodHandles.lookup().unreflectGetter(field);
+			GETTER_CACHE.put(identifier, handle);
 		}
+		handle.invoke(target, value);
 	}
 
 	/**
-	 * 获取字段的值,取值后还原accessible设置
+	 * 获取目标实体的指定字段
 	 * @author Frodez
-	 * @date 2019-12-08
-	 */
-	public static Object tryGet(Class<?> klass, String fieldName, Object target) {
-		return tryGet(klass, fieldName, target, true);
-	}
-
-	/**
-	 * 获取字段的值
-	 * @param reviveAccessible 取值后是否还原accessible设置
-	 * @author Frodez
-	 * @date 2019-12-08
+	 * @date 2019-12-29
 	 */
 	@SneakyThrows
-	public static Object tryGet(Class<?> klass, String fieldName, Object target, boolean reviveAccessible) {
+	public static Object tryGet(Class<?> klass, String fieldName, Object target) {
 		Assert.notNull(klass, "klass must not be null");
 		Assert.notNull(fieldName, "fieldName must not be null");
 		Assert.notNull(target, "target must not be null");
 		Field field = klass.getDeclaredField(fieldName);
-		if (reviveAccessible) {
-			boolean accessible = field.canAccess(target);
-			field.setAccessible(true);
-			Object result = field.get(target);
-			field.setAccessible(accessible);
-			return result;
-		} else {
-			field.setAccessible(true);
-			return field.get(target);
+		if (field == null) {
+			throw new IllegalArgumentException(klass.getCanonicalName() + "没有字段" + fieldName);
 		}
+		field.trySetAccessible();
+		String identifier = StrUtil.concat(klass.getCanonicalName(), DefStr.POINT_SEPERATOR, fieldName);
+		MethodHandle handle = GETTER_CACHE.get(identifier);
+		if (handle == null) {
+			handle = MethodHandles.lookup().unreflectGetter(field);
+			GETTER_CACHE.put(identifier, handle);
+		}
+		return handle.invoke(target);
 	}
 
 	/**
-	 * 获取字段的值,取值后还原accessible设置
+	 * 获取目标实体的指定字段
 	 * @author Frodez
-	 * @date 2019-12-08
-	 */
-	public static Object tryGet(Field field, Object target) {
-		return tryGet(field, target, true);
-	}
-
-	/**
-	 * 获取字段的值
-	 * @param reviveAccessible 取值后是否还原accessible设置
-	 * @author Frodez
-	 * @date 2019-12-08
+	 * @date 2019-12-29
 	 */
 	@SneakyThrows
-	public static Object tryGet(Field field, Object target, boolean reviveAccessible) {
+	public static Object tryGet(Field field, Object target) {
 		Assert.notNull(field, "field must not be null");
 		Assert.notNull(target, "target must not be null");
-		if (reviveAccessible) {
-			boolean accessible = field.canAccess(target);
-			field.setAccessible(true);
-			Object result = field.get(target);
-			field.setAccessible(accessible);
-			return result;
-		} else {
-			field.setAccessible(true);
-			return field.get(target);
+		field.trySetAccessible();
+		String identifier = StrUtil.concat(field.getDeclaringClass().getCanonicalName(), DefStr.POINT_SEPERATOR, field.getName());
+		MethodHandle handle = GETTER_CACHE.get(identifier);
+		if (handle == null) {
+			handle = MethodHandles.lookup().unreflectGetter(field);
+			GETTER_CACHE.put(identifier, handle);
 		}
+		return handle.invoke(target);
 	}
 
 }

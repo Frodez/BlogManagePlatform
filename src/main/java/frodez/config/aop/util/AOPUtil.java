@@ -9,8 +9,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import lombok.experimental.UtilityClass;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * AOP工具类
@@ -19,6 +22,21 @@ import org.springframework.util.concurrent.ListenableFuture;
  */
 @UtilityClass
 public class AOPUtil {
+
+	/**
+	 * 判断该类是否为Controller
+	 * @author Frodez
+	 * @date 2020-01-01
+	 */
+	public static boolean isController(Class<?> klass) {
+		if (AnnotationUtils.findAnnotation(klass, Controller.class) != null) {
+			return true;
+		}
+		if (AnnotationUtils.findAnnotation(klass, RestController.class) != null) {
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * 判断方法返回类型是否为AsyncResult-即ListenableFuture(类型参数T为Result)<br>

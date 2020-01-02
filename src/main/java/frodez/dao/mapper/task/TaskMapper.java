@@ -1,7 +1,7 @@
 package frodez.dao.mapper.task;
 
-import frodez.config.mybatis.DataMapper;
-import frodez.dao.model.task.Task;
+import frodez.config.mybatis.mapper.DataMapper;
+import frodez.dao.model.table.task.Task;
 import org.springframework.stereotype.Repository;
 
 /**

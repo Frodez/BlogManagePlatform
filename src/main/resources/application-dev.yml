@@ -73,7 +73,7 @@ logging:
 
 mapper:
   identity: MYSQL
-  mappers: frodez.config.mybatis.DataMapper
+  mappers: frodez.config.mybatis.mapper.DataMapper
   
 pagehelper:
   row-bounds-with-count: true

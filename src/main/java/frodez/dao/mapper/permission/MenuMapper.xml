@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="frodez.dao.mapper.permission.MenuMapper">
+    
+    <select id="getByRoleId" resultType="frodez.dao.model.table.permission.Menu">
+    SELECT
+		tb_menu.id AS id,
+		tb_menu.create_time AS createTime,
+		tb_menu.permission_name AS permissionName,
+		tb_menu.`name` AS `name`,
+		tb_menu.route AS route,
+		tb_menu.parent_id AS parentId,
+		tb_menu.default_level AS defaultLevel,
+		tb_menu.description AS description,
+		tb_menu.setting AS setting 
+	FROM
+		tb_menu
+		INNER JOIN tb_role_menu ON tb_menu.id = tb_role_menu.menu_id 
+	WHERE
+		tb_role_menu.role_id = #{roleId}
+    </select>
+    
+    <select id="batchGetByRoleId" resultType="java.util.HashMap">
+    SELECT
+    	tb_role_menu.role_id AS 'key.roleId'
+		tb_menu.id AS 'value.id',
+		tb_menu.create_time AS 'value.createTime',
+		tb_menu.permission_name AS 'value.permissionName',
+		tb_menu.`name` AS `value.name`,
+		tb_menu.route AS 'value.route',
+		tb_menu.parent_id AS 'value.parentId',
+		tb_menu.default_level AS 'value.defaultLevel',
+		tb_menu.description AS 'value.description',
+		tb_menu.setting AS 'value.setting' 
+	FROM
+		tb_menu
+		INNER JOIN tb_role_menu ON tb_menu.id = tb_role_menu.menu_id 
+	WHERE
+		tb_role_menu.role_id IN
+	<foreach collection="roleIds" item="item" index="index" open="(" close=")" separator=",">
+		#{item}
+	</foreach>
+    </select>
+    
+</mapper>

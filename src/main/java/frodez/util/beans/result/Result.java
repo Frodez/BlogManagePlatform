@@ -284,12 +284,22 @@ public final class Result implements Serializable {
 	}
 
 	/**
-	 * 返回未登录结果
+	 * 返回未登录结果(无信息)
 	 * @author Frodez
 	 * @date 2019-03-02
 	 */
 	public static Result notLogin() {
 		return ResultHelper.DEFAULT_CACHE.get(ResultEnum.NOT_LOGIN);
+	}
+
+	/**
+	 * 返回未登录结果(有信息)
+	 * @author Frodez
+	 * @date 2019-03-02
+	 */
+	public static Result notLogin(String message) {
+		Assert.notNull(message, "message must not be null");
+		return new Result(message, ResultEnum.NOT_LOGIN);
 	}
 
 	/**

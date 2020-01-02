@@ -1,7 +1,7 @@
 package frodez.dao.mapper.article;
 
-import frodez.config.mybatis.DataMapper;
-import frodez.dao.model.article.Article;
+import frodez.config.mybatis.mapper.DataMapper;
+import frodez.dao.model.table.article.Article;
 import org.springframework.stereotype.Repository;
 
 /**

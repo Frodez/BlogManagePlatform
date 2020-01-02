@@ -37,9 +37,9 @@ public class CacheProperties {
 	private LimitUserGuavaCheckerProperties limitUserGuavaChecker = new LimitUserGuavaCheckerProperties();
 
 	/**
-	 * URLMatcher配置
+	 * redis配置
 	 */
-	private URLMatcherProperties urlMatcher = new URLMatcherProperties();
+	private RedisProperties redis = new RedisProperties();
 
 	@Data
 	public static class StandardProperties {
@@ -82,17 +82,12 @@ public class CacheProperties {
 	}
 
 	@Data
-	public static class URLMatcherProperties {
+	public static class RedisProperties {
 
 		/**
-		 * 超时时间,单位毫秒
+		 * 超时时间,单位分钟
 		 */
-		private Integer timeout = 3600000;
-
-		/**
-		 * 缓存最大容量
-		 */
-		private Integer maxSize = 65536;
+		private Integer timeout = 7 * 1440;
 
 	}
 

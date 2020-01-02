@@ -1,6 +1,7 @@
 package frodez.util.common;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import lombok.experimental.UtilityClass;
@@ -277,6 +278,24 @@ public class EmptyUtil {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * 返回两个集合是否不存在相同元素
+	 * @author Frodez
+	 * @date 2020-01-01
+	 */
+	public static <E> boolean yes(Collection<E> a, Collection<E> b) {
+		return Collections.disjoint(a, b);
+	}
+
+	/**
+	 * 返回两个集合是否存在相同元素
+	 * @author Frodez
+	 * @date 2020-01-01
+	 */
+	public static <E> boolean no(Collection<E> a, Collection<E> b) {
+		return !Collections.disjoint(a, b);
 	}
 
 	/**

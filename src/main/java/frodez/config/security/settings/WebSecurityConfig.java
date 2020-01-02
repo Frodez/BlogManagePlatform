@@ -72,27 +72,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		List<String> permitAllPathList = properties.getAuth().getPermitAllPath();
 		//开启https
 		if (serverProperties.getSsl().isEnabled()) {
 			http.requiresChannel().anyRequest().requiresSecure();
 		}
-		http.cors();
-		http.csrf().disable();
-		// 无权限时导向noAuthPoint
+		// 开启跨域共享，  跨域伪造请求限制=无效
+		http.cors().and().csrf().disable();
+		// 禁止缓存
+		http.headers().cacheControl();
+		// 无权限时处理
 		http.exceptionHandling().authenticationEntryPoint(authentication);
 		http.exceptionHandling().accessDeniedHandler(accessDenied);
 		// 不创建session
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		// 配置token验证过滤器
+		http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
 		//地址配置
 		var registry = http.authorizeRequests();
 		// 不控制的地址
-		registry.antMatchers(permitAllPathList.toArray(new String[permitAllPathList.size()])).permitAll();
+		registry.antMatchers(permitAllPathList()).permitAll();
 		registry.antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 		// 在密码验证过滤器前执行jwt过滤器
 		registry.anyRequest().authenticated();
-		// 禁止缓存
-		http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).headers().cacheControl();
+	}
+
+	private String[] permitAllPathList() {
+		List<String> permitAllPathList = properties.getAuth().getPermitAllPath();
+		return permitAllPathList.toArray(new String[permitAllPathList.size()]);
 	}
 
 	/**
@@ -128,7 +134,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * @date 2018-12-04
 	 */
 	@Bean
-	CorsConfigurationSource corsConfigurationSource() {
+	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		Cors cors = properties.getCors();
 		configuration.setAllowedOrigins(cors.getAllowedOrigins());

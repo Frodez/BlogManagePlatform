@@ -1,6 +1,13 @@
 package frodez.util.beans.pair;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -36,5 +43,45 @@ public class Pair<K, V> implements Serializable {
 	 * 值
 	 */
 	private V value;
+
+	/**
+	 * 从map转化成Pair的List
+	 * @author Frodez
+	 * @date 2019-12-31
+	 */
+	public static <K, V> List<Pair<K, V>> transfer(Map<K, V> map) {
+		List<Pair<K, V>> collection = new ArrayList<>();
+		for (Entry<K, V> entry : map.entrySet()) {
+			collection.add(new Pair<>(entry.getKey(), entry.getValue()));
+		}
+		return collection;
+	}
+
+	/**
+	 * 从map转化成Pair的collection
+	 * @author Frodez
+	 * @date 2019-12-31
+	 */
+	public static <C extends Collection<Pair<K, V>>, K, V> C transfer(Map<K, V> map, Supplier<C> supplier) {
+		C collection = supplier.get();
+		for (Entry<K, V> entry : map.entrySet()) {
+			collection.add(new Pair<>(entry.getKey(), entry.getValue()));
+		}
+		return collection;
+	}
+
+	/**
+	 * 从map转化成Pair的collection
+	 * @author Frodez
+	 * @date 2019-12-31
+	 */
+	public static <C extends Collection<P>, P extends Pair<K, V>, K, V> C transfer(Map<K, V> map, Supplier<C> collectionSupplier, BiFunction<K, V,
+		P> pairSupplier) {
+		C collection = collectionSupplier.get();
+		for (Entry<K, V> entry : map.entrySet()) {
+			collection.add(pairSupplier.apply(entry.getKey(), entry.getValue()));
+		}
+		return collection;
+	}
 
 }

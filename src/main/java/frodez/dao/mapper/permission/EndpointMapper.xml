@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="frodez.dao.mapper.permission.EndpointMapper">
+
+	<select id="getByMenuId" resultType="frodez.dao.model.table.permission.Endpoint">
+    SELECT
+		tb_endpoint.id AS id,
+		tb_endpoint.create_time AS createTime,
+		tb_endpoint.`name` AS `name`,
+		tb_endpoint.path AS path,
+		tb_endpoint.methods AS methods,
+		tb_endpoint.default_level AS defaultLevel,
+		tb_endpoint.description AS description 
+	FROM
+		tb_endpoint
+		INNER JOIN tb_menu_endpoint ON tb_endpoint.id = tb_menu_endpoint.endpoint_id 
+	WHERE
+		tb_menu_endpoint.menu_id = #{menuId}
+    </select>
+    
+    <select id="getByTagId" resultType="frodez.dao.model.table.permission.Endpoint">
+    SELECT
+		tb_endpoint.id AS id,
+		tb_endpoint.create_time AS createTime,
+		tb_endpoint.`name` AS `name`,
+		tb_endpoint.path AS path,
+		tb_endpoint.methods AS methods,
+		tb_endpoint.default_level AS defaultLevel,
+		tb_endpoint.description AS description 
+	FROM
+		tb_endpoint
+		INNER JOIN tb_tag_endpoint ON tb_endpoint.id = tb_tag_endpoint.endpoint_id 
+	WHERE
+		tb_tag_endpoint.tag_id = #{tagId}
+    </select>
+    
+    <select id="batchGetByMenuId" resultType="java.util.HashMap">
+    SELECT
+    	tb_menu_endpoint.menu_id AS `key.menuId`,
+		tb_endpoint.id AS `value.id`,
+		tb_endpoint.create_time AS `value.createTime`,
+		tb_endpoint.`name` AS `value.name`,
+		tb_endpoint.path AS `value.path`,
+		tb_endpoint.methods AS `value.methods`,
+		tb_endpoint.default_level AS `value.defaultLevel`,
+		tb_endpoint.description AS `value.description` 
+	FROM
+		tb_endpoint
+		INNER JOIN tb_menu_endpoint ON tb_endpoint.id = tb_menu_endpoint.endpoint_id 
+	WHERE
+		tb_menu_endpoint.menu_id IN
+	<foreach collection="menuIds" item="item" index="index" open="(" close=")" separator=",">
+		#{item}
+	</foreach>
+    </select>
+    
+    <select id="batchGetByTagId" resultType="java.util.HashMap">
+    SELECT
+		tb_tag_endpoint.tag_id AS `key.tagId`,
+		tb_endpoint.id AS `value.id`,
+		tb_endpoint.create_time AS `value.createTime`,
+		tb_endpoint.`name` AS `value.name`,
+		tb_endpoint.path AS `value.path`,
+		tb_endpoint.methods AS `value.methods`,
+		tb_endpoint.default_level AS `value.defaultLevel`,
+		tb_endpoint.description AS `value.description` 
+	FROM
+		tb_endpoint
+		INNER JOIN tb_tag_endpoint ON tb_endpoint.id = tb_tag_endpoint.endpoint_id 
+	WHERE
+		tb_tag_endpoint.tag_id IN
+	<foreach collection="tagIds" item="item" index="index" open="(" close=")" separator=",">
+		#{item}
+	</foreach>
+    </select>
+    
+    <select id="getMenuEndpoints" resultType="frodez.dao.model.table.permission.Endpoint">
+    SELECT
+		tb_endpoint.id AS id,
+		tb_endpoint.create_time AS createTime,
+		tb_endpoint.`name` AS `name`,
+		tb_endpoint.path AS path,
+		tb_endpoint.methods AS methods,
+		tb_endpoint.default_level AS defaultLevel,
+		tb_endpoint.description AS description 
+	FROM
+		tb_endpoint
+		INNER JOIN tb_menu_endpoint ON tb_endpoint.id = tb_menu_endpoint.endpoint_id
+		INNER JOIN tb_role_menu ON tb_menu_endpoint.menu_id = tb_role_menu.menu_id
+		INNER JOIN tb_role ON tb_role_menu.role_id = tb_role.id 
+	WHERE
+		tb_role.id = #{roleId}
+    </select>
+    
+    <select id="getTagEndpoints" resultType="frodez.dao.model.table.permission.Endpoint">
+    SELECT
+		tb_endpoint.id AS id,
+		tb_endpoint.create_time AS createTime,
+		tb_endpoint.`name` AS `name`,
+		tb_endpoint.path AS path,
+		tb_endpoint.methods AS methods,
+		tb_endpoint.default_level AS defaultLevel,
+		tb_endpoint.description AS description 
+	FROM
+		tb_endpoint
+		INNER JOIN tb_tag_endpoint ON tb_endpoint.id = tb_tag_endpoint.endpoint_id
+		INNER JOIN tb_role_tag ON tb_tag_endpoint.tag_id = tb_role_tag.tag_id
+		INNER JOIN tb_role ON tb_role_tag.role_id = tb_role.id 
+	WHERE
+		tb_role.id = #{roleId}
+    </select>
+    
+</mapper>
