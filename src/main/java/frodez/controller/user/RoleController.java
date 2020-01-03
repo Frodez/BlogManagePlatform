@@ -47,7 +47,7 @@ public class RoleController {
 		return roleService.updateRole(param);
 	}
 
-	@DeleteMapping(value = "/update", name = "更新角色接口")
+	@DeleteMapping(value = "/delete", name = "删除角色接口")
 	public Result deleteRole(@ApiParam("角色ID") Long roleId) {
 		return roleService.deleteRole(roleId);
 	}

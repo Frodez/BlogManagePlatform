@@ -1,8 +1,10 @@
 package frodez.controller.user;
 
 import frodez.config.aop.request.annotation.RepeatLock;
+import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.swagger.annotation.Success;
 import frodez.config.swagger.annotation.Success.Container;
+import frodez.constant.enums.user.UserStatus;
 import frodez.dao.model.result.user.UserBaseInfo;
 import frodez.dao.model.result.user.UserDetail;
 import frodez.dao.model.result.user.UserInfo;
@@ -11,6 +13,7 @@ import frodez.service.user.facade.IUserManageService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import io.swagger.annotations.ApiParam;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,6 +72,16 @@ public class UserManageController {
 	@PostMapping(value = "/role/replace", name = "为某种角色的用户赋予新角色信息接口")
 	public Result replaceRole(@ApiParam("前角色ID") Long former, @ApiParam("新角色ID") Long latter) {
 		return userManageService.replaceRole(former, latter);
+	}
+
+	@PostMapping(value = "/status", name = "更改用户状态接口")
+	public Result setStatus(@ApiParam("角色ID") Long userId, @MapEnum(UserStatus.class) Byte status) {
+		return userManageService.setStatus(userId, status);
+	}
+
+	@PostMapping(value = "/status/batch", name = "批量更改用户状态接口")
+	public Result setStatus(@ApiParam("角色ID") List<Long> userIds, @MapEnum(UserStatus.class) Byte status) {
+		return userManageService.setStatus(userIds, status);
 	}
 
 }

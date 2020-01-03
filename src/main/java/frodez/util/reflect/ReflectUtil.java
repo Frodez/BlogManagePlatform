@@ -188,16 +188,17 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-12-29
 	 */
+	@SuppressWarnings("deprecation")
 	@SneakyThrows
 	public static void trySet(Class<?> klass, String fieldName, Object target, @Nullable Object value) {
 		Assert.notNull(klass, "klass must not be null");
 		Assert.notNull(fieldName, "fieldName must not be null");
 		Assert.notNull(target, "target must not be null");
 		Field field = klass.getDeclaredField(fieldName);
-		if (field == null) {
-			throw new IllegalArgumentException(klass.getCanonicalName() + "没有字段" + fieldName);
+		if (!field.isAccessible()) {
+			//暂时使用isAccessible api,因为可以减少判断次数提高性能
+			field.trySetAccessible();
 		}
-		field.trySetAccessible();
 		String identifier = StrUtil.concat(klass.getCanonicalName(), DefStr.POINT_SEPERATOR, fieldName);
 		MethodHandle handle = SETTER_CACHE.get(identifier);
 		if (handle == null) {
@@ -213,11 +214,15 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-12-29
 	 */
+	@SuppressWarnings("deprecation")
 	@SneakyThrows
 	public static void trySet(Field field, Object target, @Nullable Object value) {
 		Assert.notNull(field, "field must not be null");
 		Assert.notNull(target, "target must not be null");
-		field.trySetAccessible();
+		if (!field.isAccessible()) {
+			//暂时使用isAccessible api,因为可以减少判断次数提高性能
+			field.trySetAccessible();
+		}
 		String identifier = StrUtil.concat(field.getDeclaringClass().getCanonicalName(), DefStr.POINT_SEPERATOR, field.getName());
 		MethodHandle handle = SETTER_CACHE.get(identifier);
 		if (handle == null) {
@@ -232,16 +237,17 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-12-29
 	 */
+	@SuppressWarnings("deprecation")
 	@SneakyThrows
 	public static Object tryGet(Class<?> klass, String fieldName, Object target) {
 		Assert.notNull(klass, "klass must not be null");
 		Assert.notNull(fieldName, "fieldName must not be null");
 		Assert.notNull(target, "target must not be null");
 		Field field = klass.getDeclaredField(fieldName);
-		if (field == null) {
-			throw new IllegalArgumentException(klass.getCanonicalName() + "没有字段" + fieldName);
+		if (!field.isAccessible()) {
+			//暂时使用isAccessible api,因为可以减少判断次数提高性能
+			field.trySetAccessible();
 		}
-		field.trySetAccessible();
 		String identifier = StrUtil.concat(klass.getCanonicalName(), DefStr.POINT_SEPERATOR, fieldName);
 		MethodHandle handle = GETTER_CACHE.get(identifier);
 		if (handle == null) {
@@ -256,11 +262,15 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-12-29
 	 */
+	@SuppressWarnings("deprecation")
 	@SneakyThrows
 	public static Object tryGet(Field field, Object target) {
 		Assert.notNull(field, "field must not be null");
 		Assert.notNull(target, "target must not be null");
-		field.trySetAccessible();
+		if (!field.isAccessible()) {
+			//暂时使用isAccessible api,因为可以减少判断次数提高性能
+			field.trySetAccessible();
+		}
 		String identifier = StrUtil.concat(field.getDeclaringClass().getCanonicalName(), DefStr.POINT_SEPERATOR, field.getName());
 		MethodHandle handle = GETTER_CACHE.get(identifier);
 		if (handle == null) {

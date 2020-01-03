@@ -134,6 +134,7 @@ public class PermissionService implements IPermissionService {
 						if (EmptyUtil.no(permissionIds, roleMenuMapper.partialEqual("menu_id", "role_id", roleId))) {
 							return Result.fail("该角色已经拥有的权限和要添加的菜单权限存在重复!");
 						}
+						userManageService.kickAllOut(roleId);
 						List<RoleMenu> roleMenus = permissionIds.stream().map((item) -> {
 							RoleMenu roleMenu = new RoleMenu();
 							roleMenu.setRoleId(roleId);
@@ -144,6 +145,7 @@ public class PermissionService implements IPermissionService {
 						break;
 					}
 					case UPDATE : {
+						userManageService.kickAllOut(roleId);
 						if (EmptyUtil.no(permissionIds)) {
 							List<RoleMenu> roleMenus = permissionIds.stream().map((item) -> {
 								RoleMenu roleMenu = new RoleMenu();
@@ -163,6 +165,7 @@ public class PermissionService implements IPermissionService {
 						if (!roleMenuMapper.<Long>partialEqual("menu_id", "role_id", roleId).containsAll(permissionIds)) {
 							return Result.fail("需要删除的菜单权限不在角色享有权限之内!");
 						}
+						userManageService.kickAllOut(roleId);
 						roleMenuMapper.deleteEqual("role_id", roleId);
 						break;
 					}
@@ -177,6 +180,7 @@ public class PermissionService implements IPermissionService {
 						if (!Collections.disjoint(permissionIds, roleTagMapper.<Long>partialEqual("tag_id", "role_id", roleId))) {
 							return Result.fail("该角色已经拥有的权限和要添加的标签权限存在重复!");
 						}
+						userManageService.kickAllOut(roleId);
 						List<RoleTag> roleTags = permissionIds.stream().map((item) -> {
 							RoleTag roleTag = new RoleTag();
 							roleTag.setRoleId(roleId);
@@ -187,6 +191,7 @@ public class PermissionService implements IPermissionService {
 						break;
 					}
 					case UPDATE : {
+						userManageService.kickAllOut(roleId);
 						if (EmptyUtil.no(permissionIds)) {
 							List<RoleTag> roleTags = permissionIds.stream().map((item) -> {
 								RoleTag roleTag = new RoleTag();
@@ -206,6 +211,7 @@ public class PermissionService implements IPermissionService {
 						if (!roleTagMapper.<Long>partialEqual("tag_id", "role_id", roleId).containsAll(permissionIds)) {
 							return Result.fail("需要删除的菜单权限不在角色享有权限之内!");
 						}
+						userManageService.kickAllOut(roleId);
 						roleTagMapper.deleteEqual("role_id", roleId);
 						break;
 					}
@@ -214,7 +220,6 @@ public class PermissionService implements IPermissionService {
 		}
 		PermissionDetail detail = getPermission(param.getRoleId()).orThrowMessage().as(PermissionDetail.class);
 		permissionCache.save(roleId, detail);
-		userManageService.kickAllOut(roleId);
 		return Result.success();
 	}
 

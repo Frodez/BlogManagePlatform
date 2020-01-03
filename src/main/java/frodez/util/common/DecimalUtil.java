@@ -187,11 +187,11 @@ public class DecimalUtil {
 			throw new IllegalArgumentException();
 		}
 		BigDecimal result = first;
-		//按照每次计算精度减1的标准得出内部精度
-		int precision = args.length + (normalized ? DefDecimal.PRECISION : first.precision());
+		BigDecimal divider = args[0];
 		for (int i = 0; i < args.length; ++i) {
-			result = result.divide(args[i], precision, DefDecimal.ROUND_MODE);
+			divider = divider.multiply(args[i]);
 		}
+		result = result.divide(divider, DefDecimal.ROUND_MODE);
 		if (normalized) {
 			return DecimalUtil.normalize(result);
 		}

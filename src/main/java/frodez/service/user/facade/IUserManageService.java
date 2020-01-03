@@ -1,10 +1,12 @@
 package frodez.service.user.facade;
 
 import frodez.config.aop.validation.annotation.Check;
+import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.swagger.annotation.Success;
 import frodez.config.swagger.annotation.Success.Container;
 import frodez.constant.annotations.decoration.Page;
 import frodez.constant.annotations.decoration.ServiceOnly;
+import frodez.constant.enums.user.UserStatus;
 import frodez.dao.model.result.user.UserBaseInfo;
 import frodez.dao.model.result.user.UserDetail;
 import frodez.dao.model.result.user.UserEndpointDetail;
@@ -12,8 +14,10 @@ import frodez.dao.model.result.user.UserInfo;
 import frodez.dao.param.user.UpdateUserRole;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 3.查看用户详细信息<br>
  * 4.查看,分配用户角色<br>
  * 5.获取用户角色对应的权限<br>
+ * 6.禁用和启用用户<br>
  * @author Frodez
  * @date 2018-11-14
  */
@@ -115,6 +120,24 @@ public interface IUserManageService {
 	Result replaceRole(@NotNull Long former, @NotNull Long latter);
 
 	/**
+	 * 把某个用户踢下线
+	 * @author Frodez
+	 * @date 2020-01-02
+	 */
+	@Check
+	@ServiceOnly
+	Result kickOut(@NotNull Long userId);
+
+	/**
+	 * 把一批用户踢下线
+	 * @author Frodez
+	 * @date 2020-01-02
+	 */
+	@Check
+	@ServiceOnly
+	Result kickSomeOut(@NotEmpty List<Long> userIds);
+
+	/**
 	 * 把某个角色下的所有用户踢下线
 	 * @author Frodez
 	 * @date 2020-01-02
@@ -122,5 +145,23 @@ public interface IUserManageService {
 	@Check
 	@ServiceOnly
 	Result kickAllOut(@NotNull Long roleId);
+
+	/**
+	 * 禁用或启用用户
+	 * @author Frodez
+	 * @date 2019-12-30
+	 */
+	@Check
+	@Transactional
+	Result setStatus(@NotNull Long userId, @MapEnum(UserStatus.class) Byte status);
+
+	/**
+	 * 批量禁用或启用用户
+	 * @author Frodez
+	 * @date 2019-12-30
+	 */
+	@Check
+	@Transactional
+	Result setStatus(@NotEmpty List<Long> userIds, @MapEnum(UserStatus.class) Byte status);
 
 }

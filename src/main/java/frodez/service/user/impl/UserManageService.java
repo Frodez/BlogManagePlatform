@@ -223,9 +223,25 @@ public class UserManageService implements IUserManageService {
 		List<Long> userIds = users.stream().map(User::getId).collect(Collectors.toList());
 		User record = new User();
 		record.setRoleId(latter);
+		kickAllOut(former);
 		userMapper.updateIn("id", userIds, record);
 		roleCache.save(userIds, role);
-		kickAllOut(former);
+		return Result.success();
+	}
+
+	@Override
+	public Result kickOut(Long userId) {
+		String token = idTokenCache.getToken(userId);
+		idTokenCache.remove(userId);
+		if (token != null) {
+			idTokenCache.remove(token);
+		}
+		return Result.success();
+	}
+
+	@Override
+	public Result kickSomeOut(List<Long> userIds) {
+		idTokenCache.batchRemove(userIds, idTokenCache.getTokens(userIds));
 		return Result.success();
 	}
 
@@ -233,9 +249,34 @@ public class UserManageService implements IUserManageService {
 	public Result kickAllOut(Long roleId) {
 		List<Long> ids = userMapper.partialEqual("id", "role_id", roleId);
 		if (EmptyUtil.yes(ids)) {
+			//如果该角色下无人,则直接返回成功
 			return Result.success();
 		}
-		idTokenCache.batchRemove(ids, idTokenCache.getTokens(ids));
+		kickSomeOut(ids);
+		return Result.success();
+	}
+
+	@Override
+	public Result setStatus(Long userId, Byte status) {
+		User user = new User();
+		user.setStatus(status);
+		userMapper.updateEqualSelective("id", userId, user);
+		if (UserStatus.FORBIDDEN.getVal().equals(status)) {
+			//还需要把用户踢出
+			kickOut(userId);
+		}
+		return Result.success();
+	}
+
+	@Override
+	public Result setStatus(List<Long> userIds, Byte status) {
+		User user = new User();
+		user.setStatus(status);
+		userMapper.updateInSelective("id", userIds, user);
+		if (UserStatus.FORBIDDEN.getVal().equals(status)) {
+			//还需要把用户踢出
+			kickSomeOut(userIds);
+		}
 		return Result.success();
 	}
 

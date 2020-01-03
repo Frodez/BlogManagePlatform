@@ -3,6 +3,7 @@ package frodez.config.swagger.plugin;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.google.common.base.Optional;
 import frodez.config.swagger.SwaggerProperties;
+import io.swagger.annotations.ApiModelProperty;
 import java.lang.reflect.AnnotatedElement;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -131,7 +132,13 @@ public class DefaultRequiredPlugin implements ParameterBuilderPlugin, ModelPrope
 		} else if (AnnotationUtils.findAnnotation(annotated, NotBlank.class) != null) {
 			context.getBuilder().required(true);
 		} else {
-			context.getBuilder().required(false);
+			ApiModelProperty annotation = AnnotationUtils.findAnnotation(annotated, ApiModelProperty.class);
+			if (annotation != null && annotation.required()) {
+				//如果ApiModelProperty上强制要求required为true,则为true
+				context.getBuilder().required(true);
+			} else {
+				context.getBuilder().required(false);
+			}
 		}
 	}
 
