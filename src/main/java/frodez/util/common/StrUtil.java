@@ -81,6 +81,7 @@ public class StrUtil {
 	 * 与StringBuilder的非优化使用方式相比,性能提高从20%-70%不等。当拼接的字符串长度较长,或者字符串数组长度较长时,性能优势更大。
 	 * @see java.lang.String#concat(String)
 	 * @author Frodez
+	 * @param <T>
 	 * @date 2019-04-01
 	 */
 	public static String concat(Collection<String> strings) {

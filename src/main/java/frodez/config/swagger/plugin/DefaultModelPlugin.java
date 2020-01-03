@@ -193,6 +193,11 @@ public class DefaultModelPlugin implements ModelPropertyBuilderPlugin {
 			}
 		}
 		min = min == null ? null : StrUtil.concat("最小值为", min);
+		if (field.isAnnotationPresent(DecimalMin.class)) {
+			if (!field.getAnnotation(DecimalMin.class).inclusive()) {
+				min = min == null ? null : StrUtil.concat(min, "且不能等于最小值");
+			}
+		}
 		String max = Optional.ofNullable(field.getAnnotation(Max.class)).map((item) -> String.valueOf(item.value())).orElse(null);
 		if (max == null) {
 			max = Optional.ofNullable(field.getAnnotation(DecimalMax.class)).map(DecimalMax::value).orElse(null);
@@ -208,6 +213,11 @@ public class DefaultModelPlugin implements ModelPropertyBuilderPlugin {
 			}
 		}
 		max = max == null ? null : StrUtil.concat("最大值为", max);
+		if (field.isAnnotationPresent(DecimalMax.class)) {
+			if (!field.getAnnotation(DecimalMax.class).inclusive()) {
+				min = min == null ? null : StrUtil.concat(min, "且不能等于最大值");
+			}
+		}
 		String digit = Optional.ofNullable(field.getAnnotation(Digits.class)).map((item) -> {
 			String integer = String.valueOf(item.integer());
 			String fraction = String.valueOf(item.fraction());
