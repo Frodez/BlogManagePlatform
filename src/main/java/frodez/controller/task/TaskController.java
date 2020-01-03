@@ -1,12 +1,13 @@
 package frodez.controller.task;
 
+import frodez.config.aop.request.annotation.RepeatLock;
 import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.swagger.annotation.Success;
 import frodez.config.swagger.annotation.Success.Container;
 import frodez.constant.enums.task.TaskStatus;
-import frodez.dao.model.task.Task;
+import frodez.dao.model.result.task.AvailableTaskInfo;
+import frodez.dao.model.table.task.Task;
 import frodez.dao.param.task.AddTask;
-import frodez.dao.result.task.AvailableTaskInfo;
 import frodez.service.task.base.BaseTaskService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frodez
  * @date 2019-03-21
  */
+@RepeatLock
 @RestController
 @RequestMapping(value = "/task", name = "任务控制器")
 public class TaskController {

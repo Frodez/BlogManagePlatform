@@ -8,6 +8,7 @@ import frodez.config.mvc.converter.ResultConverter;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
@@ -25,6 +26,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @date 2019-03-14
  */
 @Configuration
+@DependsOn("jsonUtil")
 public class WebMvcConfig implements WebMvcConfigurer {
 
 	@Autowired

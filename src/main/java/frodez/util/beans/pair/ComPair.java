@@ -17,6 +17,10 @@ public class ComPair<K extends Comparable<K>, V> extends Pair<K, V> implements C
 	 */
 	private static final long serialVersionUID = 1L;
 
+	public ComPair(K key, V value) {
+		super(key, value);
+	}
+
 	@Override
 	public int compareTo(ComPair<K, V> object) {
 		return super.getKey().compareTo(object.getKey());

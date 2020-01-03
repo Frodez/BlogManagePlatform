@@ -24,6 +24,11 @@ public class ValidatorProperties {
 	private List<String> enviroments = Arrays.asList("dev", "test");
 
 	/**
+	 * 检查规则的来源,ant风格匹配
+	 */
+	private String rulePath = "frodez.config.code.rule.*";
+
+	/**
 	 * 需要检查的代码,ant风格匹配
 	 */
 	private List<String> modelPath = Arrays.asList("frodez.*.*");

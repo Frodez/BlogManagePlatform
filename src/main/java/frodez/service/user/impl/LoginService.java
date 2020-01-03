@@ -4,15 +4,18 @@ import frodez.config.aop.exception.annotation.Error;
 import frodez.config.security.util.AuthorityUtil;
 import frodez.config.security.util.TokenUtil;
 import frodez.constant.errors.code.ErrorCode;
-import frodez.dao.param.user.DoLogin;
-import frodez.dao.param.user.DoRefresh;
-import frodez.dao.result.user.PermissionInfo;
-import frodez.dao.result.user.UserInfo;
-import frodez.service.cache.facade.TokenCache;
-import frodez.service.user.facade.IAuthorityService;
+import frodez.dao.model.result.login.RefreshInfo;
+import frodez.dao.model.result.user.UserBaseInfo;
+import frodez.dao.model.result.user.UserEndpointDetail;
+import frodez.dao.param.login.LoginUser;
+import frodez.dao.param.login.RefreshToken;
+import frodez.service.cache.facade.user.IdTokenCache;
+import frodez.service.cache.facade.user.RoleCache;
+import frodez.service.cache.facade.user.UserCache;
 import frodez.service.user.facade.ILoginService;
+import frodez.service.user.facade.IUserManageService;
 import frodez.util.beans.result.Result;
-import frodez.util.common.StreamUtil;
+import frodez.util.reflect.BeanUtil;
 import frodez.util.spring.MVCUtil;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +24,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,18 +32,10 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
-/**
- * 登录管理服务
- * @author Frodez
- * @date 2018-11-14
- */
 @Service
 @Error(ErrorCode.LOGIN_SERVICE_ERROR)
 public class LoginService implements ILoginService {
 
-	/**
-	 * spring security验证管理器
-	 */
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
@@ -50,29 +46,42 @@ public class LoginService implements ILoginService {
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-	@Qualifier("tokenRedisCache")
-	private TokenCache tokenCache;
+	@Qualifier("idTokenRedisCache")
+	private IdTokenCache idTokenCache;
 
 	@Autowired
-	private IAuthorityService authorityService;
+	@Qualifier("userMapCache")
+	private UserCache userCache;
+
+	@Autowired
+	@Qualifier("roleMapCache")
+	private RoleCache roleCache;
+
+	@Autowired
+	private IUserManageService userManageService;
 
 	@Override
-	public Result login(DoLogin param) {
-		Result result = authorityService.getUserInfo(param.getUsername());
+	public Result login(LoginUser param) {
+		Result result = userManageService.getEndpointPermission(param.getUsername());
 		if (result.unable()) {
 			return result;
 		}
-		UserInfo userInfo = result.as(UserInfo.class);
-		if (!passwordEncoder.matches(param.getPassword(), userInfo.getPassword())) {
+		UserEndpointDetail permission = result.as(UserEndpointDetail.class);
+		if (!passwordEncoder.matches(param.getPassword(), permission.getUser().getPassword())) {
 			return Result.fail("用户名或密码错误");
 		}
-		if (tokenCache.existId(userInfo.getId())) {
-			return Result.fail("用户已登录");
-		}
-		List<String> authorities = StreamUtil.list(userInfo.getPermissionList(), PermissionInfo::getName);
+		Long userId = permission.getUser().getId();
 		//realToken
-		String token = TokenUtil.generate(param.getUsername(), authorities);
-		tokenCache.save(token, userInfo);
+		String token = TokenUtil.generate(permission);
+		//保存id-token到缓存,退出时需要删除token,重新登录时需要重新保存token
+		String oldToken = idTokenCache.getToken(userId);
+		if (oldToken != null) {
+			idTokenCache.remove(oldToken);
+		}
+		idTokenCache.save(userId, token);
+		//保存id-UserBaseInfo,id-Role到缓存
+		userCache.save(userId, BeanUtil.copy(permission.getUser(), UserBaseInfo::new));
+		roleCache.save(userId, permission.getRole());
 		Authentication authentication = new UsernamePasswordAuthenticationToken(param.getUsername(), param.getPassword());
 		authentication = authenticationManager.authenticate(authentication);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -80,58 +89,73 @@ public class LoginService implements ILoginService {
 	}
 
 	@Override
-	public Result refresh(DoRefresh param) {
-		UserDetails userDetails = null;
-		//判断token是否能通过验证(不需要验证超时)
+	public Result refresh(RefreshToken param) {
+		UserDetails userDetails;
+		//判断token是否能通过验证(必须考虑过期)
 		try {
 			userDetails = TokenUtil.verifyWithNoExpired(param.getOldToken());
 		} catch (Exception e) {
 			return Result.noAuth();
 		}
 		//判断验证通过的token中姓名与填写的姓名是否一致
-		if (userDetails == null || !param.getUsername().equals(userDetails.getUsername())) {
-			return Result.noAuth();
+		if (!param.getUsername().equals(userDetails.getUsername())) {
+			return Result.fail("当前用户和重新登录的用户不符");
 		}
-		//判断token对应账号信息是否存在
-		UserInfo tokenUserInfo = tokenCache.get(param.getOldToken());
-		if (tokenUserInfo == null) {
-			return Result.noAuth();
-		}
-		//判断姓名对应账号是否正常
-		Result result = authorityService.getUserInfo(param.getUsername());
+
+		//判断token对应账号id和userName对应账号id是否一致,还有账号是否正常
+		Result result = userManageService.getEndpointPermission(param.getUsername());
 		if (result.unable()) {
 			return result;
 		}
-		UserInfo userInfo = result.as(UserInfo.class);
-		//判断token对应账号信息和查询出的账号信息是否对应
-		if (!userInfo.getName().equals(tokenUserInfo.getName()) || !userInfo.getPassword().equals(tokenUserInfo.getPassword())) {
-			return Result.fail("用户名或密码错误");
+		UserEndpointDetail permission = result.as(UserEndpointDetail.class);
+		if (!param.getUsername().equals(permission.getUser().getName())) {
+			return Result.fail("账户信息验证失败");
+		}
+		//判断该token的用户是否已登录或者已异地登录
+		Long userId = idTokenCache.getId(param.getOldToken());
+		if (userId == null) {
+			if (idTokenCache.exist(permission.getUser().getId())) {
+				return Result.fail("该账户已于异地登录");
+			}
+			return Result.notLogin();
 		}
 		//判断结束
-		//生成新token
-		String newToken = TokenUtil.generate(userDetails);
-		//存入cache
-		tokenCache.remove(param.getOldToken());
-		tokenCache.save(newToken, userInfo);
 		//登出
 		logoutHandler.logout(MVCUtil.request(), MVCUtil.response(), SecurityContextHolder.getContext().getAuthentication());
 		//登入
-		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, AuthorityUtil.make(userInfo
-			.getPermissionList()));
+		List<GrantedAuthority> authorities = AuthorityUtil.make(permission.getEndpoints());
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
 		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(MVCUtil.request()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		return Result.success(newToken);
+		//用刚查询出来的用户权限信息生成新token,这样可以做到重新登录时更新权限
+		String newToken = TokenUtil.generate(permission);
+		//覆盖cache,直接覆盖老token
+		String oldToken = idTokenCache.getToken(userId);
+		if (oldToken != null) {
+			idTokenCache.remove(oldToken);
+		}
+		idTokenCache.save(userId, newToken);
+		//保存id-UserBaseInfo,id-Role到缓存
+		userCache.save(userId, BeanUtil.copy(permission.getUser(), UserBaseInfo::new));
+		roleCache.save(userId, permission.getRole());
+		RefreshInfo data = new RefreshInfo();
+		data.setNewToken(newToken);
+		data.setRedirect(param.getRedirect());
+		return Result.success(data);
 	}
 
 	@Override
 	public Result logout() {
 		HttpServletRequest request = MVCUtil.request();
 		String token = TokenUtil.getRealToken(request);
-		if (!tokenCache.existToken(token)) {
+		if (!idTokenCache.exist(token)) {
 			return Result.fail("用户已下线");
 		}
-		tokenCache.remove(token);
 		logoutHandler.logout(request, MVCUtil.response(), SecurityContextHolder.getContext().getAuthentication());
+		//删除缓存中的token,但不删除缓存中的User和Role
+		Long userId = idTokenCache.getId(token);
+		idTokenCache.remove(userId);
+		idTokenCache.remove(token);
 		return Result.success();
 	}
 

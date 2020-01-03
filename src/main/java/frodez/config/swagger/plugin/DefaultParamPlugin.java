@@ -10,8 +10,11 @@ import frodez.config.aop.validation.annotation.common.MapEnum.MapEnumHelper;
 import frodez.config.swagger.SwaggerProperties;
 import frodez.constant.settings.DefStr;
 import frodez.util.common.StrUtil;
+import frodez.util.reflect.TypeUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiParam;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -139,7 +142,12 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 	}
 
 	private void resolveApiParam(ParameterContext context) {
-		Class<?> parameterClass = context.resolvedMethodParameter().getParameterType().getErasedType();
+		ResolvedType resolvedType = context.resolvedMethodParameter().getParameterType();
+		Class<?> parameterClass = resolveParamType(resolvedType);
+		if (parameterClass == null) {
+			log.warn(StrUtil.concat(resolvedType.getBriefDescription(), "的类型无法被DefaultParamPlugin解析"));
+			return;
+		}
 		ApiModel apiModel = parameterClass.getAnnotation(ApiModel.class);
 		if (apiModel == null) {
 			if (!BeanUtils.isSimpleProperty(parameterClass)) {
@@ -155,6 +163,24 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 		builder.hidden(false);
 		builder.collectionFormat("");
 		builder.order(SWAGGER_PLUGIN_ORDER);
+	}
+
+	private Class<?> resolveParamType(ResolvedType resolvedType) {
+		if (TypeUtil.isSimpleType(resolvedType)) {
+			return resolvedType.getErasedType();
+		} else {
+			List<ResolvedType> collectionResolvedTypes = TypeUtil.resolveGenericType(Collection.class, resolvedType);
+			if (collectionResolvedTypes == null) {
+				return null;
+			} else {
+				ResolvedType collectionResolvedType = collectionResolvedTypes.get(0);
+				if (!TypeUtil.isComplexType(collectionResolvedType)) {
+					return null;
+				} else {
+					return collectionResolvedType.getErasedType();
+				}
+			}
+		}
 	}
 
 	private static void warn(ParameterContext context, Class<?> parameterClass) {

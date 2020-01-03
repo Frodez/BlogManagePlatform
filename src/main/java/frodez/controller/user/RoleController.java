@@ -1,13 +1,12 @@
 package frodez.controller.user;
 
+import frodez.config.aop.request.annotation.RepeatLock;
 import frodez.config.swagger.annotation.Success;
 import frodez.config.swagger.annotation.Success.Container;
-import frodez.dao.model.user.Role;
-import frodez.dao.param.user.AddRole;
+import frodez.dao.model.table.user.Role;
+import frodez.dao.param.user.CreateRole;
 import frodez.dao.param.user.UpdateRole;
-import frodez.dao.param.user.UpdateRolePermission;
-import frodez.dao.result.user.RoleDetail;
-import frodez.service.user.facade.IAuthorityService;
+import frodez.service.user.facade.IRoleService;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import io.swagger.annotations.ApiParam;
@@ -20,52 +19,37 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 用户角色信息控制器
+ * 角色控制器
  * @author Frodez
- * @date 2018-12-01
+ * @date 2020-01-01
  */
+@RepeatLock
 @RestController
-@RequestMapping(value = "/role", name = "用户角色信息控制器")
+@RequestMapping(value = "/role", name = "角色控制器")
 public class RoleController {
 
 	@Autowired
-	private IAuthorityService authorityService;
-
-	@GetMapping(name = "查询角色信息接口")
-	@Success(RoleDetail.class)
-	public Result getRole(@ApiParam("角色ID") Long id) {
-		return authorityService.getRole(id);
-	}
+	private IRoleService roleService;
 
 	@GetMapping(value = "/page", name = "分页查询角色信息接口")
 	@Success(value = Role.class, containerType = Container.PAGE)
-	public Result getRoles(@RequestBody QueryPage param) {
-		return authorityService.getRoles(param);
+	public Result getRoles(@RequestBody QueryPage query) {
+		return roleService.getRoles(query);
 	}
 
-	@PostMapping(value = "/updatePermission", name = "修改角色权限接口")
-	public Result updateRolePermission(@RequestBody UpdateRolePermission param) {
-		return authorityService.updateRolePermission(param);
+	@PostMapping(value = "/add", name = "创建新角色接口")
+	public Result addRole(@RequestBody CreateRole param) {
+		return roleService.createRole(param);
 	}
 
-	@PostMapping(value = "/frontend/updatePermission", name = "修改角色页面资源权限接口")
-	public Result updateRolePagePermission(@RequestBody UpdateRolePermission param) {
-		return authorityService.updateRolePagePermission(param);
-	}
-
-	@DeleteMapping(name = "删除角色接口")
-	public Result removeRole(@ApiParam("角色ID") Long id) {
-		return authorityService.removeRole(id);
-	}
-
-	@PostMapping(value = "/add", name = "添加新角色接口")
-	public Result addRole(@RequestBody AddRole param) {
-		return authorityService.addRole(param);
-	}
-
-	@PostMapping(value = "/update", name = "修改角色接口")
+	@PostMapping(value = "/update", name = "更新角色接口")
 	public Result updateRole(@RequestBody UpdateRole param) {
-		return authorityService.updateRole(param);
+		return roleService.updateRole(param);
+	}
+
+	@DeleteMapping(value = "/delete", name = "删除角色接口")
+	public Result deleteRole(@ApiParam("角色ID") Long roleId) {
+		return roleService.deleteRole(roleId);
 	}
 
 }

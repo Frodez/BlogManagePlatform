@@ -1,8 +1,7 @@
 package frodez.mybatis;
 
-import frodez.dao.mapper.user.RolePermissionMapper;
 import frodez.dao.mapper.user.UserMapper;
-import frodez.dao.model.user.User;
+import frodez.dao.model.table.user.User;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,9 +17,6 @@ public class MapperTest {
 	@Autowired
 	private UserMapper userMapper;
 
-	@Autowired
-	private RolePermissionMapper rolePermissionMapper;
-
 	@Test
 	public void test() {
 		userMapper.partialNoCondition("name").forEach(System.out::println);
@@ -33,7 +29,6 @@ public class MapperTest {
 		Example example = new Example(User.class);
 		example.createCriteria().andIn("id", List.of(1L, 2L));
 		userMapper.partialByExample("name", example).forEach(System.out::println);
-		rolePermissionMapper.partialEqual("role_id", "permission_id", List.of(1L, 2L)).forEach(System.out::println);
 	}
 
 }

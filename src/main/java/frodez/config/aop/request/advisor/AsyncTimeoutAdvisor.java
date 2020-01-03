@@ -1,10 +1,11 @@
 package frodez.config.aop.request.advisor;
 
+import frodez.config.aop.request.annotation.RepeatLock;
 import frodez.config.aop.request.annotation.TimeoutLock;
+import frodez.config.aop.request.annotation.TimeoutLock.TimeoutLockHelper;
 import frodez.config.aop.request.checker.facade.AutoChecker;
 import frodez.config.aop.request.checker.impl.KeyGenerator;
 import frodez.config.aop.util.AOPUtil;
-import frodez.constant.errors.exception.CodeCheckException;
 import frodez.util.beans.result.Result;
 import frodez.util.http.ServletUtil;
 import frodez.util.reflect.ReflectUtil;
@@ -124,14 +125,19 @@ public class AsyncTimeoutAdvisor implements PointcutAdvisor {
 					 */
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
+						if (!AOPUtil.isController(targetClass)) {
+							return false;
+						}
 						//这里可以进行运行前检查
-						TimeoutLock annotation = AnnotationUtils.findAnnotation(method, TimeoutLock.class);
+						TimeoutLock annotation = TimeoutLockHelper.get(method, targetClass);
 						if (annotation == null) {
 							return false;
 						}
-						if (annotation.value() <= 0) {
-							throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method), "的过期时间必须大于0!");
+						//如果在类上发现了RepeatLock,则让给RepeatLock
+						if (AnnotationUtils.findAnnotation(method, RepeatLock.class) != null) {
+							return false;
 						}
+						TimeoutLockHelper.check(method, annotation);
 						if (!AOPUtil.isAsyncResultAsReturn(method)) {
 							return false;
 						}

@@ -3,6 +3,7 @@ package frodez.config.security.filter;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import frodez.config.security.util.Matcher;
 import frodez.config.security.util.TokenUtil;
+import frodez.service.cache.facade.user.IdTokenCache;
 import frodez.util.beans.result.Result;
 import frodez.util.http.ServletUtil;
 import java.io.IOException;
@@ -10,6 +11,8 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,28 +28,35 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class TokenFilter extends OncePerRequestFilter {
 
+	@Autowired
+	@Qualifier("idTokenRedisCache")
+	private IdTokenCache idTokenCache;
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException,
 		IOException {
 		if (Matcher.needVerify(request)) {
-			String authToken = TokenUtil.getRealToken(request);
-			if (authToken != null) {
-				// 将携带的token还原成用户信息
-				UserDetails user = null;
-				try {
-					user = TokenUtil.verify(authToken);
-				} catch (TokenExpiredException e) {
-					//如果token超时失效,这里不删除token,而是告诉客户端token失效,让客户端重新登陆.
-					ServletUtil.writeJson(response, Result.expired());
+			String token = TokenUtil.getRealToken(request);
+			UserDetails user;
+			try {
+				user = TokenUtil.verify(token);
+			} catch (TokenExpiredException e) {
+				//如果token超时失效,这里不删除token,而是直接返回,并告诉客户端token失效,让客户端重新登陆.
+				ServletUtil.writeJson(response, Result.expired());
+				return;
+			}
+			if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+				if (!idTokenCache.exist(token)) {
+					//如果缓存中不存在用户,则说明被下线
+					ServletUtil.writeJson(response, Result.notLogin("该用户已被下线,请重新登录"));
 					return;
 				}
-				if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-					//这里要设置权限,和frodez.config.security.user.UserDetailsServiceImpl.loadUserByUsername(String username)
-					//和frodez.config.security.auth.AuthorityManager.decide(Authentication auth, Object object, Collection<ConfigAttribute> permissions)对应
-					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-					authentication.setDetails(new WebAuthenticationDetails(request));
-					SecurityContextHolder.getContext().setAuthentication(authentication);
-				}
+				//如果成功取出信息且上下文中无验证信息,则设置验证信息
+				//这里要设置权限,和frodez.config.security.user.UserDetailsServiceImpl.loadUserByUsername(String username)
+				//和frodez.config.security.auth.AuthorityManager.decide(Authentication auth, Object object, Collection<ConfigAttribute> permissions)对应
+				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+				authentication.setDetails(new WebAuthenticationDetails(request));
+				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
 		}
 		chain.doFilter(request, response);

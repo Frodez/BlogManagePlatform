@@ -1,17 +1,10 @@
 package frodez.validation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.aop.validation.annotation.special.DateTime;
 import frodez.config.code.checker.CodeChecker;
 import frodez.config.validator.ValidationUtil;
 import frodez.constant.enums.common.OperateType;
-import frodez.dao.param.user.AddPermission;
-import frodez.dao.param.user.QueryRolePermission;
-import frodez.service.user.facade.IAuthorityService;
-import frodez.util.beans.param.QueryPage;
-import frodez.util.beans.result.Result;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import javax.validation.Valid;
@@ -28,9 +21,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ValidationTest {
-
-	@Autowired
-	private IAuthorityService authorityService;
 
 	@Autowired
 	CodeChecker codeChecker;
@@ -63,25 +53,6 @@ public class ValidationTest {
 		bean.setBeans(Arrays.asList(Arrays.asList(innerBean1, innerBean), Arrays.asList(innerBean, innerBean2)));
 		//System.out.println(ValidationUtil.validate(innerBean));
 		System.out.println(ValidationUtil.validate(bean));
-	}
-
-	//@Test
-	public void test2() throws JsonProcessingException, InvocationTargetException {
-		QueryRolePermission param = new QueryRolePermission();
-		param.setRoleId(1L);
-		QueryPage page = new QueryPage(1, 3000);
-		param.setPage(page);
-		Result result = authorityService.getRolePermissions(param);
-		System.out.println(result.json());
-		result = authorityService.getUserInfo("");
-		System.out.println(result.json());
-		AddPermission addPermission = new AddPermission();
-		addPermission.setName("2222");
-		addPermission.setUrl(null);
-		addPermission.setDescription(null);
-		addPermission.setType((byte) -1);
-		result = authorityService.addPermission(addPermission);
-		System.out.println(result.json());
 	}
 
 	@Data

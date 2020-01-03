@@ -1,5 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="frodez.dao.mapper.user.RoleMapper">
-
+    
+    <select id="getByUserId" resultType="frodez.dao.model.table.user.Role">
+    SELECT
+		tb_role.id AS id,
+		tb_role.create_time AS createTime,
+		tb_role.`name` AS `name`,
+		tb_role.`level` AS `level`,
+		tb_role.description AS description 
+	FROM
+		tb_role
+		INNER JOIN tb_user ON tb_role.id = tb_user.role_id 
+	WHERE
+		tb_user.id = #{userId}
+    </select>
+    
+    <select id="getByUserName" resultType="frodez.dao.model.table.user.Role">
+    SELECT
+		tb_role.id AS id,
+		tb_role.create_time AS createTime,
+		tb_role.`name` AS `name`,
+		tb_role.`level` AS `level`,
+		tb_role.description AS description 
+	FROM
+		tb_role
+		INNER JOIN tb_user ON tb_role.id = tb_user.role_id 
+	WHERE
+		tb_user.`name` = #{userName}
+    </select>
+    
+    <select id="batchGetByUserId" resultType="java.util.HashMap">
+    SELECT
+    	tb_user.id AS 'key.id',
+		tb_role.id AS 'value.id',
+		tb_role.create_time AS 'value.createTime',
+		tb_role.`name` AS `value.name`,
+		tb_role.`level` AS `value.level`,
+		tb_role.description AS 'value.description' 
+	FROM
+		tb_role
+		INNER JOIN tb_user ON tb_role.id = tb_user.role_id 
+	WHERE
+		tb_user.id IN
+	<foreach collection="userIds" item="item" index="index" open="(" close=")" separator=",">
+		#{item}
+	</foreach>
+    </select>
+    
+    <select id="batchGetByUserName" resultType="java.util.HashMap">
+    SELECT
+    	tb_user.`name` AS 'key.name',
+		tb_role.id AS 'value.id',
+		tb_role.create_time AS 'value.createTime',
+		tb_role.`name` AS `value.name`,
+		tb_role.`level` AS `value.level`,
+		tb_role.description AS 'value.description' 
+	FROM
+		tb_role
+		INNER JOIN tb_user ON tb_role.id = tb_user.role_id 
+	WHERE
+		tb_user.`name` IN
+	<foreach collection="userNames" item="item" index="index" open="(" close=")" separator=",">
+		#{item}
+	</foreach>
+    </select>
+    
 </mapper>

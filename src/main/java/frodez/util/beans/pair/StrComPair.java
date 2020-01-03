@@ -16,4 +16,8 @@ public class StrComPair extends ComPair<String, String> {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	public StrComPair(String key, String value) {
+		super(key, value);
+	}
+
 }

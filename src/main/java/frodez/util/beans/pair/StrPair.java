@@ -15,4 +15,8 @@ public class StrPair extends Pair<String, String> {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	public StrPair(String key, String value) {
+		super(key, value);
+	}
+
 }

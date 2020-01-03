@@ -1,5 +1,6 @@
 package frodez.util.reflect;
 
+import frodez.util.common.PrimitiveUtil;
 import frodez.util.common.StrUtil;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -15,6 +16,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.cglib.reflect.FastClass;
@@ -27,12 +29,11 @@ import org.springframework.util.Assert;
  * @author Frodez
  * @date 2019-01-15
  */
+@Slf4j
 @UtilityClass
 public class BeanUtil {
 
 	private static final Map<String, BeanCopier> COPIER_CACHE = new ConcurrentHashMap<>();
-
-	private static final Map<Class<?>, List<Field>> FIELD_CACHE = new ConcurrentHashMap<>();
 
 	private static final Map<Class<?>, List<FastMethod>> SETTER_CACHE = new ConcurrentHashMap<>();
 
@@ -141,10 +142,56 @@ public class BeanUtil {
 	 * @date 2019-02-08
 	 */
 	@SneakyThrows
+	public static <T> T as(Map<String, Object> map, Supplier<T> supplier) {
+		Assert.notNull(map, "map must not be null");
+		T bean = supplier.get();
+		try {
+			BeanMap.create(bean).putAll(map);
+		} catch (Exception e) {
+			log.error("map转bean出现异常,采用安全方式继续...异常消息:{}", e.getMessage());
+			//如果出错则采用安全但较慢的方式
+			safeAs(map, bean);
+		}
+		return bean;
+	}
+
+	/**
+	 * map转bean
+	 * @author Frodez
+	 * @throws InvocationTargetException
+	 * @date 2019-02-08
+	 */
+	@SneakyThrows
 	public static <T> T as(Map<String, Object> map, Class<T> klass) {
 		Assert.notNull(map, "map must not be null");
 		T bean = ReflectUtil.instance(klass);
-		BeanMap.create(bean).putAll(map);
+		try {
+			BeanMap.create(bean).putAll(map);
+		} catch (Exception e) {
+			log.error("map转bean出现异常,采用安全方式继续...异常消息:{}", e.getMessage());
+			//如果出错则采用安全但较慢的方式
+			safeAs(map, bean);
+		}
+		return bean;
+	}
+
+	@SuppressWarnings("unchecked")
+	@SneakyThrows
+	private static <T> T safeAs(Map<String, Object> map, T bean) {
+		List<FastMethod> methods = setters(bean.getClass());
+		for (FastMethod fastMethod : methods) {
+			String field = StrUtil.lowerFirst(fastMethod.getName().substring(3));
+			Object value = map.get(field);
+			if (value == null) {
+				continue;
+			}
+			if (PrimitiveUtil.isBaseType(value.getClass())) {
+				value = PrimitiveUtil.cast(value, fastMethod.getParameterTypes()[0]);
+				fastMethod.invoke(bean, new Object[] { value });
+			} else {
+				fastMethod.invoke(bean, new Object[] { value });
+			}
+		}
 		return bean;
 	}
 
@@ -184,26 +231,22 @@ public class BeanUtil {
 	 */
 	public static List<Field> getSetterFields(Class<?> klass) {
 		Assert.notNull(klass, "klass must not be null");
-		List<Field> fields = FIELD_CACHE.get(klass);
-		if (fields == null) {
-			fields = new ArrayList<>();
-			List<Method> setters = new ArrayList<>();
-			for (Method method : klass.getMethods()) {
-				if (isSetter(method)) {
-					setters.add(method);
-				}
+		List<Field> fields = new ArrayList<>();
+		List<Method> setters = new ArrayList<>();
+		for (Method method : klass.getMethods()) {
+			if (isSetter(method)) {
+				setters.add(method);
 			}
-			for (Field field : klass.getDeclaredFields()) {
-				if (Modifier.PRIVATE == field.getModifiers()) {
-					for (Method method : setters) {
-						if (method.getName().endsWith(StrUtil.upperFirst(field.getName()))) {
-							fields.add(field);
-							break;
-						}
+		}
+		for (Field field : klass.getDeclaredFields()) {
+			if (Modifier.PRIVATE == field.getModifiers()) {
+				for (Method method : setters) {
+					if (method.getName().endsWith(StrUtil.upperFirst(field.getName()))) {
+						fields.add(field);
+						break;
 					}
 				}
 			}
-			FIELD_CACHE.put(klass, fields);
 		}
 		return Collections.unmodifiableList(fields);
 	}

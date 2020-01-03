@@ -15,29 +15,29 @@ public class CacheKey {
 
 	public static class Checker {
 
-		public static final String AUTO = "Checker.key.auto";
+		public static final String AUTO = "Checker.auto";
 
-		public static final String MANUAL = "Checker.key.manual";
-
-	}
-
-	public static class NameCache {
-
-		public static final String KEY = "NameCache.key";
+		public static final String MANUAL = "Checker.manual";
 
 	}
 
-	public static class TokenCache {
+	public static class UserCache {
 
-		public static final String KEY = "TokenCache.key";
-
-		public static final String ID = "TokenCache.id";
+		public static final String ID = "UserCache.id";
 
 	}
 
-	public static class UserIdCache {
+	public static class IdTokenCache {
 
-		public static final String KEY = "UserIdCache.key";
+		public static final String ID_TOKEN = "IdTokenCache.id_token";
+
+		public static final String TOKEN_ID = "IdTokenCache.token_id";
+
+	}
+
+	public static class PermissionCache {
+
+		public static final String ROLE_ID = "PermissionCache.role_id";
 
 	}
 

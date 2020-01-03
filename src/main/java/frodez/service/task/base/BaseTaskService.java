@@ -8,9 +8,9 @@ import frodez.constant.enums.task.TaskStatus;
 import frodez.constant.errors.code.ErrorCode;
 import frodez.constant.settings.DefStr;
 import frodez.dao.mapper.task.TaskMapper;
-import frodez.dao.model.task.Task;
+import frodez.dao.model.result.task.AvailableTaskInfo;
+import frodez.dao.model.table.task.Task;
 import frodez.dao.param.task.AddTask;
-import frodez.dao.result.task.AvailableTaskInfo;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.Result;
 import frodez.util.common.StrUtil;
@@ -195,7 +195,7 @@ public class BaseTaskService {
 	 */
 	@Check
 	public Result getTasks(@Valid @NotNull QueryPage param) {
-		return Result.page(param.start(() -> taskMapper.selectAll()));
+		return param.start(() -> taskMapper.selectAll());
 	}
 
 	/**

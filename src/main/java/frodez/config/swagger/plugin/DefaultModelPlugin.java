@@ -1,5 +1,6 @@
 package frodez.config.swagger.plugin;
 
+import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import frodez.config.aop.validation.annotation.common.MapEnum;
 import frodez.config.aop.validation.annotation.common.MapEnum.MapEnumHelper;
@@ -11,11 +12,10 @@ import frodez.constant.settings.DefStr;
 import frodez.util.common.EmptyUtil;
 import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
+import frodez.util.reflect.TypeUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Optional;
@@ -114,9 +114,12 @@ public class DefaultModelPlugin implements ModelPropertyBuilderPlugin {
 	private void resolveDescription(ModelPropertyContext context, Field field) {
 		ModelPropertyBuilder builder = context.getBuilder();
 		String description = StrUtil.orEmpty((String) ReflectUtil.tryGet(ModelPropertyBuilder.class, "description", builder));
-		String resolve = recursiveResolveList(field.getGenericType());
+		String resolve = recursiveResolveList(TypeUtil.resolve(field.getGenericType()));
 		if (resolve != null) {
-			description = StrUtil.concat(description, resolve);
+			//如果还是有ApiModelProperty,就不在原描述后增加列表的描述
+			if (!field.isAnnotationPresent(ApiModelProperty.class)) {
+				description = StrUtil.concat(description, resolve);
+			}
 		}
 		resolve = resolveRange(field);
 		if (resolve != null) {
@@ -153,31 +156,25 @@ public class DefaultModelPlugin implements ModelPropertyBuilderPlugin {
 		builder.description(description);
 	}
 
-	private String recursiveResolveList(Type type) {
-		if (type instanceof ParameterizedType) {
-			ParameterizedType parameterizedType = (ParameterizedType) type;
-			if (Collection.class.isAssignableFrom((Class<?>) parameterizedType.getRawType())) {
-				Type innerType = parameterizedType.getActualTypeArguments()[0];
-				String result = recursiveResolveList(innerType);
-				if (result == null) {
-					return null;
-				} else {
-					return StrUtil.concat(result, "的列表");
-				}
-			} else {
-				return null;
-			}
-		}
-		if (type instanceof Class) {
-			Class<?> klass = (Class<?>) type;
-			ApiModel apiModel = klass.getAnnotation(ApiModel.class);
+	private String recursiveResolveList(ResolvedType resolvedType) {
+		if (TypeUtil.isSimpleType(resolvedType)) {
+			ApiModel apiModel = resolvedType.getErasedType().getAnnotation(ApiModel.class);
 			if (apiModel != null) {
 				return apiModel.description();
 			} else {
 				return "";
 			}
+		} else if (TypeUtil.belongToComplexType(Collection.class, resolvedType)) {
+			resolvedType = TypeUtil.resolveGenericType(Collection.class, resolvedType).get(0);
+			String result = recursiveResolveList(resolvedType);
+			if (result == null) {
+				return null;
+			} else {
+				return StrUtil.concat(result, "的列表");
+			}
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	private String resolveRange(Field field) {

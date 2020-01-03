@@ -2,8 +2,8 @@ package frodez.config.security.util;
 
 import frodez.config.security.settings.SecurityProperties;
 import frodez.constant.settings.PropertyKey;
-import frodez.dao.mapper.user.PermissionMapper;
-import frodez.dao.model.user.Permission;
+import frodez.dao.mapper.permission.EndpointMapper;
+import frodez.dao.model.table.permission.Endpoint;
 import frodez.util.common.StrUtil;
 import frodez.util.common.StreamUtil;
 import frodez.util.spring.ContextUtil;
@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.DependsOn;
@@ -95,19 +96,16 @@ public class Matcher {
 	private static void checkCorrectPermissions(SecurityProperties securityProperties) {
 		if (securityProperties.getAuth().getPermissionCheck()) {
 
-			List<Permission> incorrectPermissions = StreamUtil.filterList(ContextUtil.bean(PermissionMapper.class).selectAll(), (
-				iter) -> isPermitAllPath(StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), iter.getUrl())));
+			List<Endpoint> incorrectPermissions = StreamUtil.filterList(ContextUtil.bean(EndpointMapper.class).selectAll(), (iter) -> isPermitAllPath(
+				StrUtil.concat(PropertyUtil.get(PropertyKey.Web.BASE_PATH), iter.getPath())));
 			if (!incorrectPermissions.isEmpty()) {
-				StringBuilder builder = new StringBuilder();
-				for (int i = 0; i < incorrectPermissions.size() - 1; i++) {
-					Permission incorrect = incorrectPermissions.get(i);
-					builder.append("路径:").append(incorrect.getUrl()).append(", 名称:").append(incorrect.getName()).append(", 描述: ").append(incorrect
-						.getDescription()).append("\n");
-				}
-				Permission incorrect = incorrectPermissions.get(incorrectPermissions.size() - 1);
-				builder.append("路径:").append(incorrect.getUrl()).append(", 名称:").append(incorrect.getName()).append(", 描述: ").append(incorrect
-					.getDescription());
-				throw new RuntimeException("\n权限正确性检查发现存在错误权限!\n" + builder.toString());
+				String message = incorrectPermissions.stream().map((item) -> {
+					StringBuilder builder = new StringBuilder();
+					builder.append("路径:").append(item.getPath()).append(", 名称:").append(item.getName()).append(", 描述: ").append(item
+						.getDescription());
+					return builder.toString();
+				}).collect(Collectors.joining("\n"));
+				throw new RuntimeException("\n权限正确性检查发现存在错误权限!\n" + message);
 			}
 		}
 	}

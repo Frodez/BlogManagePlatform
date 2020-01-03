@@ -6,9 +6,9 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import frodez.config.security.settings.SecurityProperties;
+import frodez.dao.model.result.user.UserEndpointDetail;
 import frodez.util.spring.ContextUtil;
 import java.util.Date;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.DependsOn;
@@ -47,7 +47,7 @@ public class TokenUtil {
 	private static String issuer;
 
 	/**
-	 * 是否过期
+	 * 是否过期，true为会过期
 	 */
 	private static boolean expired = false;
 
@@ -59,7 +59,7 @@ public class TokenUtil {
 	/**
 	 * 声明
 	 */
-	private static String claim;
+	private static String authorityClaim;
 
 	/**
 	 * HttpHeader名称
@@ -83,7 +83,7 @@ public class TokenUtil {
 		issuer = properties.getJwt().getIssuer();
 		expiration = properties.getJwt().getExpiration() * 1000;
 		expired = expiration > 0;
-		claim = properties.getJwt().getAuthorityClaim();
+		authorityClaim = properties.getJwt().getAuthorityClaim();
 		header = properties.getJwt().getHeader();
 		tokenPrefix = properties.getJwt().getTokenPrefix();
 		tokenPrefixLength = tokenPrefix.length();
@@ -92,7 +92,7 @@ public class TokenUtil {
 		Assert.notNull(algorithm, "algorithm must not be null");
 		Assert.notNull(issuer, "issuer must not be null");
 		Assert.notNull(expiration, "expiration must not be null");
-		Assert.notNull(claim, "claim must not be null");
+		Assert.notNull(authorityClaim, "authorityClaim must not be null");
 		Assert.notNull(header, "header must not be null");
 		Assert.notNull(tokenPrefix, "tokenPrefix must not be null");
 		Assert.notNull(verifier, "verifier must not be null");
@@ -100,39 +100,31 @@ public class TokenUtil {
 	}
 
 	/**
-	 * 生成token
+	 * 基本builder
 	 * @author Frodez
-	 * @param UserDetails 用户信息
-	 * @date 2018-11-21
+	 * @date 2019-12-29
 	 */
-	public static String generate(UserDetails user) {
+	private static Builder baseBuilder() {
 		long now = System.currentTimeMillis();
 		Builder builder = JWT.create();
 		builder.withIssuer(issuer);
 		builder.withIssuedAt(new Date(now));
-		builder.withSubject(user.getUsername());
-		builder.withArrayClaim(claim, AuthorityUtil.get(user));
 		if (expired) {
 			builder.withExpiresAt(new Date(now + expiration));
 		}
-		return builder.sign(algorithm);
+		return builder;
 	}
 
 	/**
 	 * 生成token
 	 * @author Frodez
+	 * @param UserEndpointDetail 用户信息
 	 * @date 2018-11-21
 	 */
-	public static String generate(String username, List<String> authorities) {
-		long now = System.currentTimeMillis();
-		Builder builder = JWT.create();
-		builder.withIssuer(issuer);
-		builder.withIssuedAt(new Date(now));
-		builder.withSubject(username);
-		builder.withArrayClaim(claim, authorities.toArray(String[]::new));
-		if (expired) {
-			builder.withExpiresAt(new Date(now + expiration));
-		}
+	public static String generate(UserEndpointDetail user) {
+		Builder builder = baseBuilder();
+		builder.withSubject(user.getUser().getName());
+		builder.withArrayClaim(authorityClaim, AuthorityUtil.get(user.getEndpoints()));
 		return builder.sign(algorithm);
 	}
 
@@ -143,14 +135,9 @@ public class TokenUtil {
 	 * @date 2018-11-21
 	 */
 	public static UserDetails verify(String token) {
-		DecodedJWT jwt = null;
-		if (expired) {
-			//前面已经将exp置为合适的过期时间了,这里只需要判断其是否超过当前时间即可.
-			jwt = expiredVerifier.verify(token);
-		} else {
-			jwt = verifier.verify(token);
-		}
-		return new User(jwt.getSubject(), "N/A", AuthorityUtil.make(jwt.getClaim(claim).asArray(String.class)));
+		//前面已经将exp置为合适的过期时间了,这里只需要判断其是否超过当前时间即可.
+		DecodedJWT jwt = expired ? expiredVerifier.verify(token) : verifier.verify(token);
+		return new User(jwt.getSubject(), "N/A", AuthorityUtil.make(jwt.getClaim(authorityClaim).asArray(String.class)));
 	}
 
 	/**
@@ -160,7 +147,7 @@ public class TokenUtil {
 	 */
 	public static UserDetails verifyWithNoExpired(String token) {
 		DecodedJWT jwt = verifier.verify(token);
-		return new User(jwt.getSubject(), "N/A", AuthorityUtil.make(jwt.getClaim(claim).asArray(String.class)));
+		return new User(jwt.getSubject(), "N/A", AuthorityUtil.make(jwt.getClaim(authorityClaim).asArray(String.class)));
 	}
 
 	/**

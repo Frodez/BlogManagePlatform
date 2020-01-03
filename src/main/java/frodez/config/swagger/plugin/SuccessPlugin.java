@@ -127,10 +127,10 @@ public class SuccessPlugin implements OperationBuilderPlugin, OperationModelsPro
 
 		private static final long serialVersionUID = 1L;
 
-		@ApiModelProperty(value = "状态", example = "1000")
+		@ApiModelProperty(value = "状态", example = "1000", required = true)
 		private int code;
 
-		@ApiModelProperty(value = "消息", example = "成功")
+		@ApiModelProperty(value = "消息", example = "成功", required = true)
 		private String message;
 
 		@ApiModelProperty(value = "数据")

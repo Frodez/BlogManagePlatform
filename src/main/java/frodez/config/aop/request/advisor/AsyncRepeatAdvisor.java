@@ -1,6 +1,8 @@
 package frodez.config.aop.request.advisor;
 
 import frodez.config.aop.request.annotation.RepeatLock;
+import frodez.config.aop.request.annotation.RepeatLock.RepeatLockHelper;
+import frodez.config.aop.request.annotation.TimeoutLock;
 import frodez.config.aop.request.checker.facade.ManualChecker;
 import frodez.config.aop.request.checker.impl.KeyGenerator;
 import frodez.config.aop.util.AOPUtil;
@@ -120,7 +122,15 @@ public class AsyncRepeatAdvisor implements PointcutAdvisor {
 					 */
 					@Override
 					public boolean matches(Method method, Class<?> targetClass) {
-						if (AnnotationUtils.findAnnotation(method, RepeatLock.class) == null) {
+						if (!AOPUtil.isController(targetClass)) {
+							return false;
+						}
+						RepeatLock annotation = RepeatLockHelper.get(method, targetClass);
+						if (annotation == null) {
+							return false;
+						}
+						//如果在类上发现了TimeoutLock,则让给TimeoutLock
+						if (AnnotationUtils.findAnnotation(method, TimeoutLock.class) != null) {
 							return false;
 						}
 						if (!AOPUtil.isAsyncResultAsReturn(method)) {

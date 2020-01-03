@@ -8,6 +8,7 @@ import frodez.constant.settings.PropertyKey;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.PageData;
 import frodez.util.beans.result.Result;
+import frodez.util.reflect.ReflectUtil;
 import frodez.util.spring.PropertyUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,6 +35,7 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.service.ResponseMessage;
 import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.schema.GenericTypeNamingStrategy;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spi.service.contexts.SecurityContextBuilder;
 import springfox.documentation.spring.web.plugins.ApiSelectorBuilder;
@@ -68,12 +70,13 @@ public class SwaggerConfig {
 	 * @date 2019-01-06
 	 */
 	@Bean
-	public Docket petApi() {
+	public Docket enable() {
 		Docket docket = baseConfig();
 		infoConfig(docket);
 		typeConfig(docket);
 		secretConfig(docket);
 		modelConfig(docket);
+		genericTypeNamingStrategyConfig(docket);
 		return docket;
 	}
 
@@ -147,6 +150,37 @@ public class SwaggerConfig {
 		docket.globalResponseMessage(RequestMethod.POST, responseMessageList);
 		docket.globalResponseMessage(RequestMethod.PUT, responseMessageList);
 		docket.globalResponseMessage(RequestMethod.DELETE, responseMessageList);
+	}
+
+	/**
+	 * 命名逻辑配置
+	 * @author Frodez
+	 * @date 2020-01-03
+	 */
+	private void genericTypeNamingStrategyConfig(Docket docket) {
+		ReflectUtil.trySet(Docket.class, "genericsNamingStrategy", docket, new GenericTypeNamingStrategy() {
+
+			private static final String OPEN = "<";
+
+			private static final String CLOSE = ">";
+
+			private static final String DELIM = ",";
+
+			@Override
+			public String getOpenGeneric() {
+				return OPEN;
+			}
+
+			@Override
+			public String getCloseGeneric() {
+				return CLOSE;
+			}
+
+			@Override
+			public String getTypeListDelimiter() {
+				return DELIM;
+			}
+		});
 	}
 
 	/**

@@ -6,6 +6,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import frodez.constant.settings.DefDesc;
 import frodez.constant.settings.DefPage;
+import frodez.util.beans.result.Result;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -33,6 +34,8 @@ import org.apache.ibatis.session.RowBounds;
 public class QueryPage implements IPage, Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	private static final RowBounds NO_PAGE = new RowBounds(0, 0);
 
 	/**
 	 * 使用默认值
@@ -72,7 +75,7 @@ public class QueryPage implements IPage, Serializable {
 	@Getter
 	@NotNull
 	@Min(0)
-	@ApiModelProperty(value = "页码数")
+	@ApiModelProperty(value = "页码数,为0时查询全部")
 	private Integer pageNum;
 
 	/**
@@ -103,6 +106,9 @@ public class QueryPage implements IPage, Serializable {
 	 * @date 2019-06-17
 	 */
 	public RowBounds toRowBounds() {
+		if (pageNum == 0) {
+			return NO_PAGE;
+		}
 		return new RowBounds((pageNum - 1) * pageSize, pageSize);
 	}
 
@@ -114,9 +120,22 @@ public class QueryPage implements IPage, Serializable {
 	 * @param <E>
 	 * @date 2019-12-09
 	 */
-	public <E> Page<E> start(Supplier<List<E>> supplier) {
+	public <E> Page<E> page(Supplier<List<E>> supplier) {
 		PageHelper.startPage(this);
 		return (Page<E>) supplier.get();
+	}
+
+	/**
+	 * 开始分页查询<br>
+	 * <strong>请严格遵循PageHelper插件的使用方式!</strong>
+	 * @see <url>https://github.com/pagehelper/Mybatis-PageHelper/blob/master/wikis/zh/HowToUse.md</url>
+	 * @author Frodez
+	 * @param <E>
+	 * @date 2019-12-09
+	 */
+	public <E> Result start(Supplier<List<E>> supplier) {
+		PageHelper.startPage(this);
+		return Result.page((Page<E>) supplier.get());
 	}
 
 }

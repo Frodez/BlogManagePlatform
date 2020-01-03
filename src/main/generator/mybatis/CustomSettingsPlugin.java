@@ -1,6 +1,6 @@
 package mybatis;
 
-import frodez.config.mybatis.DataMapper;
+import frodez.config.mybatis.mapper.DataMapper;
 import java.time.LocalDate;
 import java.util.List;
 import org.mybatis.generator.api.IntrospectedColumn;

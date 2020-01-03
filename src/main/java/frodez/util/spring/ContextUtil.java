@@ -6,6 +6,7 @@ import frodez.util.common.StreamUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import lombok.SneakyThrows;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.SpringApplication;
@@ -121,6 +122,52 @@ public class ContextUtil implements ApplicationContextAware {
 		MetadataReaderFactory readerFactory = bean(MetadataReaderFactory.class);
 		for (Resource resource : resources) {
 			classes.add(ClassUtils.forName(readerFactory.getMetadataReader(resource).getClassMetadata().getClassName(), null));
+		}
+		return classes;
+	}
+
+	/**
+	 * 根据ant风格模式字符串匹配路径,并获取路径下所有指定父类的类
+	 * @author Frodez
+	 * @param <T>
+	 * @throws LinkageError
+	 * @throws ClassNotFoundException
+	 * @date 2019-05-23
+	 */
+	@SuppressWarnings("unchecked")
+	@SneakyThrows
+	public static <T> List<Class<? extends T>> classes(String pattern, Class<T> parent) {
+		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+		List<Resource> resources = StreamUtil.filterList(resolver.getResources(getPackagePath(pattern)), Resource::isReadable);
+		List<Class<? extends T>> classes = new ArrayList<>();
+		MetadataReaderFactory readerFactory = bean(MetadataReaderFactory.class);
+		for (Resource resource : resources) {
+			Class<?> klass = ClassUtils.forName(readerFactory.getMetadataReader(resource).getClassMetadata().getClassName(), null);
+			if (parent.isAssignableFrom(klass)) {
+				classes.add((Class<? extends T>) klass);
+			}
+		}
+		return classes;
+	}
+
+	/**
+	 * 根据ant风格模式字符串匹配路径,并获取路径下所有满足要求的类
+	 * @author Frodez
+	 * @throws LinkageError
+	 * @throws ClassNotFoundException
+	 * @date 2019-05-23
+	 */
+	@SneakyThrows
+	public static List<Class<?>> classes(String pattern, Predicate<Class<?>> predicate) {
+		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+		List<Resource> resources = StreamUtil.filterList(resolver.getResources(getPackagePath(pattern)), Resource::isReadable);
+		List<Class<?>> classes = new ArrayList<>();
+		MetadataReaderFactory readerFactory = bean(MetadataReaderFactory.class);
+		for (Resource resource : resources) {
+			Class<?> klass = ClassUtils.forName(readerFactory.getMetadataReader(resource).getClassMetadata().getClassName(), null);
+			if (predicate.test(klass)) {
+				classes.add(klass);
+			}
 		}
 		return classes;
 	}
