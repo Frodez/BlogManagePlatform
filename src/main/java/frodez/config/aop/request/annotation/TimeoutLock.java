@@ -53,7 +53,7 @@ public @interface TimeoutLock {
 
 		public static void check(Method method, TimeoutLock annotation) {
 			if (annotation.value() <= 0) {
-				throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method), "的过期时间必须大于0!");
+				throw new CodeCheckException("方法", ReflectUtil.fullName(method), "的过期时间必须大于0!");
 			}
 		}
 

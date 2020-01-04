@@ -4,7 +4,7 @@ import com.fasterxml.classmate.TypeResolver;
 import frodez.config.security.settings.SecurityProperties;
 import frodez.config.swagger.plugin.SuccessPlugin.SwaggerModel;
 import frodez.config.swagger.util.SwaggerUtil;
-import frodez.constant.settings.PropertyKey;
+import frodez.constant.keys.spring.PropertyKey;
 import frodez.util.beans.param.QueryPage;
 import frodez.util.beans.result.PageData;
 import frodez.util.beans.result.Result;
@@ -158,7 +158,7 @@ public class SwaggerConfig {
 	 * @date 2020-01-03
 	 */
 	private void genericTypeNamingStrategyConfig(Docket docket) {
-		ReflectUtil.trySet(Docket.class, "genericsNamingStrategy", docket, new GenericTypeNamingStrategy() {
+		ReflectUtil.set(Docket.class, "genericsNamingStrategy", docket, new GenericTypeNamingStrategy() {
 
 			private static final String OPEN = "<";
 

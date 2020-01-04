@@ -62,7 +62,7 @@ public class RepeatAdvisor implements PointcutAdvisor {
 		 */
 		return (MethodInterceptor) invocation -> {
 			HttpServletRequest request = MVCUtil.request();
-			String key = KeyGenerator.servletKey(ReflectUtil.getFullMethodName(invocation.getMethod()), request);
+			String key = KeyGenerator.servletKey(ReflectUtil.fullName(invocation.getMethod()), request);
 			try {
 				if (checker.check(key)) {
 					log.info("重复请求:IP地址{}", ServletUtil.getAddr(request));

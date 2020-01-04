@@ -1,7 +1,7 @@
 package frodez.config.security.util;
 
 import frodez.config.security.settings.SecurityProperties;
-import frodez.constant.settings.PropertyKey;
+import frodez.constant.keys.spring.PropertyKey;
 import frodez.dao.mapper.permission.EndpointMapper;
 import frodez.dao.model.table.permission.Endpoint;
 import frodez.util.common.StrUtil;

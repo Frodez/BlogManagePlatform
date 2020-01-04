@@ -39,6 +39,7 @@ import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
+import org.springframework.util.ResourceUtils;
 
 @UtilityClass
 public class JDTUtil {
@@ -62,7 +63,7 @@ public class JDTUtil {
 	public static void commit(String path, Document document, CompilationUnit unit) throws MalformedTreeException, BadLocationException, IOException,
 		URISyntaxException {
 		unit.rewrite(document, defaultOptions()).apply(document);
-		FileUtil.writeString(document.get(), path);
+		FileUtil.writeString(document.get(), ResourceUtils.getFile(path));
 	}
 
 	public static List<String> pureJavaDoc(Javadoc javadoc) {

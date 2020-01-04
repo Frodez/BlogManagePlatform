@@ -95,7 +95,7 @@ public @interface MapEnum {
 
 		@SneakyThrows
 		public static String getDescs(Class<?> klass, String descMethod) {
-			FastMethod method = ReflectUtil.getFastMethod(klass, descMethod);
+			FastMethod method = ReflectUtil.fastMethod(klass, descMethod);
 			Object descs = method.invoke(null, ReflectUtil.EMPTY_ARRAY);
 			String result = String.join(" ", getName(klass), descs.toString());
 			return result;
@@ -108,7 +108,7 @@ public @interface MapEnum {
 
 		@SneakyThrows
 		public static AllowableListValues getAllowableValues(Class<?> klass) {
-			FastMethod method = ReflectUtil.getFastMethod(klass, DefEnum.VALS_METHOD_NAME);
+			FastMethod method = ReflectUtil.fastMethod(klass, DefEnum.VALS_METHOD_NAME);
 			List<?> object = (List<?>) method.invoke(null, ReflectUtil.EMPTY_ARRAY);
 			String type = object.get(0).getClass().getSimpleName();
 			return new AllowableListValues(StreamUtil.list(object, (item) -> item.toString()), type);
@@ -116,7 +116,7 @@ public @interface MapEnum {
 
 		@SneakyThrows
 		public static Object getDefaultValue(Class<?> klass) {
-			FastMethod method = ReflectUtil.getFastMethod(klass, DefEnum.DEFAULT_VALUE_METHOD_NAME);
+			FastMethod method = ReflectUtil.fastMethod(klass, DefEnum.DEFAULT_VALUE_METHOD_NAME);
 			return method.invoke(null, ReflectUtil.EMPTY_ARRAY);
 		}
 
@@ -175,10 +175,10 @@ public @interface MapEnum {
 				return true;
 			}
 			Object[] params = new Object[] { PrimitiveUtil.cast(value, paramType) };
-			if (ReflectUtil.getFastMethod(klass, method, paramType).invoke(null, params) != null) {
+			if (ReflectUtil.fastMethod(klass, method, paramType).invoke(null, params) != null) {
 				return true;
 			} else {
-				Object valids = ReflectUtil.getFastMethod(klass, descMethod).invoke(null, ReflectUtil.EMPTY_ARRAY);
+				Object valids = ReflectUtil.fastMethod(klass, descMethod).invoke(null, ReflectUtil.EMPTY_ARRAY);
 				String message = StrUtil.concat(value.toString(), "不符合要求,有效值为", valids.toString());
 				ValidationUtil.changeMessage(context, message);
 				return false;

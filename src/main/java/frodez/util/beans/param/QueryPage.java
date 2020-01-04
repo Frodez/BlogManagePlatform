@@ -35,6 +35,17 @@ public class QueryPage implements IPage, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 默认RowBounds
+	 */
+	public static final RowBounds ROW_BOUNDS = new RowBounds(DefPage.NUM, DefPage.SIZE);
+
+	/**
+	 * 默认QueryPage<br>
+	 * 等同于 new QueryPage();<br>
+	 */
+	public static final QueryPage QUERY_PAGE = new QueryPage(DefPage.NUM, DefPage.SIZE);
+
 	private static final RowBounds NO_PAGE = new RowBounds(0, 0);
 
 	/**

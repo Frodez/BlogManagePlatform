@@ -3,7 +3,7 @@ package frodez.config.swagger.plugin;
 import frodez.config.security.settings.SecurityProperties;
 import frodez.config.security.util.Matcher;
 import frodez.config.swagger.SwaggerProperties;
-import frodez.constant.settings.PropertyKey;
+import frodez.constant.keys.spring.PropertyKey;
 import frodez.util.common.StrUtil;
 import frodez.util.spring.PropertyUtil;
 import java.util.Arrays;

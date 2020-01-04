@@ -42,7 +42,7 @@ public class AsyncResultLogAdvisor implements PointcutAdvisor {
 		 * @author Frodez
 		 * @date 2019-01-12
 		 */
-		return (AfterReturningAdvice) (returnValue, method, args, target) -> log.info("{} 返回值:{}", ReflectUtil.getFullMethodName(method), JSONUtil
+		return (AfterReturningAdvice) (returnValue, method, args, target) -> log.info("{} 返回值:{}", ReflectUtil.fullName(method), JSONUtil
 			.string(((ListenableFuture<Result>) returnValue).get()));
 	}
 
@@ -100,7 +100,7 @@ public class AsyncResultLogAdvisor implements PointcutAdvisor {
 							return false;
 						}
 						if (returnType == Void.class) {
-							throw new CodeCheckException("不能对void返回类型的方法", ReflectUtil.getFullMethodName(method), "使用@", ResultLog.class
+							throw new CodeCheckException("不能对void返回类型的方法", ReflectUtil.fullName(method), "使用@", ResultLog.class
 								.getCanonicalName(), "注解!");
 						}
 						return true;

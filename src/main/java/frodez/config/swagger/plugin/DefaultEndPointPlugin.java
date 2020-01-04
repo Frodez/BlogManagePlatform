@@ -67,8 +67,8 @@ public class DefaultEndPointPlugin implements OperationBuilderPlugin {
 		OperationBuilder builder = context.operationBuilder();
 		builder.summary(descriptions.resolve(info.name));
 		builder.tags(Set.of(info.controllerName));
-		ReflectUtil.trySet(OperationBuilder.class, "consumes", builder, Set.of(info.consumes));
-		ReflectUtil.trySet(OperationBuilder.class, "produces", builder, Set.of(info.produces));
+		ReflectUtil.set(OperationBuilder.class, "consumes", builder, Set.of(info.consumes));
+		ReflectUtil.set(OperationBuilder.class, "produces", builder, Set.of(info.produces));
 	}
 
 	private EndPointInfo resolveNameAttribute(OperationContext context) {

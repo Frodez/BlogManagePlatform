@@ -146,6 +146,7 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 		Class<?> parameterClass = resolveParamType(resolvedType);
 		if (parameterClass == null) {
 			log.warn(StrUtil.concat(resolvedType.getBriefDescription(), "的类型无法被DefaultParamPlugin解析"));
+			@SuppressWarnings("unused") int a = 1;
 			return;
 		}
 		ApiModel apiModel = parameterClass.getAnnotation(ApiModel.class);
@@ -174,7 +175,7 @@ public class DefaultParamPlugin implements ParameterBuilderPlugin {
 				return null;
 			} else {
 				ResolvedType collectionResolvedType = collectionResolvedTypes.get(0);
-				if (!TypeUtil.isComplexType(collectionResolvedType)) {
+				if (TypeUtil.isComplexType(collectionResolvedType)) {
 					return null;
 				} else {
 					return collectionResolvedType.getErasedType();

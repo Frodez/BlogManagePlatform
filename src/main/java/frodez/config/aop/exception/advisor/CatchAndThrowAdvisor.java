@@ -36,7 +36,7 @@ public class CatchAndThrowAdvisor implements PointcutAdvisor {
 			try {
 				return invocation.proceed();
 			} catch (Exception e) {
-				String methodName = ReflectUtil.getFullMethodName(invocation.getMethod());
+				String methodName = ReflectUtil.fullName(invocation.getMethod());
 				log.error(StrUtil.concat("[", methodName, "]"), e);
 				throw new ServiceException(errorCodeCache.get(methodName));
 			}
@@ -84,7 +84,7 @@ public class CatchAndThrowAdvisor implements PointcutAdvisor {
 								return false;
 							}
 							if (AnnotationUtils.findAnnotation(method, Transactional.class) != null) {
-								String methodName = ReflectUtil.getFullMethodName(method);
+								String methodName = ReflectUtil.fullName(method);
 								errorCodeCache.put(methodName, resolveErrorCode(method, targetClass));
 								return true;
 							} else {
@@ -96,7 +96,7 @@ public class CatchAndThrowAdvisor implements PointcutAdvisor {
 						if (annotation == null) {
 							return false;
 						}
-						String methodName = ReflectUtil.getFullMethodName(method);
+						String methodName = ReflectUtil.fullName(method);
 						errorCodeCache.put(methodName, resolveErrorCode(method, targetClass));
 						return true;
 					}
@@ -110,7 +110,7 @@ public class CatchAndThrowAdvisor implements PointcutAdvisor {
 						if (error != null) {
 							return error.value();
 						}
-						String string = StrUtil.concat("方法", ReflectUtil.getFullMethodName(method), "或者类", targetClass.getName(), "上必须存在@Error注解!");
+						String string = StrUtil.concat("方法", ReflectUtil.fullName(method), "或者类", targetClass.getName(), "上必须存在@Error注解!");
 						throw new CodeCheckException(string);
 					}
 

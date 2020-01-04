@@ -1,6 +1,6 @@
 package frodez.mvc;
 
-import frodez.constant.settings.PropertyKey;
+import frodez.constant.keys.spring.PropertyKey;
 import frodez.util.beans.result.Result;
 import frodez.util.spring.PropertyUtil;
 import org.junit.Assert;

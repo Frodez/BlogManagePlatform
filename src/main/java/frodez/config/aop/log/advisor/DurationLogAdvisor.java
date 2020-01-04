@@ -49,7 +49,7 @@ public class DurationLogAdvisor implements PointcutAdvisor {
 		 * @date 2018-12-21
 		 */
 		return (MethodInterceptor) invocation -> {
-			String name = ReflectUtil.getFullMethodName(invocation.getMethod());
+			String name = ReflectUtil.fullName(invocation.getMethod());
 			long threshold = thresholdCache.get(name);
 			long count = System.nanoTime();
 			Object result = invocation.proceed();
@@ -112,9 +112,9 @@ public class DurationLogAdvisor implements PointcutAdvisor {
 							return false;
 						}
 						if (annotation.threshold() <= 0) {
-							throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method), "的阈值必须大于0!");
+							throw new CodeCheckException("方法", ReflectUtil.fullName(method), "的阈值必须大于0!");
 						}
-						thresholdCache.put(ReflectUtil.getFullMethodName(method), annotation.threshold() * times);
+						thresholdCache.put(ReflectUtil.fullName(method), annotation.threshold() * times);
 						return true;
 					}
 

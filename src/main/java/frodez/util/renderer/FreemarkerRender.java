@@ -1,31 +1,28 @@
 package frodez.util.renderer;
 
 import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
 import frodez.util.common.EmptyUtil;
 import frodez.util.common.StrUtil;
 import frodez.util.reflect.ReflectUtil;
 import frodez.util.renderer.reverter.Reverter;
 import frodez.util.spring.ContextUtil;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 /**
  * 模板引擎渲染工具类<br>
- * <strong>警告!!!如果要使用本类的方法,必须确保RenderUtil已经被初始化!</strong><br>
- * <strong>方式:在使用本方法的类上加入@DependsOn("renderUtil")注解。</strong>
  * @author Frodez
  * @date 2019-03-27
  */
-@Component
+@Component("FreemarkerRender")
 public class FreemarkerRender {
 
 	private static Configuration configuration;
@@ -95,16 +92,13 @@ public class FreemarkerRender {
 	 * @author Frodez
 	 * @date 2019-03-21
 	 */
+	@SneakyThrows
 	public static String render(String templateName, Map<String, Object> params, RenderMode... modes) {
 		Assert.notNull(templateName, "templateName must not be null");
 		Assert.notNull(params, "params must not be null");
-		try {
-			StringWriter writer = new StringWriter();
-			configuration.getTemplate(StrUtil.concat(templateName, suffix)).process(params, writer);
-			return revert(writer.toString(), modes);
-		} catch (TemplateException | IOException e) {
-			throw new RuntimeException(e);
-		}
+		StringWriter writer = new StringWriter();
+		configuration.getTemplate(StrUtil.concat(templateName, suffix)).process(params, writer);
+		return revert(writer.toString(), modes);
 	}
 
 }

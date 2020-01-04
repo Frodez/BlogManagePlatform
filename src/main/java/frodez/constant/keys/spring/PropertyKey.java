@@ -1,4 +1,4 @@
-package frodez.constant.settings;
+package frodez.constant.keys.spring;
 
 import lombok.experimental.UtilityClass;
 

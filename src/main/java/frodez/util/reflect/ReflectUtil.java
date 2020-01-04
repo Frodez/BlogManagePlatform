@@ -8,7 +8,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.cglib.reflect.FastClass;
@@ -41,18 +40,7 @@ public class ReflectUtil {
 	@SneakyThrows
 	@SuppressWarnings("unchecked")
 	public static <T> T instance(Class<T> klass) {
-		return (T) getFastClass(klass).newInstance();
-	}
-
-	/**
-	 * 对象实例化
-	 * @author Frodez
-	 * @date 2019-06-19
-	 */
-	@SneakyThrows
-	public static <T> Supplier<T> supplier(Class<T> klass) {
-		Assert.notNull(klass, "klass must not be null");
-		return () -> instance(klass);
+		return (T) fastClass(klass).newInstance();
 	}
 
 	/**
@@ -60,8 +48,8 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-04-12
 	 */
-	public static FastClass getFastClass(Class<?> klass) {
-		return getFastClass(klass, false);
+	public static FastClass fastClass(Class<?> klass) {
+		return fastClass(klass, false);
 	}
 
 	/**
@@ -69,7 +57,7 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-04-12
 	 */
-	public static FastClass getFastClass(Class<?> klass, boolean initialized) {
+	public static FastClass fastClass(Class<?> klass, boolean initialized) {
 		Assert.notNull(klass, "klass must not be null");
 		Table table = CGLIB_CACHE.get(klass);
 		if (table == null) {
@@ -84,22 +72,13 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * 获取method
-	 * @author Frodez
-	 * @date 2019-12-18
-	 */
-	public static Method getMethod(Class<?> klass, String method, Class<?>... params) {
-		return getFastMethod(klass, method, params).getJavaMethod();
-	}
-
-	/**
 	 * 获取FastMethod,方法会被缓存
 	 * @author Frodez
 	 * @throws NoSuchMethodException
 	 * @date 2019-04-12
 	 */
 	@SneakyThrows
-	public static FastMethod getFastMethod(Class<?> klass, String method, Class<?>... params) {
+	public static FastMethod fastMethod(Class<?> klass, String method, Class<?>... params) {
 		Assert.notNull(klass, "klass must not be null");
 		Assert.notNull(method, "method must not be null");
 		Table table = CGLIB_CACHE.get(klass);
@@ -151,8 +130,8 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-01-13
 	 */
-	public static String getFullMethodName(Method method) {
-		return StrUtil.concat(method.getDeclaringClass().getName(), DefStr.POINT_SEPERATOR, method.getName());
+	public static String fullName(Method method) {
+		return StrUtil.concat(method.getDeclaringClass().getCanonicalName(), DefStr.POINT_SEPERATOR, method.getName());
 	}
 
 	/**
@@ -160,7 +139,7 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-01-13
 	 */
-	public static String getShortMethodName(Method method) {
+	public static String shortName(Method method) {
 		return StrUtil.concat(method.getDeclaringClass().getSimpleName(), DefStr.POINT_SEPERATOR, method.getName());
 	}
 
@@ -169,8 +148,8 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-06-05
 	 */
-	public static String getFullFieldName(Field field) {
-		return StrUtil.concat(field.getDeclaringClass().getName(), DefStr.POINT_SEPERATOR, field.getName());
+	public static String fullName(Field field) {
+		return StrUtil.concat(field.getDeclaringClass().getCanonicalName(), DefStr.POINT_SEPERATOR, field.getName());
 	}
 
 	/**
@@ -178,7 +157,7 @@ public class ReflectUtil {
 	 * @author Frodez
 	 * @date 2019-06-05
 	 */
-	public static String getShortFieldName(Field field) {
+	public static String shortName(Field field) {
 		return StrUtil.concat(field.getDeclaringClass().getSimpleName(), DefStr.POINT_SEPERATOR, field.getName());
 	}
 
@@ -190,7 +169,7 @@ public class ReflectUtil {
 	 */
 	@SuppressWarnings("deprecation")
 	@SneakyThrows
-	public static void trySet(Class<?> klass, String fieldName, Object target, @Nullable Object value) {
+	public static void set(Class<?> klass, String fieldName, Object target, @Nullable Object value) {
 		Assert.notNull(klass, "klass must not be null");
 		Assert.notNull(fieldName, "fieldName must not be null");
 		Assert.notNull(target, "target must not be null");
@@ -216,7 +195,7 @@ public class ReflectUtil {
 	 */
 	@SuppressWarnings("deprecation")
 	@SneakyThrows
-	public static void trySet(Field field, Object target, @Nullable Object value) {
+	public static void set(Field field, Object target, @Nullable Object value) {
 		Assert.notNull(field, "field must not be null");
 		Assert.notNull(target, "target must not be null");
 		if (!field.isAccessible()) {
@@ -239,7 +218,7 @@ public class ReflectUtil {
 	 */
 	@SuppressWarnings("deprecation")
 	@SneakyThrows
-	public static Object tryGet(Class<?> klass, String fieldName, Object target) {
+	public static Object get(Class<?> klass, String fieldName, Object target) {
 		Assert.notNull(klass, "klass must not be null");
 		Assert.notNull(fieldName, "fieldName must not be null");
 		Assert.notNull(target, "target must not be null");
@@ -264,7 +243,7 @@ public class ReflectUtil {
 	 */
 	@SuppressWarnings("deprecation")
 	@SneakyThrows
-	public static Object tryGet(Field field, Object target) {
+	public static Object get(Field field, Object target) {
 		Assert.notNull(field, "field must not be null");
 		Assert.notNull(target, "target must not be null");
 		if (!field.isAccessible()) {

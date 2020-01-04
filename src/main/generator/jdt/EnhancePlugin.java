@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
+import org.springframework.util.ResourceUtils;
 
 @Slf4j
 public abstract class EnhancePlugin {
@@ -21,7 +22,7 @@ public abstract class EnhancePlugin {
 
 	void init(String path) throws IOException, URISyntaxException {
 		ASTParser parser = JDTUtil.defaultParser();
-		String source = FileUtil.readString(path);
+		String source = FileUtil.readString(ResourceUtils.getFile(path));
 		parser.setSource(source.toCharArray());
 		this.path = path;
 		unit = (CompilationUnit) parser.createAST(null);

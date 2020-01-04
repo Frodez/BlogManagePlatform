@@ -8,12 +8,11 @@ import com.itextpdf.io.font.FontProgramFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import frodez.config.font.FontProperties;
 import frodez.util.common.StrUtil;
 import frodez.util.io.FileUtil;
+import frodez.util.renderer.FontProperties;
 import frodez.util.spring.ContextUtil;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +20,6 @@ import java.util.Map.Entry;
 import javax.annotation.PostConstruct;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
@@ -33,23 +31,31 @@ import org.springframework.util.concurrent.ListenableFuture;
  * @author Frodez
  * @date 2019-03-27
  */
-@Lazy
 @Slf4j
-@Component
+@Component("PDFConverter")
 public class PDFConverter {
 
 	private static Map<String, FontProgram> fontCache = new HashMap<>();
 
+	private static DefaultFontProvider defaultFontProvider;
+
 	@PostConstruct
 	private void init() {
 		FontProperties properties = ContextUtil.bean(FontProperties.class);
-		try {
-			for (Entry<String, String> entry : properties.getAlias().entrySet()) {
-				fontCache.put(entry.getKey(), FontProgramFactory.createFont(FileUtil.readBytes(ResourceUtils.getFile(
-					StrUtil.concat(properties.getPath(), entry.getValue()))), false));
+		for (Entry<String, String> entry : properties.getAlias().entrySet()) {
+			String directPath = StrUtil.concat(properties.getPath(), entry.getValue());
+			try {
+				byte[] file = FileUtil.readBytes(ResourceUtils.getFile(directPath));
+				FontProgram font = FontProgramFactory.createFont(file, false);
+				fontCache.put(entry.getKey(), font);
+			} catch (Throwable e) {
+				log.error("[frodez.util.pdf.PDFConverter.init]", e);
+				continue;
 			}
-		} catch (IOException e) {
-			log.error("[frodez.util.pdf.PDFConverter.init]", e);
+		}
+		defaultFontProvider = new DefaultFontProvider(false, false, true);
+		for (FontProgram font : fontCache.values()) {
+			defaultFontProvider.addFont(font);
 		}
 	}
 
@@ -61,8 +67,8 @@ public class PDFConverter {
 	@SneakyThrows
 	public static void addFont(String alias, String fileName) {
 		FontProperties properties = ContextUtil.bean(FontProperties.class);
-		fontCache.put(alias, FontProgramFactory.createFont(FileUtil.readBytes(ResourceUtils.getFile(StrUtil.concat(
-			properties.getPath(), fileName))), false));
+		fontCache.put(alias, FontProgramFactory.createFont(FileUtil.readBytes(ResourceUtils.getFile(StrUtil.concat(properties.getPath(), fileName))),
+			false));
 	}
 
 	/**
@@ -84,10 +90,6 @@ public class PDFConverter {
 	public ListenableFuture<ByteArrayOutputStream> convert(String html) {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		ConverterProperties properties = new ConverterProperties();
-		DefaultFontProvider defaultFontProvider = new DefaultFontProvider(false, false, false);
-		for (FontProgram font : fontCache.values()) {
-			defaultFontProvider.addFont(font);
-		}
 		properties.setFontProvider(defaultFontProvider);
 		PdfDocument pdf = new PdfDocument(new PdfWriter(stream));
 		Document document = HtmlConverter.convertToDocument(html, pdf, properties);

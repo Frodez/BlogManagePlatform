@@ -51,10 +51,10 @@ public @interface Limit {
 
 		public static void check(Method method, Limit annotation) {
 			if (annotation.value() <= 0) {
-				throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method), "的每秒每token限制请求数必须大于0!");
+				throw new CodeCheckException("方法", ReflectUtil.fullName(method), "的每秒每token限制请求数必须大于0!");
 			}
 			if (annotation.timeout() <= 0) {
-				throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method), "的超时时间必须大于0!");
+				throw new CodeCheckException("方法", ReflectUtil.fullName(method), "的超时时间必须大于0!");
 			}
 		}
 	}
