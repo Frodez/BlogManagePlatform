@@ -69,7 +69,7 @@ public class DefaultControllerPlugin implements ApiListingBuilderPlugin {
 			log.warn(StrUtil.concat(controller.getName(), "的信息未配置"));
 		}
 		ApiListingBuilder builder = context.apiListingBuilder();
-		ReflectUtil.trySet(ApiListingBuilder.class, "tagNames", builder, Set.of(info.name));
+		ReflectUtil.set(ApiListingBuilder.class, "tagNames", builder, Set.of(info.name));
 		builder.consumes(Set.of(info.consumes));
 		builder.produces(Set.of(info.produces));
 	}

@@ -57,15 +57,6 @@ public class ContextUtil implements ApplicationContextAware {
 	}
 
 	/**
-	 * 获取项目根路径
-	 * @author Frodez
-	 * @date 2019-01-13
-	 */
-	public static String rootPath() {
-		return ClassUtils.getDefaultClassLoader().getResource("").getPath();
-	}
-
-	/**
 	 * 获取spring上下文环境
 	 * @author Frodez
 	 * @date 2018-12-21

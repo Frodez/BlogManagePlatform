@@ -48,7 +48,7 @@ public class AsyncLimitUserAdvisor implements PointcutAdvisor {
 		 * @date 2018-12-21
 		 */
 		return (MethodInterceptor) invocation -> {
-			Pair<RateLimiter, Long> pair = limitCache.get(ReflectUtil.getFullMethodName(invocation.getMethod()));
+			Pair<RateLimiter, Long> pair = limitCache.get(ReflectUtil.fullName(invocation.getMethod()));
 			if (!pair.getKey().tryAcquire(pair.getValue(), DefTime.UNIT)) {
 				return Result.busy().async();
 			}
@@ -119,7 +119,7 @@ public class AsyncLimitUserAdvisor implements PointcutAdvisor {
 							return false;
 						}
 						Pair<RateLimiter, Long> pair = new Pair<>(RateLimiter.create(annotation.value()), annotation.timeout());
-						limitCache.put(ReflectUtil.getFullMethodName(method), pair);
+						limitCache.put(ReflectUtil.fullName(method), pair);
 						return true;
 					}
 

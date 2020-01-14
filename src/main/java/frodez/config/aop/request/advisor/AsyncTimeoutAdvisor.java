@@ -68,7 +68,7 @@ public class AsyncTimeoutAdvisor implements PointcutAdvisor {
 		 */
 		return (MethodInterceptor) invocation -> {
 			HttpServletRequest request = MVCUtil.request();
-			String name = ReflectUtil.getFullMethodName(invocation.getMethod());
+			String name = ReflectUtil.fullName(invocation.getMethod());
 			String key = KeyGenerator.servletKey(name, request);
 			if (checker.check(key)) {
 				log.info("重复请求:IP地址{}", ServletUtil.getAddr(request));
@@ -141,7 +141,7 @@ public class AsyncTimeoutAdvisor implements PointcutAdvisor {
 						if (!AOPUtil.isAsyncResultAsReturn(method)) {
 							return false;
 						}
-						timeoutCache.put(ReflectUtil.getFullMethodName(method), annotation.value());
+						timeoutCache.put(ReflectUtil.fullName(method), annotation.value());
 						return true;
 					}
 

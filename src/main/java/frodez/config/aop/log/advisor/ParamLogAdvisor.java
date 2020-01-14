@@ -48,7 +48,7 @@ public class ParamLogAdvisor implements PointcutAdvisor {
 			for (int i = 0; i < parameters.length; ++i) {
 				paramMap.put(parameters[i].getName(), args[i]);
 			}
-			log.info("{} 请求参数:{}", ReflectUtil.getFullMethodName(method), JSONUtil.string(paramMap));
+			log.info("{} 请求参数:{}", ReflectUtil.fullName(method), JSONUtil.string(paramMap));
 		};
 	}
 
@@ -102,7 +102,7 @@ public class ParamLogAdvisor implements PointcutAdvisor {
 							return false;
 						}
 						if (method.getParameterCount() == 0) {
-							throw new CodeCheckException("不能对无参数的方法", ReflectUtil.getFullMethodName(method), "使用@", ParamLog.class.getCanonicalName(),
+							throw new CodeCheckException("不能对无参数的方法", ReflectUtil.fullName(method), "使用@", ParamLog.class.getCanonicalName(),
 								"注解!");
 						}
 						return true;

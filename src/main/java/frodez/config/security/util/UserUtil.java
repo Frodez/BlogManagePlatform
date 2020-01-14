@@ -156,7 +156,7 @@ public class UserUtil {
 	public static boolean pass(String setting) {
 		Role role = role();
 		if (role == null) {
-			throw new IllegalStateException("当前用户未登录!");
+			return false;
 		}
 		return settingCache.pass(role.getId(), setting);
 	}
@@ -169,7 +169,7 @@ public class UserUtil {
 	public static boolean reject(String setting) {
 		Role role = role();
 		if (role == null) {
-			throw new IllegalStateException("当前用户未登录!");
+			return false;
 		}
 		return settingCache.reject(role.getId(), setting);
 	}

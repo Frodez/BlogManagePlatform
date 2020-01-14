@@ -31,7 +31,7 @@ public class CatchAndReturnAdvisor implements PointcutAdvisor {
 			try {
 				return invocation.proceed();
 			} catch (Exception e) {
-				log.error(StrUtil.concat("[", ReflectUtil.getFullMethodName(invocation.getMethod()), "]"), e);
+				log.error(StrUtil.concat("[", ReflectUtil.fullName(invocation.getMethod()), "]"), e);
 				return Result.errorService();
 			}
 		};

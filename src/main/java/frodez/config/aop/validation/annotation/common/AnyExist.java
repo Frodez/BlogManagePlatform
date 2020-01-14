@@ -53,16 +53,19 @@ public @interface AnyExist {
 
 		@Override
 		public boolean isValid(Object value, ConstraintValidatorContext context) {
+			if (value == null) {
+				return true;
+			}
 			Class<?> klass = value.getClass();
 			if (isAll) {
 				for (Field field : klass.getDeclaredFields()) {
-					if (ReflectUtil.tryGet(field, value) != null) {
+					if (ReflectUtil.get(field, value) != null) {
 						return true;
 					}
 				}
 			} else {
 				for (String fieldName : fieldNames) {
-					if (ReflectUtil.tryGet(klass, fieldName, value) != null) {
+					if (ReflectUtil.get(klass, fieldName, value) != null) {
 						return true;
 					}
 				}

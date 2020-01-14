@@ -1,7 +1,6 @@
 package mybatis;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.SneakyThrows;
@@ -15,10 +14,9 @@ public class Generator {
 
 	@SneakyThrows
 	public static void main(String[] args) {
-		URL string = Generator.class.getResource("");
 		List<String> warnings = new ArrayList<>();
 		ConfigurationParser configurationParser = new ConfigurationParser(warnings);
-		Configuration configuration = configurationParser.parseConfiguration(new File(string.getPath() + "generator.xml"));
+		Configuration configuration = configurationParser.parseConfiguration(new File(Generator.class.getResource("").getPath() + "generator.xml"));
 		DefaultShellCallback callback = new DefaultShellCallback(true);
 		MyBatisGenerator generator = new MyBatisGenerator(configuration, callback, warnings);
 		generator.generate(new VerboseProgressCallback());

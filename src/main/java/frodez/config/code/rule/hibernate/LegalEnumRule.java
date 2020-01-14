@@ -29,7 +29,7 @@ public class LegalEnumRule implements CodeCheckRule {
 		MapEnum annotation = field.getAnnotation(MapEnum.class);
 		if (annotation != null) {
 			if (!ClassUtils.isPrimitiveOrWrapper(field.getType())) {
-				throw new CodeCheckException(ReflectUtil.getFullFieldName(field), "不是基本类型或者其装箱类,不能使用@", MapEnum.class.getCanonicalName(), "注解");
+				throw new CodeCheckException(ReflectUtil.fullName(field), "不是基本类型或者其装箱类,不能使用@", MapEnum.class.getCanonicalName(), "注解");
 			}
 			checkLegalEnum(annotation);
 		}
@@ -46,7 +46,7 @@ public class LegalEnumRule implements CodeCheckRule {
 			MapEnum annotation = parameter.getAnnotation(MapEnum.class);
 			if (annotation != null) {
 				if (!ClassUtils.isPrimitiveOrWrapper(parameter.getType())) {
-					throw new CodeCheckException("方法", ReflectUtil.getFullMethodName(method), "的参数", parameter.getName(), "不是基本类型或者其装箱类,不能使用@",
+					throw new CodeCheckException("方法", ReflectUtil.fullName(method), "的参数", parameter.getName(), "不是基本类型或者其装箱类,不能使用@",
 						MapEnum.class.getCanonicalName(), "注解");
 				}
 				checkLegalEnum(annotation);

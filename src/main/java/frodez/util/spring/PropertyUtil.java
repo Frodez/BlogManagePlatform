@@ -1,6 +1,6 @@
 package frodez.util.spring;
 
-import frodez.constant.settings.PropertyKey;
+import frodez.constant.keys.spring.PropertyKey;
 import frodez.util.common.EmptyUtil;
 import java.util.Arrays;
 import java.util.List;
@@ -92,7 +92,7 @@ public class PropertyUtil {
 	/**
 	 * 当前环境是否为dev环境<br>
 	 * <strong>本实现不考虑同时启用多个环境的情况。</strong>
-	 * @see frodez.constant.settings.PropertyKey.Enviroment#DEV
+	 * @see frodez.constant.keys.spring.PropertyKey.Enviroment#DEV
 	 * @author Frodez
 	 * @date 2019-04-15
 	 */
@@ -103,7 +103,7 @@ public class PropertyUtil {
 	/**
 	 * 当前环境是否为test环境<br>
 	 * <strong>本实现不考虑同时启用多个环境的情况。</strong>
-	 * @see frodez.constant.settings.PropertyKey.Enviroment#TEST
+	 * @see frodez.constant.keys.spring.PropertyKey.Enviroment#TEST
 	 * @author Frodez
 	 * @date 2019-04-15
 	 */
@@ -114,7 +114,7 @@ public class PropertyUtil {
 	/**
 	 * 当前环境是否为release环境<br>
 	 * <strong>本实现不考虑同时启用多个环境的情况。</strong>
-	 * @see frodez.constant.settings.PropertyKey.Enviroment#RELEASE
+	 * @see frodez.constant.keys.spring.PropertyKey.Enviroment#RELEASE
 	 * @author Frodez
 	 * @date 2019-04-15
 	 */
@@ -125,7 +125,7 @@ public class PropertyUtil {
 	/**
 	 * 当前环境是否为prod环境<br>
 	 * <strong>本实现不考虑同时启用多个环境的情况。</strong>
-	 * @see frodez.constant.settings.PropertyKey.Enviroment#PROD
+	 * @see frodez.constant.keys.spring.PropertyKey.Enviroment#PROD
 	 * @author Frodez
 	 * @date 2019-04-15
 	 */

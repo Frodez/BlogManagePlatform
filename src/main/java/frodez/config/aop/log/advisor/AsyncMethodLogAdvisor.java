@@ -41,7 +41,7 @@ public class AsyncMethodLogAdvisor implements PointcutAdvisor {
 	public Advice getAdvice() {
 		return (MethodInterceptor) invocation -> {
 			Method method = invocation.getMethod();
-			String name = ReflectUtil.getFullMethodName(method);
+			String name = ReflectUtil.fullName(method);
 			if (method.getParameterCount() != 0) {
 				Parameter[] parameters = method.getParameters();
 				Object[] args = invocation.getArguments();
@@ -121,7 +121,7 @@ public class AsyncMethodLogAdvisor implements PointcutAdvisor {
 							return false;
 						}
 						if (returnType == Void.class && method.getParameterCount() == 0) {
-							throw new CodeCheckException("不能对void返回类型且无参数的方法", ReflectUtil.getFullMethodName(method), "使用@", MethodLog.class
+							throw new CodeCheckException("不能对void返回类型且无参数的方法", ReflectUtil.fullName(method), "使用@", MethodLog.class
 								.getCanonicalName(), "注解!");
 						}
 						return true;

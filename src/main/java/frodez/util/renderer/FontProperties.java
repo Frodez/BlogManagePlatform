@@ -1,4 +1,4 @@
-package frodez.config.font;
+package frodez.util.renderer;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -99,7 +99,7 @@ public class DefaultModelPlugin implements ModelPropertyBuilderPlugin {
 	}
 
 	private void resolveExample(ModelPropertyContext context, Class<?> modelClass, Field field) {
-		Object retVal = ReflectUtil.tryGet(field, ReflectUtil.instance(modelClass));
+		Object retVal = ReflectUtil.get(field, ReflectUtil.instance(modelClass));
 		if (retVal != null) {
 			ModelPropertyBuilder builder = context.getBuilder();
 			ApiModelProperty modelProperty = field.getAnnotation(ApiModelProperty.class);
@@ -113,7 +113,7 @@ public class DefaultModelPlugin implements ModelPropertyBuilderPlugin {
 
 	private void resolveDescription(ModelPropertyContext context, Field field) {
 		ModelPropertyBuilder builder = context.getBuilder();
-		String description = StrUtil.orEmpty((String) ReflectUtil.tryGet(ModelPropertyBuilder.class, "description", builder));
+		String description = StrUtil.orEmpty((String) ReflectUtil.get(ModelPropertyBuilder.class, "description", builder));
 		String resolve = recursiveResolveList(TypeUtil.resolve(field.getGenericType()));
 		if (resolve != null) {
 			//如果还是有ApiModelProperty,就不在原描述后增加列表的描述
