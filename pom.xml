@@ -252,13 +252,6 @@
 			<version>2.1.5</version>
 		</dependency>
 
-		<!-- org.eclipse.jdt.core -->
-		<dependency>
-			<groupId>org.eclipse.jdt</groupId>
-			<artifactId>org.eclipse.jdt.core</artifactId>
-			<version>3.19.0</version>
-		</dependency>
-
 		<!-- mybatis-generator -->
 		<dependency>
 			<groupId>org.mybatis.generator</groupId>
@@ -284,62 +277,6 @@
 						<exclude>
 							<groupId>org.mybatis.generator</groupId>
 							<artifactId>mybatis-generator-core</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>org.eclipse.jdt</groupId>
-							<artifactId>org.eclipse.jdt.core</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>org.eclipse.platform</groupId>
-							<artifactId>org.eclipse.core.resources</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>org.eclipse.platform</groupId>
-							<artifactId>org.eclipse.core.expressions</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>org.eclipse.platform</groupId>
-							<artifactId>org.eclipse.core.runtime</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>org.eclipse.platform</groupId>
-							<artifactId>org.eclipse.core.jobs</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>org.eclipse.platform</groupId>
-							<artifactId>org.eclipse.core.contenttype</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>org.eclipse.platform</groupId>
-							<artifactId>org.eclipse.core.filesystem</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>org.eclipse.platform</groupId>
-							<artifactId>org.eclipse.core.commands</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>org.eclipse.platform</groupId>
-							<artifactId>org.eclipse.osgi</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>org.eclipse.platform</groupId>
-							<artifactId>org.eclipse.equinox.common</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>org.eclipse.platform</groupId>
-							<artifactId>org.eclipse.equinox.registry</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>org.eclipse.platform</groupId>
-							<artifactId>org.eclipse.equinox.preferences</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>org.eclipse.platform</groupId>
-							<artifactId>org.eclipse.equinox.app</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>org.eclipse.platform</groupId>
-							<artifactId>org.eclipse.text</artifactId>
 						</exclude>
 					</excludes>
 				</configuration>
@@ -371,7 +308,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<release>11</release>
+					<release>12</release>
 				</configuration>
 			</plugin>
 		</plugins>

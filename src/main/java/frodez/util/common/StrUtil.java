@@ -278,7 +278,7 @@ public class StrUtil {
 	 * @author Frodez
 	 * @date 2019-12-24
 	 */
-	private class StringArray {
+	private static class StringArray {
 
 		//设置一个稍小的值,毕竟用不到那么多
 		private static final int MAX_ARRAY_SIZE = 65536;

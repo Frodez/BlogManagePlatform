@@ -2,7 +2,9 @@ package frodez.config.mybatis.result;
 
 import frodez.config.mybatis.result.CustomHandler.CustomHandlerContext;
 import frodez.util.reflect.ReflectUtil;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,18 +14,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
-import org.apache.ibatis.plugin.Plugin;
-import org.apache.ibatis.plugin.Signature;
-import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,16 +28,22 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@Intercepts({ @Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class, RowBounds.class,
-	ResultHandler.class }), @Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class, RowBounds.class,
-		ResultHandler.class, CacheKey.class, BoundSql.class }), })
 public class CustomHandlerInterceptor implements Interceptor {
+
+	private Interceptor interceptor = this;
+
+	private Class<?>[] interfaces = new Class<?>[] { Executor.class };
 
 	@Override
 	public Object plugin(Object target) {
 		//只拦截Executor对象，减少目标被代理的次数
 		if (target instanceof Executor) {
-			return Plugin.wrap(target, this);
+			return Proxy.newProxyInstance(target.getClass().getClassLoader(), interfaces, (InvocationHandler) (proxy, method, args) -> {
+				if (method.getName().equals("query")) {
+					return interceptor.intercept(new Invocation(target, method, args));
+				}
+				return method.invoke(target, args);
+			});
 		} else {
 			return target;
 		}

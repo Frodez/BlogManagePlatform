@@ -91,7 +91,7 @@ public class ReflectUtil {
 		return table.method(method, params);
 	}
 
-	private class Table {
+	private static class Table {
 
 		FastClass fastClass;
 
