@@ -4,6 +4,7 @@
 [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
 # BlogManagePlatform  
 ## 这是一个springboot项目的脚手架,追求简洁高速可扩展。  
+## 本仓库已停止维护。原有代码迁移至:[Phantom](https://github.com/Frodez/Phantom)
 
 ## 项目要求:
 1. JDK11+
